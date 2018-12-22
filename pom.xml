@@ -11,4 +11,9 @@
         A simple performance data generator for Java applications
     </description>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
 </project>

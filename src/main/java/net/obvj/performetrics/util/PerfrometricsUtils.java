@@ -10,12 +10,32 @@ public class PerfrometricsUtils {
 	}
 
 	/**
+	 * Returns the current time in milliseconds.
+	 * 
+	 * @return the difference, measured in milliseconds, between the current time
+	 *         and midnight, January 1, 1970 UTC.
+	 */
+	public static long getWallClockTimeMillis() {
+		return System.currentTimeMillis();
+	}
+
+	/**
+	 * Returns the current value of the current Java Virtual Machine's high-resolution time source in nanoseconds. 
+	 * time in nanoseconds.
+	 * 
+	 * @return the difference, measured in nanoseconds between current time and some arbitrary origin time for the current JVM, that can be used for measuring elapsed times. 
+	 */
+	public static long getWallClockTimeNanos() {
+		return System.nanoTime();
+	}
+
+	/**
 	 * Returns the total CPU time for the current thread in nanoseconds.
 	 * 
 	 * @return the total CPU time for the current thread if CPU time measurement is
 	 *         enabled; 0 otherwise.
 	 **/
-	public static long getCpuTime() {
+	public static long getCpuTimeNanos() {
 		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
 		return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
 	}
@@ -27,7 +47,7 @@ public class PerfrometricsUtils {
 	 * @return the user-level CPU time for the current thread if CPU time
 	 *         measurement is enabled; 0 otherwise.
 	 **/
-	public static long getUserTime() {
+	public static long getUserTimeNanos() {
 		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
 		return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadUserTime() : 0L;
 	}
@@ -39,7 +59,7 @@ public class PerfrometricsUtils {
 	 * @return the system time for the current thread if CPU time measurement is
 	 *         enabled; 0 otherwise.
 	 */
-	public static long getSystemTime() {
+	public static long getSystemTimeNanos() {
 		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
 		return bean.isCurrentThreadCpuTimeSupported()
 				? (bean.getCurrentThreadCpuTime() - bean.getCurrentThreadUserTime())

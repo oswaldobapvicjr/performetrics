@@ -18,14 +18,14 @@ public abstract class CpuTimeCallableOperation<V> extends BaseTimedOperation imp
         synchronized (lock)
         {
             timeAfter = 0;
-            timeBefore = (PerfrometricsUtils.getCpuTime() / 1000000) % 1000000;
+            timeBefore = (PerfrometricsUtils.getCpuTimeNanos() / 1000000) % 1000000;
             try
             {
                 return call();
             }
             finally
             {
-                timeAfter = (PerfrometricsUtils.getCpuTime() / 1000000) % 1000000;
+                timeAfter = (PerfrometricsUtils.getCpuTimeNanos() / 1000000) % 1000000;
             }
         }
     }

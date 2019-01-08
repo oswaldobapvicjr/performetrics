@@ -1,6 +1,4 @@
-package net.obvj.performetrics.callable;
-
-import java.util.concurrent.Callable;
+package net.obvj.performetrics.runnable;
 
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.UnitType;
@@ -9,17 +7,17 @@ import net.obvj.performetrics.util.PerfrometricsUtils;
 /**
  * @author oswaldo.bapvic.jr
  */
-public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
+public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
 {
 
     private Object lock = new Object();
 
-    public CpuTimeCallableOperation()
+    public CpuTimeRunnableOperation()
     {
         super(UnitType.CPU_TIME);
     }
 
-    public V start() throws Exception
+    public void start()
     {
         synchronized (lock)
         {
@@ -27,7 +25,7 @@ public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOpera
             unitsBefore = PerfrometricsUtils.getCpuTimeNanos();
             try
             {
-                return call();
+                run();
             }
             finally
             {

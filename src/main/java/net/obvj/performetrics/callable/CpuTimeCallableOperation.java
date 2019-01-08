@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.UnitType;
-import net.obvj.performetrics.util.PerfrometricsUtils;
+import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * @author oswaldo.bapvic.jr
@@ -24,14 +24,14 @@ public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOpera
         synchronized (lock)
         {
             unitsAfter = 0;
-            unitsBefore = PerfrometricsUtils.getCpuTimeNanos();
+            unitsBefore = PerformetricsUtils.getCpuTimeNanos();
             try
             {
                 return call();
             }
             finally
             {
-                unitsAfter = PerfrometricsUtils.getCpuTimeNanos();
+                unitsAfter = PerformetricsUtils.getCpuTimeNanos();
             }
         }
     }

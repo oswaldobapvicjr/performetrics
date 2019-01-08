@@ -8,10 +8,10 @@ import java.lang.management.ThreadMXBean;
  *
  * @author oswaldo.bapvic.jr
  */
-public class PerfrometricsUtils
+public class PerformetricsUtils
 {
 
-    private PerfrometricsUtils()
+    private PerformetricsUtils()
     {
         throw new IllegalStateException("Utility class");
     }
@@ -53,7 +53,7 @@ public class PerfrometricsUtils
 
     /**
      * Returns the CPU time that the current thread has executed in user mode in nanoseconds
-     * (i.e., is the time spent running current thread's own code).
+     * (i.e., the time spent running current thread's own code).
      *
      * @return the user-level CPU time for the current thread if CPU time measurement is
      *         enabled; 0 otherwise.

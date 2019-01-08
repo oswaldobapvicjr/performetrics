@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.UnitType;
-import net.obvj.performetrics.util.PerfrometricsUtils;
+import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * @param <V> the result type of method <tt>call</tt>
@@ -27,14 +27,14 @@ public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorabl
         synchronized (lock)
         {
             unitsAfter = 0;
-            unitsBefore = PerfrometricsUtils.getWallClockTimeNanos();
+            unitsBefore = PerformetricsUtils.getWallClockTimeNanos();
             try
             {
                 result = call();
             }
             finally
             {
-                unitsAfter = PerfrometricsUtils.getWallClockTimeNanos();
+                unitsAfter = PerformetricsUtils.getWallClockTimeNanos();
             }
         }
         return result;

@@ -2,7 +2,7 @@ package net.obvj.performetrics.runnable;
 
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.UnitType;
-import net.obvj.performetrics.util.PerfrometricsUtils;
+import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * @author oswaldo.bapvic.jr
@@ -22,14 +22,14 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
         synchronized (lock)
         {
             unitsAfter = 0;
-            unitsBefore = PerfrometricsUtils.getCpuTimeNanos();
+            unitsBefore = PerformetricsUtils.getCpuTimeNanos();
             try
             {
                 run();
             }
             finally
             {
-                unitsAfter = PerfrometricsUtils.getCpuTimeNanos();
+                unitsAfter = PerformetricsUtils.getCpuTimeNanos();
             }
         }
     }

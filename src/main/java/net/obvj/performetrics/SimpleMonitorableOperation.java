@@ -1,34 +1,22 @@
 package net.obvj.performetrics;
 
 /**
+ * A base object for monitorable operations that require a single counter.
+ *
  * @author oswaldo.bapvic.jr
  */
 public abstract class SimpleMonitorableOperation
 {
-    protected long unitsBefore = 0;
-    protected long unitsAfter = 0;
-    protected UnitType unitType;
+    protected final Counter counter;
 
     public SimpleMonitorableOperation(UnitType unitType)
     {
-        this.unitType = unitType;
+        this.counter = new Counter(unitType);
     }
 
-    public long getElapsedTimeNanos()
+    public Counter getCounter()
     {
-        return unitsAfter >= unitsBefore ? (unitsAfter - unitsBefore) : -1;
-    }
-
-    public long getElapsedTimeMillis()
-    {
-        long elapsedTimeNanos = getElapsedTimeNanos();
-        return elapsedTimeNanos > 0 ? (getElapsedTimeNanos() / 1000000) % 1000000 : -1;
-    }
-
-    public double getElapsedTimeSeconds()
-    {
-        long elapsedTimeMilis = getElapsedTimeMillis();
-        return elapsedTimeMilis > 0 ? elapsedTimeMilis / 1000 : -1;
+        return counter;
     }
 
 }

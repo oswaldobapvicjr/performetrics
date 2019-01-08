@@ -26,15 +26,15 @@ public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorabl
     {
         synchronized (lock)
         {
-            unitsAfter = 0;
-            unitsBefore = PerformetricsUtils.getWallClockTimeNanos();
+            getCounter().setUnitsAfter(0);
+            getCounter().setUnitsBefore(PerformetricsUtils.getWallClockTimeNanos());
             try
             {
                 result = call();
             }
             finally
             {
-                unitsAfter = PerformetricsUtils.getWallClockTimeNanos();
+                getCounter().setUnitsAfter(PerformetricsUtils.getWallClockTimeNanos());
             }
         }
         return result;

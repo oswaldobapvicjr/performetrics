@@ -21,15 +21,15 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
     {
         synchronized (lock)
         {
-            unitsAfter = 0;
-            unitsBefore = PerformetricsUtils.getCpuTimeNanos();
+            getCounter().setUnitsAfter(0);
+            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
             try
             {
                 run();
             }
             finally
             {
-                unitsAfter = PerformetricsUtils.getCpuTimeNanos();
+                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
             }
         }
     }

@@ -23,15 +23,15 @@ public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOpera
     {
         synchronized (lock)
         {
-            unitsAfter = 0;
-            unitsBefore = PerformetricsUtils.getCpuTimeNanos();
+            getCounter().setUnitsAfter(0);
+            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
             try
             {
                 return call();
             }
             finally
             {
-                unitsAfter = PerformetricsUtils.getCpuTimeNanos();
+                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
             }
         }
     }

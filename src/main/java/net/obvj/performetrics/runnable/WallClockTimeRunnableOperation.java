@@ -21,15 +21,15 @@ public abstract class WallClockTimeRunnableOperation extends SimpleMonitorableOp
     {
         synchronized (lock)
         {
-            unitsAfter = 0;
-            unitsBefore = PerformetricsUtils.getWallClockTimeNanos();
+            getCounter().setUnitsAfter(0);
+            getCounter().setUnitsBefore(PerformetricsUtils.getWallClockTimeNanos());
             try
             {
                 run();
             }
             finally
             {
-                unitsAfter = PerformetricsUtils.getWallClockTimeNanos();
+                getCounter().setUnitsAfter(PerformetricsUtils.getWallClockTimeNanos());
             }
         }
     }

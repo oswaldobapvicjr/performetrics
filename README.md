@@ -1,4 +1,7 @@
 # performetrics
+
+[![Build Status](https://travis-ci.org/oswaldobapvicjr/performetrics.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/performetrics)
+
 A simple performance data generator for Java applications
 
 ---

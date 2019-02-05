@@ -2,8 +2,8 @@ package net.obvj.performetrics.callable;
 
 import java.util.concurrent.Callable;
 
+import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.SimpleMonitorableOperation;
-import net.obvj.performetrics.UnitType;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
@@ -19,7 +19,7 @@ public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorabl
 
     public WallClockTimeCallableOperation()
     {
-        super(UnitType.WALL_CLOCK_TIME);
+        super(Counter.Type.WALL_CLOCK_TIME);
     }
 
     public V start() throws Exception

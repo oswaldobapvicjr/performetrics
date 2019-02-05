@@ -1,47 +1,58 @@
 package net.obvj.performetrics;
 
 /**
- * An object containing units before and units after for a particular unit type, with
- * precision of nanoseconds.
+ * An object containing units before and units after for a particular unit type
  *
  * @author oswaldo.bapvic.jr
  */
 public class Counter
 {
+    public enum Type
+    {
+        WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME;
+    }
+
+    public static final TimeUnit DEFAULT_UNIT = TimeUnit.NANOSECOND;
+
+    private final Type type;
+    private final TimeUnit timeUnit;
+
     private long unitsBefore = 0;
     private long unitsAfter = 0;
-    private UnitType unitType;
 
     /**
-     * Builds this Counter object.
+     * Builds this Counter object with default time unit of nanoseconds.
+     * <p>
+     * This is equivalent to: {@code new Counter(type, TimeUnit.NANOSECOND}}
      *
-     * @param unitType the unit type to set
+     * @param type the type to set
      */
-    public Counter(UnitType unitType)
+    public Counter(Type type)
     {
-        this.unitType = unitType;
+        this.type = type;
+        this.timeUnit = DEFAULT_UNIT;
     }
 
-    public long getElapsedTimeNanos()
+    /**
+     * Builds this Counter object with the given type and time unit.
+     *
+     * @param type the type to set
+     * @param timeUnit the unit to set
+     */
+    public Counter(Type type, TimeUnit timeUnit)
     {
-        return unitsAfter >= unitsBefore ? (unitsAfter - unitsBefore) : -1;
+        this.type = type;
+        this.timeUnit = timeUnit;
     }
 
-    public long getElapsedTimeMillis()
+    public long getElapsedTime()
     {
-        long elapsedTimeNanos = getElapsedTimeNanos();
-        return elapsedTimeNanos > 0 ? (getElapsedTimeNanos() / 1000000) % 1000000 : -1;
-    }
-
-    public double getElapsedTimeSeconds()
-    {
-        long elapsedTimeMilis = getElapsedTimeMillis();
-        return elapsedTimeMilis > 0 ? elapsedTimeMilis / 1000 : -1;
+        return unitsAfter >= unitsBefore ? timeUnit.convertedTime(unitsAfter - unitsBefore) : -1;
     }
 
     public long getUnitsBefore()
     {
-        return unitsBefore;
+        return timeUnit.convertedTime(unitsBefore);
     }
 
     public void setUnitsBefore(long unitsBefore)
@@ -51,7 +62,7 @@ public class Counter
 
     public long getUnitsAfter()
     {
-        return unitsAfter;
+        return timeUnit.convertedTime(unitsAfter);
     }
 
     public void setUnitsAfter(long unitsAfter)
@@ -59,20 +70,21 @@ public class Counter
         this.unitsAfter = unitsAfter;
     }
 
-    public UnitType getUnitType()
+    public Type getType()
     {
-        return unitType;
+        return type;
     }
 
-    public void setUnitType(UnitType unitType)
+    public TimeUnit getTimeUnit()
     {
-        this.unitType = unitType;
+        return timeUnit;
     }
 
     @Override
     public String toString()
     {
-        return "Counter [unitsBefore=" + unitsBefore + ", unitsAfter=" + unitsAfter + ", unitType=" + unitType + "]";
+        return String.format("Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]", type, timeUnit,
+                getUnitsBefore(), getUnitsAfter());
     }
 
 }

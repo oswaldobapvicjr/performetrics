@@ -1,7 +1,7 @@
 package net.obvj.performetrics.runnable;
 
+import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.SimpleMonitorableOperation;
-import net.obvj.performetrics.UnitType;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
@@ -14,7 +14,7 @@ public abstract class WallClockTimeRunnableOperation extends SimpleMonitorableOp
 
     public WallClockTimeRunnableOperation()
     {
-        super(UnitType.WALL_CLOCK_TIME);
+        super(Counter.Type.WALL_CLOCK_TIME);
     }
 
     public void start()

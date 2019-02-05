@@ -9,9 +9,9 @@ public abstract class SimpleMonitorableOperation
 {
     protected final Counter counter;
 
-    public SimpleMonitorableOperation(UnitType unitType)
+    public SimpleMonitorableOperation(Counter.Type type)
     {
-        this.counter = new Counter(unitType);
+        this.counter = new Counter(type);
     }
 
     public Counter getCounter()

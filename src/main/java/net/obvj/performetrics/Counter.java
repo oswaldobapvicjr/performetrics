@@ -47,12 +47,12 @@ public class Counter
 
     public long getElapsedTime()
     {
-        return unitsAfter >= unitsBefore ? timeUnit.convertedTime(unitsAfter - unitsBefore) : -1;
+        return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
     }
 
     public long getUnitsBefore()
     {
-        return timeUnit.convertedTime(unitsBefore);
+        return unitsBefore;
     }
 
     public void setUnitsBefore(long unitsBefore)
@@ -62,7 +62,7 @@ public class Counter
 
     public long getUnitsAfter()
     {
-        return timeUnit.convertedTime(unitsAfter);
+        return unitsAfter;
     }
 
     public void setUnitsAfter(long unitsAfter)

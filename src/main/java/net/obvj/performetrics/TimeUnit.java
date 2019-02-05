@@ -13,9 +13,21 @@ public enum TimeUnit
     NANOSECOND
     {
         @Override
-        public long convertedTime(long nanoseconds)
+        public long fromNanoseconds(long nanoseconds)
         {
             return nanoseconds;
+        }
+
+        @Override
+        public long fromMilliseconds(long milliseconds)
+        {
+            return milliseconds > 0 ? milliseconds * 1000000 : milliseconds;
+        }
+
+        @Override
+        public long fromSeconds(long seconds)
+        {
+            return seconds > 0 ? seconds * 1000000000 : seconds;
         }
     },
 
@@ -25,9 +37,21 @@ public enum TimeUnit
     MILLISECOND
     {
         @Override
-        public long convertedTime(long nanoseconds)
+        public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? (nanoseconds / 1000000) % 1000000 : -1;
+            return nanoseconds > 0 ? (nanoseconds / 1000000) % 1000000 : nanoseconds;
+        }
+
+        @Override
+        public long fromMilliseconds(long milliseconds)
+        {
+            return milliseconds;
+        }
+
+        @Override
+        public long fromSeconds(long seconds)
+        {
+            return seconds > 0 ? seconds * 1000 : seconds;
         }
     },
 
@@ -37,11 +61,27 @@ public enum TimeUnit
     SECOND
     {
         @Override
-        public long convertedTime(long nanoseconds)
+        public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? ((nanoseconds / 1000000) % 1000000) / 1000 : -1;
+            return nanoseconds > 0 ? ((nanoseconds / 1000000) % 1000000) / 1000 : nanoseconds;
+        }
+
+        @Override
+        public long fromMilliseconds(long milliseconds)
+        {
+            return milliseconds > 0 ? milliseconds / 1000 : milliseconds;
+        }
+
+        @Override
+        public long fromSeconds(long seconds)
+        {
+            return seconds;
         }
     };
 
-    public abstract long convertedTime(long nanoseconds);
+    public abstract long fromNanoseconds(long nanoseconds);
+
+    public abstract long fromMilliseconds(long milliseconds);
+
+    public abstract long fromSeconds(long seconds);
 }

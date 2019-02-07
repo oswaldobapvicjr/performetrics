@@ -2,8 +2,9 @@ package net.obvj.performetrics.callable;
 
 import java.util.concurrent.Callable;
 
-import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.SimpleMonitorableOperation;
+import net.obvj.performetrics.TimeUnit;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
@@ -19,7 +20,7 @@ public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorabl
 
     public WallClockTimeCallableOperation()
     {
-        super(Counter.Type.WALL_CLOCK_TIME);
+        super(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECOND);
     }
 
     public V start() throws Exception
@@ -27,14 +28,16 @@ public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorabl
         synchronized (lock)
         {
             getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getWallClockTimeNanos());
+            getCounter().setUnitsBefore(
+                    getCounter().getTimeUnit().fromMilliseconds(PerformetricsUtils.getWallClockTimeMillis()));
             try
             {
                 result = call();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getWallClockTimeNanos());
+                getCounter().setUnitsAfter(
+                        getCounter().getTimeUnit().fromMilliseconds(PerformetricsUtils.getWallClockTimeMillis()));
             }
         }
         return result;

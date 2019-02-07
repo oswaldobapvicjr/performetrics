@@ -12,6 +12,9 @@ public class Counter
         WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME;
     }
 
+    /**
+     * The default time unit to be stored (nanoseconds) if no specific time unit informed
+     */
     public static final TimeUnit DEFAULT_UNIT = TimeUnit.NANOSECOND;
 
     private final Type type;

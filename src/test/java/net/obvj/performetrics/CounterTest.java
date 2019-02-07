@@ -13,10 +13,6 @@ import net.obvj.performetrics.Counter.Type;
  */
 public class CounterTest
 {
-    private static final long ONE_SECOND = 1;
-    private static final long ONE_SECOND_IN_MILLIS = 1000;
-    private static final long ONE_SECOND_IN_NANOS = ONE_SECOND_IN_MILLIS * 1000000;
-
     @Test
     public void testDefaultTimeUnit()
     {
@@ -28,9 +24,30 @@ public class CounterTest
     public void testCounterElapsedTimeInSeconds()
     {
         Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.SECOND);
-        counter.setUnitsBefore(0);
-        counter.setUnitsAfter(ONE_SECOND);
-        assertEquals(ONE_SECOND, counter.getElapsedTime());
+        counter.setUnitsBefore(2);
+        counter.setUnitsAfter(3); // 1 second after
+        assertEquals(1, counter.getElapsedTime());
+        assertEquals(TimeUnit.SECOND, counter.getTimeUnit());
+    }
+
+    @Test
+    public void testCounterElapsedTimeInMilliseconds()
+    {
+        Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.MILLISECOND);
+        counter.setUnitsBefore(1000);
+        counter.setUnitsAfter(1500); // 500 milliseconds after
+        assertEquals(500, counter.getElapsedTime());
+        assertEquals(TimeUnit.MILLISECOND, counter.getTimeUnit());
+    }
+
+    @Test
+    public void testCounterElapsedTimeInNanoseconds()
+    {
+        Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.NANOSECOND);
+        counter.setUnitsBefore(1000000000);
+        counter.setUnitsAfter(6000000000l); // 5 seconds after
+        assertEquals(5, TimeUnit.SECOND.fromNanoseconds(counter.getElapsedTime()));
+        assertEquals(TimeUnit.NANOSECOND, counter.getTimeUnit());
     }
 
 }

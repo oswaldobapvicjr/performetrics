@@ -39,7 +39,7 @@ public enum TimeUnit
         @Override
         public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? (nanoseconds / 1000000) % 1000000 : nanoseconds;
+            return nanoseconds > 0 ? nanoseconds / 1000000 : nanoseconds;
         }
 
         @Override
@@ -63,7 +63,7 @@ public enum TimeUnit
         @Override
         public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? ((nanoseconds / 1000000) % 1000000) / 1000 : nanoseconds;
+            return nanoseconds > 0 ? (nanoseconds / 1000000) / 1000 : nanoseconds;
         }
 
         @Override

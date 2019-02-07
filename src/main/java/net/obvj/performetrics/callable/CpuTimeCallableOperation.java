@@ -2,7 +2,7 @@ package net.obvj.performetrics.callable;
 
 import java.util.concurrent.Callable;
 
-import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
@@ -16,7 +16,7 @@ public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOpera
 
     public CpuTimeCallableOperation()
     {
-        super(Counter.Type.CPU_TIME);
+        super(Type.CPU_TIME);
     }
 
     public V start() throws Exception
@@ -24,14 +24,16 @@ public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOpera
         synchronized (lock)
         {
             getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
+            getCounter()
+                    .setUnitsBefore(getCounter().getTimeUnit().fromNanoseconds(PerformetricsUtils.getCpuTimeNanos()));
             try
             {
                 return call();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
+                getCounter().setUnitsAfter(
+                        getCounter().getTimeUnit().fromNanoseconds(PerformetricsUtils.getCpuTimeNanos()));
             }
         }
     }

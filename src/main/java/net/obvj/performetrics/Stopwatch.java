@@ -1,5 +1,6 @@
 package net.obvj.performetrics;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -7,15 +8,38 @@ import java.util.Map;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
+/**
+ * A convenient object for timings that support multiple counter types.
+ *
+ * @author oswaldo.bapvic.jr
+ */
 public class Stopwatch
 {
     private Map<Type, Counter> counters;
 
+    /**
+     * Creates a new stopwatch
+     */
     public Stopwatch()
     {
         reset();
     }
 
+    /**
+     * Provides a started stopwatch for convenience.
+     *
+     * @return a new, started stopwatch
+     */
+    public static Stopwatch createStarted()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+        return stopwatch;
+    }
+
+    /**
+     * Resets all counters for this stopwatch.
+     */
     public void reset()
     {
         counters = new EnumMap<>(Type.class);
@@ -25,6 +49,9 @@ public class Stopwatch
         counters.put(Type.SYSTEM_TIME, new Counter(Type.SYSTEM_TIME, TimeUnit.NANOSECOND));
     }
 
+    /**
+     * Starts the stopwatch
+     */
     public void start()
     {
         counters.get(Type.WALL_CLOCK_TIME).setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
@@ -33,6 +60,9 @@ public class Stopwatch
         counters.get(Type.SYSTEM_TIME).setUnitsBefore(PerformetricsUtils.getSystemTimeNanos());
     }
 
+    /**
+     * Stops the stopwatch
+     */
     public void stop()
     {
         counters.get(Type.WALL_CLOCK_TIME).setUnitsAfter(PerformetricsUtils.getWallClockTimeMillis());
@@ -41,17 +71,29 @@ public class Stopwatch
         counters.get(Type.SYSTEM_TIME).setUnitsAfter(PerformetricsUtils.getSystemTimeNanos());
     }
 
+    /**
+     * @return all counters in this stopwatch
+     */
     public Collection<Counter> getAllCounters()
     {
         return counters.values();
     }
 
+    /**
+     * @param type the counter type to be fetched
+     * @return the counter matching the given type inside this stopwatch
+     */
     public Counter getCounter(Type type)
     {
         return counters.get(type);
     }
 
-    public void printStatistics()
+    /**
+     * Prints the statistics for this counter in the specified print stream.
+     *
+     * @param printStream the print stream to which statistics will be sent
+     */
+    public void printStatistics(PrintStream printStream)
     {
         String rowFormat = "\n%-15s | %20s | %-11s";
         StringBuilder builder = new StringBuilder();
@@ -64,7 +106,7 @@ public class Stopwatch
             builder.append(
                     String.format(rowFormat, counter.getType(), counter.getElapsedTime(), counter.getTimeUnit()));
         }
-        System.out.println(builder.toString());
+        printStream.print(builder.toString());
     }
 
     @Override

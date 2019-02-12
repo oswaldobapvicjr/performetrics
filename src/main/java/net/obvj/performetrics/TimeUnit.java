@@ -21,13 +21,13 @@ public enum TimeUnit
         @Override
         public long fromMilliseconds(long milliseconds)
         {
-            return milliseconds > 0 ? milliseconds * 1000000 : milliseconds;
+            return milliseconds > 0 ? milliseconds * NANO_TO_MILLIS : milliseconds;
         }
 
         @Override
         public long fromSeconds(long seconds)
         {
-            return seconds > 0 ? seconds * 1000000000 : seconds;
+            return seconds > 0 ? seconds * NANO_TO_SECOND : seconds;
         }
     },
 
@@ -39,7 +39,7 @@ public enum TimeUnit
         @Override
         public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? nanoseconds / 1000000 : nanoseconds;
+            return nanoseconds > 0 ? nanoseconds / NANO_TO_MILLIS : nanoseconds;
         }
 
         @Override
@@ -51,7 +51,7 @@ public enum TimeUnit
         @Override
         public long fromSeconds(long seconds)
         {
-            return seconds > 0 ? seconds * 1000 : seconds;
+            return seconds > 0 ? seconds * MILLIS_TO_SECOND : seconds;
         }
     },
 
@@ -63,13 +63,13 @@ public enum TimeUnit
         @Override
         public long fromNanoseconds(long nanoseconds)
         {
-            return nanoseconds > 0 ? (nanoseconds / 1000000) / 1000 : nanoseconds;
+            return nanoseconds > 0 ? nanoseconds / NANO_TO_SECOND : nanoseconds;
         }
 
         @Override
         public long fromMilliseconds(long milliseconds)
         {
-            return milliseconds > 0 ? milliseconds / 1000 : milliseconds;
+            return milliseconds > 0 ? milliseconds / MILLIS_TO_SECOND : milliseconds;
         }
 
         @Override
@@ -78,6 +78,10 @@ public enum TimeUnit
             return seconds;
         }
     };
+
+    private static final long MILLIS_TO_SECOND = 1000L;
+    private static final long NANO_TO_MILLIS = 1000000L;
+    private static final long NANO_TO_SECOND = 1000000000L;
 
     public abstract long fromNanoseconds(long nanoseconds);
 

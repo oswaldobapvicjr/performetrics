@@ -1,5 +1,7 @@
 package net.obvj.performetrics;
 
+import java.util.concurrent.TimeUnit;
+
 import net.obvj.performetrics.Counter.Type;
 
 /**

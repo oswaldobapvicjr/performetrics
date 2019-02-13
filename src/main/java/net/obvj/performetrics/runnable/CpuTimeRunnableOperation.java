@@ -1,5 +1,7 @@
 package net.obvj.performetrics.runnable;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
@@ -22,8 +24,8 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
         synchronized (lock)
         {
             getCounter().setUnitsAfter(0);
-            getCounter()
-                    .setUnitsBefore(getCounter().getTimeUnit().fromNanoseconds(PerformetricsUtils.getCpuTimeNanos()));
+            getCounter().setUnitsBefore(
+                    getCounter().getTimeUnit().convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS));
             try
             {
                 run();
@@ -31,7 +33,7 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
             finally
             {
                 getCounter().setUnitsAfter(
-                        getCounter().getTimeUnit().fromNanoseconds(PerformetricsUtils.getCpuTimeNanos()));
+                        getCounter().getTimeUnit().convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS));
             }
         }
     }

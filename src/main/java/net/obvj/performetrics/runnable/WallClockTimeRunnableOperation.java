@@ -1,8 +1,11 @@
 package net.obvj.performetrics.runnable;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import java.util.concurrent.TimeUnit;
+
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.SimpleMonitorableOperation;
-import net.obvj.performetrics.TimeUnit;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
@@ -15,7 +18,7 @@ public abstract class WallClockTimeRunnableOperation extends SimpleMonitorableOp
 
     public WallClockTimeRunnableOperation()
     {
-        super(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECOND);
+        super(Type.WALL_CLOCK_TIME, MILLISECONDS);
     }
 
     public void start()
@@ -24,15 +27,15 @@ public abstract class WallClockTimeRunnableOperation extends SimpleMonitorableOp
         {
             getCounter().setUnitsAfter(0);
             getCounter().setUnitsBefore(
-                    getCounter().getTimeUnit().fromMilliseconds(PerformetricsUtils.getWallClockTimeMillis()));
+                    getCounter().getTimeUnit().convert(PerformetricsUtils.getWallClockTimeMillis(), MILLISECONDS));
             try
             {
                 run();
             }
             finally
             {
-                getCounter().setUnitsAfter(
-                        getCounter().getTimeUnit().fromMilliseconds(PerformetricsUtils.getWallClockTimeMillis()));
+                getCounter().setUnitsAfter(getCounter().getTimeUnit()
+                        .convert(PerformetricsUtils.getWallClockTimeMillis(), TimeUnit.MILLISECONDS));
             }
         }
     }

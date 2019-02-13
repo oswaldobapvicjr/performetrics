@@ -1,5 +1,7 @@
 package net.obvj.performetrics;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * An object containing units before and units after for a particular unit type
  *
@@ -15,7 +17,7 @@ public class Counter
     /**
      * The default time unit to be stored (nanoseconds) if no specific time unit informed
      */
-    public static final TimeUnit DEFAULT_UNIT = TimeUnit.NANOSECOND;
+    public static final TimeUnit DEFAULT_UNIT = TimeUnit.NANOSECONDS;
 
     private final Type type;
     private final TimeUnit timeUnit;

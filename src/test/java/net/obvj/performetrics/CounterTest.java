@@ -1,6 +1,7 @@
 package net.obvj.performetrics;
 
-import static org.junit.Assert.*;
+import static java.util.concurrent.TimeUnit.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -17,37 +18,37 @@ public class CounterTest
     public void testDefaultTimeUnit()
     {
         Counter counter = new Counter(Type.SYSTEM_TIME);
-        assertEquals(TimeUnit.NANOSECOND, counter.getTimeUnit());
+        assertEquals(NANOSECONDS, counter.getTimeUnit());
     }
 
     @Test
     public void testCounterElapsedTimeInSeconds()
     {
-        Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.SECOND);
+        Counter counter = new Counter(Type.SYSTEM_TIME, SECONDS);
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3); // 1 second after
         assertEquals(1, counter.getElapsedTime());
-        assertEquals(TimeUnit.SECOND, counter.getTimeUnit());
+        assertEquals(SECONDS, counter.getTimeUnit());
     }
 
     @Test
     public void testCounterElapsedTimeInMilliseconds()
     {
-        Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.MILLISECOND);
+        Counter counter = new Counter(Type.SYSTEM_TIME, MILLISECONDS);
         counter.setUnitsBefore(1000);
         counter.setUnitsAfter(1500); // 500 milliseconds after
         assertEquals(500, counter.getElapsedTime());
-        assertEquals(TimeUnit.MILLISECOND, counter.getTimeUnit());
+        assertEquals(MILLISECONDS, counter.getTimeUnit());
     }
 
     @Test
     public void testCounterElapsedTimeInNanoseconds()
     {
-        Counter counter = new Counter(Type.SYSTEM_TIME, TimeUnit.NANOSECOND);
+        Counter counter = new Counter(Type.SYSTEM_TIME, NANOSECONDS);
         counter.setUnitsBefore(1000000000);
         counter.setUnitsAfter(6000000000l); // 5 seconds after
-        assertEquals(5, TimeUnit.SECOND.fromNanoseconds(counter.getElapsedTime()));
-        assertEquals(TimeUnit.NANOSECOND, counter.getTimeUnit());
+        assertEquals(5, counter.getTimeUnit().toSeconds(counter.getElapsedTime()));
+        assertEquals(NANOSECONDS, counter.getTimeUnit());
     }
 
 }

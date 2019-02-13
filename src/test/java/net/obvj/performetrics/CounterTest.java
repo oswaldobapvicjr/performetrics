@@ -27,7 +27,7 @@ public class CounterTest
         Counter counter = new Counter(Type.SYSTEM_TIME, SECONDS);
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3); // 1 second after
-        assertEquals(1, counter.getElapsedTime());
+        assertEquals(1, counter.elapsedTime());
         assertEquals(SECONDS, counter.getTimeUnit());
     }
 
@@ -37,7 +37,7 @@ public class CounterTest
         Counter counter = new Counter(Type.SYSTEM_TIME, MILLISECONDS);
         counter.setUnitsBefore(1000);
         counter.setUnitsAfter(1500); // 500 milliseconds after
-        assertEquals(500, counter.getElapsedTime());
+        assertEquals(500, counter.elapsedTime());
         assertEquals(MILLISECONDS, counter.getTimeUnit());
     }
 
@@ -47,7 +47,7 @@ public class CounterTest
         Counter counter = new Counter(Type.SYSTEM_TIME, NANOSECONDS);
         counter.setUnitsBefore(1000000000);
         counter.setUnitsAfter(6000000000l); // 5 seconds after
-        assertEquals(5, counter.getTimeUnit().toSeconds(counter.getElapsedTime()));
+        assertEquals(5, counter.getTimeUnit().toSeconds(counter.elapsedTime()));
         assertEquals(NANOSECONDS, counter.getTimeUnit());
     }
 

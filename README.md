@@ -20,4 +20,58 @@ This project provides useful methods for monitoring the performance of Java code
 
 - **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running current thread's own code)
 
-- **System time:** the time spent running OS code on behalf of your application (such as for I/O)
+- **System time:** the time spent by the OS kernel to execute all the basic/system level operations on behalf of your application (such as context switching, resource allocation, etc.)
+
+---
+
+## How to use it
+
+### Example 1: Using the `Stopwatch` class
+
+Performetrics' `Stopwatch` is a convenient object for timings with support to all of the abovementioned counters.
+
+1. Add `performetrics` to your class path
+
+2. At any point of your code, create a new `Stopwatch` object and start it:
+
+    ```java
+    Stopwatch sw = new Stopwatch();
+    sw.start();
+    ```
+
+>>> **Note:** You may also create a started stopwatch with this convenient factory method: `Stopwacth.createStarted();` 
+
+3. Execute the part of the code that you want to profile and then stop the watch: 
+
+    ```java
+    sw.stop();
+    ```
+
+4. Get the elapsed time for a particular counter (e.g., CPU time):
+
+    ```java
+    Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
+    System.out.println("CPU time: "
+            + cpuTime.elapsedTime() + " " + cpuTime.getTimeUnit());
+    ```
+
+>>> **Note:** Because Performetrics' counters use Java's `TimeUnit`, you may convert all results to the time unit of your preference. For example, to convert the output to milliseconds, simply call `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
+
+5. Try different counters to evaluate their results.
+
+6. Print statistics to the console:
+
+    ```java
+    sw.printStatistics(System.out);
+    ```
+
+##### Sample output:
+
+    +-----------------+----------------------+--------------+
+    | Counter         |         Elapsed time | Time unit    |
+    +-----------------+----------------------+--------------+
+    | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
+    | CPU_TIME        |             78000500 | NANOSECONDS  |
+    | USER_TIME       |             62400400 | NANOSECONDS  |
+    | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
+    +-----------------+----------------------+--------------+

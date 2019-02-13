@@ -1,8 +1,6 @@
 package net.obvj.performetrics;
 
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -57,7 +55,7 @@ public class Stopwatch
      */
     public void start()
     {
-        counters.get(Type.WALL_CLOCK_TIME).setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
+        counters.get(Type.WALL_CLOCK_TIME).setUnitsBefore(PerformetricsUtils.getWallClockTimeNanos());
         counters.get(Type.CPU_TIME).setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
         counters.get(Type.USER_TIME).setUnitsBefore(PerformetricsUtils.getUserTimeNanos());
         counters.get(Type.SYSTEM_TIME).setUnitsBefore(PerformetricsUtils.getSystemTimeNanos());
@@ -107,10 +105,10 @@ public class Stopwatch
         builder.append(separator);
         for (Counter counter : counters.values())
         {
-            builder.append(
-                    String.format(rowFormat, counter.getType(), counter.getElapsedTime(), counter.getTimeUnit()));
+            builder.append(String.format(rowFormat, counter.getType(), counter.elapsedTime(), counter.getTimeUnit()));
         }
         builder.append(separator);
+        builder.append("\n");
         printStream.print(builder.toString());
     }
 
@@ -118,22 +116,6 @@ public class Stopwatch
     public String toString()
     {
         return String.format("Stopwatch [counters=%s]", counters);
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        Stopwatch sw = Stopwatch.createStarted();
-        Thread.sleep(60000);
-        long j = 2;
-        int i = 0;
-        while (i < 10000000)
-        {
-            j = j * j;
-            i++;
-        }
-        System.out.println(Files.list(Paths.get("/M/tomcat")).count());
-        sw.stop();
-        sw.printStatistics(System.out);
     }
 
 }

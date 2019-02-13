@@ -28,7 +28,7 @@ public class Counter
     /**
      * Builds this Counter object with default time unit of nanoseconds.
      * <p>
-     * This is equivalent to: {@code new Counter(type, TimeUnit.NANOSECOND}}
+     * This is equivalent to: {@code new Counter(type, TimeUnit.NANOSECONDS}}
      *
      * @param type the type to set
      */
@@ -48,11 +48,6 @@ public class Counter
     {
         this.type = type;
         this.timeUnit = timeUnit;
-    }
-
-    public long getElapsedTime()
-    {
-        return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
     }
 
     public long getUnitsBefore()
@@ -85,11 +80,16 @@ public class Counter
         return timeUnit;
     }
 
+    public long elapsedTime()
+    {
+        return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
+    }
+
     @Override
     public String toString()
     {
         return String.format("Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]", type, timeUnit,
-                getUnitsBefore(), getUnitsAfter());
+                unitsBefore, unitsAfter);
     }
 
 }

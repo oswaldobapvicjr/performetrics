@@ -65,8 +65,8 @@ public class PerformetricsUtils
     }
 
     /**
-     * Returns system time (the time spent running OS code on behalf of your application, such
-     * as for I/O) in nanoseconds, by calculating the difference between CPU time and user
+     * Returns system time (the time spent running OS kernel code on behalf of your
+     * application) in nanoseconds, by calculating the difference between CPU time and user
      * time for the current thread.
      *
      * @return the system time for the current thread if CPU time measurement is enabled; 0

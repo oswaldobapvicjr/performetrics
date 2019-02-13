@@ -9,9 +9,28 @@ import java.util.concurrent.TimeUnit;
  */
 public class Counter
 {
+    /**
+     * An enumeration of all types of measurement supported
+     */
     public enum Type
     {
-        WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME;
+        /**
+         * The elapsed time experienced by a user waiting for a task to complete
+         */
+        WALL_CLOCK_TIME,
+        /**
+         * The total time spent using a CPU for the current thread
+         */
+        CPU_TIME,
+        /**
+         * The total CPU time that the current thread has executed in user mode
+         */
+        USER_TIME,
+        /**
+         * The time spent by the kernel to execute system level operations on behalf of the
+         * application
+         */
+        SYSTEM_TIME;
     }
 
     /**
@@ -50,36 +69,57 @@ public class Counter
         this.timeUnit = timeUnit;
     }
 
+    /**
+     * @return the units before
+     */
     public long getUnitsBefore()
     {
         return unitsBefore;
     }
 
+    /**
+     * @param unitsBefore the units to be set
+     */
     public void setUnitsBefore(long unitsBefore)
     {
         this.unitsBefore = unitsBefore;
     }
 
+    /**
+     * @return the units after
+     */
     public long getUnitsAfter()
     {
         return unitsAfter;
     }
 
+    /**
+     * @param unitsAfter the units to be set
+     */
     public void setUnitsAfter(long unitsAfter)
     {
         this.unitsAfter = unitsAfter;
     }
 
+    /**
+     * @return the type of measurement
+     */
     public Type getType()
     {
         return type;
     }
 
+    /**
+     * @return the time unit
+     */
     public TimeUnit getTimeUnit()
     {
         return timeUnit;
     }
 
+    /**
+     * @return the difference between units before and units after
+     */
     public long elapsedTime()
     {
         return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;

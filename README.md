@@ -10,9 +10,7 @@ A simple performance data generator for Java applications
 
 Most Java developers use the functions `System.currentTimeMillis()` or `System.currentTimeNanos()` inside their code to measure the elapsed time to perform some key operations. This is not a problem if you want to benchmark an application running in a dedicated system. However, the result is strongly affected by other activities in the system, such as background processes and I/O (e.g. disk and network activities). 
 
-As from Java 1.5, it is possible to get additional metrics that may help you benchmark a task with some most accurate units, such as CPU time and user time.
-
-This project provides useful methods for monitoring the performance of Java code in the unit type of your choice:
+As from Java 1.5, it is possible to get additional metrics that may help you benchmark a task with some most accurate units:
 
 - **Wall clock time:** the elapsed time experienced by a user waiting for a task to complete (not necessarily a bad metric if you are interested in measuring a real user experience)
 
@@ -22,30 +20,34 @@ This project provides useful methods for monitoring the performance of Java code
 
 - **System time:** the time spent by the OS kernel to execute all the basic/system level operations on behalf of your application (such as context switching, resource allocation, etc.)
 
+**Performetrics** provides convenient objects for time evaluations with support to all of the abovementioned counters.
+
 ---
 
 ## How to use it
 
 ### Example 1: Using the `Stopwatch` class
 
-The `Stopwatch` is a convenient object for timings with support to all of the abovementioned counters.
-
-1. Add `performetrics` to the class path and import the `Stopwatch` to you Java class:
+1. Add **Performetrics** to your project and the following import to your class:
 
     ```java
     import net.obvj.performetrics.Stopwatch;
     ```
 
-2. At any point of your code, create a new `Stopwatch` object and start it:
+2. Create a stopwatch and start it:
 
     ```java
     Stopwatch sw = new Stopwatch();
     sw.start();
     ```
 
-    > **Note:** Alternatively, the factory method `Stopwatch.createStarted()` can be used to create a started stopwatch for convenience.
+    > **Hint:** Alternatively, the factory method `Stopwatch.createStarted()` may create a started stopwatch for convenience.
 
-3. Execute the part of the code you want to profile and then stop the watch using the `stop()` method. 
+3. Execute the the code to be profiled and then stop the watch: 
+
+    ```java
+    sw.stop();
+    ```
 
 4. Get the elapsed time for a particular counter (e.g. CPU time):
 
@@ -55,11 +57,15 @@ The `Stopwatch` is a convenient object for timings with support to all of the ab
     TimeUnit timeUnit = cpuTime.getTimeUnit();
     ```
 
-    > Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, you may convert all results to the time unit of your preference without effort. For example, to convert the output to milliseconds, just call: `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
+    > **Note:** Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, all results can be converted to different time units without effort. To convert the output to milliseconds, for example, just call: `timeUnit.toMillis(cpuTime.elapsedTime())`.
 
 5. Try different counters to evaluate their results.
 
-6. Print statistics to the console **(optional)**:
+### Example 2: Printing statistics at the console using the `Stopwatch`
+
+1. Execute steps from 1 to 3 at Example 1.
+
+2. Print statistics at the console with the following statement:
 
     ```java
     sw.printStatistics(System.out);

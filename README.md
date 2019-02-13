@@ -51,8 +51,8 @@ The `Stopwatch` is a convenient object for timings with support to all of the ab
 
     ```java
     Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
-    System.out.println("CPU time: " + cpuTime.elapsedTime());
-    System.out.println("Time unit: " + cpuTime.getTimeUnit());
+    long elapsedTime = cpuTime.elapsedTime();
+    TimeUnit timeUnit = cpuTime.getTimeUnit();
     ```
 
     > Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, you may convert all results to the time unit of your preference without effort. For example, to convert the output to milliseconds, just call: `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
@@ -68,12 +68,12 @@ The `Stopwatch` is a convenient object for timings with support to all of the ab
     > **Sample output:**
     >
     > ````
-    > +-----------------+----------------------+--------------+
-    > | Counter         |         Elapsed time | Time unit    |
-    > +-----------------+----------------------+--------------+
-    > | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
-    > | CPU_TIME        |             78000500 | NANOSECONDS  |
-    > | USER_TIME       |             62400400 | NANOSECONDS  |
-    > | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
-    > +-----------------+----------------------+--------------+
+    >  +-----------------+----------------------+--------------+
+    >  | Counter         |         Elapsed time | Time unit    |
+    >  +-----------------+----------------------+--------------+
+    >  | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
+    >  | CPU_TIME        |             78000500 | NANOSECONDS  |
+    >  | USER_TIME       |             62400400 | NANOSECONDS  |
+    >  | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
+    >  +-----------------+----------------------+--------------+
     > ````

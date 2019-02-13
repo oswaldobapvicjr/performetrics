@@ -43,39 +43,37 @@ The `Stopwatch` is a convenient object for timings with support to all of the ab
     sw.start();
     ```
 
-> **Note:** You may also create a started stopwatch with this convenient factory method: `Stopwatch.createStarted();` 
+    > **Note:** Alternatively, the factory method `Stopwatch.createStarted()` can be used to create a started stopwatch for convenience.
 
-3. Execute the part of the code you want to profile and then stop the watch: 
+3. Execute the part of the code you want to profile and then stop the watch using the `stop()` method. 
 
-    ```java
-    sw.stop();
-    ```
-
-4. Get the elapsed time for a particular counter (e.g., CPU time):
+4. Get the elapsed time for a particular counter (e.g. CPU time):
 
     ```java
     Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
-    System.out.println("CPU time: "
-            + cpuTime.elapsedTime() + " " + cpuTime.getTimeUnit());
+    System.out.println("CPU time: " + cpuTime.elapsedTime());
+    System.out.println("Time unit: " + cpuTime.getTimeUnit());
     ```
 
-> Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, you may convert all results to the time unit of your preference without effort. For example, to convert the output to milliseconds, just call: `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
+    > Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, you may convert all results to the time unit of your preference without effort. For example, to convert the output to milliseconds, just call: `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
 
-5. Try different counters to evaluate their results
+5. Try different counters to evaluate their results.
 
-6. **[Optional]** Print statistics to the console:
+6. Print statistics to the console **(optional)**:
 
     ```java
     sw.printStatistics(System.out);
     ```
 
-##### Sample output:
-
-     +-----------------+----------------------+--------------+
-     | Counter         |         Elapsed time | Time unit    |
-     +-----------------+----------------------+--------------+
-     | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
-     | CPU_TIME        |             78000500 | NANOSECONDS  |
-     | USER_TIME       |             62400400 | NANOSECONDS  |
-     | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
-     +-----------------+----------------------+--------------+
+    > **Sample output:**
+    >
+    > ````
+    > +-----------------+----------------------+--------------+
+    > | Counter         |         Elapsed time | Time unit    |
+    > +-----------------+----------------------+--------------+
+    > | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
+    > | CPU_TIME        |             78000500 | NANOSECONDS  |
+    > | USER_TIME       |             62400400 | NANOSECONDS  |
+    > | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
+    > +-----------------+----------------------+--------------+
+    > ````

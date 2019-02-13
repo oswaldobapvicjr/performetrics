@@ -11,6 +11,8 @@ import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * A convenient object for timings that support multiple counter types.
+ * <p>
+ * This class is not thread-safe.
  *
  * @author oswaldo.bapvic.jr
  */

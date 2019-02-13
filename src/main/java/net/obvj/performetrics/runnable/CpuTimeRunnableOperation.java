@@ -7,6 +7,10 @@ import net.obvj.performetrics.SimpleMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
+ * A {@link Runnable} that maintains a CPU time counter for elapsed time evaluation.
+ * <p>
+ * The CPU time is stored in nanoseconds.
+ *
  * @author oswaldo.bapvic.jr
  */
 public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
@@ -16,7 +20,7 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
 
     public CpuTimeRunnableOperation()
     {
-        super(Type.CPU_TIME);
+        super(Type.CPU_TIME, NANOSECONDS);
     }
 
     public void start()
@@ -24,16 +28,14 @@ public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperatio
         synchronized (lock)
         {
             getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(
-                    getCounter().getTimeUnit().convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS));
+            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
             try
             {
                 run();
             }
             finally
             {
-                getCounter().setUnitsAfter(
-                        getCounter().getTimeUnit().convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS));
+                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
             }
         }
     }

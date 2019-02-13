@@ -28,9 +28,13 @@ This project provides useful methods for monitoring the performance of Java code
 
 ### Example 1: Using the `Stopwatch` class
 
-Performetrics' `Stopwatch` is a convenient object for timings with support to all of the abovementioned counters.
+The `Stopwatch` is a convenient object for timings with support to all of the abovementioned counters.
 
-1. Add `performetrics` to your class path
+1. Add `performetrics` to the class path and import the `Stopwatch` to you Java class:
+
+    ```java
+    import net.obvj.performetrics.Stopwatch;
+    ```
 
 2. At any point of your code, create a new `Stopwatch` object and start it:
 
@@ -39,9 +43,9 @@ Performetrics' `Stopwatch` is a convenient object for timings with support to al
     sw.start();
     ```
 
->>> **Note:** You may also create a started stopwatch with this convenient factory method: `Stopwacth.createStarted();` 
+> **Note:** You may also create a started stopwatch with this convenient factory method: `Stopwatch.createStarted();` 
 
-3. Execute the part of the code that you want to profile and then stop the watch: 
+3. Execute the part of the code you want to profile and then stop the watch: 
 
     ```java
     sw.stop();
@@ -55,11 +59,11 @@ Performetrics' `Stopwatch` is a convenient object for timings with support to al
             + cpuTime.elapsedTime() + " " + cpuTime.getTimeUnit());
     ```
 
->>> **Note:** Because Performetrics' counters use Java's `TimeUnit`, you may convert all results to the time unit of your preference. For example, to convert the output to milliseconds, simply call `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
+> Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, you may convert all results to the time unit of your preference without effort. For example, to convert the output to milliseconds, just call: `cpuTime.getTimeUnit().toMillis(cpuTime.elapsedTime())`.
 
-5. Try different counters to evaluate their results.
+5. Try different counters to evaluate their results
 
-6. Print statistics to the console:
+6. **[Optional]** Print statistics to the console:
 
     ```java
     sw.printStatistics(System.out);
@@ -67,11 +71,11 @@ Performetrics' `Stopwatch` is a convenient object for timings with support to al
 
 ##### Sample output:
 
-    +-----------------+----------------------+--------------+
-    | Counter         |         Elapsed time | Time unit    |
-    +-----------------+----------------------+--------------+
-    | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
-    | CPU_TIME        |             78000500 | NANOSECONDS  |
-    | USER_TIME       |             62400400 | NANOSECONDS  |
-    | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
-    +-----------------+----------------------+--------------+
+     +-----------------+----------------------+--------------+
+     | Counter         |         Elapsed time | Time unit    |
+     +-----------------+----------------------+--------------+
+     | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
+     | CPU_TIME        |             78000500 | NANOSECONDS  |
+     | USER_TIME       |             62400400 | NANOSECONDS  |
+     | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
+     +-----------------+----------------------+--------------+

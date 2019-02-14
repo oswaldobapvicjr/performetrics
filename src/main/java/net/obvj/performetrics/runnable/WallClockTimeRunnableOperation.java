@@ -13,29 +13,31 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-public abstract class WallClockTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
+public class WallClockTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
 {
-
+    private Runnable targetRunnable;
     private Object lock = new Object();
 
-    public WallClockTimeRunnableOperation()
+    public WallClockTimeRunnableOperation(Runnable targetRunnable)
     {
         super(Type.WALL_CLOCK_TIME, MILLISECONDS);
+        this.targetRunnable = targetRunnable;
     }
 
-    public void start()
+    @Override
+    public void run()
     {
         synchronized (lock)
         {
-            getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
+            counter.setUnitsAfter(0);
+            counter.setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
             try
             {
-                run();
+                targetRunnable.run();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getWallClockTimeMillis());
+                counter.setUnitsAfter(PerformetricsUtils.getWallClockTimeMillis());
             }
         }
     }

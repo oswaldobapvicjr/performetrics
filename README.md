@@ -61,11 +61,11 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 5. Try different counters to evaluate their results.
 
-### Example 2: Printing statistics at the console using the `Stopwatch`
+### Example 2: Printing statistics from the Stopwatch
 
 1. Execute steps from 1 to 3 at Example 1.
 
-2. Print statistics at the console with the following statement:
+2. Print statistics in to the console with the following statement:
 
     ```java
     sw.printStatistics(System.out);
@@ -83,3 +83,28 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
     >  | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
     >  +-----------------+----------------------+--------------+
     > ````
+
+### Example 3: Using one of the `Runnable` or `Callable` operations
+
+Check out some convenient classes inside the packages `net.obvj.performetrics.callable` and `net.obvj.performetrics.runnable`. In this example, we are using the `CpuTimeRunnableOperation` to measure the CPU time of a given Runnable, in nanoseconds:
+
+1. Create a `CpuTimeRunnableOperation` with the Runnable to be monitored attached:
+
+    ```java
+    Runnable myRunnable; //target runnable initialization omitted
+    CpuTimeRunnableOperation timedRunnable = new CpuTimeRunnableOperation(myRunnable);
+    ```
+
+2. Run it:
+
+    ```java
+    timedRunnable.run();
+    ```
+
+3. Get the elapsed time:
+
+    ```java
+    Counter cpuTime = timedRunnable.getCounter();
+    long elapsedTime = cpuTime.elapsedTime();
+    TimeUnit timeUnit = cpuTime.getTimeUnit();
+    ```

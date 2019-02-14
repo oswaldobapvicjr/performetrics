@@ -13,29 +13,31 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-public abstract class CpuTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
+public class CpuTimeRunnableOperation extends SimpleMonitorableOperation implements Runnable
 {
-
+    private Runnable targetRunnable;
     private Object lock = new Object();
 
-    public CpuTimeRunnableOperation()
+    public CpuTimeRunnableOperation(Runnable targetRunnable)
     {
         super(Type.CPU_TIME, NANOSECONDS);
+        this.targetRunnable = targetRunnable;
     }
 
-    public void start()
+    @Override
+    public void run()
     {
         synchronized (lock)
         {
-            getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
+            counter.setUnitsAfter(0);
+            counter.setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
             try
             {
-                run();
+                targetRunnable.run();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
+                counter.setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
             }
         }
     }

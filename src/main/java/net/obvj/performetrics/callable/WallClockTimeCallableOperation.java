@@ -16,39 +16,33 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  * @param <V> the result type of method <tt>call</tt>
  * @author oswaldo.bapvic.jr
  */
-public abstract class WallClockTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
+public class WallClockTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
 {
-
-    private V result = null;
-
+    private Callable<V> targetCallable;
     private Object lock = new Object();
 
-    public WallClockTimeCallableOperation()
+    public WallClockTimeCallableOperation(Callable<V> targetCallable)
     {
         super(Type.WALL_CLOCK_TIME, MILLISECONDS);
+        this.targetCallable = targetCallable;
     }
 
-    public V start() throws Exception
+    @Override
+    public V call() throws Exception
     {
         synchronized (lock)
         {
-            getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
+            counter.setUnitsAfter(0);
+            counter.setUnitsBefore(PerformetricsUtils.getWallClockTimeMillis());
             try
             {
-                result = call();
+                return targetCallable.call();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getWallClockTimeMillis());
+                counter.setUnitsAfter(PerformetricsUtils.getWallClockTimeMillis());
             }
         }
-        return result;
-    }
-
-    public V get()
-    {
-        return result;
     }
 
 }

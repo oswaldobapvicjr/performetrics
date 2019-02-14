@@ -16,29 +16,31 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  * @param <V> the result type of method <tt>call</tt>
  * @author oswaldo.bapvic.jr
  */
-public abstract class CpuTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
+public class CpuTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
 {
-
+    private Callable<V> targetCallable;
     private Object lock = new Object();
 
-    public CpuTimeCallableOperation()
+    public CpuTimeCallableOperation(Callable<V> targetCallable)
     {
         super(Type.CPU_TIME, NANOSECONDS);
+        this.targetCallable = targetCallable;
     }
 
-    public V start() throws Exception
+    @Override
+    public V call() throws Exception
     {
         synchronized (lock)
         {
-            getCounter().setUnitsAfter(0);
-            getCounter().setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
+            counter.setUnitsAfter(0);
+            counter.setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
             try
             {
-                return call();
+                return targetCallable.call();
             }
             finally
             {
-                getCounter().setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
+                counter.setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
             }
         }
     }

@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Counter
 {
+    protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
+
     /**
      * An enumeration of all types of measurement supported
      */
@@ -128,8 +130,7 @@ public class Counter
     @Override
     public String toString()
     {
-        return String.format("Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]", type, timeUnit,
-                unitsBefore, unitsAfter);
+        return String.format(STRING_FORMAT, type, timeUnit, unitsBefore, unitsAfter);
     }
 
 }

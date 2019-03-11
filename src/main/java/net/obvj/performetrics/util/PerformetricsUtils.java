@@ -29,10 +29,10 @@ public class PerformetricsUtils
 
     /**
      * Returns the current value of the current Java Virtual Machine's high-resolution time
-     * source in nanoseconds. time in nanoseconds.
+     * source in nanoseconds.
      *
      * @return the difference, measured in nanoseconds between current time and some arbitrary
-     *         origin time for the current JVM, that can be used for measuring elapsed times.
+     * origin time for the current JVM, that can be used for measuring elapsed times.
      */
     public static long getWallClockTimeNanos()
     {

@@ -114,10 +114,4 @@ public class Stopwatch
         printStream.print(builder.toString());
     }
 
-    @Override
-    public String toString()
-    {
-        return String.format("Stopwatch [counters=%s]", counters);
-    }
-
 }

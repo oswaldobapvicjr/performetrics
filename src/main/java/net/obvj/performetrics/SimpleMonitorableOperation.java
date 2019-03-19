@@ -14,17 +14,6 @@ public abstract class SimpleMonitorableOperation
     protected final Counter counter;
 
     /**
-     * Builds this operation with a new counter of the specified type and default time unit
-     * set by {@code Counter.DEFAULT_UNIT}.
-     *
-     * @param type the counter type to be created
-     */
-    public SimpleMonitorableOperation(Type type)
-    {
-        this.counter = new Counter(type);
-    }
-
-    /**
      * Builds this operation with a new counter of the specified type and time unit.
      *
      * @param type the counter type to created

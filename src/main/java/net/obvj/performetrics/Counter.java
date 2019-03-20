@@ -1,6 +1,9 @@
 package net.obvj.performetrics;
 
+import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.TimeUnit;
+
+import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * An object containing units before and units after for a particular unit type
@@ -19,26 +22,65 @@ public class Counter
         /**
          * The elapsed time experienced by a user waiting for a task to complete
          */
-        WALL_CLOCK_TIME,
+        WALL_CLOCK_TIME
+        {
+            @Override
+            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            {
+                return targetTimeUnit.convert(PerformetricsUtils.getWallClockTimeNanos(), NANOSECONDS);
+            }
+        },
+
         /**
          * The total time spent using a CPU for the current thread
          */
-        CPU_TIME,
+        CPU_TIME
+        {
+            @Override
+            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            {
+                return targetTimeUnit.convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS);
+            }
+        },
+
         /**
          * The total CPU time that the current thread has executed in user mode
          */
-        USER_TIME,
+        USER_TIME
+        {
+            @Override
+            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            {
+                return targetTimeUnit.convert(PerformetricsUtils.getUserTimeNanos(), NANOSECONDS);
+            }
+        },
+
         /**
          * The time spent by the kernel to execute system level operations on behalf of the
          * application
          */
-        SYSTEM_TIME;
+        SYSTEM_TIME
+        {
+            @Override
+            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            {
+                return targetTimeUnit.convert(PerformetricsUtils.getSystemTimeNanos(), NANOSECONDS);
+            }
+        };
+        
+        /**
+         * Executes default data fetch strategy for the specific type.
+         * 
+         * @param targetTimeUnit the time unit in which the data will be returned
+         * @return the default data strategy for this type, in the specified time unit
+         */
+        public abstract long defaultDataFetchStrategy(TimeUnit targetTimeUnit);
     }
 
     /**
      * The default time unit to be stored (nanoseconds) if no specific time unit informed
      */
-    public static final TimeUnit DEFAULT_UNIT = TimeUnit.NANOSECONDS;
+    public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
 
     private final Type type;
     private final TimeUnit timeUnit;

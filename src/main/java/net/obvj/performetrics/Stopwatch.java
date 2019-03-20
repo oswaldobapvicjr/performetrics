@@ -4,10 +4,9 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
  * A convenient object for timings that support multiple counter types.
@@ -41,15 +40,15 @@ public class Stopwatch
     }
 
     /**
-     * Resets all counters for this stopwatch.
+     * Resets all counters for this stopwatch
      */
     public void reset()
     {
         counters = new EnumMap<>(Type.class);
-        counters.put(Type.WALL_CLOCK_TIME, new Counter(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS));
-        counters.put(Type.CPU_TIME, new Counter(Type.CPU_TIME, TimeUnit.NANOSECONDS));
-        counters.put(Type.USER_TIME, new Counter(Type.USER_TIME, TimeUnit.NANOSECONDS));
-        counters.put(Type.SYSTEM_TIME, new Counter(Type.SYSTEM_TIME, TimeUnit.NANOSECONDS));
+        for (Type type : Type.values())
+        {
+        	counters.put(type, new Counter(type));
+        }
     }
 
     /**
@@ -57,10 +56,10 @@ public class Stopwatch
      */
     public void start()
     {
-        counters.get(Type.WALL_CLOCK_TIME).setUnitsBefore(PerformetricsUtils.getWallClockTimeNanos());
-        counters.get(Type.CPU_TIME).setUnitsBefore(PerformetricsUtils.getCpuTimeNanos());
-        counters.get(Type.USER_TIME).setUnitsBefore(PerformetricsUtils.getUserTimeNanos());
-        counters.get(Type.SYSTEM_TIME).setUnitsBefore(PerformetricsUtils.getSystemTimeNanos());
+        for (Counter counter : counters.values())
+        {
+            counter.setUnitsBefore(counter.getType().defaultDataFetchStrategy(counter.getTimeUnit()));
+        }
     }
 
     /**
@@ -68,10 +67,10 @@ public class Stopwatch
      */
     public void stop()
     {
-        counters.get(Type.WALL_CLOCK_TIME).setUnitsAfter(PerformetricsUtils.getWallClockTimeNanos());
-        counters.get(Type.CPU_TIME).setUnitsAfter(PerformetricsUtils.getCpuTimeNanos());
-        counters.get(Type.USER_TIME).setUnitsAfter(PerformetricsUtils.getUserTimeNanos());
-        counters.get(Type.SYSTEM_TIME).setUnitsAfter(PerformetricsUtils.getSystemTimeNanos());
+        for (Counter counter : counters.values())
+        {
+            counter.setUnitsAfter(counter.getType().defaultDataFetchStrategy(counter.getTimeUnit()));
+        }
     }
 
     /**
@@ -98,20 +97,7 @@ public class Stopwatch
      */
     public void printStatistics(PrintStream printStream)
     {
-        String rowFormat = "\n| %-15s | %20s | %-12s |";
-        StringBuilder builder = new StringBuilder();
-        String header = String.format(rowFormat, "Counter", "Elapsed time", "Time unit");
-        String separator = String.format(rowFormat, "", "", "").replace(" ", "-").replace("|", "+");
-        builder.append(separator);
-        builder.append(header);
-        builder.append(separator);
-        for (Counter counter : counters.values())
-        {
-            builder.append(String.format(rowFormat, counter.getType(), counter.elapsedTime(), counter.getTimeUnit()));
-        }
-        builder.append(separator);
-        builder.append("\n");
-        printStream.print(builder.toString());
+        PrintUtils.printStopwatch(this, printStream);
     }
 
 }

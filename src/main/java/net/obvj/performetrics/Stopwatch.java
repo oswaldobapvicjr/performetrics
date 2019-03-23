@@ -9,7 +9,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * A convenient object for timings that support multiple counter types.
+ * A convenient object for timings that support multiple counter types
  * <p>
  * This class is not thread-safe.
  *
@@ -17,24 +17,46 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  */
 public class Stopwatch
 {
+    private static final Type[] DEFAULT_TYPES = Type.values();
+
+    private final Type[] types;
     private Map<Type, Counter> counters;
 
     /**
-     * Creates a new stopwatch
+     * Creates a new stopwatch with default counter types
      */
     public Stopwatch()
     {
+        this(DEFAULT_TYPES);
+    }
+
+    /**
+     * Creates a new stopwatch with specific counter types
+     */
+    public Stopwatch(Type... types)
+    {
+        this.types = types;
         reset();
     }
 
     /**
-     * Provides a started stopwatch for convenience.
+     * Provides a started stopwatch for convenience with default counter types
      *
      * @return a new, started stopwatch
      */
     public static Stopwatch createStarted()
     {
-        Stopwatch stopwatch = new Stopwatch();
+        return createStarted(DEFAULT_TYPES);
+    }
+
+    /**
+     * Provides a started stopwatch for convenience with specific counter types
+     *
+     * @return a new, started stopwatch
+     */
+    public static Stopwatch createStarted(Type... types)
+    {
+        Stopwatch stopwatch = new Stopwatch(types);
         stopwatch.start();
         return stopwatch;
     }
@@ -45,9 +67,9 @@ public class Stopwatch
     public void reset()
     {
         counters = new EnumMap<>(Type.class);
-        for (Type type : Type.values())
+        for (Type type : types)
         {
-        	counters.put(type, new Counter(type));
+            counters.put(type, new Counter(type));
         }
     }
 

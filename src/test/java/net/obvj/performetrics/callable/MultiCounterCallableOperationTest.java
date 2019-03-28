@@ -23,7 +23,7 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
- * Test methods for the {@link MultiCounterRunnableOperation}
+ * Test methods for the {@link MultiCounterCallableOperation}
  *
  * @author oswaldo.bapvic.jr
  */

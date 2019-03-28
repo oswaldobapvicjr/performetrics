@@ -14,11 +14,17 @@ import net.obvj.performetrics.Stopwatch;
 public class PrintUtils
 {
     protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    protected static final String COUNTERS_TABLE_COLUMN_TIME_UNIT = "Time unit";
+    protected static final String COUNTERS_TABLE_COLUMN_ELAPSED_TIME = "Elapsed time";
+    protected static final String COUNTERS_TABLE_COLUMN_COUNTER = "Counter";
+
     protected static final String COUNTERS_TABLE_ROW_FORMAT = LINE_SEPARATOR + "| %-15s | %20s | %-12s |";
     protected static final String COUNTERS_TABLE_ROW_SEPARATOR = String.format(COUNTERS_TABLE_ROW_FORMAT, "", "", "")
             .replace(" ", "-").replace("|", "+");
-    protected static final String COUNTERS_TABLE_HEADER = String.format(COUNTERS_TABLE_ROW_FORMAT, "Counter",
-            "Elapsed time", "Time unit");
+
+    protected static final String COUNTERS_TABLE_HEADER = String.format(COUNTERS_TABLE_ROW_FORMAT,
+            COUNTERS_TABLE_COLUMN_COUNTER, COUNTERS_TABLE_COLUMN_ELAPSED_TIME, COUNTERS_TABLE_COLUMN_TIME_UNIT);
 
     private PrintUtils()
     {
@@ -33,29 +39,29 @@ public class PrintUtils
      */
     public static void printStopwatch(Stopwatch stopwatch, PrintStream printStream)
     {
+        printStream.print(toTableFormat(stopwatch.getAllCounters()));
+    }
+
+    /**
+     * Returns a table with counters and elapsed times
+     *
+     * @param counters the counters whose data will be fetched
+     * @return as formatted string containing a table rows with all counters and elapsed times
+     */
+    protected static String toTableFormat(Collection<Counter> counters)
+    {
         StringBuilder builder = new StringBuilder();
         builder.append(COUNTERS_TABLE_ROW_SEPARATOR);
         builder.append(COUNTERS_TABLE_HEADER);
         builder.append(COUNTERS_TABLE_ROW_SEPARATOR);
-        builder.append(toRowFormat(stopwatch.getAllCounters()));
-        builder.append(COUNTERS_TABLE_ROW_SEPARATOR);
-        builder.append(LINE_SEPARATOR);
-        printStream.print(builder.toString());
-    }
 
-    /**
-     * Returns a row for each counter
-     *
-     * @param counters the counters whose data will be fetched
-     * @return as formatted string containing rows for each counter
-     */
-    protected static String toRowFormat(Collection<Counter> counters)
-    {
-        StringBuilder builder = new StringBuilder();
         for (Counter counter : counters)
         {
             builder.append(toRowFormat(counter));
         }
+        builder.append(COUNTERS_TABLE_ROW_SEPARATOR);
+        builder.append(LINE_SEPARATOR);
+
         return builder.toString();
     }
 

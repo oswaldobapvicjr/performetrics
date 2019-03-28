@@ -85,11 +85,19 @@ public class PrintUtilsTest
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
 
-        String result = PrintUtils.toRowFormat(Arrays.asList(c1, c2));
+        String result = PrintUtils.toTableFormat(Arrays.asList(c1, c2));
         String[] rows = result.split(PrintUtils.LINE_SEPARATOR);
 
-        String[] columnsRow1 = rows[1].split(TABLE_COLUMN_SEPARATOR);
-        String[] columnsRow2 = rows[2].split(TABLE_COLUMN_SEPARATOR);
+        // Rows from 1 to 3 should contain the table header
+        String[] header = rows[2].split(TABLE_COLUMN_SEPARATOR);
+
+        assertEquals(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER, header[1].trim());
+        assertEquals(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME, header[2].trim());
+        assertEquals(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT, header[3].trim());
+
+        // Remaining rows should contain counters and elapsed times
+        String[] columnsRow1 = rows[4].split(TABLE_COLUMN_SEPARATOR);
+        String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
         assertEquals("WALL_CLOCK_TIME", columnsRow1[1].trim());
         assertEquals("1000", columnsRow1[2].trim());

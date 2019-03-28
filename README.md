@@ -41,7 +41,9 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
     sw.start();
     ```
 
-    > **Hint:** Alternatively, the factory method `Stopwatch.createStarted()` may create a started stopwatch for convenience.
+    > **Note:** A stopwatch with all available counters will be created by default. To specify which counters shall be maintained, use the overloaded constructor `Stopwatch(Type... types)`. 
+
+    > **Hint:** Alternatively, the factory methods `Stopwatch.createStarted()` and `Stopwatch.createStarted(Type... types)` may create a started stopwatch for convenience.
 
 3. Execute the the code to be profiled and then stop the watch: 
 

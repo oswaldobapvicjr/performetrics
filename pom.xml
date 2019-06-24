@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
         <junit4.version>4.4</junit4.version>
-        <powermock.version>1.7.1</powermock.version>
+        <powermock.version>2.0.2</powermock.version>
 
     </properties>
 

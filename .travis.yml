@@ -5,5 +5,7 @@ jdk:
   - oraclejdk9
   - oraclejdk11
 
+dist: trusty
+
 after_success:
   - mvn clean test jacoco:report coveralls:report

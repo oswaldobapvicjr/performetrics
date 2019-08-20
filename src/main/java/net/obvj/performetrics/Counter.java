@@ -162,6 +162,22 @@ public class Counter
     }
 
     /**
+     * @return set the units before with this counter's default data fetch strategy 
+     */
+    public void before()
+    {
+        unitsBefore = type.defaultDataFetchStrategy(timeUnit);
+    }
+    
+    /**
+     * @return set the units after with this counter's default data fetch strategy 
+     */
+    public void after()
+    {
+        unitsAfter= type.defaultDataFetchStrategy(timeUnit);
+    }
+    
+    /**
      * @return the difference between units before and units after
      */
     public long elapsedTime()

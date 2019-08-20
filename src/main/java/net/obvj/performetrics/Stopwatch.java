@@ -80,7 +80,7 @@ public class Stopwatch
     {
         for (Counter counter : counters.values())
         {
-            counter.setUnitsBefore(counter.getType().defaultDataFetchStrategy(counter.getTimeUnit()));
+            counter.before();
         }
     }
 
@@ -91,7 +91,7 @@ public class Stopwatch
     {
         for (Counter counter : counters.values())
         {
-            counter.setUnitsAfter(counter.getType().defaultDataFetchStrategy(counter.getTimeUnit()));
+            counter.after();
         }
     }
 

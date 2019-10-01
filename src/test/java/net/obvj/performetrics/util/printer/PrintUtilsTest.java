@@ -3,16 +3,22 @@ package net.obvj.performetrics.util.printer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.Stopwatch;
 
 /**
  * Unit tests for the {@link PrintUtils} class
@@ -106,6 +112,29 @@ public class PrintUtilsTest
         assertEquals("CPU_TIME", columnsRow2[1].trim());
         assertEquals("200000000000", columnsRow2[2].trim());
         assertEquals("NANOSECONDS", columnsRow2[3].trim());
+    }
+    
+    /**
+     * Test stopwatch printing onto a PrintStream.
+     */
+    @Test
+    public void testPrintStopwatch() throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        String expectedString = PrintUtils.toTableFormat(Arrays.asList(c1, c2));
+
+        // Prepare stopwatch
+        Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
+        Mockito.when(stopwatch.getAllCounters()).thenReturn(Arrays.asList(c1, c2));
+        
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printStopwatch(stopwatch, ps);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+        
+        assertEquals(printedString, expectedString);
     }
 
 }

@@ -20,8 +20,8 @@ public class WallClockTimeCallableOperationTest
     private static final String STR_TEST = "test123";
 
     /**
-     * A dummy Callable that does nothing but sleeping and returning a constant value, for
-     * testing purposes
+     * A dummy {@link Callable} that does nothing but sleeping and returning a constant value,
+     * for testing purposes
      */
     private static final Callable<String> DUMMY_CALLABLE = new Callable<String>()
     {
@@ -44,7 +44,7 @@ public class WallClockTimeCallableOperationTest
      * Tests that the correct counter is specified for this operation and the initial values
      */
     @Test
-    public void testCounterAndInitialValues()
+    public void constructor_assignsCorrectCounterAndInitialValues()
     {
         WallClockTimeCallableOperation<String> operation = new WallClockTimeCallableOperation<>(DUMMY_CALLABLE);
         Counter counter = operation.getCounter();
@@ -54,13 +54,13 @@ public class WallClockTimeCallableOperationTest
     }
 
     /**
-     * Tests the elapsed time for a dummy callable by asserting that the value is at least the
-     * amount of sleep time executed by that runnable
+     * Tests the elapsed time for a dummy {@link Callable} by asserting that the value is at
+     * least the amount of sleep time executed by that runnable
      *
-     * @throws Exception if unable to mock the Callable
+     * @throws Exception if unable to mock the {@link Callable}
      */
     @Test
-    public void testCounterElapsedTime() throws Exception
+    public void call_updatesCounter() throws Exception
     {
         WallClockTimeCallableOperation<String> operation = new WallClockTimeCallableOperation<>(DUMMY_CALLABLE);
         assertEquals(STR_TEST, operation.call());

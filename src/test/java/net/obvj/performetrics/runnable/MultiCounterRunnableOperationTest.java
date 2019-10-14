@@ -6,10 +6,11 @@ import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.BDDMockito.given;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -33,20 +34,18 @@ public class MultiCounterRunnableOperationTest
     private static final long MOCKED_USER_TIME = 1200000001l;
     private static final long MOCKED_SYSTEM_TIME = 1200000002l;
 
-    /**
-     * A dummy Runnable for testing purposes
-     */
-    private static final Runnable MOCKED_RUNNABLE = PowerMockito.mock(Runnable.class);
+    @Mock
+    private Runnable runnable;
 
     /**
-     * Setup the expects on PerformetricUtils mock with constant values
+     * Setup the expects on {@link PerformetricsUtils} mock with constant values
      */
     private void setupExpects()
     {
-        BDDMockito.given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
-        BDDMockito.given(PerformetricsUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
-        BDDMockito.given(PerformetricsUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
-        BDDMockito.given(PerformetricsUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+        given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
+        given(PerformetricsUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
+        given(PerformetricsUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
+        given(PerformetricsUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
     }
 
     /**
@@ -91,13 +90,13 @@ public class MultiCounterRunnableOperationTest
     }
 
     /**
-     * Tests, for a given runnable and a single counter, that the correct counter is specified
-     * for this operation and the initial values are zero
+     * Tests, for a given {@link Runnable} and a single counter, that the correct counter is
+     * specified for this operation and the initial values are zero
      */
     @Test
-    public void testCounterAndInitialValuesSingleCounter()
+    public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
     {
-        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(MOCKED_RUNNABLE, CPU_TIME);
+        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(runnable, CPU_TIME);
         assertEquals(1, op.getCounters().size());
         Counter counter = op.getCounter(CPU_TIME);
         assertAllUnitsBeforeEqualZero(counter);
@@ -105,13 +104,13 @@ public class MultiCounterRunnableOperationTest
     }
 
     /**
-     * Tests, for a given runnable and more than one counter, that the correct counters are
-     * specified for this operation and the initial values are zero
+     * Tests, for a given {@link Runnable} and more than one counter, that the correct
+     * counters are specified for this operation and the initial values are zero
      */
     @Test
-    public void testCounterAndInitialValuesMultiCounter()
+    public void constructor_withTwoTypes_assignsCorrectCounteAndInitialValues()
     {
-        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(MOCKED_RUNNABLE, CPU_TIME, USER_TIME);
+        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(runnable, CPU_TIME, USER_TIME);
         assertEquals(2, op.getCounters().size());
         Counter counter1 = op.getCounter(CPU_TIME);
         Counter counter2 = op.getCounter(USER_TIME);
@@ -120,13 +119,13 @@ public class MultiCounterRunnableOperationTest
     }
 
     /**
-     * Tests, for a given runnable and no specific counter, that all available counters are
-     * specified for this operation
+     * Tests, for a given {@link Runnable} and no specific counter, that all available
+     * counters are specified for this operation
      */
     @Test
-    public void testCountersWhenNoSpecificCounterPassed()
+    public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
-        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(MOCKED_RUNNABLE);
+        MultiCounterRunnableOperation op = new MultiCounterRunnableOperation(runnable);
         assertEquals(Type.values().length, op.getCounters().size());
         assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
@@ -135,13 +134,14 @@ public class MultiCounterRunnableOperationTest
     }
 
     /**
-     * Tests the elapsed time for a dummy runnable with no specific counter set (all counters)
+     * Tests the elapsed time for a dummy {@link Runnable} with no specific counter set (all
+     * counters)
      */
     @Test
-    public void testCountersElapsedTime()
+    public void run_givenAllTypes_updatesAllCounters()
     {
         PowerMockito.mockStatic(PerformetricsUtils.class);
-        MultiCounterRunnableOperation operation = new MultiCounterRunnableOperation(MOCKED_RUNNABLE);
+        MultiCounterRunnableOperation operation = new MultiCounterRunnableOperation(runnable);
         setupExpects();
         operation.run();
         assertAllUnitsBefore(operation);

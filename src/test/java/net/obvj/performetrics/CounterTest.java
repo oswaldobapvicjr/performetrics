@@ -14,14 +14,14 @@ import org.junit.Test;
 public class CounterTest
 {
     @Test
-    public void testDefaultTimeUnit()
+    public void constructor_withType_assignsDefaultTimeUnit()
     {
         Counter counter = new Counter(SYSTEM_TIME);
         assertEquals(NANOSECONDS, counter.getTimeUnit());
     }
 
     @Test
-    public void testGetters()
+    public void getters_succeed()
     {
         Counter counter = new Counter(CPU_TIME, MILLISECONDS);
         counter.setUnitsBefore(5);
@@ -33,7 +33,7 @@ public class CounterTest
     }
 
     @Test
-    public void testToString()
+    public void toString_withAllFieldsSet_suceeds()
     {
         Counter counter = new Counter(WALL_CLOCK_TIME, MILLISECONDS);
         counter.setUnitsBefore(5);
@@ -42,7 +42,7 @@ public class CounterTest
     }
 
     @Test
-    public void testCounterElapsedTimeInSeconds()
+    public void getElapsedTime_withUnitsSet_returnsDifferenceInSeconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS);
         counter.setUnitsBefore(2);
@@ -52,7 +52,7 @@ public class CounterTest
     }
 
     @Test
-    public void testCounterElapsedTimeInMilliseconds()
+    public void getElapsedTime_withUnitsSet_returnsDifferenceInMilliseconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
         counter.setUnitsBefore(1000);
@@ -62,7 +62,7 @@ public class CounterTest
     }
 
     @Test
-    public void testCounterElapsedTimeInNanoseconds()
+    public void getElapsedTime_withUnitsSet_returnsDifferenceInNanoseconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, NANOSECONDS);
         counter.setUnitsBefore(1000000000);

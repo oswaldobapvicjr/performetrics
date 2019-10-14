@@ -18,7 +18,7 @@ public class WallClockTimeRunnableOperationTest
     private static final long DUMMY_SLEEP_TIME = 500L;
 
     /**
-     * A dummy Runnable that does nothing but sleeping, for testing purposes
+     * A dummy {@link Runnable} that does nothing but sleeping, for testing purposes
      */
     private static final Runnable DUMMY_RUNNABLE = new Runnable()
     {
@@ -40,7 +40,7 @@ public class WallClockTimeRunnableOperationTest
      * Tests that the correct counter is specified for this operation and the initial values
      */
     @Test
-    public void testCounterAndInitialValues()
+    public void constructor_assignsCorrectCounterAndInitialValues()
     {
         WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(DUMMY_RUNNABLE);
         Counter counter = operation.getCounter();
@@ -50,11 +50,11 @@ public class WallClockTimeRunnableOperationTest
     }
 
     /**
-     * Tests the elapsed time for a dummy runnable by asserting that the value is at least the
-     * amount of sleep time executed by that runnable
+     * Tests the elapsed time for a dummy {@link Runnable} by asserting that the value is at
+     * least the amount of sleep time executed by that runnable
      */
     @Test
-    public void testCounterElapsedTime()
+    public void run_updatesCounter()
     {
         WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(DUMMY_RUNNABLE);
         operation.run();

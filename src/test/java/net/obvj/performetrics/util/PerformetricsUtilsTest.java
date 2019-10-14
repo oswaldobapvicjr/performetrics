@@ -22,7 +22,7 @@ public class PerformetricsUtilsTest
      * private constructor via Reflection
      */
     @Test(expected = InvocationTargetException.class)
-    public void testNoInstancesAllowed() throws Exception
+    public void constructor_throwsException() throws Exception
     {
         try
         {

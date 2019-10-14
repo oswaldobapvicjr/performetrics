@@ -37,7 +37,7 @@ public class PrintUtilsTest
      * private constructor via Reflection
      */
     @Test(expected = InvocationTargetException.class)
-    public void testNoInstancesAllowed() throws Exception
+    public void constructor_throwsException() throws Exception
     {
         try
         {
@@ -69,7 +69,7 @@ public class PrintUtilsTest
      * the time unit
      */
     @Test
-    public void testCounterToRowFormat()
+    public void toRowFormat_withValidCounter_printsTypeAndElapsedTimeAndTimeUnit()
     {
         Counter c = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
 
@@ -82,11 +82,11 @@ public class PrintUtilsTest
     }
 
     /**
-     * Tests that the row is composed by (1) the counter type, (2) the elapsed time and (3)
+     * Tests that each row is composed by (1) the counter type, (2) the elapsed time and (3)
      * the time unit
      */
     @Test
-    public void testCountersListToRowFormat()
+    public void toTableFormat_withTwoCounters_printsTypeAndElapsedTimeAndTimeUnit()
     {
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
@@ -118,7 +118,7 @@ public class PrintUtilsTest
      * Test stopwatch printing onto a PrintStream.
      */
     @Test
-    public void testPrintStopwatch() throws UnsupportedEncodingException
+    public void printStopwatch_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);

@@ -6,13 +6,13 @@ import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.mockito.BDDMockito.given;
 
 import java.util.concurrent.Callable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -35,37 +35,29 @@ public class MultiCounterCallableOperationTest
     private static final long MOCKED_CPU_TIME = 1200000000l;
     private static final long MOCKED_USER_TIME = 1200000001l;
     private static final long MOCKED_SYSTEM_TIME = 1200000002l;
-
-    /**
-     * A dummy Callable for testing purposes
-     */
-    private static final Callable<String> MOCKED_CALLABLE = PowerMockito.mock(Callable.class);
     private static final String STRING_CALLABLE_RETURN = "test234";
 
+    @Mock
+    private Callable<String> callable;
+
     /**
-     * Setup the expects on PerformetricUtils mock with constant values
+     * Setup the expects on {@link PerformetricsUtils} mock with constant values
      */
     private void setupExpects()
     {
-        BDDMockito.given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
-        BDDMockito.given(PerformetricsUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
-        BDDMockito.given(PerformetricsUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
-        BDDMockito.given(PerformetricsUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+        given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
+        given(PerformetricsUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
+        given(PerformetricsUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
+        given(PerformetricsUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
     }
 
     /**
-     * Setup the expects on the mocked Callable object
+     * Setup the expects on the mocked {@link Callable} object
      */
-    public static void setupMockedCallable()
+    public void setupMockedCallable() throws Exception
     {
-        try
-        {
-            PowerMockito.when(MOCKED_CALLABLE.call()).thenReturn(STRING_CALLABLE_RETURN);
-        }
-        catch (Exception e)
-        {
-            fail("Unable to mock Callable result: " + e.getClass().getName());
-        }
+        PowerMockito.when(callable.call()).thenReturn(STRING_CALLABLE_RETURN);
+
     }
 
     /**
@@ -110,14 +102,13 @@ public class MultiCounterCallableOperationTest
     }
 
     /**
-     * Tests, for a given callable and a single counter, that the correct counter is specified
-     * for this operation and the initial values are zero
+     * Tests, for a given {@link Callable} and a single counter, that the correct counter is
+     * specified for this operation and the initial values are zero
      */
     @Test
-    public void testCounterAndInitialValuesSingleCounter()
+    public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(MOCKED_CALLABLE,
-                WALL_CLOCK_TIME);
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable, WALL_CLOCK_TIME);
         assertEquals(1, op.getCounters().size());
         Counter counter = op.getCounter(WALL_CLOCK_TIME);
         assertAllUnitsBeforeEqualZero(counter);
@@ -125,14 +116,14 @@ public class MultiCounterCallableOperationTest
     }
 
     /**
-     * Tests, for a given callable and more than one counter, that the correct counters are
-     * specified for this operation and the initial values are zero
+     * Tests, for a given {@link Callable} and more than one counter, that the correct
+     * counters are specified for this operation and the initial values are zero
      */
     @Test
-    public void testCounterAndInitialValuesMultiCounter()
+    public void constructor_withTwoTypes_assignsCorrectCountersAndInitialValues()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(MOCKED_CALLABLE,
-                SYSTEM_TIME, USER_TIME);
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable, SYSTEM_TIME,
+                USER_TIME);
         assertEquals(2, op.getCounters().size());
         Counter counter1 = op.getCounter(SYSTEM_TIME);
         Counter counter2 = op.getCounter(USER_TIME);
@@ -141,13 +132,13 @@ public class MultiCounterCallableOperationTest
     }
 
     /**
-     * Tests, for a given callable and no specific counter, that all available counters are
-     * specified for this operation
+     * Tests, for a given {@link Callable} and no specific counter, that all available
+     * counters are specified for this operation
      */
     @Test
-    public void testCountersWhenNoSpecificCounterPassed()
+    public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(MOCKED_CALLABLE);
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable);
         assertEquals(Type.values().length, op.getCounters().size());
         assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
@@ -156,17 +147,17 @@ public class MultiCounterCallableOperationTest
     }
 
     /**
-     * Tests that the elapsed time for a dummy callable with no specific counter set (all
-     * counters) is updated and the callable result is retrieved
+     * Tests that the elapsed time for a dummy {@link Callable} with no specific counter set
+     * (all counters) is updated and the {@link Callable} result is retrieved
      *
-     * @throws Exception in case of an exception inside the callable
+     * @throws Exception in case of an exception inside the {@link Callable}
      */
     @Test
-    public void testCountersElapsedTime() throws Exception
+    public void call_givenAllTypes_updatesAllCounters() throws Exception
     {
         setupMockedCallable();
         PowerMockito.mockStatic(PerformetricsUtils.class);
-        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<String>(MOCKED_CALLABLE);
+        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<String>(callable);
         setupExpects();
         assertEquals(STRING_CALLABLE_RETURN, operation.call());
         assertAllUnitsBefore(operation);

@@ -1,9 +1,8 @@
 package net.obvj.performetrics.runnable;
 
-import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +34,9 @@ public class CpuTimeRunnableOperationTest
     {
         CpuTimeRunnableOperation operation = new CpuTimeRunnableOperation(runnable);
         Counter counter = operation.getCounter();
-        assertEquals(Counter.Type.CPU_TIME, counter.getType());
-        assertEquals(0, counter.getUnitsBefore());
-        assertEquals(0, counter.getUnitsAfter());
+        assertThat(counter.getType(), is(Counter.Type.CPU_TIME));
+        assertThat(counter.getUnitsBefore(), is(0L));
+        assertThat(counter.getUnitsAfter(), is(0L));
     }
 
     /**
@@ -48,7 +47,7 @@ public class CpuTimeRunnableOperationTest
     @Test
     public void run_updatesCounter()
     {
-        long mockedCpuTime = 1200000000l;
+        long mockedCpuTime = 1200000000L;
 
         mockStatic(PerformetricsUtils.class);
         when(PerformetricsUtils.getCpuTimeNanos()).thenReturn(mockedCpuTime);
@@ -58,8 +57,8 @@ public class CpuTimeRunnableOperationTest
 
         Counter counter = operation.getCounter();
         // Check that both units-before and units-after have been updated
-        assertEquals("Units-before was not updated", mockedCpuTime, counter.getUnitsBefore());
-        assertEquals("Units-after was not updated", mockedCpuTime, counter.getUnitsAfter());
+        assertThat("Units-before should have been updated", counter.getUnitsBefore(), is(mockedCpuTime));
+        assertThat("Units-after should have been updated", counter.getUnitsAfter(), is(mockedCpuTime));
 
         // Check that the correct measure (CPU time) method was called exactly twice
         verifyStatic(PerformetricsUtils.class, BDDMockito.times(2));

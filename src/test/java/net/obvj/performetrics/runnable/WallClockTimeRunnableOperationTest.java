@@ -1,5 +1,6 @@
 package net.obvj.performetrics.runnable;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.logging.Logger;
@@ -44,9 +45,9 @@ public class WallClockTimeRunnableOperationTest
     {
         WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(DUMMY_RUNNABLE);
         Counter counter = operation.getCounter();
-        assertEquals(Counter.Type.WALL_CLOCK_TIME, counter.getType());
-        assertEquals(0, counter.getUnitsBefore());
-        assertEquals(0, counter.getUnitsAfter());
+        assertThat(counter.getType(), is(Counter.Type.WALL_CLOCK_TIME));
+        assertThat(counter.getUnitsBefore(), is(0L));
+        assertThat(counter.getUnitsAfter(), is(0L));
     }
 
     /**
@@ -59,10 +60,10 @@ public class WallClockTimeRunnableOperationTest
         WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(DUMMY_RUNNABLE);
         operation.run();
         Counter counter = operation.getCounter();
-        assertTrue("Units-before was not updated", 0 < counter.getUnitsBefore());
-        assertTrue("Units-after was not updated", 0 < counter.getUnitsAfter());
-        assertTrue("The elapsed time was lower than the Runnable's sleep time",
-                DUMMY_SLEEP_TIME <= operation.getTimeUnit().toMillis(counter.elapsedTime()));
+        assertThat("Units-before should have been updated", counter.getUnitsBefore(), is(greaterThan(0L)));
+        assertThat("Units-after should have been updated", counter.getUnitsAfter(), is(greaterThan(0L)));
+        assertThat("The elapsed time should be greater than the Callable's sleep time",
+                operation.getTimeUnit().toMillis(counter.elapsedTime()), is(greaterThanOrEqualTo(DUMMY_SLEEP_TIME)));
     }
 
 }

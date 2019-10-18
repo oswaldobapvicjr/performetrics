@@ -2,7 +2,8 @@ package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.*;
 import static net.obvj.performetrics.Counter.Type.*;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class CounterTest
     public void constructor_withType_assignsDefaultTimeUnit()
     {
         Counter counter = new Counter(SYSTEM_TIME);
-        assertEquals(NANOSECONDS, counter.getTimeUnit());
+        assertThat(counter.getTimeUnit(), is(NANOSECONDS));
     }
 
     @Test
@@ -26,10 +27,10 @@ public class CounterTest
         Counter counter = new Counter(CPU_TIME, MILLISECONDS);
         counter.setUnitsBefore(5);
         counter.setUnitsAfter(10);
-        assertEquals(CPU_TIME, counter.getType());
-        assertEquals(MILLISECONDS, counter.getTimeUnit());
-        assertEquals(5, counter.getUnitsBefore());
-        assertEquals(10, counter.getUnitsAfter());
+        assertThat(counter.getType(), is(CPU_TIME));
+        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
+        assertThat(counter.getUnitsBefore(), is(5L));
+        assertThat(counter.getUnitsAfter(), is(10L));
     }
 
     @Test
@@ -38,7 +39,7 @@ public class CounterTest
         Counter counter = new Counter(WALL_CLOCK_TIME, MILLISECONDS);
         counter.setUnitsBefore(5);
         counter.setUnitsAfter(10);
-        assertEquals(String.format(Counter.STRING_FORMAT, WALL_CLOCK_TIME, MILLISECONDS, 5, 10), counter.toString());
+        assertThat(counter.toString(), is(String.format(Counter.STRING_FORMAT, WALL_CLOCK_TIME, MILLISECONDS, 5, 10)));
     }
 
     @Test
@@ -47,8 +48,8 @@ public class CounterTest
         Counter counter = new Counter(SYSTEM_TIME, SECONDS);
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3); // 1 second after
-        assertEquals(1, counter.elapsedTime());
-        assertEquals(SECONDS, counter.getTimeUnit());
+        assertThat(counter.elapsedTime(), is(1L));
+        assertThat(counter.getTimeUnit(), is(SECONDS));
     }
 
     @Test
@@ -57,8 +58,8 @@ public class CounterTest
         Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
         counter.setUnitsBefore(1000);
         counter.setUnitsAfter(1500); // 500 milliseconds after
-        assertEquals(500, counter.elapsedTime());
-        assertEquals(MILLISECONDS, counter.getTimeUnit());
+        assertThat(counter.elapsedTime(), is(500L));
+        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
     }
 
     @Test
@@ -67,8 +68,8 @@ public class CounterTest
         Counter counter = new Counter(SYSTEM_TIME, NANOSECONDS);
         counter.setUnitsBefore(1000000000);
         counter.setUnitsAfter(6000000000l); // 5 seconds after
-        assertEquals(5, counter.getTimeUnit().toSeconds(counter.elapsedTime()));
-        assertEquals(NANOSECONDS, counter.getTimeUnit());
+        assertThat(counter.getTimeUnit().toSeconds(counter.elapsedTime()), is(5L));
+        assertThat(counter.getTimeUnit(), is(NANOSECONDS));
     }
 
 }

@@ -1,6 +1,7 @@
 package net.obvj.performetrics.util;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +28,7 @@ public class PerformetricsUtilsTest
         try
         {
             Constructor<PerformetricsUtils> constructor = PerformetricsUtils.class.getDeclaredConstructor();
-            assertTrue("Constructor is not private", Modifier.isPrivate(constructor.getModifiers()));
+            assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
 
             constructor.setAccessible(true);
             constructor.newInstance();
@@ -35,8 +36,8 @@ public class PerformetricsUtilsTest
         catch (InvocationTargetException ite)
         {
             Throwable cause = ite.getCause();
-            assertEquals(IllegalStateException.class, cause.getClass());
-            assertEquals("Utility class", cause.getMessage());
+            assertThat(cause.getClass(), is(equalTo(IllegalStateException.class)));
+            assertThat(cause.getMessage(), is("Utility class"));
             throw ite;
         }
     }

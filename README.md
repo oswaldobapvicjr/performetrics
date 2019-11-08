@@ -1,4 +1,4 @@
-# ![Performetrics logo](resources/performetrics_logo.svg)
+![Performetrics logo](resources/performetrics_logo.svg)
 
 [![Build Status](https://travis-ci.org/oswaldobapvicjr/performetrics.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/performetrics)
 [![Coverage Status](https://coveralls.io/repos/github/oswaldobapvicjr/performetrics/badge.svg?branch=master)](https://coveralls.io/github/oswaldobapvicjr/performetrics?branch=master)
@@ -21,7 +21,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 - **System time:** the time spent by the OS kernel to execute all the basic/system level operations on behalf of your application (such as context switching, resource allocation, etc.)
 
-**Performetrics** provides convenient objects for time evaluations with support to all of the abovementioned counters.
+**Performetrics** provides convenient objects for time evaluation with support to all of the abovementioned counters.
 
 ---
 

@@ -83,7 +83,7 @@ public class Counter
     public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
 
     private final Type type;
-    private final TimeUnit timeUnit;
+    private final TimeUnit defaultTimeUnit;
 
     private long unitsBefore = 0;
     private long unitsAfter = 0;
@@ -98,7 +98,7 @@ public class Counter
     public Counter(Type type)
     {
         this.type = type;
-        this.timeUnit = DEFAULT_UNIT;
+        this.defaultTimeUnit = DEFAULT_UNIT;
     }
 
     /**
@@ -110,7 +110,7 @@ public class Counter
     public Counter(Type type, TimeUnit timeUnit)
     {
         this.type = type;
-        this.timeUnit = timeUnit;
+        this.defaultTimeUnit = timeUnit;
     }
 
     /**
@@ -154,11 +154,11 @@ public class Counter
     }
 
     /**
-     * @return the time unit
+     * @return the default time unit
      */
-    public TimeUnit getTimeUnit()
+    public TimeUnit getDefaultTimeUnit()
     {
-        return timeUnit;
+        return defaultTimeUnit;
     }
 
     /**
@@ -166,7 +166,7 @@ public class Counter
      */
     public void before()
     {
-        unitsBefore = type.defaultDataFetchStrategy(timeUnit);
+        unitsBefore = type.defaultDataFetchStrategy(defaultTimeUnit);
     }
     
     /**
@@ -174,7 +174,7 @@ public class Counter
      */
     public void after()
     {
-        unitsAfter= type.defaultDataFetchStrategy(timeUnit);
+        unitsAfter= type.defaultDataFetchStrategy(defaultTimeUnit);
     }
     
     /**
@@ -184,11 +184,20 @@ public class Counter
     {
         return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
     }
+    
+    /**
+     * @param timeUnit the time unit to which the elapsed time will be converted
+     * @return the difference between units before and units after, in the given time unit
+     */
+    public long elapsedTime(TimeUnit timeUnit)
+    {
+        return timeUnit.convert(elapsedTime(), this.defaultTimeUnit);
+    }
 
     @Override
     public String toString()
     {
-        return String.format(STRING_FORMAT, type, timeUnit, unitsBefore, unitsAfter);
+        return String.format(STRING_FORMAT, type, defaultTimeUnit, unitsBefore, unitsAfter);
     }
 
 }

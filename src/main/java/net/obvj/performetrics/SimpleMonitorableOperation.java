@@ -37,7 +37,7 @@ public abstract class SimpleMonitorableOperation
      */
     public TimeUnit getTimeUnit()
     {
-        return counter.getTimeUnit();
+        return counter.getDefaultTimeUnit();
     }
 
 }

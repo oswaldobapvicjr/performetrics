@@ -46,7 +46,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
     > **Hint:** Alternatively, the factory methods `Stopwatch.createStarted()` and `Stopwatch.createStarted(Type... types)` may create a started stopwatch for convenience.
 
-3. Execute the the code to be profiled and then stop the watch: 
+3. Execute the the code to be profiled and then stop the counters: 
 
     ```java
     sw.stop();
@@ -56,19 +56,10 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
     ```java
     Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
-    long elapsedTime = cpuTime.elapsedTime();
-    TimeUnit timeUnit = cpuTime.getTimeUnit();
+    long elapsedTime = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
     ```
 
-    > **Note:** Because **Performetrics** uses the `TimeUnit` class from `java.util.concurrent`, all results can be converted to different time units without effort. To convert the output to milliseconds, for example, just call: `timeUnit.toMillis(cpuTime.elapsedTime())`.
-
-5. Try different counters to evaluate their results.
-
-### Example 2: Printing statistics from the Stopwatch
-
-1. Execute steps from 1 to 3 at Example 1.
-
-2. Print statistics to the console with the following statement:
+5. Print statistics to the console:
 
     ```java
     sw.printStatistics(System.out);
@@ -87,7 +78,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
     >  +-----------------+----------------------+--------------+
     > ````
 
-### Example 3: Using one of the Runnable or Callable operations
+### Example 2: Using one of the Runnable or Callable operations
 
 Check out some convenient classes inside the packages `net.obvj.performetrics.callable` and `net.obvj.performetrics.runnable`. In this example, we are using the `CpuTimeRunnableOperation` to measure the CPU time of a given Runnable, in nanoseconds:
 
@@ -108,6 +99,5 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 
     ```java
     Counter cpuTime = timedRunnable.getCounter();
-    long elapsedTime = cpuTime.elapsedTime();
-    TimeUnit timeUnit = cpuTime.getTimeUnit();
+    long elapsedTime = cpuTime.elapsedTime(TimeUnit.NANOSECONDS);
     ```

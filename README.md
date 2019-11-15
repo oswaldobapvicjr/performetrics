@@ -9,7 +9,7 @@ A simple performance data generator for Java applications
 
 ## Project overview
 
-Most Java developers use the functions `System.currentTimeMillis()` or `System.currentTimeNanos()` inside their code to measure the elapsed time to perform some key operations. This is not a problem if you want to benchmark an application running in a dedicated system. However, the result is strongly affected by other activities in the system, such as background processes and I/O (e.g. disk and network activities). 
+Most Java developers use the functions `System.currentTimeMillis()` or `System.currentTimeNanos()` inside their code to measure the elapsed time to perform some key operations. This is not a problem if you want to benchmark an application running in a dedicated system. However, the result is strongly affected by other activities in the system, such as background processes and I/O (e.g. disk and network activities).
 
 As from Java 1.5, it is possible to get additional metrics that may help you benchmark a task with some most accurate units:
 
@@ -35,18 +35,16 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
     import net.obvj.performetrics.Stopwatch;
     ```
 
-2. Create a stopwatch and start it:
+2. Create a default stopwatch and start it:
 
     ```java
     Stopwatch sw = new Stopwatch();
     sw.start();
     ```
 
-    > **Note:** A stopwatch with all available counters will be created by default. To specify which counters shall be maintained, use the overloaded constructor `Stopwatch(Type... types)`. 
+    > **Note:** A single call to the factory method `Stopwatch.createStarted()` may create a started stopwatch for convenience.
 
-    > **Hint:** Alternatively, the factory methods `Stopwatch.createStarted()` and `Stopwatch.createStarted(Type... types)` may create a started stopwatch for convenience.
-
-3. Execute the the code to be profiled and then stop the counters: 
+3. Execute the the code to be profiled and then stop the counters (optional): 
 
     ```java
     sw.stop();

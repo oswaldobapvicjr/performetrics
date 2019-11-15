@@ -101,6 +101,8 @@ public class Counter
     private long unitsBefore = 0;
     private long unitsAfter = 0;
 
+    private boolean unitsAfterFlag = false;
+
     /**
      * Builds this Counter object with default time unit of nanoseconds.
      * <p>
@@ -110,8 +112,7 @@ public class Counter
      */
     public Counter(Type type)
     {
-        this.type = type;
-        this.defaultTimeUnit = DEFAULT_UNIT;
+        this(type, DEFAULT_UNIT);
     }
 
     /**
@@ -156,6 +157,7 @@ public class Counter
     public void setUnitsAfter(long unitsAfter)
     {
         this.unitsAfter = unitsAfter;
+        unitsAfterFlag = true;
     }
 
     /**
@@ -187,15 +189,26 @@ public class Counter
      */
     public void after()
     {
-        unitsAfter = type.defaultDataFetchStrategy(defaultTimeUnit);
+        setUnitsAfter(type.defaultDataFetchStrategy(defaultTimeUnit));
     }
 
     /**
      * @return the difference between units before and units after
      */
-    public long elapsedTime()
+    private static long elapsedTime(long unitsBefore, long unitsAfter)
     {
         return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
+    }
+
+    /**
+     * @return the difference between units before and units after, if both units are set; or
+     *         the difference between units before and the current units, retrieved by the
+     *         counter's default data fetch strategy, if the units after ate not set.
+     */
+    public long elapsedTime()
+    {
+        long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.defaultDataFetchStrategy(defaultTimeUnit);
+        return elapsedTime(unitsBefore, tempUnitsAfter);
     }
 
     /**

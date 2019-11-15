@@ -1,21 +1,42 @@
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.*;
-import static net.obvj.performetrics.Counter.Type.*;
-import static org.hamcrest.Matchers.*;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
  * Test methods for the {@Counter} class.
  *
  * @author oswaldo.bapvic.jr
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(PerformetricsUtils.class)
 public class CounterTest
 {
+   
+    @Before
+    public void setup()
+    {
+        PowerMockito.mockStatic(PerformetricsUtils.class);
+    }
+    
     @Test
     public void constructor_withType_assignsDefaultTimeUnit()
     {
@@ -104,5 +125,13 @@ public class CounterTest
         assertThat(counter.elapsedTime(TimeUnit.SECONDS), is(1L));
     }
 
+    @Test
+    public void elapsedTime_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
+    {
+        Mockito.when(PerformetricsUtils.getWallClockTimeNanos()).thenReturn(9000L);
+        Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
+        counter.setUnitsBefore(2000);
+        assertThat(counter.elapsedTime(), is(7000L));
+    }
 
 }

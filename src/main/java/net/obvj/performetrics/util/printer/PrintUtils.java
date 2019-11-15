@@ -74,7 +74,7 @@ public class PrintUtils
     protected static String toRowFormat(Counter counter)
     {
         return String.format(COUNTERS_TABLE_ROW_FORMAT, counter.getType(), counter.elapsedTime(),
-                counter.getDefaultTimeUnit());
+                counter.getDefaultTimeUnit().toString().toLowerCase());
     }
 
 }

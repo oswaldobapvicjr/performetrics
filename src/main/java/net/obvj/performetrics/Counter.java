@@ -22,7 +22,7 @@ public class Counter
         /**
          * The elapsed time experienced by a user waiting for a task to complete
          */
-        WALL_CLOCK_TIME
+        WALL_CLOCK_TIME("Wall clock time")
         {
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
@@ -34,7 +34,7 @@ public class Counter
         /**
          * The total time spent using a CPU for the current thread
          */
-        CPU_TIME
+        CPU_TIME("CPU time")
         {
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
@@ -46,7 +46,7 @@ public class Counter
         /**
          * The total CPU time that the current thread has executed in user mode
          */
-        USER_TIME
+        USER_TIME("User time")
         {
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
@@ -59,7 +59,7 @@ public class Counter
          * The time spent by the kernel to execute system level operations on behalf of the
          * application
          */
-        SYSTEM_TIME
+        SYSTEM_TIME("System time")
         {
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
@@ -67,7 +67,20 @@ public class Counter
                 return targetTimeUnit.convert(PerformetricsUtils.getSystemTimeNanos(), NANOSECONDS);
             }
         };
-        
+
+        private final String name;
+
+        private Type(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name;
+        }
+
         /**
          * Executes default data fetch strategy for the specific type.
          * 
@@ -104,7 +117,7 @@ public class Counter
     /**
      * Builds this Counter object with the given type and time unit.
      *
-     * @param type the type to set
+     * @param type     the type to set
      * @param timeUnit the unit to set
      */
     public Counter(Type type, TimeUnit timeUnit)
@@ -162,21 +175,21 @@ public class Counter
     }
 
     /**
-     * @return set the units before with this counter's default data fetch strategy 
+     * @return set the units before with this counter's default data fetch strategy
      */
     public void before()
     {
         unitsBefore = type.defaultDataFetchStrategy(defaultTimeUnit);
     }
-    
+
     /**
-     * @return set the units after with this counter's default data fetch strategy 
+     * @return set the units after with this counter's default data fetch strategy
      */
     public void after()
     {
-        unitsAfter= type.defaultDataFetchStrategy(defaultTimeUnit);
+        unitsAfter = type.defaultDataFetchStrategy(defaultTimeUnit);
     }
-    
+
     /**
      * @return the difference between units before and units after
      */
@@ -184,7 +197,7 @@ public class Counter
     {
         return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
     }
-    
+
     /**
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between units before and units after, in the given time unit

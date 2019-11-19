@@ -54,7 +54,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
     ```java
     Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
-    long elapsedTime = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+    long elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
     ```
 
 5. Print statistics to the console:
@@ -96,6 +96,5 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 3. Get the elapsed time:
 
     ```java
-    Counter cpuTime = monitoredRunnable.getCounter();
-    long elapsedTime = cpuTime.elapsedTime(TimeUnit.NANOSECONDS);
+    long elapsedTimeNanos = monitoredRunnable.elapsedTime(TimeUnit.NANOSECONDS);
     ```

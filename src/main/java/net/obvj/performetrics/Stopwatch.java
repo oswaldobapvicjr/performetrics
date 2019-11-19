@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
@@ -113,13 +114,24 @@ public class Stopwatch
     }
 
     /**
-     * Prints the statistics for this counter in the specified print stream.
+     * Prints stopwatch statistics in the specified print stream.
      *
      * @param printStream the print stream to which statistics will be sent
      */
     public void printStatistics(PrintStream printStream)
     {
         PrintUtils.printStopwatch(this, printStream);
+    }
+
+    /**
+     * Prints stopwatch statistics in the specified print stream, with a custom time unit.
+     *
+     * @param printStream the print stream to which statistics will be sent
+     * @param timeUnit    the time unit for the elapsed times to be displayed
+     */
+    public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
+    {
+        PrintUtils.printStopwatch(this, printStream, timeUnit);
     }
 
 }

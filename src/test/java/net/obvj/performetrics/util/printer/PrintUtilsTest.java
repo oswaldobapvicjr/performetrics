@@ -35,7 +35,7 @@ public class PrintUtilsTest
      * Tests that no instances of this utility class are created
      *
      * @throws Exception in case of error getting constructor metadata or instantiating the
-     * private constructor via Reflection
+     *                   private constructor via Reflection
      */
     @Test(expected = InvocationTargetException.class)
     public void constructor_throwsException() throws Exception
@@ -114,7 +114,40 @@ public class PrintUtilsTest
         assertThat(columnsRow2[2].trim(), is("200000000000"));
         assertThat(columnsRow2[3].trim(), is(NANOSECONDS));
     }
-    
+
+    /**
+     * Tests that each row is composed by (1) the counter type, (2) the elapsed time and (3)
+     * the time unit; and the elapsed time is converted to the custom time unit (milliseconds)
+     */
+    @Test
+    public void toTableFormat_withTwoCountersAndTimeUnit_printsTypeAndElapsedTimeAndTimeUnitConverted()
+    {
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+
+        String result = PrintUtils.toTableFormat(Arrays.asList(c1, c2), TimeUnit.MILLISECONDS);
+        String[] rows = result.split(PrintUtils.LINE_SEPARATOR);
+
+        // Rows from 1 to 3 should contain the table header
+        String[] header = rows[2].split(TABLE_COLUMN_SEPARATOR);
+
+        assertThat(header[1].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER));
+        assertThat(header[2].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME));
+        assertThat(header[3].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT));
+
+        // Remaining rows should contain counters and elapsed times
+        String[] columnsRow1 = rows[4].split(TABLE_COLUMN_SEPARATOR);
+        String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
+
+        assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
+        assertThat(columnsRow1[2].trim(), is("1000"));
+        assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
+
+        assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
+        assertThat(columnsRow2[2].trim(), is("200000"));
+        assertThat(columnsRow2[3].trim(), is(MILLISECONDS));
+    }
+
     /**
      * Test stopwatch printing onto a PrintStream.
      */
@@ -129,12 +162,36 @@ public class PrintUtilsTest
         // Prepare stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
         Mockito.when(stopwatch.getAllCounters()).thenReturn(Arrays.asList(c1, c2));
-        
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printStopwatch(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-        
+
+        assertThat(printedString, is(expectedString));
+    }
+
+    /**
+     * Test stopwatch printing onto a PrintStream with a custom time unit
+     */
+    @Test
+    public void printStopwatch_withStopwatchAndPrintStreamAndTimeUnit_printsTableToTheStreamInTheGivenTimeUnit()
+            throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        String expectedString = PrintUtils.toTableFormat(Arrays.asList(c1, c2), TimeUnit.MILLISECONDS);
+
+        // Prepare stopwatch
+        Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
+        Mockito.when(stopwatch.getAllCounters()).thenReturn(Arrays.asList(c1, c2));
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printStopwatch(stopwatch, ps, TimeUnit.MILLISECONDS);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
         assertThat(printedString, is(expectedString));
     }
 

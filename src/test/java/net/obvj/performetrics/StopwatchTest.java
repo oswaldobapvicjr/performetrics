@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -262,13 +264,27 @@ public class StopwatchTest
      * Tests that the method that prints stopwatch data calls the PrintUtils class
      */
     @Test
-    public void printStatistics_withNoArgument_sendsDataToStandardOutput()
+    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         PowerMockito.mockStatic(PrintUtils.class);
         Stopwatch sw = new Stopwatch();
         sw.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printStopwatch(sw, System.out);
+    }
+
+    /**
+     * Tests that the method that prints stopwatch data in custom time unit calls the correct
+     * PrintUtils method
+     */
+    @Test
+    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    {
+        PowerMockito.mockStatic(PrintUtils.class);
+        Stopwatch sw = new Stopwatch();
+        sw.printStatistics(System.out, TimeUnit.SECONDS);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printStopwatch(sw, System.out, TimeUnit.SECONDS);
     }
 
 }

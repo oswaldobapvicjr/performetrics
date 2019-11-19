@@ -21,12 +21,21 @@ public class WallClockTimeCallableOperation<V> extends SimpleMonitorableOperatio
     private Callable<V> targetCallable;
     private Object lock = new Object();
 
+    /**
+     * Builds this monitorable operation with a given {@link Callable} to be profiled using
+     * wall-clock time.
+     * 
+     * @param targetCallable the {@link Callable} to be executed and profiled
+     */
     public WallClockTimeCallableOperation(Callable<V> targetCallable)
     {
         super(Type.WALL_CLOCK_TIME, MILLISECONDS);
         this.targetCallable = targetCallable;
     }
 
+    /**
+     * See {@link Callable#call()}.
+     */
     @Override
     public V call() throws Exception
     {

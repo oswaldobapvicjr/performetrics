@@ -17,11 +17,12 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
 public class MultiCounterCallableOperation<V> extends MultiCounterMonitorableOperation implements Callable<V>
 {
     private Callable<V> targetCallable;
-    private Object lock = new Object();
 
     /**
+     * Builds this monitorable operation with a given {@link Callable} and counter type(s).
+     * 
      * @param targetCallable the Callable to be executed
-     * @param types the counter types to be maintained with the operation
+     * @param types          the counter types to be maintained with the operation
      */
     public MultiCounterCallableOperation(Callable<V> targetCallable, Type... types)
     {
@@ -29,20 +30,20 @@ public class MultiCounterCallableOperation<V> extends MultiCounterMonitorableOpe
         this.targetCallable = targetCallable;
     }
 
+    /**
+     * See {@link Callable#call()}.
+     */
     @Override
     public V call() throws Exception
     {
-        synchronized (lock)
+        stopwatch.start();
+        try
         {
-            stopwatch.start();
-            try
-            {
-                return targetCallable.call();
-            }
-            finally
-            {
-                stopwatch.stop();
-            }
+            return targetCallable.call();
+        }
+        finally
+        {
+            stopwatch.stop();
         }
     }
 

@@ -14,11 +14,12 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
 public class MultiCounterRunnableOperation extends MultiCounterMonitorableOperation implements Runnable
 {
     private Runnable targetRunnable;
-    private Object lock = new Object();
 
     /**
-     * @param targetRunnable the Runnable to be executed
-     * @param types the counter types to be maintained with the operation
+     * Builds this monitorable operation with a given {@link Runnable} and counter type(s).
+     * 
+     * @param targetRunnable the {@link Runnable} to be executed and profiled
+     * @param types          the counter types to be maintained with the operation
      */
     public MultiCounterRunnableOperation(Runnable targetRunnable, Type... types)
     {
@@ -26,20 +27,20 @@ public class MultiCounterRunnableOperation extends MultiCounterMonitorableOperat
         this.targetRunnable = targetRunnable;
     }
 
+    /**
+     * See {@link Runnable#run()}.
+     */
     @Override
     public void run()
     {
-        synchronized (lock)
+        stopwatch.start();
+        try
         {
-            stopwatch.start();
-            try
-            {
-                targetRunnable.run();
-            }
-            finally
-            {
-                stopwatch.stop();
-            }
+            targetRunnable.run();
+        }
+        finally
+        {
+            stopwatch.stop();
         }
     }
 

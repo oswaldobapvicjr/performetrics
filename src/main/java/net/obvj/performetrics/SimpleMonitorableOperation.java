@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import net.obvj.performetrics.Counter.Type;
 
 /**
- * A base object for monitorable operations that require a single counter.
+ * A base object for monitorable operations profiled with a single counter.
  *
  * @author oswaldo.bapvic.jr
  */
@@ -16,7 +16,7 @@ public abstract class SimpleMonitorableOperation
     /**
      * Builds this operation with a new counter of the specified type and time unit.
      *
-     * @param type the counter type to created
+     * @param type     the counter type to created
      * @param timeUnit the time unit to be set
      */
     public SimpleMonitorableOperation(Type type, TimeUnit timeUnit)
@@ -33,11 +33,14 @@ public abstract class SimpleMonitorableOperation
     }
 
     /**
-     * @return the time unit set for the counter object maintained by this operation
+     * Returns the elapsed time, in a given {@link TimeUnit}.
+     * 
+     * @param timeUnit the time unit to which the elapsed time will be converted
+     * @return the difference between units before and units after, in the given time unit
      */
-    public TimeUnit getTimeUnit()
+    public long elapsedTime(TimeUnit timeUnit)
     {
-        return counter.getDefaultTimeUnit();
+        return counter.elapsedTime(timeUnit);
     }
 
 }

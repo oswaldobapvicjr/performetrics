@@ -8,7 +8,11 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
  * evaluation.
  * <p>
  * The counters are stored in default time unit (nanoseconds).
- *
+ * <p>
+ * <b>Note:</b> Not thread-safe. It is recommended to create separate instances for each
+ * thread. If multiple threads access the same instance of this class, the metrics may be
+ * inconsistent.
+ * 
  * @author oswaldo.bapvic.jr
  */
 public class MultiCounterRunnableOperation extends MultiCounterMonitorableOperation implements Runnable

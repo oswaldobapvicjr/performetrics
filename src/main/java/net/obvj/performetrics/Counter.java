@@ -212,6 +212,8 @@ public class Counter
     }
 
     /**
+     * Returns the elapsed time, in a given {@link TimeUnit}.
+     * 
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between units before and units after, in the given time unit
      */

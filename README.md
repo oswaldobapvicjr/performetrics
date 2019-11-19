@@ -69,10 +69,10 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
     >  +-----------------+----------------------+--------------+
     >  | Counter         |         Elapsed time | Time unit    |
     >  +-----------------+----------------------+--------------+
-    >  | WALL_CLOCK_TIME |             85605718 | NANOSECONDS  |
-    >  | CPU_TIME        |             78000500 | NANOSECONDS  |
-    >  | USER_TIME       |             62400400 | NANOSECONDS  |
-    >  | SYSTEM_TIME     |             15600100 | NANOSECONDS  |
+    >  | Wall clock time |             85605718 | nanoseconds  |
+    >  | CPU time        |             78000500 | nanoseconds  |
+    >  | User time       |             62400400 | nanoseconds  |
+    >  | System time     |             15600100 | nanoseconds  |
     >  +-----------------+----------------------+--------------+
     > ````
 
@@ -84,7 +84,7 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 
     ```java
     Runnable myRunnable; //target runnable initialization omitted
-    CpuTimeRunnableOperation timedRunnable = new CpuTimeRunnableOperation(myRunnable);
+    SimpleMonitorableOperation monitoredRunnable = new CpuTimeRunnableOperation(myRunnable);
     ```
 
 2. Run it:
@@ -96,6 +96,6 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 3. Get the elapsed time:
 
     ```java
-    Counter cpuTime = timedRunnable.getCounter();
+    Counter cpuTime = monitoredRunnable.getCounter();
     long elapsedTime = cpuTime.elapsedTime(TimeUnit.NANOSECONDS);
     ```

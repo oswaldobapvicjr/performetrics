@@ -3,6 +3,7 @@ package net.obvj.performetrics.runnable;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.junit.Test;
@@ -63,7 +64,8 @@ public class WallClockTimeRunnableOperationTest
         assertThat("Units-before should have been updated", counter.getUnitsBefore(), is(greaterThan(0L)));
         assertThat("Units-after should have been updated", counter.getUnitsAfter(), is(greaterThan(0L)));
         assertThat("The elapsed time should be greater than the Callable's sleep time",
-                operation.getTimeUnit().toMillis(counter.elapsedTime()), is(greaterThanOrEqualTo(DUMMY_SLEEP_TIME)));
+                counter.getDefaultTimeUnit().toMillis(counter.elapsedTime()), is(greaterThanOrEqualTo(DUMMY_SLEEP_TIME)));
+        assertThat(operation.elapsedTime(TimeUnit.MILLISECONDS), is(counter.elapsedTime()));
     }
 
 }

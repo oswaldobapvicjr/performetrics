@@ -32,7 +32,7 @@ public class PerformetricsUtils
      * source in nanoseconds.
      *
      * @return the difference, measured in nanoseconds between current time and some arbitrary
-     * origin time for the current JVM, that can be used for measuring elapsed times.
+     *         origin time for the current JVM, that can be used for measuring elapsed times.
      */
     public static long getWallClockTimeNanos()
     {
@@ -42,13 +42,13 @@ public class PerformetricsUtils
     /**
      * Returns the total time spent using a CPU for the current thread in nanoseconds.
      *
-     * @return the total CPU time for the current thread if CPU time measurement is enabled; 0
-     *         otherwise.
+     * @return the total CPU time for the current thread if CPU time measurement is enabled;
+     *         -1 otherwise.
      **/
     public static long getCpuTimeNanos()
     {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
+        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : -1L;
     }
 
     /**
@@ -56,12 +56,12 @@ public class PerformetricsUtils
      * (i.e., the time spent running current thread's own code).
      *
      * @return the user-level CPU time for the current thread if CPU time measurement is
-     *         enabled; 0 otherwise.
+     *         enabled; -1 otherwise.
      **/
     public static long getUserTimeNanos()
     {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadUserTime() : 0L;
+        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadUserTime() : -1L;
     }
 
     /**
@@ -69,7 +69,7 @@ public class PerformetricsUtils
      * application) in nanoseconds, by calculating the difference between CPU time and user
      * time for the current thread.
      *
-     * @return the system time for the current thread if CPU time measurement is enabled; 0
+     * @return the system time for the current thread if CPU time measurement is enabled; -1
      *         otherwise.
      */
     public static long getSystemTimeNanos()
@@ -77,6 +77,6 @@ public class PerformetricsUtils
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
         return bean.isCurrentThreadCpuTimeSupported()
                 ? (bean.getCurrentThreadCpuTime() - bean.getCurrentThreadUserTime())
-                : 0L;
+                : -1L;
     }
 }

@@ -90,7 +90,7 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 2. Run it:
 
     ```java
-    timedRunnable.run();
+    monitoredRunnable.run();
     ```
 
 3. Get the elapsed time:

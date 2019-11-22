@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -190,6 +191,47 @@ public class PrintUtilsTest
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printStopwatch(stopwatch, ps, TimeUnit.MILLISECONDS);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(expectedString));
+    }
+
+    /**
+     * Test counters printing onto a PrintStream.
+     */
+    @Test
+    public void printCounters_withCollectionAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        List<Counter> counters = Arrays.asList(c1, c2);
+        String expectedString = PrintUtils.toTableFormat(counters);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printCounters(counters, ps);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(expectedString));
+    }
+
+    /**
+     * Test counters printing onto a PrintStream with a custom time unit
+     */
+    @Test
+    public void printCounters_withCollectionsAndPrintStreamAndTimeUnit_printsTableToTheStreamInTheGivenTimeUnit()
+            throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        List<Counter> counters = Arrays.asList(c1, c2);
+        String expectedString = PrintUtils.toTableFormat(counters, TimeUnit.MILLISECONDS);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printCounters(counters, ps, TimeUnit.MILLISECONDS);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));

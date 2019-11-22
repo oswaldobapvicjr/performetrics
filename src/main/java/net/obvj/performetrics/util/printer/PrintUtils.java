@@ -45,6 +45,18 @@ public class PrintUtils
     }
 
     /**
+     * Prints the statistics for the given counters in the specified print stream.
+     *
+     * @param counters   the counters to be printed
+     * @param printStream the print stream to which statistics will be sent
+     * @throws NullPointerException if a null stopwatch or print stream is received
+     */
+    public static void printCounters(Collection<Counter> counters, PrintStream printStream)
+    {
+        printCounters(counters, printStream, null);
+    }
+
+    /**
      * Prints the statistics for the given stopwatch in the specified print stream.
      *
      * @param stopwatch   the stopwatch to be printed
@@ -55,7 +67,21 @@ public class PrintUtils
      */
     public static void printStopwatch(Stopwatch stopwatch, PrintStream printStream, TimeUnit timeUnit)
     {
-        printStream.print(toTableFormat(stopwatch.getAllCounters(), timeUnit));
+        printCounters(stopwatch.getAllCounters(), printStream, timeUnit);
+    }
+    
+    /**
+     * Prints the statistics for the given counters in the specified print stream.
+     *
+     * @param counters    the counters to be printed
+     * @param printStream the print stream to which statistics will be sent
+     * @param timeUnit    the time unit in which elapsed times will be displayed; if null, the
+     *                    default time unit specified for each counter will be applied
+     * @throws NullPointerException if a null collection  or print stream is received
+     */
+    public static void printCounters(Collection<Counter> counters, PrintStream printStream, TimeUnit timeUnit)
+    {
+        printStream.print(toTableFormat(counters, timeUnit));
     }
 
     /**

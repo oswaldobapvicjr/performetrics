@@ -20,7 +20,17 @@ public class MultiCounterRunnableOperation extends MultiCounterMonitorableOperat
     private Runnable targetRunnable;
 
     /**
-     * Builds this monitorable operation with a given {@link Runnable} and counter type(s).
+     * Builds this monitorable operation with a given {@link Runnable}.
+     * 
+     * @param targetRunnable the {@link Runnable} to be executed and profiled
+     */
+    public MultiCounterRunnableOperation(Runnable targetRunnable)
+    {
+        this(targetRunnable, NO_SPECIFIC_TYPE);
+    }
+    
+    /**
+     * Builds this monitorable operation with a given {@link Runnable} and specific counter type(s).
      * 
      * @param targetRunnable the {@link Runnable} to be executed and profiled
      * @param types          the counter types to be maintained with the operation

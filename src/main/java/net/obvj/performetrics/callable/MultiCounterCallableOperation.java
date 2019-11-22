@@ -19,7 +19,17 @@ public class MultiCounterCallableOperation<V> extends MultiCounterMonitorableOpe
     private Callable<V> targetCallable;
 
     /**
-     * Builds this monitorable operation with a given {@link Callable} and counter type(s).
+     * Builds this monitorable operation with a given {@link Callable}.
+     * 
+     * @param targetCallable the Callable to be executed
+     */
+    public MultiCounterCallableOperation(Callable<V> targetCallable)
+    {
+        this(targetCallable, NO_SPECIFIC_TYPE);
+    }
+    
+    /**
+     * Builds this monitorable operation with a given {@link Callable} and specific counter type(s).
      * 
      * @param targetCallable the Callable to be executed
      * @param types          the counter types to be maintained with the operation

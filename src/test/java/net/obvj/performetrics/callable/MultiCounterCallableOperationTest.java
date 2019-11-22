@@ -4,13 +4,16 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -22,14 +25,15 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.MultiCounterMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * Test methods for the {@link MultiCounterCallableOperation}
+ * Test methods for the {@link MultiCounterCallableOperation}.
  *
  * @author oswaldo.bapvic.jr
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PerformetricsUtils.class)
+@PrepareForTest({ PerformetricsUtils.class, PrintUtils.class })
 public class MultiCounterCallableOperationTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -40,6 +44,12 @@ public class MultiCounterCallableOperationTest
 
     @Mock
     private Callable<String> callable;
+
+    @Before
+    public void setup()
+    {
+        PowerMockito.mockStatic(PrintUtils.class);
+    }
 
     /**
      * Setup the expects on {@link PerformetricsUtils} mock with constant values
@@ -109,7 +119,7 @@ public class MultiCounterCallableOperationTest
     @Test
     public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable, WALL_CLOCK_TIME);
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<>(callable, WALL_CLOCK_TIME);
         assertThat(op.getCounters().size(), is(1));
         Counter counter = op.getCounter(WALL_CLOCK_TIME);
         assertAllUnitsBeforeEqualZero(counter);
@@ -123,7 +133,7 @@ public class MultiCounterCallableOperationTest
     @Test
     public void constructor_withTwoTypes_assignsCorrectCountersAndInitialValues()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable, SYSTEM_TIME,
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<>(callable, SYSTEM_TIME,
                 USER_TIME);
         assertThat(op.getCounters().size(), is(2));
         Counter counter1 = op.getCounter(SYSTEM_TIME);
@@ -139,7 +149,7 @@ public class MultiCounterCallableOperationTest
     @Test
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
-        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<String>(callable);
+        MultiCounterCallableOperation<String> op = new MultiCounterCallableOperation<>(callable);
         assertThat(op.getCounters().size(), is(Type.values().length));
         assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
@@ -158,11 +168,36 @@ public class MultiCounterCallableOperationTest
     {
         setupMockedCallable();
         PowerMockito.mockStatic(PerformetricsUtils.class);
-        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<String>(callable);
+        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<>(callable);
         setupExpects();
         assertThat(operation.call(), is(STRING_CALLABLE_RETURN));
         assertAllUnitsBefore(operation);
         assertAllUnitsAfter(operation);
+    }
+
+    /**
+     * Tests that the method that prints operation statistics calls the PrintUtils class
+     */
+    @Test
+    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<>(callable);
+        operation.printStatistics(System.out);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printCounters(operation.getCounters(), System.out);
+    }
+
+    /**
+     * Tests that the method that prints operation statistics in custom time unit calls the correct
+     * PrintUtils method
+     */
+    @Test
+    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    {
+        MultiCounterCallableOperation<String> operation = new MultiCounterCallableOperation<>(callable);
+        operation.printStatistics(System.out, TimeUnit.SECONDS);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printCounters(operation.getCounters(), System.out, TimeUnit.SECONDS);
     }
 
 }

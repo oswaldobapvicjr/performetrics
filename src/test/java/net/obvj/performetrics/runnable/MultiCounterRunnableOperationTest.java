@@ -4,11 +4,15 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -20,14 +24,15 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.MultiCounterMonitorableOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * Test methods for the {@link MultiCounterRunnableOperation}
+ * Test methods for the {@link MultiCounterRunnableOperation}.
  *
  * @author oswaldo.bapvic.jr
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PerformetricsUtils.class)
+@PrepareForTest({ PerformetricsUtils.class, PrintUtils.class })
 public class MultiCounterRunnableOperationTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -38,6 +43,12 @@ public class MultiCounterRunnableOperationTest
     @Mock
     private Runnable runnable;
 
+    @Before
+    public void setup()
+    {
+        PowerMockito.mockStatic(PrintUtils.class);
+    }
+    
     /**
      * Setup the expects on {@link PerformetricsUtils} mock with constant values
      */
@@ -147,6 +158,31 @@ public class MultiCounterRunnableOperationTest
         operation.run();
         assertAllUnitsBefore(operation);
         assertAllUnitsAfter(operation);
+    }
+    
+    /**
+     * Tests that the method that prints operation statistics calls the PrintUtils class
+     */
+    @Test
+    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        MultiCounterRunnableOperation operation = new MultiCounterRunnableOperation(runnable);
+        operation.printStatistics(System.out);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printCounters(operation.getCounters(), System.out);
+    }
+
+    /**
+     * Tests that the method that prints operation statistics in custom time unit calls the correct
+     * PrintUtils method
+     */
+    @Test
+    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    {
+        MultiCounterRunnableOperation operation = new MultiCounterRunnableOperation(runnable);
+        operation.printStatistics(System.out, TimeUnit.SECONDS);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printCounters(operation.getCounters(), System.out, TimeUnit.SECONDS);
     }
 
 }

@@ -33,6 +33,8 @@ public class Stopwatch
 
     /**
      * Creates a new stopwatch with specific counter types
+     *
+     * @param types the types to be set
      */
     public Stopwatch(Type... types)
     {
@@ -53,6 +55,7 @@ public class Stopwatch
     /**
      * Provides a started stopwatch for convenience with specific counter types
      *
+     * @param types the types to be set
      * @return a new, started stopwatch
      */
     public static Stopwatch createStarted(Type... types)

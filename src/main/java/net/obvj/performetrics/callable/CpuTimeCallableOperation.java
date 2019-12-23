@@ -12,8 +12,8 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  * A {@link Callable} that maintains a CPU time counter for elapsed time evaluation
  * <p>
  * The CPU time is stored in nanoseconds.
- * 
- * @param <V> the result type of method <tt>call</tt>
+ *
+ * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr
  */
 public class CpuTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
@@ -23,7 +23,7 @@ public class CpuTimeCallableOperation<V> extends SimpleMonitorableOperation impl
     /**
      * Builds this monitorable operation with a given {@link Callable} to be profiled using
      * CPU time.
-     * 
+     *
      * @param targetCallable the {@link Callable} to be executed and profiled
      */
     public CpuTimeCallableOperation(Callable<V> targetCallable)

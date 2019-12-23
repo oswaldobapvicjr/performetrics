@@ -5,21 +5,37 @@
 
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>performetrics</name>
-    <description>
-        A simple performance data generator for Java applications
-    </description>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Performetrics</name>
+    <description>A performance data generator for Java applications</description>
+    <url>https://obvj.net/performetrics</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Oswaldo Baptista Vicente Junior</name>
+            <email>oswaldo.bapvic.jr@outlook.com</email>
+            <organizationUrl>https://obvj.net</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/oswaldobapvicjr/performetrics/tree/master</url>
+    </scm>
 
     <properties>
-
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <junit4.version>4.4</junit4.version>
         <powermock.version>2.0.2</powermock.version>
-
     </properties>
 
     <dependencies>
@@ -51,6 +67,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <show>protected</show>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-javadoc-jar</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

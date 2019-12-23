@@ -13,7 +13,7 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  * <p>
  * The wall-clock time is stored in milliseconds.
  *
- * @param <V> the result type of method <tt>call</tt>
+ * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr
  */
 public class WallClockTimeCallableOperation<V> extends SimpleMonitorableOperation implements Callable<V>
@@ -24,7 +24,7 @@ public class WallClockTimeCallableOperation<V> extends SimpleMonitorableOperatio
     /**
      * Builds this monitorable operation with a given {@link Callable} to be profiled using
      * wall-clock time.
-     * 
+     *
      * @param targetCallable the {@link Callable} to be executed and profiled
      */
     public WallClockTimeCallableOperation(Callable<V> targetCallable)

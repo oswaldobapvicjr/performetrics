@@ -83,7 +83,7 @@ public class Counter
 
         /**
          * Executes default data fetch strategy for the specific type.
-         * 
+         *
          * @param targetTimeUnit the time unit in which the data will be returned
          * @return the default data strategy for this type, in the specified time unit
          */
@@ -177,7 +177,7 @@ public class Counter
     }
 
     /**
-     * @return set the units before with this counter's default data fetch strategy
+     * Set the units before with this counter's default data fetch strategy
      */
     public void before()
     {
@@ -185,7 +185,7 @@ public class Counter
     }
 
     /**
-     * @return set the units after with this counter's default data fetch strategy
+     * Set the units after with this counter's default data fetch strategy
      */
     public void after()
     {
@@ -213,7 +213,7 @@ public class Counter
 
     /**
      * Returns the elapsed time, in a given {@link TimeUnit}.
-     * 
+     *
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between units before and units after, in the given time unit
      */

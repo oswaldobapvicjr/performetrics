@@ -11,7 +11,7 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
  * <p>
  * The counters are stored in default time unit (nanoseconds).
  *
- * @param <V> the result type of method <tt>call</tt>
+ * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr
  */
 public class MultiCounterCallableOperation<V> extends MultiCounterMonitorableOperation implements Callable<V>
@@ -20,17 +20,17 @@ public class MultiCounterCallableOperation<V> extends MultiCounterMonitorableOpe
 
     /**
      * Builds this monitorable operation with a given {@link Callable}.
-     * 
+     *
      * @param targetCallable the Callable to be executed
      */
     public MultiCounterCallableOperation(Callable<V> targetCallable)
     {
         this(targetCallable, NO_SPECIFIC_TYPE);
     }
-    
+
     /**
      * Builds this monitorable operation with a given {@link Callable} and specific counter type(s).
-     * 
+     *
      * @param targetCallable the Callable to be executed
      * @param types          the counter types to be maintained with the operation
      */

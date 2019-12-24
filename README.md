@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/oswaldobapvicjr/performetrics.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/performetrics)
 [![Coverage Status](https://coveralls.io/repos/github/oswaldobapvicjr/performetrics/badge.svg?branch=master)](https://coveralls.io/github/oswaldobapvicjr/performetrics?branch=master)
-[![Maven Central](https://img.shields.io/maven-central/v/net.obvj/performetrics.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22net.obvj%22%20AND%20a:%22performetrics%22)
-[![javadoc](https://javadoc.io/badge2/net.obvj/performetrics/javadoc.svg)](https://javadoc.io/doc/net.obvj/performetrics)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics)
+[![Javadoc](https://javadoc.io/badge2/net.obvj/performetrics/javadoc.svg)](https://javadoc.io/doc/net.obvj/performetrics)
 
 A simple performance data generator for Java applications
 
@@ -31,13 +31,13 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 To include **Performetrics** in your Maven project, add it as a dependency on your pom.xml file:
 
-    ```xml
-    <dependency>
-        <groupId>net.obvj</groupId>
-        <artifactId>performetrics</artifactId>
-        <version>1.0.0</version>
-    </dependency>
-    ```
+```xml
+<dependency>
+    <groupId>net.obvj</groupId>
+    <artifactId>performetrics</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ---
 

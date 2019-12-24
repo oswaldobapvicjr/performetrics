@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/oswaldobapvicjr/performetrics.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/performetrics)
 [![Coverage Status](https://coveralls.io/repos/github/oswaldobapvicjr/performetrics/badge.svg?branch=master)](https://coveralls.io/github/oswaldobapvicjr/performetrics?branch=master)
+[![Maven Central](https://img.shields.io/maven-central/v/net.obvj/performetrics.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22net.obvj%22%20AND%20a:%22performetrics%22)
+[![javadoc](https://javadoc.io/badge2/net.obvj/performetrics/javadoc.svg)](https://javadoc.io/doc/net.obvj/performetrics)
 
 A simple performance data generator for Java applications
 
@@ -25,11 +27,25 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 ---
 
+## How to include it
+
+To include **Performetrics** in your Maven project, add it as a dependency on your pom.xml file:
+
+    ```xml
+    <dependency>
+        <groupId>net.obvj</groupId>
+        <artifactId>performetrics</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+    ```
+
+---
+
 ## How to use it
 
 ### Example 1: Using the Stopwatch class
 
-1. Add **Performetrics** to your project and the following import to your class:
+1. Once you have included **Performetrics** into your Java project, add the following import to your class:
 
     ```java
     import net.obvj.performetrics.Stopwatch;
@@ -84,7 +100,7 @@ Check out some convenient classes inside the packages `net.obvj.performetrics.ca
 
     ```java
     Runnable myRunnable; //target runnable initialization omitted
-    SimpleMonitorableOperation monitoredRunnable = new CpuTimeRunnableOperation(myRunnable);
+    CpuTimeRunnableOperation monitoredRunnable = new CpuTimeRunnableOperation(myRunnable);
     ```
 
 2. Run it:

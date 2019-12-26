@@ -22,7 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.MultiCounterMonitorableOperation;
+import net.obvj.performetrics.MonitoredOperation;
 import net.obvj.performetrics.util.PerformetricsUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
@@ -63,7 +63,7 @@ public class MonitoredRunnableTest
     /**
      * Checks that all units-before are equal to the test constants
      */
-    private void assertAllUnitsBefore(MultiCounterMonitorableOperation operation)
+    private void assertAllUnitsBefore(MonitoredOperation operation)
     {
         assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(MOCKED_WALL_CLOCK_TIME));
         assertThat(operation.getCounter(CPU_TIME).getUnitsBefore(), is(MOCKED_CPU_TIME));
@@ -74,7 +74,7 @@ public class MonitoredRunnableTest
     /**
      * Checks that all units-after are equal to the test constants
      */
-    private void assertAllUnitsAfter(MultiCounterMonitorableOperation operation)
+    private void assertAllUnitsAfter(MonitoredOperation operation)
     {
         assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(MOCKED_WALL_CLOCK_TIME));
         assertThat(operation.getCounter(CPU_TIME).getUnitsAfter(), is(MOCKED_CPU_TIME));

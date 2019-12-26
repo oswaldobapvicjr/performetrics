@@ -287,4 +287,11 @@ public class StopwatchTest
         PrintUtils.printStopwatch(sw, System.out, TimeUnit.SECONDS);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void getCounter_invalidType_throwsException()
+    {
+        Stopwatch sw = new Stopwatch(Type.CPU_TIME, Type.SYSTEM_TIME);
+        sw.getCounter(USER_TIME);
+    }
+
 }

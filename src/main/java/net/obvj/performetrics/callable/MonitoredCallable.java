@@ -3,7 +3,7 @@ package net.obvj.performetrics.callable;
 import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.MultiCounterMonitorableOperation;
+import net.obvj.performetrics.MonitoredOperation;
 
 /**
  * A {@link Callable} that maintains one or more custom counters for elapsed time
@@ -18,7 +18,7 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
  * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr
  */
-public class MonitoredCallable<V> extends MultiCounterMonitorableOperation implements Callable<V>
+public class MonitoredCallable<V> extends MonitoredOperation implements Callable<V>
 {
     private Callable<V> targetCallable;
 

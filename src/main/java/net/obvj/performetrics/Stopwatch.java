@@ -1,6 +1,7 @@
 package net.obvj.performetrics;
 
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,6 +19,8 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  */
 public class Stopwatch
 {
+    private static final String MSG_PATTERN_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this instance. Available type(s): {1}";
+
     private static final Type[] DEFAULT_TYPES = Type.values();
 
     private final Type[] types;
@@ -110,9 +113,15 @@ public class Stopwatch
     /**
      * @param type the counter type to be fetched
      * @return the counter matching the given type inside this stopwatch
+     * @throws IllegalArgumentException if the specified type is not available
      */
     public Counter getCounter(Type type)
     {
+        if (!counters.containsKey(type))
+        {
+            throw new IllegalArgumentException(
+                    MessageFormat.format(MSG_PATTERN_TYPE_NOT_AVAILABLE, type, counters.keySet()));
+        }
         return counters.get(type);
     }
 

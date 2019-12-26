@@ -1,7 +1,7 @@
 package net.obvj.performetrics.runnable;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.MultiCounterMonitorableOperation;
+import net.obvj.performetrics.MonitoredOperation;
 
 /**
  * A {@link Runnable} that maintains one or more custom counters for elapsed time
@@ -15,7 +15,7 @@ import net.obvj.performetrics.MultiCounterMonitorableOperation;
  *
  * @author oswaldo.bapvic.jr
  */
-public class MonitoredRunnable extends MultiCounterMonitorableOperation implements Runnable
+public class MonitoredRunnable extends MonitoredOperation implements Runnable
 {
     private Runnable targetRunnable;
 

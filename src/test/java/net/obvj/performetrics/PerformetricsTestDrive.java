@@ -3,7 +3,7 @@ package net.obvj.performetrics;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.runnable.MultiCounterRunnableOperation;
+import net.obvj.performetrics.runnable.MonitoredRunnable;
 
 public class PerformetricsTestDrive
 {
@@ -19,7 +19,7 @@ public class PerformetricsTestDrive
         Stopwatch sw = Stopwatch.createStarted(Type.WALL_CLOCK_TIME);
         Thread.sleep(2000);
         sw.stop();
-        
+
         System.out.println(sw.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.NANOSECONDS));
         System.out.println(sw.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS));
         System.out.println(sw.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.SECONDS));
@@ -27,19 +27,19 @@ public class PerformetricsTestDrive
         sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
         sw.printStatistics(System.out, TimeUnit.SECONDS);
     }
-    
+
     private static void testRunnableWithLambda() throws InterruptedException
     {
-        MultiCounterRunnableOperation operation = new MultiCounterRunnableOperation(() -> {
+        MonitoredRunnable operation = new MonitoredRunnable(() -> {
             try
             {
                 Thread.sleep(2000);
             }
             catch (InterruptedException e) {}
-        });
-        
+        }, Counter.Type.WALL_CLOCK_TIME);
+
         operation.run();
-        
+
         System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.NANOSECONDS));
         System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS));
         System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.SECONDS));

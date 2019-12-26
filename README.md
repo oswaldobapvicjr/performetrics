@@ -92,16 +92,18 @@ To include **Performetrics** in your Maven project, add it as a dependency on yo
     >  +-----------------+----------------------+--------------+
     > ````
 
-### Example 2: Using one of the Runnable or Callable operations
+### Example 2: Using a MonitoredRunnable or MonitoredCallable
 
-Check out some convenient classes inside the packages `net.obvj.performetrics.callable` and `net.obvj.performetrics.runnable`. In this example, we are using the `CpuTimeRunnableOperation` to measure the CPU time of a given Runnable, in nanoseconds:
+In this example, we are using the `MonitoredRunnable` class to measure the CPU time of a given Runnable, in nanoseconds:
 
-1. Create a `CpuTimeRunnableOperation` with the Runnable to be monitored attached:
+1. Create a `MonitoredRunnable` with the Runnable to be monitored attached:
 
     ```java
     Runnable myRunnable; //target runnable initialization omitted
-    CpuTimeRunnableOperation monitoredRunnable = new CpuTimeRunnableOperation(myRunnable);
+    MonitoredRunnable monitoredRunnable = new MonitoredRunnable(myRunnable, Type.CPU_TIME);
     ```
+
+    > **Note:** If no specific counter type is passed, all available counters will be maintained.
 
 2. Run it:
 

@@ -20,7 +20,7 @@ public class Counter
     public enum Type
     {
         /**
-         * The elapsed time experienced by a user waiting for a task to complete
+         * The elapsed time experienced by a user waiting for a task to complete.
          */
         WALL_CLOCK_TIME("Wall clock time")
         {
@@ -32,7 +32,7 @@ public class Counter
         },
 
         /**
-         * The total time spent using a CPU for the current thread
+         * The total time spent using a CPU for the current thread.
          */
         CPU_TIME("CPU time")
         {
@@ -44,7 +44,7 @@ public class Counter
         },
 
         /**
-         * The total CPU time that the current thread has executed in user mode
+         * The total CPU time that the current thread has executed in user mode.
          */
         USER_TIME("User time")
         {
@@ -57,7 +57,7 @@ public class Counter
 
         /**
          * The time spent by the kernel to execute system level operations on behalf of the
-         * application
+         * application.
          */
         SYSTEM_TIME("System time")
         {
@@ -75,6 +75,9 @@ public class Counter
             this.name = name;
         }
 
+        /**
+         * Returns the textual representation associated with this Type.
+         */
         @Override
         public String toString()
         {
@@ -222,6 +225,11 @@ public class Counter
         return timeUnit.convert(elapsedTime(), this.defaultTimeUnit);
     }
 
+    /**
+     * Returns a string representation of this object.
+     *
+     * @see Object#toString()
+     */
     @Override
     public String toString()
     {

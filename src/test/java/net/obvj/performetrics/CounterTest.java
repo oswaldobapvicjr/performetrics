@@ -6,8 +6,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,13 +30,13 @@ import net.obvj.performetrics.util.PerformetricsUtils;
 @PrepareForTest(PerformetricsUtils.class)
 public class CounterTest
 {
-   
+
     @Before
     public void setup()
     {
         PowerMockito.mockStatic(PerformetricsUtils.class);
     }
-    
+
     @Test
     public void constructor_withType_assignsDefaultTimeUnit()
     {
@@ -94,7 +94,7 @@ public class CounterTest
         counter.setUnitsAfter(6000000000l); // 5 seconds after
         assertThat(counter.getDefaultTimeUnit().toSeconds(counter.elapsedTime()), is(5L));
     }
-    
+
     @Test
     public void elapsedTime_withTimeUnitEqualToTheOriginal_returnsDifferenceInOriginalTimeUnit()
     {
@@ -104,7 +104,7 @@ public class CounterTest
         counter.setUnitsAfter(3); // 1 second after
         assertThat(counter.elapsedTime(TimeUnit.SECONDS), is(1L));
     }
-    
+
     @Test
     public void elapsedTime_withTimeUnitLowerThanOriginal_returnsDifferenceConverted()
     {
@@ -114,7 +114,7 @@ public class CounterTest
         counter.setUnitsAfter(3); // 1 second after
         assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(1000L));
     }
-    
+
     @Test
     public void elapsedTime_withTimeUnitHigherThanOriginal_returnsDifferenceConverted()
     {
@@ -132,6 +132,15 @@ public class CounterTest
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
         counter.setUnitsBefore(2000);
         assertThat(counter.elapsedTime(), is(7000L));
+    }
+
+    @Test
+    public void elapsedTime_unitsAfterLowerThanUnitsBefore_negative1()
+    {
+        Counter counter = new Counter(WALL_CLOCK_TIME);
+        counter.setUnitsBefore(5000);
+        counter.setUnitsAfter(500);
+        assertThat(counter.elapsedTime(), is(-1L));
     }
 
 }

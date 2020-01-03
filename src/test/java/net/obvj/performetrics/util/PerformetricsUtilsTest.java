@@ -1,7 +1,9 @@
 package net.obvj.performetrics.util;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,5 +42,17 @@ public class PerformetricsUtilsTest
             assertThat(cause.getMessage(), is("Utility class"));
             throw ite;
         }
+    }
+
+    @Test
+    public void getWallClockTimeMillis_positiveAmount()
+    {
+        assertThat(PerformetricsUtils.getWallClockTimeMillis(), is(greaterThan(0L)));
+    }
+
+    @Test
+    public void getWallClockTimeNanos_positiveAmount()
+    {
+        assertThat(PerformetricsUtils.getWallClockTimeNanos(), is(greaterThan(0L)));
     }
 }

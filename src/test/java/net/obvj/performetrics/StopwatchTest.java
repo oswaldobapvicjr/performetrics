@@ -4,6 +4,7 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;

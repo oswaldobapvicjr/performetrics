@@ -4,9 +4,9 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
@@ -48,7 +48,7 @@ public class MonitoredRunnableTest
     {
         PowerMockito.mockStatic(PrintUtils.class);
     }
-    
+
     /**
      * Setup the expects on {@link PerformetricsUtils} mock with constant values
      */
@@ -159,7 +159,7 @@ public class MonitoredRunnableTest
         assertAllUnitsBefore(operation);
         assertAllUnitsAfter(operation);
     }
-    
+
     /**
      * Tests that the method that prints operation statistics calls the PrintUtils class
      */

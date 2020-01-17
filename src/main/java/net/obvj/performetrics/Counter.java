@@ -1,10 +1,11 @@
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import java.util.concurrent.TimeUnit;
 
+import net.obvj.performetrics.strategy.ConversionStrategy;
 import net.obvj.performetrics.util.PerformetricsUtils;
-import net.obvj.performetrics.util.TimeUnitConverter;
 
 /**
  * An object containing units before and units after for a particular unit type
@@ -95,12 +96,19 @@ public class Counter
     }
 
     /**
-     * The default time unit to be stored (nanoseconds) if no specific time unit informed
+     * The default time unit to be maintained if no specific time unit informed
      */
     public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
 
+    /**
+     * The default conversion strategy to be used if no specific strategy informed
+     */
+    public static final ConversionStrategy DEFAULT_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
+
     private final Type type;
     private final TimeUnit defaultTimeUnit;
+
+    private ConversionStrategy conversionStrategy;
 
     private long unitsBefore = 0;
     private long unitsAfter = 0;
@@ -127,8 +135,21 @@ public class Counter
      */
     public Counter(Type type, TimeUnit timeUnit)
     {
+        this(type, timeUnit, DEFAULT_CONVERSION_STRATEGY);
+    }
+
+    /**
+     * Builds this Counter object with the given type, time unit, and conversion strategy.
+     *
+     * @param type               the type to set
+     * @param timeUnit           the unit to set
+     * @param conversionStrategy the {@link ConversionStrategy} to be applied
+     */
+    public Counter(Type type, TimeUnit timeUnit, ConversionStrategy conversionStrategy)
+    {
         this.type = type;
         this.defaultTimeUnit = timeUnit;
+        this.conversionStrategy = conversionStrategy;
     }
 
     /**
@@ -181,6 +202,14 @@ public class Counter
     }
 
     /**
+     * @return the {@link ConversionStrategy} used by this counter
+     */
+    public ConversionStrategy getConversionStrategy()
+    {
+        return conversionStrategy;
+    }
+
+    /**
      * Set the units before with this counter's default data fetch strategy
      */
     public void before()
@@ -209,7 +238,7 @@ public class Counter
      *         the difference between units before and the current units, retrieved by the
      *         counter's default data fetch strategy, if the units after ate not set.
      */
-    public double elapsedTime()
+    public long elapsedTime()
     {
         long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.defaultDataFetchStrategy(defaultTimeUnit);
         return elapsedTime(unitsBefore, tempUnitsAfter);
@@ -223,7 +252,7 @@ public class Counter
      */
     public double elapsedTime(TimeUnit timeUnit)
     {
-        return TimeUnitConverter.convert(elapsedTime(), this.defaultTimeUnit, timeUnit);
+        return conversionStrategy.convert(elapsedTime(), this.defaultTimeUnit, timeUnit);
     }
 
     /**

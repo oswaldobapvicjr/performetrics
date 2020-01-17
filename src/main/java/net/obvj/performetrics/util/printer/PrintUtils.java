@@ -1,6 +1,7 @@
 package net.obvj.performetrics.util.printer;
 
 import java.io.PrintStream;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,8 @@ public class PrintUtils
     protected static final String COUNTERS_TABLE_HEADER = String.format(COUNTERS_TABLE_ROW_FORMAT,
             COUNTERS_TABLE_COLUMN_COUNTER, COUNTERS_TABLE_COLUMN_ELAPSED_TIME, COUNTERS_TABLE_COLUMN_TIME_UNIT);
 
+    private static final DecimalFormat ELAPSED_TIME_FORMAT = new DecimalFormat("#.###");
+
     private PrintUtils()
     {
         throw new IllegalStateException("Utility class");
@@ -47,7 +50,7 @@ public class PrintUtils
     /**
      * Prints the statistics for the given counters in the specified print stream.
      *
-     * @param counters   the counters to be printed
+     * @param counters    the counters to be printed
      * @param printStream the print stream to which statistics will be sent
      * @throws NullPointerException if a null stopwatch or print stream is received
      */
@@ -69,7 +72,7 @@ public class PrintUtils
     {
         printCounters(stopwatch.getAllCounters(), printStream, timeUnit);
     }
-    
+
     /**
      * Prints the statistics for the given counters in the specified print stream.
      *
@@ -77,7 +80,7 @@ public class PrintUtils
      * @param printStream the print stream to which statistics will be sent
      * @param timeUnit    the time unit in which elapsed times will be displayed; if null, the
      *                    default time unit specified for each counter will be applied
-     * @throws NullPointerException if a null collection  or print stream is received
+     * @throws NullPointerException if a null collection or print stream is received
      */
     public static void printCounters(Collection<Counter> counters, PrintStream printStream, TimeUnit timeUnit)
     {
@@ -143,8 +146,21 @@ public class PrintUtils
      */
     protected static String toRowFormat(Counter counter, TimeUnit timeUnit)
     {
-        return String.format(COUNTERS_TABLE_ROW_FORMAT, counter.getType(), counter.elapsedTime(timeUnit),
+        return String.format(COUNTERS_TABLE_ROW_FORMAT, counter.getType(), formatElapsedTime(counter, timeUnit),
                 timeUnit.toString().toLowerCase());
+    }
+
+    /**
+     * Returns the elapsed time of a counter in a given time unit, formatted.
+     *
+     * @param counter  the counter whose data will be fetched
+     * @param timeUnit the time unit in which the counter's elapsed time will be displayed
+     *                 (cannot be null)
+     * @return a formatted String for the elapsed time
+     */
+    protected static String formatElapsedTime(Counter counter, TimeUnit timeUnit)
+    {
+        return ELAPSED_TIME_FORMAT.format(counter.elapsedTime(timeUnit));
     }
 
 }

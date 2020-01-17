@@ -19,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.performetrics.strategy.ConversionStrategy;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
 /**
@@ -42,6 +43,21 @@ public class CounterTest
     {
         Counter counter = new Counter(SYSTEM_TIME);
         assertThat(counter.getDefaultTimeUnit(), is(NANOSECONDS));
+    }
+
+    @Test
+    public void constructor_withTypeAndTimeUnit_assignsDefaultConversionStrategy()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
+        assertThat(counter.getConversionStrategy(), is(ConversionStrategy.DOUBLE_PRECISION));
+    }
+
+    @Test
+    public void constructor_withTypeAndTimeUnitAndConversionStrategy_succeeds()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS, ConversionStrategy.FAST);
+        assertThat(counter.getDefaultTimeUnit(), is(MILLISECONDS));
+        assertThat(counter.getConversionStrategy(), is(ConversionStrategy.FAST));
     }
 
     @Test
@@ -72,7 +88,7 @@ public class CounterTest
         assertThat(counter.getDefaultTimeUnit(), is(SECONDS));
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3); // 1 second after
-        assertThat(counter.elapsedTime(), is(1.0));
+        assertThat(counter.elapsedTime(), is(1L));
     }
 
     @Test
@@ -82,7 +98,7 @@ public class CounterTest
         assertThat(counter.getDefaultTimeUnit(), is(MILLISECONDS));
         counter.setUnitsBefore(1000);
         counter.setUnitsAfter(1500); // 500 milliseconds after
-        assertThat(counter.elapsedTime(), is(500.0));
+        assertThat(counter.elapsedTime(), is(500L));
     }
 
     @Test
@@ -92,7 +108,7 @@ public class CounterTest
         assertThat(counter.getDefaultTimeUnit(), is(NANOSECONDS));
         counter.setUnitsBefore(1000000000L);
         counter.setUnitsAfter(6000000000L); // 5 seconds after
-        assertThat(counter.elapsedTime(), is(5000000000.0));
+        assertThat(counter.elapsedTime(), is(5000000000L));
     }
 
     @Test
@@ -131,7 +147,7 @@ public class CounterTest
         Mockito.when(PerformetricsUtils.getWallClockTimeNanos()).thenReturn(9000L);
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
         counter.setUnitsBefore(2000);
-        assertThat(counter.elapsedTime(), is(7000.0));
+        assertThat(counter.elapsedTime(), is(7000L));
     }
 
     @Test
@@ -140,7 +156,43 @@ public class CounterTest
         Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(5000);
         counter.setUnitsAfter(500);
-        assertThat(counter.elapsedTime(), is(-1.0));
+        assertThat(counter.elapsedTime(), is(-1L));
+    }
+
+    @Test
+    public void elapsedTime_withCoarserTimeUnitAndFastConversion_differenceIsTruncated()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.FAST);
+        assertThat(counter.getDefaultTimeUnit(), is(SECONDS));
+        counter.setUnitsAfter(59); // 59 seconds after
+        assertThat(counter.elapsedTime(TimeUnit.MINUTES), is(0.0));
+    }
+
+    @Test
+    public void elapsedTime_withCoarserTimeUnitAndDoublePrecisionConversion_differenceIsNotTruncated()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.DOUBLE_PRECISION);
+        assertThat(counter.getDefaultTimeUnit(), is(SECONDS));
+        counter.setUnitsAfter(59); // 59 seconds after
+        assertThat(counter.elapsedTime(TimeUnit.MINUTES), is(0.983));
+    }
+
+    @Test
+    public void elapsedTime_withFinerTimeUnitAndFastConversion_conversionSuceeds()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.FAST);
+        assertThat(counter.getDefaultTimeUnit(), is(SECONDS));
+        counter.setUnitsAfter(2); // 2 seconds
+        assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(2000.0));
+    }
+
+    @Test
+    public void elapsedTime_withFinerTimeUnitAndDoublePrecisionConversion_conversionSuceeds()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.DOUBLE_PRECISION);
+        assertThat(counter.getDefaultTimeUnit(), is(SECONDS));
+        counter.setUnitsAfter(2); // 2 seconds
+        assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(2000.0));
     }
 
 }

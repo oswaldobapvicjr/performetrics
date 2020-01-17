@@ -23,14 +23,14 @@ public class TimeUnitConverter
      * Converts the given duration and time unit into another time unit, as double.
      * <p>
      * For example, to convert 10 minutes to milliseconds, use:
-     * {@code TimeUnitConverter.convert(10L, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
+     * {@code TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      *
      * @param sourceDuration the time duration in the given sourceUnit
      * @param sourceUnit     the unit of the sourceDuration argument
      * @param targetUnit     the target time unit
      * @return the converted duration, as double.
      */
-    public static double convert(double sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
+    public static double convert(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
     {
         if (sourceUnit == targetUnit)
         {
@@ -48,16 +48,16 @@ public class TimeUnitConverter
      * @param targetUnit     the target time unit
      * @return the converted duration, as double.
      */
-    private static double rawConvertion(double sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
+    private static double rawConvertion(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
     {
         if (sourceUnit.ordinal() < targetUnit.ordinal())
         {
-            // sourceTimeUnit is smaller
-            return sourceDuration / sourceUnit.convert(1, targetUnit);
+            // source time unit granularity is finer
+            return (double) sourceDuration / sourceUnit.convert(1, targetUnit);
         }
         else
         {
-            return sourceDuration * targetUnit.convert(1, sourceUnit);
+            return targetUnit.convert(sourceDuration, sourceUnit);
         }
     }
 

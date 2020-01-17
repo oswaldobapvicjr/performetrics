@@ -35,15 +35,21 @@ public class TimeUnitConverterTest
     }
 
     @Test
-    public void convert_1MinuteAndHalfToMilliseconds_90000()
+    public void convert_2MinutesToMilliseconds()
     {
-        assertThat(TimeUnitConverter.convert(1.5, TimeUnit.MINUTES, TimeUnit.MILLISECONDS), is(1.5 * 60 * 1000));
+        assertThat(TimeUnitConverter.convert(2, TimeUnit.MINUTES, TimeUnit.MILLISECONDS), is(2.0 * 60 * 1000));
     }
 
     @Test
-    public void convert_90SecondsToMinutes_Half()
+    public void convert_90SecondsToMinutes()
     {
         assertThat(TimeUnitConverter.convert(30, TimeUnit.SECONDS, TimeUnit.MINUTES), is(0.5));
+    }
+
+    @Test
+    public void convert_999MillisecondsToSeconds()
+    {
+        assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(0.999));
     }
 
 }

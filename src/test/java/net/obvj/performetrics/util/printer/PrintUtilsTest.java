@@ -28,6 +28,7 @@ import net.obvj.performetrics.Stopwatch;
  */
 public class PrintUtilsTest
 {
+    private static final String SECONDS = "seconds";
     private static final String MILLISECONDS = "milliseconds";
     private static final String NANOSECONDS = "nanoseconds";
     private static final String TABLE_COLUMN_SEPARATOR = "\\|";
@@ -60,7 +61,7 @@ public class PrintUtilsTest
      * the time unit
      */
     @Test
-    public void toRowFormat_withValidCounter_printsTypeAndElapsedTimeAndTimeUnit()
+    public void toRowFormat_withValidCounterAndIntegerResult_printsTypeAndElapsedTimeAndTimeUnit()
     {
         Counter c = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
 
@@ -68,8 +69,25 @@ public class PrintUtilsTest
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is("1000.0"));
+        assertThat(columns[2].trim(), is("1000"));
         assertThat(columns[3].trim(), is(MILLISECONDS));
+    }
+
+    /**
+     * Tests that the row is composed by (1) the counter type, (2) the elapsed time
+     * (decimal-formatted) and (3) the time unit
+     */
+    @Test
+    public void toRowFormat_withValidCounterAndCoarserTimeUnit_printsElapsedTimeFormatted()
+    {
+        Counter c = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 5789);
+
+        String resultRow = PrintUtils.toRowFormat(c, TimeUnit.SECONDS);
+        String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
+
+        assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
+        assertThat(columns[2].trim(), is("0,789"));
+        assertThat(columns[3].trim(), is(SECONDS));
     }
 
     /**
@@ -97,12 +115,12 @@ public class PrintUtilsTest
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000.0"));
+        assertThat(columnsRow1[2].trim(), is("1000"));
         assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
 
         assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        // assertThat(columnsRow2[2].trim(), is("200000000000.0"));
-        assertThat(columnsRow2[2].trim(), is("2.0E11"));
+        assertThat(columnsRow2[2].trim(), is("200000000000"));
+        // assertThat(columnsRow2[2].trim(), is("2.0E11"));
         assertThat(columnsRow2[3].trim(), is(NANOSECONDS));
     }
 
@@ -131,11 +149,11 @@ public class PrintUtilsTest
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000.0"));
+        assertThat(columnsRow1[2].trim(), is("1000"));
         assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
 
         assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        assertThat(columnsRow2[2].trim(), is("200000.0"));
+        assertThat(columnsRow2[2].trim(), is("200000"));
         assertThat(columnsRow2[3].trim(), is(MILLISECONDS));
     }
 

@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.TimeUnitConverter;
 
 /**
  * An object containing units before and units after for a particular unit type
@@ -208,7 +209,7 @@ public class Counter
      *         the difference between units before and the current units, retrieved by the
      *         counter's default data fetch strategy, if the units after ate not set.
      */
-    public long elapsedTime()
+    public double elapsedTime()
     {
         long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.defaultDataFetchStrategy(defaultTimeUnit);
         return elapsedTime(unitsBefore, tempUnitsAfter);
@@ -220,9 +221,9 @@ public class Counter
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between units before and units after, in the given time unit
      */
-    public long elapsedTime(TimeUnit timeUnit)
+    public double elapsedTime(TimeUnit timeUnit)
     {
-        return timeUnit.convert(elapsedTime(), this.defaultTimeUnit);
+        return TimeUnitConverter.convert(elapsedTime(), this.defaultTimeUnit, timeUnit);
     }
 
     /**

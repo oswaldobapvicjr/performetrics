@@ -1,23 +1,37 @@
 package net.obvj.performetrics;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.runnable.MonitoredRunnable;
 
 public class PerformetricsTestDrive
 {
-    public static void main(String[] args) throws InterruptedException
+    public static void main(String[] args) throws InterruptedException, IOException
     {
         testStopwatch1();
         System.out.println("-----");
         testRunnableWithLambda();
     }
 
-    private static void testStopwatch1() throws InterruptedException
+    private static void testStopwatch1() throws InterruptedException, IOException
     {
-        Stopwatch sw = Stopwatch.createStarted(Type.WALL_CLOCK_TIME);
+        Stopwatch sw = Stopwatch.createStarted();
+
+        // Enforcing some wall-clock time...
         Thread.sleep(2000);
+
+        // Enforcing some user time...
+        UUID.randomUUID();
+
+        // Enforcing some system time...
+        Files.list(Paths.get("/")).sorted().collect(Collectors.toList());
+
         sw.stop();
 
         System.out.println(sw.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.NANOSECONDS));

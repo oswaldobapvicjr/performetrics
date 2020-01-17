@@ -1,7 +1,6 @@
 package net.obvj.performetrics.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
@@ -21,27 +20,16 @@ public class PerformetricsUtilsTest
     /**
      * Tests that no instances of this utility class are created
      *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     * private constructor via Reflection
+     * @throws ReflectiveOperationException in case of error getting constructor metadata or
+     *                                      instantiating the private constructor
      */
     @Test(expected = InvocationTargetException.class)
-    public void constructor_throwsException() throws Exception
+    public void constructor_throwsException() throws ReflectiveOperationException
     {
-        try
-        {
-            Constructor<PerformetricsUtils> constructor = PerformetricsUtils.class.getDeclaredConstructor();
-            assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
-
-            constructor.setAccessible(true);
-            constructor.newInstance();
-        }
-        catch (InvocationTargetException ite)
-        {
-            Throwable cause = ite.getCause();
-            assertThat(cause.getClass(), is(equalTo(IllegalStateException.class)));
-            assertThat(cause.getMessage(), is("Utility class"));
-            throw ite;
-        }
+        Constructor<PerformetricsUtils> constructor = PerformetricsUtils.class.getDeclaredConstructor();
+        assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 
     @Test

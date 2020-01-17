@@ -1,7 +1,7 @@
 package net.obvj.performetrics.util.printer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -35,27 +35,16 @@ public class PrintUtilsTest
     /**
      * Tests that no instances of this utility class are created
      *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
+     * @throws ReflectiveOperationException in case of error getting constructor metadata or
+     *                                      instantiating the private constructor
      */
     @Test(expected = InvocationTargetException.class)
-    public void constructor_throwsException() throws Exception
+    public void constructor_throwsException() throws ReflectiveOperationException
     {
-        try
-        {
-            Constructor<PrintUtils> constructor = PrintUtils.class.getDeclaredConstructor();
-            assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
-
-            constructor.setAccessible(true);
-            constructor.newInstance();
-        }
-        catch (InvocationTargetException ite)
-        {
-            Throwable cause = ite.getCause();
-            assertThat(cause.getClass(), is(equalTo(IllegalStateException.class)));
-            assertThat(cause.getMessage(), is("Utility class"));
-            throw ite;
-        }
+        Constructor<PrintUtils> constructor = PrintUtils.class.getDeclaredConstructor();
+        assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 
     private Counter newCounter(Type type, TimeUnit timeUnit, long unitsBefore, long unitsAfter)
@@ -79,7 +68,7 @@ public class PrintUtilsTest
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is("1000"));
+        assertThat(columns[2].trim(), is("1000.0"));
         assertThat(columns[3].trim(), is(MILLISECONDS));
     }
 
@@ -108,11 +97,12 @@ public class PrintUtilsTest
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000"));
+        assertThat(columnsRow1[2].trim(), is("1000.0"));
         assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
 
         assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        assertThat(columnsRow2[2].trim(), is("200000000000"));
+        // assertThat(columnsRow2[2].trim(), is("200000000000.0"));
+        assertThat(columnsRow2[2].trim(), is("2.0E11"));
         assertThat(columnsRow2[3].trim(), is(NANOSECONDS));
     }
 
@@ -141,11 +131,11 @@ public class PrintUtilsTest
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000"));
+        assertThat(columnsRow1[2].trim(), is("1000.0"));
         assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
 
         assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        assertThat(columnsRow2[2].trim(), is("200000"));
+        assertThat(columnsRow2[2].trim(), is("200000.0"));
         assertThat(columnsRow2[3].trim(), is(MILLISECONDS));
     }
 

@@ -1,7 +1,7 @@
 package net.obvj.performetrics.util.printer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -86,7 +86,7 @@ public class PrintUtilsTest
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is("0,789"));
+        assertThat(columns[2].trim(), is(anyOf(equalTo("0,789"), equalTo("0.789")))); // Localization issue
         assertThat(columns[3].trim(), is(SECONDS));
     }
 

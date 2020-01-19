@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.util.concurrent.TimeUnit;
 
+import net.obvj.performetrics.configuration.ConfigurationHolder;
 import net.obvj.performetrics.strategy.ConversionStrategy;
 import net.obvj.performetrics.util.PerformetricsUtils;
 
@@ -18,11 +19,6 @@ public class Counter
      * The default time unit to be maintained if no specific time unit informed
      */
     public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
-
-    /**
-     * The default conversion strategy to be used if no specific strategy informed
-     */
-    public static final ConversionStrategy DEFAULT_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
 
     /**
      * The string format applied on {@code toString()} calls
@@ -138,7 +134,7 @@ public class Counter
      */
     public Counter(Type type, TimeUnit timeUnit)
     {
-        this(type, timeUnit, DEFAULT_CONVERSION_STRATEGY);
+        this(type, timeUnit, ConfigurationHolder.getConfiguration().getConversionStrategy());
     }
 
     /**

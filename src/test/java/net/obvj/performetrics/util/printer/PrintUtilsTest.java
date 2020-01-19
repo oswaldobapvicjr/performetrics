@@ -23,7 +23,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 
 /**
- * Unit tests for the {@link PrintUtils} class
+ * Unit tests for the {@link PrintUtils} class.
  *
  * @author oswaldo.bapvic.jr
  */

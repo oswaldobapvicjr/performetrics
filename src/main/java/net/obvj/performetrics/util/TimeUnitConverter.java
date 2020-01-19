@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
+import net.obvj.performetrics.configuration.ConfigurationHolder;
+
 /**
  * A utility class for {@link TimeUnit} conversion.
  *
@@ -12,8 +14,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUnitConverter
 {
-    private static final int DEFAULT_SCALE = 3;
-
     private TimeUnitConverter()
     {
         throw new IllegalStateException("Utility class");
@@ -36,7 +36,8 @@ public class TimeUnitConverter
         {
             return sourceDuration;
         }
-        return round(rawConvertion(sourceDuration, sourceUnit, targetUnit), DEFAULT_SCALE);
+        return round(rawConvertion(sourceDuration, sourceUnit, targetUnit),
+                ConfigurationHolder.getConfiguration().getScale());
     }
 
     /**

@@ -28,7 +28,7 @@ public class PrintUtils
     protected static final String COUNTERS_TABLE_HEADER = String.format(COUNTERS_TABLE_ROW_FORMAT,
             COUNTERS_TABLE_COLUMN_COUNTER, COUNTERS_TABLE_COLUMN_ELAPSED_TIME, COUNTERS_TABLE_COLUMN_TIME_UNIT);
 
-    private static final DecimalFormat ELAPSED_TIME_FORMAT = new DecimalFormat("#.###");
+    private static final String ELAPSED_TIME_FORMAT = "#.################";
 
     private PrintUtils()
     {
@@ -160,7 +160,7 @@ public class PrintUtils
      */
     protected static String formatElapsedTime(Counter counter, TimeUnit timeUnit)
     {
-        return ELAPSED_TIME_FORMAT.format(counter.elapsedTime(timeUnit));
+        return new DecimalFormat(ELAPSED_TIME_FORMAT).format(counter.elapsedTime(timeUnit));
     }
 
 }

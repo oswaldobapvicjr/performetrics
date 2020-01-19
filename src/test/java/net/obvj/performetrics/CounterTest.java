@@ -195,4 +195,14 @@ public class CounterTest
         assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(2000.0));
     }
 
+    @Test
+    public void elapsedTime_withTimeUnitAndCustomConversionStrategy_appliesCustomConversion()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
+        assertThat(counter.getDefaultTimeUnit(), is(MILLISECONDS));
+        counter.setUnitsBefore(2000);
+        counter.setUnitsAfter(3500); // 1.5 second after
+        assertThat(counter.elapsedTime(TimeUnit.SECONDS, ConversionStrategy.FAST), is(1.0));
+    }
+
 }

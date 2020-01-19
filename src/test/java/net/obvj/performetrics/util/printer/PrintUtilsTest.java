@@ -1,7 +1,7 @@
 package net.obvj.performetrics.util.printer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -32,6 +33,12 @@ public class PrintUtilsTest
     private static final String MILLISECONDS = "milliseconds";
     private static final String NANOSECONDS = "nanoseconds";
     private static final String TABLE_COLUMN_SEPARATOR = "\\|";
+
+    static
+    {
+        // Default locale for unit tests using DecimalFormat
+        Locale.setDefault(new Locale("en", "US"));
+    }
 
     /**
      * Tests that no instances of this utility class are created
@@ -86,7 +93,7 @@ public class PrintUtilsTest
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
         assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is(anyOf(equalTo("0,789"), equalTo("0.789")))); // Localization issue
+        assertThat(columns[2].trim(), is("0.789")); // en_US Locale dependent test
         assertThat(columns[3].trim(), is(SECONDS));
     }
 

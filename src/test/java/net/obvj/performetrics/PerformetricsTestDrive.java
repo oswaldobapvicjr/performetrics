@@ -3,6 +3,7 @@ package net.obvj.performetrics;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ public class PerformetricsTestDrive
 {
     public static void main(String[] args) throws InterruptedException, IOException
     {
+        Locale.setDefault(new Locale("en", "US"));
         testStopwatch1();
         System.out.println("-----");
         testRunnableWithLambda();

@@ -13,7 +13,7 @@ import net.obvj.performetrics.util.printer.PrintUtils;
 /**
  * A convenient object for timings that support multiple counter types
  * <p>
- * This class is not thread-safe.
+ * <b>Note:</b> This class is not thread-safe.
  *
  * @author oswaldo.bapvic.jr
  */

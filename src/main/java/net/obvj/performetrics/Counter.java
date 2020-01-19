@@ -14,6 +14,19 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  */
 public class Counter
 {
+    /**
+     * The default time unit to be maintained if no specific time unit informed
+     */
+    public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
+
+    /**
+     * The default conversion strategy to be used if no specific strategy informed
+     */
+    public static final ConversionStrategy DEFAULT_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
+
+    /**
+     * The string format applied on {@code toString()} calls
+     */
     protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
 
     /**
@@ -95,16 +108,6 @@ public class Counter
         public abstract long defaultDataFetchStrategy(TimeUnit targetTimeUnit);
     }
 
-    /**
-     * The default time unit to be maintained if no specific time unit informed
-     */
-    public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
-
-    /**
-     * The default conversion strategy to be used if no specific strategy informed
-     */
-    public static final ConversionStrategy DEFAULT_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
-
     private final Type type;
     private final TimeUnit defaultTimeUnit;
 
@@ -116,7 +119,7 @@ public class Counter
     private boolean unitsAfterFlag = false;
 
     /**
-     * Builds this Counter object with default time unit of nanoseconds.
+     * Builds this Counter object with default time unit.
      * <p>
      * This is equivalent to: {@code new Counter(type, TimeUnit.NANOSECONDS}}
      *
@@ -251,6 +254,19 @@ public class Counter
      * @return the difference between units before and units after, in the given time unit
      */
     public double elapsedTime(TimeUnit timeUnit)
+    {
+        return elapsedTime(timeUnit, this.conversionStrategy);
+    }
+
+    /**
+     * Returns the elapsed time, in a given {@link TimeUnit}, with a custom
+     * {@link ConversionStrategy}.
+     *
+     * @param timeUnit           the time unit to which the elapsed time will be converted
+     * @param conversionStrategy the {@link ConversionStrategy} to be used
+     * @return the difference between units before and units after, in the given time unit
+     */
+    public double elapsedTime(TimeUnit timeUnit, ConversionStrategy conversionStrategy)
     {
         return conversionStrategy.convert(elapsedTime(), this.defaultTimeUnit, timeUnit);
     }

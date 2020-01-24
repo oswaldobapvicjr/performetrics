@@ -6,23 +6,23 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
  * An object that groups common Performetrics configuration.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class Configuration
 {
     /**
-     * The default conversion strategy to be used if no specific strategy informed
+     * The initial conversion strategy to be applied if no specific strategy is set
      */
-    public static final ConversionStrategy DEFAULT_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
+    public static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
 
     /**
-     * The default maximum number of decimal places applicable if double-precision conversion
+     * The initial maximum number of decimal places applicable if double-precision conversion
      * strategy is set
      */
-    public static final int DEFAULT_SCALE = 5;
+    public static final int INITIAL_SCALE = 5;
 
-    private ConversionStrategy conversionStrategy = DEFAULT_CONVERSION_STRATEGY;
-    private int scale = DEFAULT_SCALE;
+    private ConversionStrategy conversionStrategy = INITIAL_CONVERSION_STRATEGY;
+    private int scale = INITIAL_SCALE;
 
     /**
      * @return the conversion strategy
@@ -33,8 +33,8 @@ public class Configuration
     }
 
     /**
-     * Sets a conversion strategy to be used if no specific strategy is passed to a supported
-     * operation.
+     * Sets a conversion strategy to be applied in supported operations if no specific
+     * strategy is set.
      *
      * @param conversionStrategy the {@link ConversionStrategy} to set
      */
@@ -52,7 +52,7 @@ public class Configuration
     }
 
     /**
-     * Sets a maximum number of decimal places applicable if double-precision conversion
+     * Sets a maximum number of decimal places to be applied if double-precision conversion
      * strategy is set.
      *
      * @param scale a number between 0 and 16 to be set

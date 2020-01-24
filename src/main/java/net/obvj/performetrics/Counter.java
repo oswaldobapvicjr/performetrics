@@ -18,7 +18,7 @@ public class Counter
     /**
      * The default time unit to be maintained if no specific time unit informed
      */
-    public static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
+    private static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
 
     /**
      * The string format applied on {@code toString()} calls
@@ -143,6 +143,7 @@ public class Counter
      * @param type               the type to set
      * @param timeUnit           the unit to set
      * @param conversionStrategy the {@link ConversionStrategy} to be applied
+     * @since 2.0.0
      */
     public Counter(Type type, TimeUnit timeUnit, ConversionStrategy conversionStrategy)
     {
@@ -202,6 +203,7 @@ public class Counter
 
     /**
      * @return the {@link ConversionStrategy} used by this counter
+     * @since 2.0.0
      */
     public ConversionStrategy getConversionStrategy()
     {
@@ -261,6 +263,7 @@ public class Counter
      * @param timeUnit           the time unit to which the elapsed time will be converted
      * @param conversionStrategy the {@link ConversionStrategy} to be used
      * @return the difference between units before and units after, in the given time unit
+     * @since 2.0.0
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionStrategy conversionStrategy)
     {

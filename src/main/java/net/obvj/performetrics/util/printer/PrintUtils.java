@@ -30,6 +30,9 @@ public class PrintUtils
 
     private static final String ELAPSED_TIME_FORMAT = "#.################";
 
+    /**
+     * This is a utility class, not meant to be instantiated.
+     */
     private PrintUtils()
     {
         throw new IllegalStateException("Utility class");

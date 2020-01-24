@@ -3,35 +3,30 @@ package net.obvj.performetrics.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+
+import net.obvj.performetrics.TestUtils;
 
 /**
  * Unit tests for the {@link TimeUnitConverter}.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class TimeUnitConverterTest
 {
 
     /**
-     * Tests that no instances of this utility class are created
+     * Tests that no instances of this utility class are created.
      *
-     * @throws ReflectiveOperationException in case of error getting constructor metadata or
-     *                                      instantiating the private constructor
+     * @throws ReflectiveOperationException in case of error getting class metadata
      */
-    @Test(expected = InvocationTargetException.class)
+    @Test
     public void constructor_throwsException() throws ReflectiveOperationException
     {
-        Constructor<TimeUnitConverter> constructor = TimeUnitConverter.class.getDeclaredConstructor();
-        assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
-        constructor.setAccessible(true);
-        constructor.newInstance();
+        TestUtils.assertNoInstancesAllowed(TimeUnitConverter.class);
     }
 
     @Test

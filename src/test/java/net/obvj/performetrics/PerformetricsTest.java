@@ -1,0 +1,78 @@
+package net.obvj.performetrics;
+
+import static net.obvj.performetrics.configuration.Configuration.INITIAL_CONVERSION_STRATEGY;
+import static net.obvj.performetrics.configuration.Configuration.INITIAL_SCALE;
+import static net.obvj.performetrics.strategy.ConversionStrategy.DOUBLE_PRECISION;
+import static net.obvj.performetrics.strategy.ConversionStrategy.FAST;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import org.junit.After;
+import org.junit.Test;
+
+import net.obvj.performetrics.configuration.ConfigurationHolder;
+
+/**
+ * Unit tests for the {@link Performetrics} class.
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 2.0.0
+ */
+public class PerformetricsTest
+{
+    @After
+    public void reset()
+    {
+        ConfigurationHolder.reset();
+    }
+
+    /**
+     * Tests that no instances of this utility class are created.
+     *
+     * @throws ReflectiveOperationException in case of error getting class metadata
+     */
+    @Test
+    public void constructor_throwsException() throws ReflectiveOperationException
+    {
+        TestUtils.assertNoInstancesAllowed(Performetrics.class);
+    }
+
+    @Test
+    public void setDefaultConversionStrategy_fast_updatesConfiguration()
+    {
+        Performetrics.setDefaultConversionStrategy(FAST);
+        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(FAST));
+        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
+    }
+
+    @Test
+    public void setDefaultConversionStrategy_doublePrecision_updatesConfiguration()
+    {
+        Performetrics.setDefaultConversionStrategy(DOUBLE_PRECISION);
+        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(DOUBLE_PRECISION));
+        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
+    }
+
+    @Test
+    public void setScale_valid_updatesConfiguration()
+    {
+        Performetrics.setScale(16);
+        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(16));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+    }
+
+    @Test
+    public void setScale_invalid_doesNotUpdateConfiguration()
+    {
+        try
+        {
+            Performetrics.setScale(-1);
+        }
+        catch (IllegalArgumentException e)
+        {
+            assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
+            assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+        }
+    }
+
+}

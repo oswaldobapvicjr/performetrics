@@ -6,9 +6,6 @@ import static org.hamcrest.Matchers.is;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +18,7 @@ import org.mockito.Mockito;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TestUtils;
 
 /**
  * Unit tests for the {@link PrintUtils} class.
@@ -41,18 +39,14 @@ public class PrintUtilsTest
     }
 
     /**
-     * Tests that no instances of this utility class are created
+     * Tests that no instances of this utility class are created.
      *
-     * @throws ReflectiveOperationException in case of error getting constructor metadata or
-     *                                      instantiating the private constructor
+     * @throws ReflectiveOperationException in case of error getting class metadata
      */
-    @Test(expected = InvocationTargetException.class)
+    @Test
     public void constructor_throwsException() throws ReflectiveOperationException
     {
-        Constructor<PrintUtils> constructor = PrintUtils.class.getDeclaredConstructor();
-        assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
-        constructor.setAccessible(true);
-        constructor.newInstance();
+        TestUtils.assertNoInstancesAllowed(PrintUtils.class);
     }
 
     private Counter newCounter(Type type, TimeUnit timeUnit, long unitsBefore, long unitsAfter)

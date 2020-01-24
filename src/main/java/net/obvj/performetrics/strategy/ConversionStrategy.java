@@ -8,7 +8,7 @@ import net.obvj.performetrics.util.TimeUnitConverter;
  * Defines a conversion strategy.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public enum ConversionStrategy
 {

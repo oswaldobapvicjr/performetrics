@@ -4,12 +4,15 @@ package net.obvj.performetrics.configuration;
  * A class that holds current {@link Configuration} object.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class ConfigurationHolder
 {
     private static Configuration configuration = new Configuration();
 
+    /**
+     * This is a utility class, not meant to be instantiated.
+     */
     private ConfigurationHolder()
     {
         throw new IllegalStateException("Instantiation not allowed");
@@ -34,7 +37,7 @@ public class ConfigurationHolder
     /**
      * Resets the configuration to defaults.
      */
-    protected static void reset()
+    public static void reset()
     {
         configuration = new Configuration();
     }

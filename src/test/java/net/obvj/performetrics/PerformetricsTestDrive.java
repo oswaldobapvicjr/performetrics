@@ -10,14 +10,27 @@ import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.runnable.MonitoredRunnable;
+import net.obvj.performetrics.strategy.ConversionStrategy;
 
 public class PerformetricsTestDrive
 {
     public static void main(String[] args) throws InterruptedException, IOException
     {
         Locale.setDefault(new Locale("en", "US"));
+
         testStopwatch1();
-        System.out.println("-----");
+
+        System.out.println("\n\n=======================================\n");
+        System.out.println("Now in fast mode...\n");
+        Performetrics.setDefaultConversionStrategy(ConversionStrategy.FAST);
+
+        testStopwatch1();
+
+        System.out.println("\n\n=======================================\n");
+        System.out.println("Now with a custom scale...\n");
+        Performetrics.setDefaultConversionStrategy(ConversionStrategy.DOUBLE_PRECISION);
+        Performetrics.setScale(2);
+
         testRunnableWithLambda();
     }
 
@@ -46,12 +59,15 @@ public class PerformetricsTestDrive
 
     private static void testRunnableWithLambda() throws InterruptedException
     {
-        MonitoredRunnable operation = new MonitoredRunnable(() -> {
+        MonitoredRunnable operation = new MonitoredRunnable(() ->
+        {
             try
             {
                 Thread.sleep(2000);
             }
-            catch (InterruptedException e) {}
+            catch (InterruptedException e)
+            {
+            }
         }, Counter.Type.WALL_CLOCK_TIME);
 
         operation.run();

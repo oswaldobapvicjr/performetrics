@@ -11,7 +11,7 @@ import org.junit.Test;
  * Unit tests for the {@link ConversionStrategy}.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class ConversionStrategyTest
 {

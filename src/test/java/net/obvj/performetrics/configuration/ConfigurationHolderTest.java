@@ -3,20 +3,17 @@ package net.obvj.performetrics.configuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-
 import org.junit.After;
 import org.junit.Test;
 
+import net.obvj.performetrics.TestUtils;
 import net.obvj.performetrics.strategy.ConversionStrategy;
 
 /**
  * Unit tests for the {@link ConfigurationHolder}.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class ConfigurationHolderTest
 {
@@ -27,26 +24,22 @@ public class ConfigurationHolderTest
     }
 
     /**
-     * Tests that no instances of this utility class are created
+     * Tests that no instances of this utility class are created.
      *
-     * @throws ReflectiveOperationException in case of error getting constructor metadata or
-     *                                      instantiating the private constructor
+     * @throws ReflectiveOperationException in case of error getting class metadata
      */
-    @Test(expected = InvocationTargetException.class)
+    @Test
     public void constructor_throwsException() throws ReflectiveOperationException
     {
-        Constructor<ConfigurationHolder> constructor = ConfigurationHolder.class.getDeclaredConstructor();
-        assertThat("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()), is(true));
-        constructor.setAccessible(true);
-        constructor.newInstance();
+        TestUtils.assertNoInstancesAllowed(ConfigurationHolder.class);
     }
 
     @Test
     public void getConfiguration_initial_defaultValues()
     {
         Configuration configuration = ConfigurationHolder.getConfiguration();
-        assertThat(configuration.getConversionStrategy(), is(Configuration.DEFAULT_CONVERSION_STRATEGY));
-        assertThat(configuration.getScale(), is(Configuration.DEFAULT_SCALE));
+        assertThat(configuration.getConversionStrategy(), is(Configuration.INITIAL_CONVERSION_STRATEGY));
+        assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
     }
 
     @Test

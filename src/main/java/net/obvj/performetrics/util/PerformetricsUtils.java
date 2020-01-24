@@ -11,6 +11,9 @@ import java.lang.management.ThreadMXBean;
 public class PerformetricsUtils
 {
 
+    /**
+     * This is a utility class, not meant to be instantiated.
+     */
     private PerformetricsUtils()
     {
         throw new IllegalStateException("Utility class");

@@ -9,9 +9,9 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
 
 /**
  * Unit tests for the {@link Configuration}.
- * 
+ *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class ConfigurationTest
 {
@@ -20,8 +20,8 @@ public class ConfigurationTest
     public void constructor_default_defaultValues()
     {
         Configuration configuration = new Configuration();
-        assertThat(configuration.getConversionStrategy(), is(Configuration.DEFAULT_CONVERSION_STRATEGY));
-        assertThat(configuration.getScale(), is(Configuration.DEFAULT_SCALE));
+        assertThat(configuration.getConversionStrategy(), is(Configuration.INITIAL_CONVERSION_STRATEGY));
+        assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
     }
 
     @Test

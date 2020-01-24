@@ -10,10 +10,13 @@ import net.obvj.performetrics.configuration.ConfigurationHolder;
  * A utility class for {@link TimeUnit} conversion.
  *
  * @author oswaldo.bapvic.jr
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class TimeUnitConverter
 {
+    /**
+     * This is a utility class, not meant to be instantiated.
+     */
     private TimeUnitConverter()
     {
         throw new IllegalStateException("Utility class");

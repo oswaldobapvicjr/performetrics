@@ -19,11 +19,9 @@ public class PerformetricsTestDrive
         Locale.setDefault(new Locale("en", "US"));
 
         testStopwatch1();
-
         System.out.println("\n\n=======================================\n");
         System.out.println("Now in fast mode...\n");
         Performetrics.setDefaultConversionStrategy(ConversionStrategy.FAST);
-
         testStopwatch1();
 
         System.out.println("\n\n=======================================\n");

@@ -1,7 +1,9 @@
 package net.obvj.performetrics;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.obvj.performetrics.configuration.Configuration.INITIAL_CONVERSION_STRATEGY;
 import static net.obvj.performetrics.configuration.Configuration.INITIAL_SCALE;
+import static net.obvj.performetrics.configuration.Configuration.INITIAL_TIME_UNIT;
 import static net.obvj.performetrics.strategy.ConversionStrategy.DOUBLE_PRECISION;
 import static net.obvj.performetrics.strategy.ConversionStrategy.FAST;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +43,17 @@ public class PerformetricsTest
     public void setDefaultConversionStrategy_fast_updatesConfiguration()
     {
         Performetrics.setDefaultConversionStrategy(FAST);
+        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
         assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(FAST));
+        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
+    }
+
+    @Test
+    public void setDefaultTimeUnit_seconds_updatesConfiguration()
+    {
+        Performetrics.setDefaultTimeUnit(MILLISECONDS);
+        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(MILLISECONDS));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
     }
 
@@ -49,6 +61,7 @@ public class PerformetricsTest
     public void setDefaultConversionStrategy_doublePrecision_updatesConfiguration()
     {
         Performetrics.setDefaultConversionStrategy(DOUBLE_PRECISION);
+        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
         assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(DOUBLE_PRECISION));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
     }
@@ -57,8 +70,9 @@ public class PerformetricsTest
     public void setScale_valid_updatesConfiguration()
     {
         Performetrics.setScale(16);
-        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(16));
+        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
         assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+        assertThat(ConfigurationHolder.getConfiguration().getScale(), is(16));
     }
 
     @Test
@@ -70,8 +84,9 @@ public class PerformetricsTest
         }
         catch (IllegalArgumentException e)
         {
-            assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
+            assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
             assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+            assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
         }
     }
 

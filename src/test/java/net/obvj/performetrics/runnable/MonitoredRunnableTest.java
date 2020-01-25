@@ -23,7 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.MonitoredOperation;
-import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
@@ -32,7 +32,7 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * @author oswaldo.bapvic.jr
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PerformetricsUtils.class, PrintUtils.class })
+@PrepareForTest({ SystemUtils.class, PrintUtils.class })
 public class MonitoredRunnableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -50,14 +50,14 @@ public class MonitoredRunnableTest
     }
 
     /**
-     * Setup the expects on {@link PerformetricsUtils} mock with constant values
+     * Setup the expects on {@link SystemUtils} mock with constant values
      */
     private void setupExpects()
     {
-        given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
-        given(PerformetricsUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
-        given(PerformetricsUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
-        given(PerformetricsUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+        given(SystemUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
+        given(SystemUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
+        given(SystemUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
+        given(SystemUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
     }
 
     /**
@@ -152,7 +152,7 @@ public class MonitoredRunnableTest
     @Test
     public void run_givenAllTypes_updatesAllCounters()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         setupExpects();
         operation.run();

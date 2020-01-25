@@ -8,13 +8,13 @@ import java.lang.management.ThreadMXBean;
  *
  * @author oswaldo.bapvic.jr
  */
-public class PerformetricsUtils
+public class SystemUtils
 {
 
     /**
      * This is a utility class, not meant to be instantiated.
      */
-    private PerformetricsUtils()
+    private SystemUtils()
     {
         throw new IllegalStateException("Utility class");
     }

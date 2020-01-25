@@ -19,11 +19,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PerformetricsUtils.class, PrintUtils.class })
+@PrepareForTest({ SystemUtils.class, PrintUtils.class })
 public class StopwatchTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
@@ -41,10 +41,10 @@ public class StopwatchTest
      */
     private void setupExpectsBefore()
     {
-        given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_BEFORE);
-        given(PerformetricsUtils.getCpuTimeNanos()).willReturn(CPU_TIME_BEFORE);
-        given(PerformetricsUtils.getUserTimeNanos()).willReturn(USER_TIME_BEFORE);
-        given(PerformetricsUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_BEFORE);
+        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_BEFORE);
+        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_BEFORE);
+        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_BEFORE);
+        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_BEFORE);
     }
 
     /**
@@ -52,10 +52,10 @@ public class StopwatchTest
      */
     private void setupExpectsAfter()
     {
-        given(PerformetricsUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_AFTER);
-        given(PerformetricsUtils.getCpuTimeNanos()).willReturn(CPU_TIME_AFTER);
-        given(PerformetricsUtils.getUserTimeNanos()).willReturn(USER_TIME_AFTER);
-        given(PerformetricsUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_AFTER);
+        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_AFTER);
+        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_AFTER);
+        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_AFTER);
+        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_AFTER);
     }
 
     /**
@@ -162,7 +162,7 @@ public class StopwatchTest
     @Test
     public void createdStarted_withNoArguments_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted();
         assertEquals(Type.values().length, sw.getAllCounters().size());
@@ -177,7 +177,7 @@ public class StopwatchTest
     @Test
     public void createdStarted_withOneType_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
         assertEquals(1, sw.getAllCounters().size());
@@ -192,7 +192,7 @@ public class StopwatchTest
     @Test
     public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         Stopwatch sw = new Stopwatch();
         assertEquals(Type.values().length, sw.getAllCounters().size());
         setupExpectsBefore();
@@ -210,7 +210,7 @@ public class StopwatchTest
     @Test
     public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME, CPU_TIME);
         assertEquals(2, sw.getAllCounters().size());
         setupExpectsBefore();
@@ -230,7 +230,7 @@ public class StopwatchTest
     @Test
     public void reset_withAllAvailableTypes_setsAllUnitsToZeroAccordingly()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted();
         setupExpectsAfter();
@@ -248,7 +248,7 @@ public class StopwatchTest
     @Test
     public void reset_withTwoTypes_setsAllUnitsToZeroAccordingly()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(USER_TIME, SYSTEM_TIME);
         setupExpectsAfter();

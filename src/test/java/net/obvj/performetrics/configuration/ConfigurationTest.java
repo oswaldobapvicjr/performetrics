@@ -3,6 +3,8 @@ package net.obvj.performetrics.configuration;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 
 import net.obvj.performetrics.strategy.ConversionStrategy;
@@ -20,8 +22,17 @@ public class ConfigurationTest
     public void constructor_default_defaultValues()
     {
         Configuration configuration = new Configuration();
+        assertThat(configuration.getTimeUnit(), is(Configuration.INITIAL_TIME_UNIT));
         assertThat(configuration.getConversionStrategy(), is(Configuration.INITIAL_CONVERSION_STRATEGY));
         assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
+    }
+
+    @Test
+    public void setTimeUnit_validTimeUnit_suceeds()
+    {
+        Configuration configuration = new Configuration();
+        configuration.setTimeUnit(TimeUnit.SECONDS);
+        assertThat(configuration.getTimeUnit(), is(TimeUnit.SECONDS));
     }
 
     @Test

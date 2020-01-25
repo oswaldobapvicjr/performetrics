@@ -1,5 +1,7 @@
 package net.obvj.performetrics.configuration;
 
+import java.util.concurrent.TimeUnit;
+
 import net.obvj.performetrics.strategy.ConversionStrategy;
 
 /**
@@ -11,6 +13,11 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
 public class Configuration
 {
     /**
+     * The initial time unit to be maintained if no specific time unit informed
+     */
+    public static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
+
+    /**
      * The initial conversion strategy to be applied if no specific strategy is set
      */
     public static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
@@ -21,8 +28,27 @@ public class Configuration
      */
     public static final int INITIAL_SCALE = 5;
 
+    private TimeUnit timeUnit = INITIAL_TIME_UNIT;
     private ConversionStrategy conversionStrategy = INITIAL_CONVERSION_STRATEGY;
     private int scale = INITIAL_SCALE;
+
+    /**
+     * @return the default time unit
+     */
+    public TimeUnit getTimeUnit()
+    {
+        return timeUnit;
+    }
+
+    /**
+     * Sets a time unit to be maintained by default if no specific time unit is specified.
+     *
+     * @param timeUnit the {@link TimeUnit} to set
+     */
+    public void setTimeUnit(TimeUnit timeUnit)
+    {
+        this.timeUnit = timeUnit;
+    }
 
     /**
      * @return the conversion strategy

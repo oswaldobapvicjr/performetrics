@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.configuration.ConfigurationHolder;
 import net.obvj.performetrics.strategy.ConversionStrategy;
-import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.SystemUtils;
 
 /**
  * An object containing units before and units after for a particular unit type
@@ -15,11 +15,6 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  */
 public class Counter
 {
-    /**
-     * The default time unit to be maintained if no specific time unit informed
-     */
-    private static final TimeUnit DEFAULT_UNIT = NANOSECONDS;
-
     /**
      * The string format applied on {@code toString()} calls
      */
@@ -38,7 +33,7 @@ public class Counter
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
             {
-                return targetTimeUnit.convert(PerformetricsUtils.getWallClockTimeNanos(), NANOSECONDS);
+                return targetTimeUnit.convert(SystemUtils.getWallClockTimeNanos(), NANOSECONDS);
             }
         },
 
@@ -50,7 +45,7 @@ public class Counter
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
             {
-                return targetTimeUnit.convert(PerformetricsUtils.getCpuTimeNanos(), NANOSECONDS);
+                return targetTimeUnit.convert(SystemUtils.getCpuTimeNanos(), NANOSECONDS);
             }
         },
 
@@ -62,7 +57,7 @@ public class Counter
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
             {
-                return targetTimeUnit.convert(PerformetricsUtils.getUserTimeNanos(), NANOSECONDS);
+                return targetTimeUnit.convert(SystemUtils.getUserTimeNanos(), NANOSECONDS);
             }
         },
 
@@ -75,7 +70,7 @@ public class Counter
             @Override
             public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
             {
-                return targetTimeUnit.convert(PerformetricsUtils.getSystemTimeNanos(), NANOSECONDS);
+                return targetTimeUnit.convert(SystemUtils.getSystemTimeNanos(), NANOSECONDS);
             }
         };
 
@@ -116,14 +111,12 @@ public class Counter
 
     /**
      * Builds this Counter object with default time unit.
-     * <p>
-     * This is equivalent to: {@code new Counter(type, TimeUnit.NANOSECONDS}}
      *
      * @param type the type to set
      */
     public Counter(Type type)
     {
-        this(type, DEFAULT_UNIT);
+        this(type, ConfigurationHolder.getConfiguration().getTimeUnit());
     }
 
     /**

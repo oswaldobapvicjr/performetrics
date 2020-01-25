@@ -20,7 +20,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.strategy.ConversionStrategy;
-import net.obvj.performetrics.util.PerformetricsUtils;
+import net.obvj.performetrics.util.SystemUtils;
 
 /**
  * Test methods for the {@Counter} class.
@@ -28,14 +28,14 @@ import net.obvj.performetrics.util.PerformetricsUtils;
  * @author oswaldo.bapvic.jr
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PerformetricsUtils.class)
+@PrepareForTest(SystemUtils.class)
 public class CounterTest
 {
 
     @Before
     public void setup()
     {
-        PowerMockito.mockStatic(PerformetricsUtils.class);
+        PowerMockito.mockStatic(SystemUtils.class);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class CounterTest
     @Test
     public void elapsedTime_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
     {
-        Mockito.when(PerformetricsUtils.getWallClockTimeNanos()).thenReturn(9000L);
+        Mockito.when(SystemUtils.getWallClockTimeNanos()).thenReturn(9000L);
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
         counter.setUnitsBefore(2000);
         assertThat(counter.elapsedTime(), is(7000L));

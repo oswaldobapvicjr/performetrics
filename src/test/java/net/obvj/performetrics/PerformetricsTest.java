@@ -1,18 +1,18 @@
 package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.obvj.performetrics.configuration.Configuration.INITIAL_CONVERSION_STRATEGY;
-import static net.obvj.performetrics.configuration.Configuration.INITIAL_SCALE;
-import static net.obvj.performetrics.configuration.Configuration.INITIAL_TIME_UNIT;
 import static net.obvj.performetrics.strategy.ConversionStrategy.DOUBLE_PRECISION;
 import static net.obvj.performetrics.strategy.ConversionStrategy.FAST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Test;
 
 import net.obvj.performetrics.configuration.ConfigurationHolder;
+import net.obvj.performetrics.strategy.ConversionStrategy;
 
 /**
  * Unit tests for the {@link Performetrics} class.
@@ -22,6 +22,11 @@ import net.obvj.performetrics.configuration.ConfigurationHolder;
  */
 public class PerformetricsTest
 {
+    private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
+    private static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConfigurationHolder.getConfiguration()
+            .getConversionStrategy();
+    private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
+
     @After
     public void reset()
     {

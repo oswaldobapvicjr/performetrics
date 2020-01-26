@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import net.obvj.performetrics.util.TimeUnitConverter;
 
 /**
- * Defines a conversion strategy.
+ * Defines supported conversion strategies.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
@@ -13,8 +13,9 @@ import net.obvj.performetrics.util.TimeUnitConverter;
 public enum ConversionStrategy
 {
     /**
-     * A fast conversion strategy uses Java-standard {@link TimeUnit} to convert a given
-     * duration. Conversions from finer to coarser granularities truncate, so lose precision.
+     * A fast conversion strategy uses Java-standard {@link TimeUnit} class to convert a given
+     * duration to a different time unit. In this strategy, conversions from finer to coarser
+     * granularities truncate, so lose precision.
      * <p>
      * For example, converting 999 milliseconds to seconds results in 0.
      */
@@ -28,8 +29,8 @@ public enum ConversionStrategy
     },
 
     /**
-     * This strategy implements a custom conversion logic that avoids truncation from finer to
-     * coarser granularities.
+     * This strategy implements a more robust conversion logic that avoids truncation from
+     * finer to coarser granularities.
      * <p>
      * For example, converting 999 milliseconds to seconds results in 0.999.
      */

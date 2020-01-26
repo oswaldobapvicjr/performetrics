@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import net.obvj.performetrics.strategy.ConversionStrategy;
 
 /**
- * An object that groups common Performetrics configuration.
+ * An object that maintains common configurable parameters for Perfometrics objects.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
@@ -13,27 +13,29 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
 public class Configuration
 {
     /**
-     * The initial time unit to be maintained if no specific time unit informed
+     * The initial time unit to be maintained if no specific time unit informed.
      */
-    public static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
+    protected static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
 
     /**
-     * The initial conversion strategy to be applied if no specific strategy is set
+     * The initial conversion strategy to be applied if no specific strategy is set.
      */
-    public static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
+    protected static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
 
     /**
      * The initial maximum number of decimal places applicable if double-precision conversion
-     * strategy is set
+     * strategy is set.
      */
-    public static final int INITIAL_SCALE = 5;
+    protected static final int INITIAL_SCALE = 5;
 
     private TimeUnit timeUnit = INITIAL_TIME_UNIT;
     private ConversionStrategy conversionStrategy = INITIAL_CONVERSION_STRATEGY;
     private int scale = INITIAL_SCALE;
 
     /**
-     * @return the default time unit
+     * Returns the time unit maintained by default if no specific time unit is specified.
+     *
+     * @return the time unit maintained by default
      */
     public TimeUnit getTimeUnit()
     {
@@ -51,7 +53,10 @@ public class Configuration
     }
 
     /**
-     * @return the conversion strategy
+     * Returns the conversion strategy applied in supported operations if no specific strategy
+     * is set.
+     *
+     * @return the conversion strategy applied in supported operations
      */
     public ConversionStrategy getConversionStrategy()
     {
@@ -70,7 +75,10 @@ public class Configuration
     }
 
     /**
-     * @return the scale
+     * Returns the maximum number of decimal places applied if double-precision conversion
+     * strategy is set.
+     *
+     * @return the the maximum number of decimal places applied
      */
     public int getScale()
     {

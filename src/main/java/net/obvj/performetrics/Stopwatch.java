@@ -11,7 +11,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * A convenient object for timings that support multiple counter types
+ * A convenient object for timing that supports multiple counter types.
  * <p>
  * <b>Note:</b> This class is not thread-safe.
  *
@@ -27,7 +27,7 @@ public class Stopwatch
     private Map<Type, Counter> counters;
 
     /**
-     * Creates a new stopwatch with default counter types
+     * Creates a new stopwatch with default counter types.
      */
     public Stopwatch()
     {
@@ -35,7 +35,7 @@ public class Stopwatch
     }
 
     /**
-     * Creates a new stopwatch with specific counter types
+     * Creates a new stopwatch with specific counter types.
      *
      * @param types the types to be set
      */
@@ -46,7 +46,7 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with default counter types
+     * Provides a started stopwatch for convenience with default counter types.
      *
      * @return a new, started stopwatch
      */
@@ -56,7 +56,7 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with specific counter types
+     * Provides a started stopwatch for convenience with specific counter types.
      *
      * @param types the types to be set
      * @return a new, started stopwatch
@@ -69,7 +69,7 @@ public class Stopwatch
     }
 
     /**
-     * Resets all counters for this stopwatch
+     * Resets all counters associated with this stopwatch instance.
      */
     public void reset()
     {
@@ -81,7 +81,7 @@ public class Stopwatch
     }
 
     /**
-     * Starts the stopwatch
+     * Starts the stopwatch.
      */
     public void start()
     {
@@ -92,7 +92,7 @@ public class Stopwatch
     }
 
     /**
-     * Stops the stopwatch
+     * Stops the stopwatch.
      */
     public void stop()
     {
@@ -103,7 +103,9 @@ public class Stopwatch
     }
 
     /**
-     * @return all counters in this stopwatch
+     * Returns the counters associated with this stopwatch instance.
+     *
+     * @return all counters associated with this stopwatch instance
      */
     public Collection<Counter> getAllCounters()
     {
@@ -111,9 +113,12 @@ public class Stopwatch
     }
 
     /**
+     * Returns the counter instance associated with a given type in this stopwatch.
+     *
      * @param type the counter type to be fetched
-     * @return the counter matching the given type inside this stopwatch
-     * @throws IllegalArgumentException if the specified type is not available
+     * @return the counter instance associated with the given type in this stopwatch
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
      */
     public Counter getCounter(Type type)
     {

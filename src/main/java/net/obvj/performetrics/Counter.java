@@ -9,19 +9,19 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
- * An object containing units before and units after for a particular unit type
+ * An object that stores units before and after, for elapsed time maintenance.
  *
  * @author oswaldo.bapvic.jr
  */
 public class Counter
 {
     /**
-     * The string format applied on {@code toString()} calls
+     * The string format applied on {@code toString()} calls.
      */
     protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
 
     /**
-     * An enumeration of all types of measurement supported
+     * An enumeration of all types of metrics supported.
      */
     public enum Type
     {
@@ -50,7 +50,8 @@ public class Counter
         },
 
         /**
-         * The total CPU time that the current thread has executed in user mode.
+         * The total CPU time that the current thread has executed in user mode (i.e., the time
+         * spent running current thread's own code).
          */
         USER_TIME("User time")
         {
@@ -62,8 +63,8 @@ public class Counter
         },
 
         /**
-         * The time spent by the kernel to execute system level operations on behalf of the
-         * application.
+         * The time spent by the OS kernel to execute system level operations on behalf of the
+         * application, such as context switching, resource allocation, etc.
          */
         SYSTEM_TIME("System time")
         {
@@ -82,7 +83,7 @@ public class Counter
         }
 
         /**
-         * Returns the textual representation associated with this Type.
+         * Returns the textual representation associated with this type.
          */
         @Override
         public String toString()
@@ -91,10 +92,10 @@ public class Counter
         }
 
         /**
-         * Executes default data fetch strategy for the specific type.
+         * Executes a default data fetch strategy that varies for each type.
          *
          * @param targetTimeUnit the time unit in which the data will be returned
-         * @return the default data strategy for this type, in the specified time unit
+         * @return the amount of time at the current instant, in the specified time unit.
          */
         public abstract long defaultDataFetchStrategy(TimeUnit targetTimeUnit);
     }
@@ -110,7 +111,7 @@ public class Counter
     private boolean unitsAfterFlag = false;
 
     /**
-     * Builds this Counter object with default time unit.
+     * Builds this Counter object with a given type and default time unit.
      *
      * @param type the type to set
      */
@@ -204,7 +205,8 @@ public class Counter
     }
 
     /**
-     * Set the units before with this counter's default data fetch strategy
+     * Populates the {@code unitsBefore} field with the value retrieved by this counter's
+     * default data fetch strategy.
      */
     public void before()
     {
@@ -212,7 +214,8 @@ public class Counter
     }
 
     /**
-     * Set the units after with this counter's default data fetch strategy
+     * Populates the {@code unitsAfter} field with the value retrieved by this counter's
+     * default data fetch strategy.
      */
     public void after()
     {
@@ -220,7 +223,8 @@ public class Counter
     }
 
     /**
-     * @return the difference between units before and units after
+     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if
+     *         {@code unitsAfter} is greater than {@code unitsBefore}; -1 otherwise.
      */
     private static long elapsedTime(long unitsBefore, long unitsAfter)
     {
@@ -228,9 +232,12 @@ public class Counter
     }
 
     /**
-     * @return the difference between units before and units after, if both units are set; or
-     *         the difference between units before and the current units, retrieved by the
-     *         counter's default data fetch strategy, if the units after ate not set.
+     * Returns the elapsed time, in default time unit.
+     *
+     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
+     *         units are set; or the difference between {@code unitsBefore} and the current
+     *         value retrieved by the counter's default data fetch strategy, if
+     *         {@code unitsAfter} is not set. The value is retrieved in the default time unit.
      */
     public long elapsedTime()
     {
@@ -242,7 +249,11 @@ public class Counter
      * Returns the elapsed time, in a given {@link TimeUnit}.
      *
      * @param timeUnit the time unit to which the elapsed time will be converted
-     * @return the difference between units before and units after, in the given time unit
+     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
+     *         units are set; or the difference between {@code unitsBefore} and the current
+     *         value retrieved by the counter's default data fetch strategy, if
+     *         {@code unitsAfter} is not set. The value is converted to the given time unit
+     *         using the default conversion strategy.
      */
     public double elapsedTime(TimeUnit timeUnit)
     {
@@ -255,7 +266,11 @@ public class Counter
      *
      * @param timeUnit           the time unit to which the elapsed time will be converted
      * @param conversionStrategy the {@link ConversionStrategy} to be used
-     * @return the difference between units before and units after, in the given time unit
+     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
+     *         units are set; or the difference between {@code unitsBefore} and the current
+     *         value retrieved by the counter's default data fetch strategy, if
+     *         {@code unitsAfter} is not set. The value converted to the given time unit using
+     *         the given conversion strategy.
      * @since 2.0.0
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionStrategy conversionStrategy)

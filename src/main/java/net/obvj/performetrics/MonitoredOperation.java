@@ -19,10 +19,9 @@ public abstract class MonitoredOperation
     protected final Stopwatch stopwatch;
 
     /**
-     * Builds this operation with the specified type(s), which will be maintained in the
-     * default time unit.
+     * Builds a monitored operation with the specified type(s).
      *
-     * @param types the counter types to created
+     * @param types the counter type(s) to be maintained by this operation
      */
     public MonitoredOperation(Type... types)
     {
@@ -37,7 +36,9 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * @return all counters maintained for this operation
+     * Returns the counters maintained by this monitored operation.
+     *
+     * @return all counters maintained by this monitored operation.
      */
     public Collection<Counter> getCounters()
     {
@@ -45,8 +46,10 @@ public abstract class MonitoredOperation
     }
 
     /**
+     * Returns the counter instance associated with a given type in this monitored operation.
+     *
      * @param type the counter type to be fetched
-     * @return the counter object associated with the given type for this operation
+     * @return the counter instance associated with the given type in this monitored operation
      */
     public Counter getCounter(Type type)
     {

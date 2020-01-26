@@ -91,7 +91,7 @@ public class PrintUtils
     }
 
     /**
-     * Returns a table with counters and elapsed times
+     * Returns a table with counters and elapsed times.
      *
      * @param counters the counters whose data will be fetched
      * @return as formatted string containing a table rows with all counters and elapsed times
@@ -107,7 +107,7 @@ public class PrintUtils
      * @param counters the counters whose data will be fetched
      * @param timeUnit the time unit in which elapsed times will be displayed; if null, the
      *                 default time unit specified for each counter will be applied
-     * @return as formatted string containing a table rows with all counters and elapsed times
+     * @return a formatted string containing a table rows with all counters and elapsed times
      */
     protected static String toTableFormat(Collection<Counter> counters, TimeUnit timeUnit)
     {
@@ -128,7 +128,7 @@ public class PrintUtils
 
     /**
      * Returns a row with the given counter. The elapsed time will be printed using the
-     * counter's default time unit.
+     * default time unit.
      *
      * @param counter the counter whose data will be fetched
      * @return a formatted String representing a row with the data fetched from the counter

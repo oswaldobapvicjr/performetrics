@@ -19,7 +19,9 @@ public class ConfigurationHolder
     }
 
     /**
-     * @return the configuration
+     * Returns the current configuration.
+     *
+     * @return the current configuration
      */
     public static Configuration getConfiguration()
     {
@@ -27,6 +29,8 @@ public class ConfigurationHolder
     }
 
     /**
+     * Sets a given configuration as current.
+     *
      * @param configuration the configuration to set
      */
     public static void setConfiguration(Configuration configuration)
@@ -35,7 +39,7 @@ public class ConfigurationHolder
     }
 
     /**
-     * Resets the configuration to defaults.
+     * Resets current configuration to default.
      */
     public static void reset()
     {

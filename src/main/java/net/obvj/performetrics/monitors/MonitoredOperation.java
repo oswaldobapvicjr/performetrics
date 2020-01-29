@@ -1,9 +1,11 @@
-package net.obvj.performetrics;
+package net.obvj.performetrics.monitors;
 
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
 

@@ -2,19 +2,21 @@ package net.obvj.performetrics;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.runnable.MonitoredRunnable;
+import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.strategy.ConversionStrategy;
 
 public class PerformetricsTestDrive
 {
-    public static void main(String[] args) throws InterruptedException, IOException
+    public static void main(String[] args) throws Exception
     {
         Locale.setDefault(new Locale("en", "US"));
 
@@ -29,7 +31,7 @@ public class PerformetricsTestDrive
         Performetrics.setDefaultConversionStrategy(ConversionStrategy.DOUBLE_PRECISION);
         Performetrics.setScale(2);
 
-        testRunnableWithLambda();
+        testCallableWithLambda();
     }
 
     private static void testStopwatch1() throws InterruptedException, IOException
@@ -55,20 +57,16 @@ public class PerformetricsTestDrive
         sw.printStatistics(System.out, TimeUnit.SECONDS);
     }
 
-    private static void testRunnableWithLambda() throws InterruptedException
+    private static void testCallableWithLambda() throws Exception
     {
-        MonitoredRunnable operation = new MonitoredRunnable(() ->
+        MonitoredCallable<String> operation = new MonitoredCallable<>(() ->
         {
-            try
-            {
-                Thread.sleep(2000);
-            }
-            catch (InterruptedException e)
-            {
-            }
-        }, Counter.Type.WALL_CLOCK_TIME);
+            List<Path> paths = Files.list(Paths.get(System.getenv("TEMP"))).sorted()
+                    .collect(Collectors.toList());
+            return "File count = " + paths.size();
+        });
 
-        operation.run();
+        System.out.println(operation.call());
 
         System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.NANOSECONDS));
         System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS));

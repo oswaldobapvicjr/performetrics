@@ -1,4 +1,4 @@
-package net.obvj.performetrics.runnable;
+package net.obvj.performetrics.monitors;
 
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
@@ -22,26 +23,28 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.MonitoredOperation;
+import net.obvj.performetrics.monitors.MonitoredCallable;
+import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * Test methods for the {@link MonitoredRunnable}.
+ * Test methods for the {@link MonitoredCallable}.
  *
  * @author oswaldo.bapvic.jr
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SystemUtils.class, PrintUtils.class })
-public class MonitoredRunnableTest
+public class MoritoredCallableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
     private static final long MOCKED_CPU_TIME = 1200000000l;
     private static final long MOCKED_USER_TIME = 1200000001l;
     private static final long MOCKED_SYSTEM_TIME = 1200000002l;
+    private static final String STRING_CALLABLE_RETURN = "test234";
 
     @Mock
-    private Runnable runnable;
+    private Callable<String> callable;
 
     @Before
     public void setup()
@@ -58,6 +61,15 @@ public class MonitoredRunnableTest
         given(SystemUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
         given(SystemUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
         given(SystemUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+    }
+
+    /**
+     * Setup the expects on the mocked {@link Callable} object
+     */
+    public void setupMockedCallable() throws Exception
+    {
+        PowerMockito.when(callable.call()).thenReturn(STRING_CALLABLE_RETURN);
+
     }
 
     /**
@@ -102,42 +114,43 @@ public class MonitoredRunnableTest
     }
 
     /**
-     * Tests, for a given {@link Runnable} and a single counter, that the correct counter is
+     * Tests, for a given {@link Callable} and a single counter, that the correct counter is
      * specified for this operation and the initial values are zero
      */
     @Test
     public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
     {
-        MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME);
+        MonitoredCallable<String> op = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);
         assertThat(op.getCounters().size(), is(1));
-        Counter counter = op.getCounter(CPU_TIME);
+        Counter counter = op.getCounter(WALL_CLOCK_TIME);
         assertAllUnitsBeforeEqualZero(counter);
         assertAllUnitsAfterEqualZero(counter);
     }
 
     /**
-     * Tests, for a given {@link Runnable} and more than one counter, that the correct
+     * Tests, for a given {@link Callable} and more than one counter, that the correct
      * counters are specified for this operation and the initial values are zero
      */
     @Test
-    public void constructor_withTwoTypes_assignsCorrectCounteAndInitialValues()
+    public void constructor_withTwoTypes_assignsCorrectCountersAndInitialValues()
     {
-        MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME, USER_TIME);
+        MonitoredCallable<String> op = new MonitoredCallable<>(callable, SYSTEM_TIME,
+                USER_TIME);
         assertThat(op.getCounters().size(), is(2));
-        Counter counter1 = op.getCounter(CPU_TIME);
+        Counter counter1 = op.getCounter(SYSTEM_TIME);
         Counter counter2 = op.getCounter(USER_TIME);
         assertAllUnitsBeforeEqualZero(counter1, counter2);
         assertAllUnitsAfterEqualZero(counter1, counter2);
     }
 
     /**
-     * Tests, for a given {@link Runnable} and no specific counter, that all available
+     * Tests, for a given {@link Callable} and no specific counter, that all available
      * counters are specified for this operation
      */
     @Test
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
-        MonitoredRunnable op = new MonitoredRunnable(runnable);
+        MonitoredCallable<String> op = new MonitoredCallable<>(callable);
         assertThat(op.getCounters().size(), is(Type.values().length));
         assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
@@ -146,16 +159,19 @@ public class MonitoredRunnableTest
     }
 
     /**
-     * Tests the elapsed time for a dummy {@link Runnable} with no specific counter set (all
-     * counters)
+     * Tests that the elapsed time for a dummy {@link Callable} with no specific counter set
+     * (all counters) is updated and the {@link Callable} result is retrieved
+     *
+     * @throws Exception in case of an exception inside the {@link Callable}
      */
     @Test
-    public void run_givenAllTypes_updatesAllCounters()
+    public void call_givenAllTypes_updatesAllCounters() throws Exception
     {
+        setupMockedCallable();
         PowerMockito.mockStatic(SystemUtils.class);
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         setupExpects();
-        operation.run();
+        assertThat(operation.call(), is(STRING_CALLABLE_RETURN));
         assertAllUnitsBefore(operation);
         assertAllUnitsAfter(operation);
     }
@@ -166,7 +182,7 @@ public class MonitoredRunnableTest
     @Test
     public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         operation.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printCounters(operation.getCounters(), System.out);
@@ -179,7 +195,7 @@ public class MonitoredRunnableTest
     @Test
     public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
     {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         operation.printStatistics(System.out, TimeUnit.SECONDS);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printCounters(operation.getCounters(), System.out, TimeUnit.SECONDS);

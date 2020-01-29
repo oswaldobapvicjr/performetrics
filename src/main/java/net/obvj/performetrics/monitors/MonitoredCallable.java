@@ -1,9 +1,8 @@
-package net.obvj.performetrics.callable;
+package net.obvj.performetrics.monitors;
 
 import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.MonitoredOperation;
 
 /**
  * A {@link Callable} that maintains one or more custom counters for elapsed time

@@ -21,7 +21,7 @@ public class Counter
     protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
 
     /**
-     * An enumeration of all types of metrics supported.
+     * Enumerates all supported counter types.
      */
     public enum Type
     {

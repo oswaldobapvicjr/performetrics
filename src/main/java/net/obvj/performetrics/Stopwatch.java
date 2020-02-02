@@ -11,9 +11,62 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * A convenient object for timing that supports multiple counter types.
+ * <p>
+ * A convenient timing object that supports multiple counter types.
+ * </p>
+ *
+ * <p>
+ * Use the default constructor, with no arguments, to create a stopwatch with all of the
+ * available metrics. If required, an additional constructor may be used to provide a
+ * stopwatch with specific counters. E.g.:
+ * </p>
+ *
+ * <pre>
+ * new Stopwatch(); // provides all available counter types
+ * new Stopwatch(Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
+ * new Stopwatch(Counter.Type.CPU_TIME, Counter.Type.USER_TIME); // two counters
+ * </pre>
+ *
+ * <p>
+ * <b>Note:</b> For a list of available counters, refer to {@link Counter.Type}.
+ * </p>
+ *
+ * <p>
+ * Call {@code start()} to start the timing session. When you are done, call
+ * {@code stop()} to complete the timing session.
+ * </p>
+ *
+ * <p>
+ * <b>Hint:</b> A single call to the factory method {@code Stopwatch.createStarted()} may
+ * create a started stopwatch for convenience.
+ * </p>
+ *
+ * <p>
+ * Use {@code getCounter(Counter.Type)}, then {@code elapsedTime()} to retrieve the
+ * elapsed time of a particular counter. E.g.:
+ * </p>
+ *
+ * <pre>
+ * Counter cpuTime = stopwatch.getCounter(Counter.Type.CPU_TIME);
+ * double elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+ * </pre>
+ *
+ * <p>
+ * Use the output method {@code printStatistics(System.out)} to print stopwatch statistics
+ * to the system console.
+ * </p>
+ *
+ * <p>
+ * Although it is intended that the output methods {@code printStatistics()} should only
+ * be called after stop, some suitable, temporary data may be returned if the stopwatch is
+ * still running. In this scenario, the initial values will be compared to the most
+ * up-to-date ones, retrieved at the moment of the call. The same applies to the
+ * {@code elapsedTime()} methods available for each counter instance.
+ * </p>
+ *
  * <p>
  * <b>Note:</b> This class is not thread-safe.
+ * </p>
  *
  * @author oswaldo.bapvic.jr
  */

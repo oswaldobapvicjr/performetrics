@@ -5,14 +5,16 @@ import java.util.concurrent.Callable;
 import net.obvj.performetrics.Counter.Type;
 
 /**
- * A {@link Callable} that maintains one or more custom counters for elapsed time
- * evaluation.
  * <p>
- * The counters are stored in the default time unit (nanoseconds).
+ * A {@link Callable} wrapper that maintains one or more counters for monitoring the time
+ * spent by the Callable's {@code call()} method.
+ * </p>
+ *
  * <p>
- * <b>Note:</b> Not thread-safe. In a multi-thread context, it is recommended to create
- * separate instances for each thread. If multiple threads access the same instance of
- * this class, the metrics may be inconsistent.
+ * <b>Note:</b> This class is not thread-safe. In a multi-thread context, it is
+ * recommended to create separate instances for each thread. If multiple threads access
+ * the same instance of this class, the metrics may be inconsistent.
+ * </p>
  *
  * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr

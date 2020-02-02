@@ -3,14 +3,16 @@ package net.obvj.performetrics.monitors;
 import net.obvj.performetrics.Counter.Type;
 
 /**
- * A {@link Runnable} that maintains one or more custom counters for elapsed time
- * evaluation.
  * <p>
- * The counters are stored in the default time unit (nanoseconds).
+ * A {@link Runnable} wrapper that maintains one or more counters for monitoring the time
+ * spent by the Runnable's {@code run()} method.
+ * </p>
+ *
  * <p>
- * <b>Note:</b> Not thread-safe. In a multi-thread context, it is recommended to create
- * separate instances for each thread. If multiple threads access the same instance of
- * this class, the metrics may be inconsistent.
+ * <b>Note:</b> This class is not thread-safe. In a multi-thread context, it is
+ * recommended to create separate instances for each thread. If multiple threads access
+ * the same instance of this class, the metrics may be inconsistent.
+ * </p>
  *
  * @author oswaldo.bapvic.jr
  */

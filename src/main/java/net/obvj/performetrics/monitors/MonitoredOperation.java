@@ -10,7 +10,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
- * A base object for monitorable operations that require one or more counters.
+ * A base object for monitorable operations that maintains one or more counters.
  *
  * @author oswaldo.bapvic.jr
  */

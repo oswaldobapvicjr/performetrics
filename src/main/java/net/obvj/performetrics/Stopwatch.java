@@ -76,8 +76,78 @@ public class Stopwatch
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
+    /**
+     * Enumerates possible stopwatch states, with proper behaviors for each of them.
+     *
+     * @since 2.0.0
+     */
+    private enum State
+    {
+        READY
+        {
+            @Override
+            void start(Stopwatch stopwatch)
+            {
+                stopwatch.doStart();
+            }
+
+            @Override
+            void stop(Stopwatch stopwatch)
+            {
+                throw new IllegalStateException("The stopwatch was not started");
+            }
+        },
+
+        STARTED
+        {
+            @Override
+            void start(Stopwatch stopwatch)
+            {
+                throw new IllegalStateException("The stopwatch is already started");
+            }
+
+            @Override
+            void stop(Stopwatch stopwatch)
+            {
+                stopwatch.doStop();
+            }
+        },
+
+        STOPPED
+        {
+            @Override
+            void start(Stopwatch stopwatch)
+            {
+                throw new IllegalStateException("The stopwatch is stopped. Please reset it before restarting");
+            }
+
+            @Override
+            void stop(Stopwatch stopwatch)
+            {
+                throw new IllegalStateException("The stopwatch is already stopped");
+            }
+        };
+
+        /**
+         * Starts the given stopwatch, if the state is appropriate for the operation.
+         *
+         * @param stopwatch the stopwatch to be started
+         * @throws IllegalStateException if the state is not appropriate for the operation
+         */
+        abstract void start(Stopwatch stopwatch);
+
+        /**
+         * Stops the given stopwatch, if the state is appropriate for the operation.
+         *
+         * @param stopwatch the stopwatch to be stopped
+         * @throws IllegalStateException if the state is not appropriate for the operation
+         */
+        abstract void stop(Stopwatch stopwatch);
+    }
+
     private final Type[] types;
     private Map<Type, Counter> counters;
+    private State state = State.READY;
 
     /**
      * Creates a new stopwatch with default counter types.
@@ -131,28 +201,37 @@ public class Stopwatch
         {
             counters.put(type, new Counter(type));
         }
+        state = State.READY;
     }
 
     /**
-     * Starts the stopwatch.
+     * Starts the timing session.
+     *
+     * @throws IllegalStateException if the stopwatch state is not suitable for this action
      */
     public void start()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.before();
-        }
+        state.start(this);
     }
 
     /**
-     * Stops the stopwatch.
+     * Stops the timing session.
+     *
+     * @throws IllegalStateException if the stopwatch state is not suitable for this action
      */
     public void stop()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.after();
-        }
+        state.stop(this);
+    }
+
+    /**
+     * Returns {@code true} if this stopwatch is started.
+     *
+     * @return true if the stopwatch is started; otherwise, false
+     */
+    public boolean isStarted()
+    {
+        return state == State.STARTED;
     }
 
     /**
@@ -202,6 +281,32 @@ public class Stopwatch
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
         PrintUtils.printStopwatch(this, printStream, timeUnit);
+    }
+
+    /**
+     * Starts the timing session. Only called internally. The current {@link State} defines
+     * whether or not this action is allowed.
+     */
+    private void doStart()
+    {
+        for (Counter counter : counters.values())
+        {
+            counter.before();
+        }
+        state = State.STARTED;
+    }
+
+    /**
+     * Stops the timing session. Only called internally. The current {@link State} defines
+     * whether or not this action is allowed.
+     */
+    private void doStop()
+    {
+        for (Counter counter : counters.values())
+        {
+            counter.after();
+        }
+        state = State.STOPPED;
     }
 
 }

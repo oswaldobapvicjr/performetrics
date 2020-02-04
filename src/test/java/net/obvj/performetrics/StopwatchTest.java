@@ -12,9 +12,10 @@ import static org.mockito.Mockito.times;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import static org.powermock.api.mockito.PowerMockito.*;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,6 +36,13 @@ public class StopwatchTest
     private static final long CPU_TIME_AFTER = 1200000300l;
     private static final long USER_TIME_AFTER = 1200000201l;
     private static final long SYSTEM_TIME_AFTER = 1200000102l;
+
+    @Before
+    public void setup()
+    {
+        mockStatic(SystemUtils.class);
+        mockStatic(PrintUtils.class);
+    }
 
     /**
      * Setup the expects on PerformetricUtils mock with "_BEFORE" constant values
@@ -151,6 +159,7 @@ public class StopwatchTest
     public void getAllCounters_withStopwatchUnstarted_returnsAllUnitsEqualToZero()
     {
         Stopwatch sw = new Stopwatch();
+        assertThat(sw.isStarted(), is(false));
         assertAllUnitsBeforeEqualZero(sw);
         assertAllUnitsAfterEqualZero(sw);
     }
@@ -162,10 +171,10 @@ public class StopwatchTest
     @Test
     public void createdStarted_withNoArguments_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted();
         assertEquals(Type.values().length, sw.getAllCounters().size());
+        assertThat(sw.isStarted(), is(true));
         assertAllUnitsBefore(sw);
         assertAllUnitsAfterEqualZero(sw);
     }
@@ -177,9 +186,9 @@ public class StopwatchTest
     @Test
     public void createdStarted_withOneType_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        assertThat(sw.isStarted(), is(true));
         assertEquals(1, sw.getAllCounters().size());
         assertEquals(WALL_CLOCK_TIME_BEFORE, sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore());
         assertEquals(0, sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter());
@@ -192,13 +201,14 @@ public class StopwatchTest
     @Test
     public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         Stopwatch sw = new Stopwatch();
         assertEquals(Type.values().length, sw.getAllCounters().size());
         setupExpectsBefore();
         sw.start();
+        assertThat(sw.isStarted(), is(true));
         setupExpectsAfter();
         sw.stop();
+        assertThat(sw.isStarted(), is(false));
         assertAllUnitsBefore(sw);
         assertAllUnitsAfter(sw);
     }
@@ -210,13 +220,14 @@ public class StopwatchTest
     @Test
     public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME, CPU_TIME);
         assertEquals(2, sw.getAllCounters().size());
         setupExpectsBefore();
         sw.start();
+        assertThat(sw.isStarted(), is(true));
         setupExpectsAfter();
         sw.stop();
+        assertThat(sw.isStarted(), is(false));
         assertEquals(WALL_CLOCK_TIME_BEFORE, sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore());
         assertEquals(WALL_CLOCK_TIME_AFTER, sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter());
         assertEquals(CPU_TIME_BEFORE, sw.getCounter(CPU_TIME).getUnitsBefore());
@@ -230,11 +241,12 @@ public class StopwatchTest
     @Test
     public void reset_withAllAvailableTypes_setsAllUnitsToZeroAccordingly()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted();
+        assertThat(sw.isStarted(), is(true));
         setupExpectsAfter();
         sw.stop();
+        assertThat(sw.isStarted(), is(false));
         sw.reset();
         assertEquals(Type.values().length, sw.getAllCounters().size());
         assertAllUnitsBeforeEqualZero(sw);
@@ -248,12 +260,14 @@ public class StopwatchTest
     @Test
     public void reset_withTwoTypes_setsAllUnitsToZeroAccordingly()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(USER_TIME, SYSTEM_TIME);
+        assertThat(sw.isStarted(), is(true));
         setupExpectsAfter();
         sw.stop();
+        assertThat(sw.isStarted(), is(false));
         sw.reset();
+        assertThat(sw.isStarted(), is(false));
         assertEquals(2, sw.getAllCounters().size());
         assertEquals(0, sw.getCounter(USER_TIME).getUnitsBefore());
         assertEquals(0, sw.getCounter(USER_TIME).getUnitsAfter());
@@ -267,10 +281,9 @@ public class StopwatchTest
     @Test
     public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
-        PowerMockito.mockStatic(PrintUtils.class);
         Stopwatch sw = new Stopwatch();
         sw.printStatistics(System.out);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printStopwatch(sw, System.out);
     }
 
@@ -281,10 +294,9 @@ public class StopwatchTest
     @Test
     public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
     {
-        PowerMockito.mockStatic(PrintUtils.class);
         Stopwatch sw = new Stopwatch();
         sw.printStatistics(System.out, TimeUnit.SECONDS);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printStopwatch(sw, System.out, TimeUnit.SECONDS);
     }
 
@@ -293,6 +305,36 @@ public class StopwatchTest
     {
         Stopwatch sw = new Stopwatch(Type.CPU_TIME, Type.SYSTEM_TIME);
         sw.getCounter(USER_TIME);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void start_alreadyStarted_illegalStateException()
+    {
+        Stopwatch sw = Stopwatch.createStarted();
+        sw.start();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void start_stopped_illegalStateException()
+    {
+        Stopwatch sw = Stopwatch.createStarted();
+        sw.stop();
+        sw.start();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void stop_notStarted_illegalStateException()
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.stop();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void stop_alreadyStopped_illegalStateException()
+    {
+        Stopwatch sw = Stopwatch.createStarted();
+        sw.stop();
+        sw.stop();
     }
 
 }

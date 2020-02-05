@@ -9,6 +9,31 @@ import net.obvj.performetrics.Counter.Type;
  * </p>
  *
  * <p>
+ * Specify a target {@code Runnable} via constructor, then execute the {@code run()}
+ * method available in this wrapper. The target {@code Runnable}'s {@code run()} method
+ * will be executed and monitored. After the operation, call
+ * {@code printStatistics(System.out)} to print the statistics to the system console or
+ * {@code getCounter(Counter.Type)}, then {@code elapsedTime()} to retrieve the elapsed
+ * time for a particular counter. E.g.:
+ * </p>
+ *
+ * <pre>
+ * Counter cpuTime = monitoredRunnable.getCounter(Counter.Type.CPU_TIME);
+ * double elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+ * </pre>
+ *
+ * <p>
+ * By default, all available counter types will be measured, if no specific counter types
+ * are passed to the constructor. If required, an additional constructor may be used to
+ * set up one or more specific counters to be maintained. E.g.:
+ * </p>
+ *
+ * <pre>
+ * new MonitoredRunnable(runnable); // maintains all available counter types
+ * new MonitoredRunnable(runnable, Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
+ * </pre>
+ *
+ * <p>
  * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
  * instances must be created for each thread.
  * </p>
@@ -49,6 +74,7 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     @Override
     public void run()
     {
+        stopwatch.reset();
         stopwatch.start();
         try
         {

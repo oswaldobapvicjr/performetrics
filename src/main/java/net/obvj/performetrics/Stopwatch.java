@@ -65,8 +65,8 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * <b>Note:</b> This class is not thread-safe. In a multi-thread context, separate
- * instances for each thread must be created.
+ * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
+ * instances must be created for each thread.
  * </p>
  *
  * @author oswaldo.bapvic.jr

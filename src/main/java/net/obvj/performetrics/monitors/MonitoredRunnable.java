@@ -1,5 +1,6 @@
 package net.obvj.performetrics.monitors;
 
+import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 
 /**
@@ -34,11 +35,17 @@ import net.obvj.performetrics.Counter.Type;
  * </pre>
  *
  * <p>
+ * For a list of available counters, refer to {@link Counter.Type}.
+ * </p>
+ *
+ * <p>
  * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
  * instances must be created for each thread.
  * </p>
  *
  * @author oswaldo.bapvic.jr
+ * @see Counter
+ * @see Counter.Type
  */
 public class MonitoredRunnable extends MonitoredOperation implements Runnable
 {

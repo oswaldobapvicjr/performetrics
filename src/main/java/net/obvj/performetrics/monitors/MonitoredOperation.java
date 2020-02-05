@@ -14,7 +14,7 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-public abstract class MonitoredOperation
+abstract class MonitoredOperation
 {
     protected static final Type[] NO_SPECIFIC_TYPE = new Type[0];
 

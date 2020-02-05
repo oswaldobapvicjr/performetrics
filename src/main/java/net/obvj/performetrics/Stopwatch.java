@@ -70,6 +70,8 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * @author oswaldo.bapvic.jr
+ * @see Counter
+ * @see Counter.Type
  */
 public class Stopwatch
 {

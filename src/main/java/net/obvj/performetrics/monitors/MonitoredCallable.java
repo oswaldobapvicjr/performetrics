@@ -2,6 +2,7 @@ package net.obvj.performetrics.monitors;
 
 import java.util.concurrent.Callable;
 
+import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 
 /**
@@ -36,12 +37,18 @@ import net.obvj.performetrics.Counter.Type;
  * </pre>
  *
  * <p>
+ * For a list of available counters, refer to {@link Counter.Type}.
+ * </p>
+ *
+ * <p>
  * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
  * instances must be created for each thread.
  * </p>
  *
  * @param <V> the result type of method call
  * @author oswaldo.bapvic.jr
+ * @see Counter
+ * @see Counter.Type
  */
 public class MonitoredCallable<V> extends MonitoredOperation implements Callable<V>
 {

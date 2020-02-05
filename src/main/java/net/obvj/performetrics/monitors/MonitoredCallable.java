@@ -11,9 +11,8 @@ import net.obvj.performetrics.Counter.Type;
  * </p>
  *
  * <p>
- * <b>Note:</b> This class is not thread-safe. In a multi-thread context, it is
- * recommended to create separate instances for each thread. If multiple threads access
- * the same instance of this class, the metrics may be inconsistent.
+ * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
+ * instances must be created for each thread.
  * </p>
  *
  * @param <V> the result type of method call

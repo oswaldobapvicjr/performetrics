@@ -65,14 +65,18 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * <b>Note:</b> This class is not thread-safe.
+ * <b>Note:</b> This class is not thread-safe. In a multi-thread context, separate
+ * instances for each thread must be created.
  * </p>
  *
  * @author oswaldo.bapvic.jr
  */
 public class Stopwatch
 {
-    private static final String MSG_PATTERN_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this instance. Available type(s): {1}";
+    private static final String MSG_STOPWATCH_ALREADY_STARTED = "The stopwatch is already started";
+    private static final String MSG_STOPWATCH_MUST_BE_RESET = "The stopwatch must be reset before being restarted";
+    private static final String MSG_STOPWATCH_NOT_RUNNING = "The stopwatch is not running";
+    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this stopwatch. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -94,16 +98,16 @@ public class Stopwatch
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException("The stopwatch was not started");
+                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
             }
         },
 
-        STARTED
+        RUNNING
         {
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException("The stopwatch is already started");
+                throw new IllegalStateException(MSG_STOPWATCH_ALREADY_STARTED);
             }
 
             @Override
@@ -118,13 +122,13 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException("The stopwatch is stopped. Please reset it before restarting");
+                throw new IllegalStateException(MSG_STOPWATCH_MUST_BE_RESET);
             }
 
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException("The stopwatch is already stopped");
+                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
             }
         };
 
@@ -231,7 +235,7 @@ public class Stopwatch
      */
     public boolean isStarted()
     {
-        return state == State.STARTED;
+        return state == State.RUNNING;
     }
 
     /**
@@ -257,7 +261,7 @@ public class Stopwatch
         if (!counters.containsKey(type))
         {
             throw new IllegalArgumentException(
-                    MessageFormat.format(MSG_PATTERN_TYPE_NOT_AVAILABLE, type, counters.keySet()));
+                    MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, counters.keySet()));
         }
         return counters.get(type);
     }
@@ -293,7 +297,7 @@ public class Stopwatch
         {
             counter.before();
         }
-        state = State.STARTED;
+        state = State.RUNNING;
     }
 
     /**

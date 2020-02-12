@@ -245,7 +245,7 @@ public class Stopwatch
      *
      * @return all counters associated with this stopwatch instance
      */
-    public Collection<Counter> getAllCounters()
+    public Collection<Counter> getCounters()
     {
         return counters.values();
     }
@@ -297,7 +297,7 @@ public class Stopwatch
     {
         for (Counter counter : counters.values())
         {
-            counter.before();
+            counter.setUnitsBefore();
         }
         state = State.RUNNING;
     }
@@ -310,7 +310,7 @@ public class Stopwatch
     {
         for (Counter counter : counters.values())
         {
-            counter.after();
+            counter.setUnitsAfter();
         }
         state = State.STOPPED;
     }

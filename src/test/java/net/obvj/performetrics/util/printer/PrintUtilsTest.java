@@ -171,7 +171,7 @@ public class PrintUtilsTest
 
         // Prepare stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
-        Mockito.when(stopwatch.getAllCounters()).thenReturn(Arrays.asList(c1, c2));
+        Mockito.when(stopwatch.getCounters()).thenReturn(Arrays.asList(c1, c2));
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -195,7 +195,7 @@ public class PrintUtilsTest
 
         // Prepare stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
-        Mockito.when(stopwatch.getAllCounters()).thenReturn(Arrays.asList(c1, c2));
+        Mockito.when(stopwatch.getCounters()).thenReturn(Arrays.asList(c1, c2));
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");

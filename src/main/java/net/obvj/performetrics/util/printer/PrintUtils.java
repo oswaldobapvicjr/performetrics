@@ -73,7 +73,7 @@ public class PrintUtils
      */
     public static void printStopwatch(Stopwatch stopwatch, PrintStream printStream, TimeUnit timeUnit)
     {
-        printCounters(stopwatch.getAllCounters(), printStream, timeUnit);
+        printCounters(stopwatch.getCounters(), printStream, timeUnit);
     }
 
     /**
@@ -135,7 +135,7 @@ public class PrintUtils
      */
     protected static String toRowFormat(Counter counter)
     {
-        return toRowFormat(counter, counter.getDefaultTimeUnit());
+        return toRowFormat(counter, counter.getTimeUnit());
     }
 
     /**

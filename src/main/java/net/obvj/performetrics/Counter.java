@@ -31,7 +31,7 @@ public class Counter
         WALL_CLOCK_TIME("Wall clock time")
         {
             @Override
-            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            public long getTime(TimeUnit targetTimeUnit)
             {
                 return targetTimeUnit.convert(SystemUtils.getWallClockTimeNanos(), NANOSECONDS);
             }
@@ -43,7 +43,7 @@ public class Counter
         CPU_TIME("CPU time")
         {
             @Override
-            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            public long getTime(TimeUnit targetTimeUnit)
             {
                 return targetTimeUnit.convert(SystemUtils.getCpuTimeNanos(), NANOSECONDS);
             }
@@ -56,7 +56,7 @@ public class Counter
         USER_TIME("User time")
         {
             @Override
-            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            public long getTime(TimeUnit targetTimeUnit)
             {
                 return targetTimeUnit.convert(SystemUtils.getUserTimeNanos(), NANOSECONDS);
             }
@@ -69,7 +69,7 @@ public class Counter
         SYSTEM_TIME("System time")
         {
             @Override
-            public long defaultDataFetchStrategy(TimeUnit targetTimeUnit)
+            public long getTime(TimeUnit targetTimeUnit)
             {
                 return targetTimeUnit.convert(SystemUtils.getSystemTimeNanos(), NANOSECONDS);
             }
@@ -92,16 +92,16 @@ public class Counter
         }
 
         /**
-         * Executes a default data fetch strategy that varies for each type.
+         * Executes a particular time fetching strategy that varies for each counter type.
          *
-         * @param targetTimeUnit the time unit in which the data will be returned
+         * @param timeUnit the time unit in which the time will be returned
          * @return the amount of time at the current instant, in the specified time unit.
          */
-        public abstract long defaultDataFetchStrategy(TimeUnit targetTimeUnit);
+        public abstract long getTime(TimeUnit timeUnit);
     }
 
     private final Type type;
-    private final TimeUnit defaultTimeUnit;
+    private final TimeUnit timeUnit;
 
     private ConversionStrategy conversionStrategy;
 
@@ -142,7 +142,7 @@ public class Counter
     public Counter(Type type, TimeUnit timeUnit, ConversionStrategy conversionStrategy)
     {
         this.type = type;
-        this.defaultTimeUnit = timeUnit;
+        this.timeUnit = timeUnit;
         this.conversionStrategy = conversionStrategy;
     }
 
@@ -188,11 +188,11 @@ public class Counter
     }
 
     /**
-     * @return the default time unit
+     * @return the time unit
      */
-    public TimeUnit getDefaultTimeUnit()
+    public TimeUnit getTimeUnit()
     {
-        return defaultTimeUnit;
+        return timeUnit;
     }
 
     /**
@@ -205,21 +205,21 @@ public class Counter
     }
 
     /**
-     * Populates the {@code unitsBefore} field with the value retrieved by this counter's
-     * default data fetch strategy.
+     * Populates the {@code unitsBefore} field with the value retrieved by the time fetching
+     * strategy defined by this counter's type.
      */
-    public void before()
+    public void setUnitsBefore()
     {
-        unitsBefore = type.defaultDataFetchStrategy(defaultTimeUnit);
+        setUnitsBefore(type.getTime(timeUnit));
     }
 
     /**
-     * Populates the {@code unitsAfter} field with the value retrieved by this counter's
-     * default data fetch strategy.
+     * Populates the {@code unitsAfter} field with the value retrieved by the time fetching
+     * strategy defined by this counter's type.
      */
-    public void after()
+    public void setUnitsAfter()
     {
-        setUnitsAfter(type.defaultDataFetchStrategy(defaultTimeUnit));
+        setUnitsAfter(type.getTime(timeUnit));
     }
 
     /**
@@ -241,7 +241,7 @@ public class Counter
      */
     public long elapsedTime()
     {
-        long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.defaultDataFetchStrategy(defaultTimeUnit);
+        long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.getTime(timeUnit);
         return elapsedTime(unitsBefore, tempUnitsAfter);
     }
 
@@ -275,7 +275,7 @@ public class Counter
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionStrategy conversionStrategy)
     {
-        return conversionStrategy.convert(elapsedTime(), this.defaultTimeUnit, timeUnit);
+        return conversionStrategy.convert(elapsedTime(), this.timeUnit, timeUnit);
     }
 
     /**
@@ -286,7 +286,7 @@ public class Counter
     @Override
     public String toString()
     {
-        return String.format(STRING_FORMAT, type, defaultTimeUnit, unitsBefore, unitsAfter);
+        return String.format(STRING_FORMAT, type, timeUnit, unitsBefore, unitsAfter);
     }
 
 }

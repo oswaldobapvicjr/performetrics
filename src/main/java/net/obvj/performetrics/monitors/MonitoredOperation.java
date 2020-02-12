@@ -44,7 +44,7 @@ abstract class MonitoredOperation
      */
     public Collection<Counter> getCounters()
     {
-        return stopwatch.getAllCounters();
+        return stopwatch.getCounters();
     }
 
     /**
@@ -65,7 +65,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.printCounters(stopwatch.getAllCounters(), printStream);
+        PrintUtils.printCounters(stopwatch.getCounters(), printStream);
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
-        PrintUtils.printCounters(stopwatch.getAllCounters(), printStream, timeUnit);
+        PrintUtils.printCounters(stopwatch.getCounters(), printStream, timeUnit);
     }
 
 }

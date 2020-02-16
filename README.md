@@ -116,3 +116,13 @@ In this example, we are using the `MonitoredRunnable` class to measure the CPU t
     ```java
     long elapsedTimeNanos = monitoredRunnable.elapsedTime(TimeUnit.NANOSECONDS);
     ```
+
+---
+    
+## Architecture
+
+**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to collect the data you need and display it in different styles with a minimum of code.
+
+Click on the picture to see a detailed class diagram.
+
+[![High-level classes overview](resources/High-level overview - v2.0-A.svg)](resources/Detailed class diagram - v2.0-A.svg)

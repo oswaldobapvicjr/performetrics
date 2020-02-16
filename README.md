@@ -125,4 +125,4 @@ In this example, we are using the `MonitoredRunnable` class to measure the CPU t
 
 Click on the picture to see a detailed class diagram.
 
-[![High-level classes overview](resources/High-level overview - v2.0-A.svg)](resources/Detailed class diagram - v2.0-A.svg)
+[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.0-A.svg)

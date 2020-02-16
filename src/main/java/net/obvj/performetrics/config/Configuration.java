@@ -1,8 +1,8 @@
-package net.obvj.performetrics.configuration;
+package net.obvj.performetrics.config;
 
 import java.util.concurrent.TimeUnit;
 
-import net.obvj.performetrics.strategy.ConversionStrategy;
+import net.obvj.performetrics.ConversionMode;
 
 /**
  * An object that maintains common configurable parameters for Perfometrics objects.
@@ -18,18 +18,18 @@ public class Configuration
     protected static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
 
     /**
-     * The initial conversion strategy to be applied if no specific strategy is set.
+     * The initial conversion mode to be applied if no specific mode is set.
      */
-    protected static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConversionStrategy.DOUBLE_PRECISION;
+    protected static final ConversionMode INITIAL_CONVERSION_MODE = ConversionMode.DOUBLE_PRECISION;
 
     /**
      * The initial maximum number of decimal places applicable if double-precision conversion
-     * strategy is set.
+     * mode is set.
      */
     protected static final int INITIAL_SCALE = 5;
 
     private TimeUnit timeUnit = INITIAL_TIME_UNIT;
-    private ConversionStrategy conversionStrategy = INITIAL_CONVERSION_STRATEGY;
+    private ConversionMode conversionMode = INITIAL_CONVERSION_MODE;
     private int scale = INITIAL_SCALE;
 
     /**
@@ -53,30 +53,29 @@ public class Configuration
     }
 
     /**
-     * Returns the conversion strategy applied in supported operations if no specific strategy
-     * is set.
+     * Returns the conversion mode applied in supported operations if no specific mode is set.
      *
-     * @return the conversion strategy applied in supported operations
+     * @return the conversion mode applied in supported operations
      */
-    public ConversionStrategy getConversionStrategy()
+    public ConversionMode getConversionMode()
     {
-        return conversionStrategy;
+        return conversionMode;
     }
 
     /**
-     * Sets a conversion strategy to be applied in supported operations if no specific
-     * strategy is set.
+     * Sets a conversion mode to be applied in supported operations if no specific mode is
+     * set.
      *
-     * @param conversionStrategy the {@link ConversionStrategy} to set
+     * @param conversionMode the {@link ConversionMode} to set
      */
-    public void setConversionStrategy(ConversionStrategy conversionStrategy)
+    public void setConversionMode(ConversionMode conversionMode)
     {
-        this.conversionStrategy = conversionStrategy;
+        this.conversionMode = conversionMode;
     }
 
     /**
      * Returns the maximum number of decimal places applied if double-precision conversion
-     * strategy is set.
+     * mode is set.
      *
      * @return the the maximum number of decimal places applied
      */
@@ -87,7 +86,7 @@ public class Configuration
 
     /**
      * Sets a maximum number of decimal places to be applied if double-precision conversion
-     * strategy is set.
+     * mode is set.
      *
      * @param scale a number between 0 and 16 to be set
      * @throws IllegalArgumentException if a number outside the allowed range is received

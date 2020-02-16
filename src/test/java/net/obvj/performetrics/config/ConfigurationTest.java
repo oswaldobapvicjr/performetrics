@@ -1,4 +1,4 @@
-package net.obvj.performetrics.configuration;
+package net.obvj.performetrics.config;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,7 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import net.obvj.performetrics.strategy.ConversionStrategy;
+import net.obvj.performetrics.ConversionMode;
+import net.obvj.performetrics.config.Configuration;
 
 /**
  * Unit tests for the {@link Configuration}.
@@ -23,7 +24,7 @@ public class ConfigurationTest
     {
         Configuration configuration = new Configuration();
         assertThat(configuration.getTimeUnit(), is(Configuration.INITIAL_TIME_UNIT));
-        assertThat(configuration.getConversionStrategy(), is(Configuration.INITIAL_CONVERSION_STRATEGY));
+        assertThat(configuration.getConversionMode(), is(Configuration.INITIAL_CONVERSION_MODE));
         assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
     }
 
@@ -36,11 +37,11 @@ public class ConfigurationTest
     }
 
     @Test
-    public void setConversionStrategy_validStrategy_suceeds()
+    public void setConversionMode_validMode_suceeds()
     {
         Configuration configuration = new Configuration();
-        configuration.setConversionStrategy(ConversionStrategy.FAST);
-        assertThat(configuration.getConversionStrategy(), is(ConversionStrategy.FAST));
+        configuration.setConversionMode(ConversionMode.FAST);
+        assertThat(configuration.getConversionMode(), is(ConversionMode.FAST));
     }
 
     @Test

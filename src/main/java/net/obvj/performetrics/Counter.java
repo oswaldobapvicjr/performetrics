@@ -4,8 +4,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.util.concurrent.TimeUnit;
 
-import net.obvj.performetrics.configuration.ConfigurationHolder;
-import net.obvj.performetrics.strategy.ConversionStrategy;
+import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
@@ -92,7 +91,7 @@ public class Counter
         }
 
         /**
-         * Executes a particular time fetching strategy that varies for each counter type.
+         * Executes a particular time fetching mode that varies for each counter type.
          *
          * @param timeUnit the time unit in which the time will be returned
          * @return the amount of time at the current instant, in the specified time unit.
@@ -103,7 +102,7 @@ public class Counter
     private final Type type;
     private final TimeUnit timeUnit;
 
-    private ConversionStrategy conversionStrategy;
+    private ConversionMode conversionMode;
 
     private long unitsBefore = 0;
     private long unitsAfter = 0;
@@ -128,22 +127,22 @@ public class Counter
      */
     public Counter(Type type, TimeUnit timeUnit)
     {
-        this(type, timeUnit, ConfigurationHolder.getConfiguration().getConversionStrategy());
+        this(type, timeUnit, ConfigurationHolder.getConfiguration().getConversionMode());
     }
 
     /**
-     * Builds this Counter object with the given type, time unit, and conversion strategy.
+     * Builds this Counter object with the given type, time unit, and conversion mode.
      *
-     * @param type               the type to set
-     * @param timeUnit           the unit to set
-     * @param conversionStrategy the {@link ConversionStrategy} to be applied
+     * @param type           the type to set
+     * @param timeUnit       the unit to set
+     * @param conversionMode the {@link ConversionMode} to be applied
      * @since 2.0.0
      */
-    public Counter(Type type, TimeUnit timeUnit, ConversionStrategy conversionStrategy)
+    public Counter(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
         this.type = type;
         this.timeUnit = timeUnit;
-        this.conversionStrategy = conversionStrategy;
+        this.conversionMode = conversionMode;
     }
 
     /**
@@ -196,17 +195,17 @@ public class Counter
     }
 
     /**
-     * @return the {@link ConversionStrategy} used by this counter
+     * @return the {@link ConversionMode} used by this counter
      * @since 2.0.0
      */
-    public ConversionStrategy getConversionStrategy()
+    public ConversionMode getConversionMode()
     {
-        return conversionStrategy;
+        return conversionMode;
     }
 
     /**
      * Populates the {@code unitsBefore} field with the value retrieved by the time fetching
-     * strategy defined by this counter's type.
+     * mode defined by this counter's type.
      */
     public void setUnitsBefore()
     {
@@ -215,7 +214,7 @@ public class Counter
 
     /**
      * Populates the {@code unitsAfter} field with the value retrieved by the time fetching
-     * strategy defined by this counter's type.
+     * mode defined by this counter's type.
      */
     public void setUnitsAfter()
     {
@@ -236,8 +235,8 @@ public class Counter
      *
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch strategy, if
-     *         {@code unitsAfter} is not set. The value is retrieved in the default time unit.
+     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
+     *         is not set. The value is retrieved in the default time unit.
      */
     public long elapsedTime()
     {
@@ -251,31 +250,31 @@ public class Counter
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch strategy, if
-     *         {@code unitsAfter} is not set. The value is converted to the given time unit
-     *         using the default conversion strategy.
+     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
+     *         is not set. The value is converted to the given time unit using the default
+     *         conversion mode.
      */
     public double elapsedTime(TimeUnit timeUnit)
     {
-        return elapsedTime(timeUnit, this.conversionStrategy);
+        return elapsedTime(timeUnit, this.conversionMode);
     }
 
     /**
      * Returns the elapsed time, in a given {@link TimeUnit}, with a custom
-     * {@link ConversionStrategy}.
+     * {@link ConversionMode}.
      *
-     * @param timeUnit           the time unit to which the elapsed time will be converted
-     * @param conversionStrategy the {@link ConversionStrategy} to be used
+     * @param timeUnit       the time unit to which the elapsed time will be converted
+     * @param conversionMode the {@link ConversionMode} to be used
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch strategy, if
-     *         {@code unitsAfter} is not set. The value converted to the given time unit using
-     *         the given conversion strategy.
+     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
+     *         is not set. The value converted to the given time unit using the given
+     *         conversion mode.
      * @since 2.0.0
      */
-    public double elapsedTime(TimeUnit timeUnit, ConversionStrategy conversionStrategy)
+    public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return conversionStrategy.convert(elapsedTime(), this.timeUnit, timeUnit);
+        return conversionMode.convert(elapsedTime(), this.timeUnit, timeUnit);
     }
 
     /**

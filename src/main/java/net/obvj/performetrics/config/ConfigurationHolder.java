@@ -1,4 +1,4 @@
-package net.obvj.performetrics.configuration;
+package net.obvj.performetrics.config;
 
 /**
  * A class that holds current {@link Configuration} object.

@@ -2,8 +2,7 @@ package net.obvj.performetrics;
 
 import java.util.concurrent.TimeUnit;
 
-import net.obvj.performetrics.configuration.ConfigurationHolder;
-import net.obvj.performetrics.strategy.ConversionStrategy;
+import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
  * A facade for common Performetrics operations.
@@ -32,19 +31,19 @@ public class Performetrics
     }
 
     /**
-     * Sets a conversion strategy to be applied in supported operations if no specific
-     * strategy is set.
+     * Sets a conversion mode to be applied by supported operations if no specific mode is
+     * set.
      *
-     * @param conversionStrategy the {@link ConversionStrategy} to set
+     * @param conversionMode the {@link ConversionMode} to set
      */
-    public static void setDefaultConversionStrategy(ConversionStrategy conversionStrategy)
+    public static void setDefaultConversionMode(ConversionMode conversionMode)
     {
-        ConfigurationHolder.getConfiguration().setConversionStrategy(conversionStrategy);
+        ConfigurationHolder.getConfiguration().setConversionMode(conversionMode);
     }
 
     /**
      * Sets a maximum number of decimal places to be applied if double-precision conversion
-     * strategy is set.
+     * mode is set.
      *
      * @param scale a number between 0 and 16 to be set
      * @throws IllegalArgumentException if a number outside the allowed range is received

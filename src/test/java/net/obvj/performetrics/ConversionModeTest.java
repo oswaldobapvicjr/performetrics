@@ -1,4 +1,4 @@
-package net.obvj.performetrics.strategy;
+package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -7,25 +7,27 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
+import net.obvj.performetrics.ConversionMode;
+
 /**
- * Unit tests for the {@link ConversionStrategy}.
+ * Unit tests for the {@link ConversionMode}.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class ConversionStrategyTest
+public class ConversionModeTest
 {
 
     @Test
     public void convert_fast999millisecondsToSeconds()
     {
-        assertThat(ConversionStrategy.FAST.convert(999, MILLISECONDS, SECONDS), is(0.0));
+        assertThat(ConversionMode.FAST.convert(999, MILLISECONDS, SECONDS), is(0.0));
     }
 
     @Test
     public void convert_doublePrecision999millisecondsToSeconds()
     {
-        assertThat(ConversionStrategy.DOUBLE_PRECISION.convert(999, MILLISECONDS, SECONDS), is(0.999));
+        assertThat(ConversionMode.DOUBLE_PRECISION.convert(999, MILLISECONDS, SECONDS), is(0.999));
     }
 
 }

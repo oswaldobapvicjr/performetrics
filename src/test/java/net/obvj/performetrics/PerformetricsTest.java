@@ -1,8 +1,8 @@
 package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.obvj.performetrics.strategy.ConversionStrategy.DOUBLE_PRECISION;
-import static net.obvj.performetrics.strategy.ConversionStrategy.FAST;
+import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
+import static net.obvj.performetrics.ConversionMode.FAST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -11,8 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Test;
 
-import net.obvj.performetrics.configuration.ConfigurationHolder;
-import net.obvj.performetrics.strategy.ConversionStrategy;
+import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
  * Unit tests for the {@link Performetrics} class.
@@ -23,8 +22,8 @@ import net.obvj.performetrics.strategy.ConversionStrategy;
 public class PerformetricsTest
 {
     private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
-    private static final ConversionStrategy INITIAL_CONVERSION_STRATEGY = ConfigurationHolder.getConfiguration()
-            .getConversionStrategy();
+    private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration()
+            .getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
 
     @After
@@ -45,11 +44,11 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultConversionStrategy_fast_updatesConfiguration()
+    public void setDefaultConversionMode_fast_updatesConfiguration()
     {
-        Performetrics.setDefaultConversionStrategy(FAST);
+        Performetrics.setDefaultConversionMode(FAST);
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
-        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(FAST));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(FAST));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
     }
 
@@ -58,16 +57,16 @@ public class PerformetricsTest
     {
         Performetrics.setDefaultTimeUnit(MILLISECONDS);
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(MILLISECONDS));
-        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(INITIAL_CONVERSION_MODE));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
     }
 
     @Test
-    public void setDefaultConversionStrategy_doublePrecision_updatesConfiguration()
+    public void setDefaultConversionMode_doublePrecision_updatesConfiguration()
     {
-        Performetrics.setDefaultConversionStrategy(DOUBLE_PRECISION);
+        Performetrics.setDefaultConversionMode(DOUBLE_PRECISION);
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
-        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(DOUBLE_PRECISION));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(DOUBLE_PRECISION));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
     }
 
@@ -76,7 +75,7 @@ public class PerformetricsTest
     {
         Performetrics.setScale(16);
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
-        assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+        assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(INITIAL_CONVERSION_MODE));
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(16));
     }
 
@@ -90,7 +89,7 @@ public class PerformetricsTest
         catch (IllegalArgumentException e)
         {
             assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(INITIAL_TIME_UNIT));
-            assertThat(ConfigurationHolder.getConfiguration().getConversionStrategy(), is(INITIAL_CONVERSION_STRATEGY));
+            assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(INITIAL_CONVERSION_MODE));
             assertThat(ConfigurationHolder.getConfiguration().getScale(), is(INITIAL_SCALE));
         }
     }

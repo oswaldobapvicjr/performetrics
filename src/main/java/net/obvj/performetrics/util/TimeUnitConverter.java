@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
-import net.obvj.performetrics.configuration.ConfigurationHolder;
+import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
  * A utility class for {@link TimeUnit} conversion.

@@ -19,7 +19,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.performetrics.strategy.ConversionStrategy;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
@@ -46,18 +45,18 @@ public class CounterTest
     }
 
     @Test
-    public void constructor_withTypeAndTimeUnit_assignsDefaultConversionStrategy()
+    public void constructor_withTypeAndTimeUnit_assignsDefaultConversionMode()
     {
         Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-        assertThat(counter.getConversionStrategy(), is(ConversionStrategy.DOUBLE_PRECISION));
+        assertThat(counter.getConversionMode(), is(ConversionMode.DOUBLE_PRECISION));
     }
 
     @Test
-    public void constructor_withTypeAndTimeUnitAndConversionStrategy_succeeds()
+    public void constructor_withTypeAndTimeUnitAndConversionMode_succeeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS, ConversionStrategy.FAST);
+        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS, ConversionMode.FAST);
         assertThat(counter.getTimeUnit(), is(MILLISECONDS));
-        assertThat(counter.getConversionStrategy(), is(ConversionStrategy.FAST));
+        assertThat(counter.getConversionMode(), is(ConversionMode.FAST));
     }
 
     @Test
@@ -162,7 +161,7 @@ public class CounterTest
     @Test
     public void elapsedTime_withCoarserTimeUnitAndFastConversion_differenceIsTruncated()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.FAST);
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionMode.FAST);
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsAfter(59); // 59 seconds after
         assertThat(counter.elapsedTime(TimeUnit.MINUTES), is(0.0));
@@ -171,7 +170,7 @@ public class CounterTest
     @Test
     public void elapsedTime_withCoarserTimeUnitAndDoublePrecisionConversion_differenceIsNotTruncated()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.DOUBLE_PRECISION);
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionMode.DOUBLE_PRECISION);
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsAfter(59); // 59 seconds after
         assertThat(counter.elapsedTime(TimeUnit.MINUTES), is(0.98333));
@@ -180,7 +179,7 @@ public class CounterTest
     @Test
     public void elapsedTime_withFinerTimeUnitAndFastConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.FAST);
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionMode.FAST);
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsAfter(2); // 2 seconds
         assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(2000.0));
@@ -189,20 +188,20 @@ public class CounterTest
     @Test
     public void elapsedTime_withFinerTimeUnitAndDoublePrecisionConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionStrategy.DOUBLE_PRECISION);
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS, ConversionMode.DOUBLE_PRECISION);
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsAfter(2); // 2 seconds
         assertThat(counter.elapsedTime(TimeUnit.MILLISECONDS), is(2000.0));
     }
 
     @Test
-    public void elapsedTime_withTimeUnitAndCustomConversionStrategy_appliesCustomConversion()
+    public void elapsedTime_withTimeUnitAndCustomConversionMode_appliesCustomConversion()
     {
         Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
         assertThat(counter.getTimeUnit(), is(MILLISECONDS));
         counter.setUnitsBefore(2000);
         counter.setUnitsAfter(3500); // 1.5 second after
-        assertThat(counter.elapsedTime(TimeUnit.SECONDS, ConversionStrategy.FAST), is(1.0));
+        assertThat(counter.elapsedTime(TimeUnit.SECONDS, ConversionMode.FAST), is(1.0));
     }
 
 }

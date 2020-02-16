@@ -3,4 +3,4 @@
  *
  * @since 2.0.0
  */
-package net.obvj.performetrics.configuration;
+package net.obvj.performetrics.config;

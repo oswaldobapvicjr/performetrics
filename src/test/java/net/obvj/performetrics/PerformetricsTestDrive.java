@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.monitors.MonitoredCallable;
-import net.obvj.performetrics.strategy.ConversionStrategy;
 
 public class PerformetricsTestDrive
 {
@@ -23,12 +22,12 @@ public class PerformetricsTestDrive
         testStopwatch1();
         System.out.println("\n\n=======================================\n");
         System.out.println("Now in fast mode...\n");
-        Performetrics.setDefaultConversionStrategy(ConversionStrategy.FAST);
+        Performetrics.setDefaultConversionMode(ConversionMode.FAST);
         testStopwatch1();
 
         System.out.println("\n\n=======================================\n");
         System.out.println("Now with a custom scale...\n");
-        Performetrics.setDefaultConversionStrategy(ConversionStrategy.DOUBLE_PRECISION);
+        Performetrics.setDefaultConversionMode(ConversionMode.DOUBLE_PRECISION);
         Performetrics.setScale(2);
 
         testCallableWithLambda();

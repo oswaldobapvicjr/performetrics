@@ -119,10 +119,26 @@ In this example, we are using the `MonitoredRunnable` class to measure the CPU t
 
 ---
     
+## Configuration
+
+**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles with a minimum of code.
+
+### Conversion Modes
+
+Performetrics provides two different conversion modes that can be applied depending on the user's requirements.
+
+* **Fast conversion**: uses Java-standard classes to convert durations to different time units. Although conversions in this mode are extremely fast, those from finer to coarser granularities truncate, so lose precision. For example, converting 999 milliseconds to seconds results in 0 (worst case).
+
+  To set this mode, call `Performetrics.setDefaultConversionMode(ConversionMode.FAST)`.  
+
+* **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularities. For example, converting 999 milliseconds to seconds results in 0.999
+
+  A precision of 5 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
+
+---
+
 ## Architecture
 
-**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to collect the data you need and display it in different styles with a minimum of code.
-
-Click on the picture to see a detailed class diagram.
+The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
 
 [![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.0-A.svg)

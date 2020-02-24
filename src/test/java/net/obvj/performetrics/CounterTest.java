@@ -87,7 +87,7 @@ public class CounterTest
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3); // 1 second after
-        assertThat(counter.elapsedTime(), is(1L));
+        assertThat(counter.elapsedTimeInternal(), is(1L));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class CounterTest
         assertThat(counter.getTimeUnit(), is(MILLISECONDS));
         counter.setUnitsBefore(1000);
         counter.setUnitsAfter(1500); // 500 milliseconds after
-        assertThat(counter.elapsedTime(), is(500L));
+        assertThat(counter.elapsedTimeInternal(), is(500L));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class CounterTest
         assertThat(counter.getTimeUnit(), is(NANOSECONDS));
         counter.setUnitsBefore(1000000000L);
         counter.setUnitsAfter(6000000000L); // 5 seconds after
-        assertThat(counter.elapsedTime(), is(5000000000L));
+        assertThat(counter.elapsedTimeInternal(), is(5000000000L));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class CounterTest
         Mockito.when(SystemUtils.getWallClockTimeNanos()).thenReturn(9000L);
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
         counter.setUnitsBefore(2000);
-        assertThat(counter.elapsedTime(), is(7000L));
+        assertThat(counter.elapsedTimeInternal(), is(7000L));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CounterTest
         Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(5000);
         counter.setUnitsAfter(500);
-        assertThat(counter.elapsedTime(), is(-1L));
+        assertThat(counter.elapsedTimeInternal(), is(-1L));
     }
 
     @Test

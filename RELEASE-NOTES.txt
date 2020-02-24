@@ -1,0 +1,62 @@
+=============================================================================
+
+                          P E R F O R M E T R I C S
+                                version 2.0.0
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+Changes in this version include:
+
+New features:
+ > Configurable time unit conversion modes introduced;
+ > New double-precision time unit conversion, avoiding truncation from finer
+   to coarser granularities;
+ > Introducing the Duration class for integral time-based amount
+   representation;
+ > General API improvements 
+
+Changes:
+ > Monitored Runnable and Callable wrappers redesigned;
+ > Stopwatch.elapsedTime() method now returns a Duration object;
+ > Major documentation improvements (Javadoc)
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
+                                version 1.0.0
+
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS a simple yet powerful metric tool for Java applications, 
+licensed under the Apache License Version 2.0.
+
+This initial version includes:
+
+ > The Counter class, with convenient methods for time evaluation;
+ > 4 Counter Types: wall-clock time, CPU time, user time and system time;
+ > The Stopwatch class, supporting any of the available counters;
+ > Preset Runnable and Callable wrappers with embedded data collection logic;
+ > The SystemUtils class, with useful methods for system data retrieval;
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================

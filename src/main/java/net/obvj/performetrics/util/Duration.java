@@ -40,7 +40,7 @@ public class Duration
         FULL
         {
             @Override
-            public String toString(Duration duration)
+            public String format(Duration duration)
             {
                 return String.format(H_M_S_NS_FORMAT, duration.hours, duration.minutes, duration.seconds,
                         duration.nanoseconds);
@@ -55,11 +55,11 @@ public class Duration
         SHORT
         {
             @Override
-            public String toString(Duration duration)
+            public String format(Duration duration)
             {
                 if (duration.hours > 0)
                 {
-                    return FormatStyle.FULL.toString(duration);
+                    return FormatStyle.FULL.format(duration);
                 }
                 else if (duration.minutes > 0)
                 {
@@ -79,7 +79,7 @@ public class Duration
          * @param duration the {@link Duration} to be formatted
          * @return a formatted time duration
          */
-        public abstract String toString(Duration duration);
+        public abstract String format(Duration duration);
     }
 
     private static final int SECONDS_PER_MINUTE = 60;
@@ -232,7 +232,7 @@ public class Duration
      */
     public String toString(FormatStyle style)
     {
-        return style.toString(this);
+        return style.format(this);
     }
 
     /**

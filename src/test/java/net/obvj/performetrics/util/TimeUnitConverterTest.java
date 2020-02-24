@@ -47,4 +47,34 @@ public class TimeUnitConverterTest
         assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(0.999));
     }
 
+    @Test
+    public void convert_988MillisecondsToSecondsAnd2DecimalPlaces()
+    {
+        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2), is(0.99));
+    }
+
+    @Test
+    public void convert_988MillisecondsToSecondsAnd0DecimalPlaces()
+    {
+        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0), is(1.0));
+    }
+
+    @Test
+    public void round_positiveDecimalPlaces()
+    {
+        assertThat(TimeUnitConverter.round(22.859, 2), is(22.86));
+    }
+
+    @Test
+    public void round_zeroDecimalPlaces()
+    {
+        assertThat(TimeUnitConverter.round(22.859, 0), is(23.0));
+    }
+
+    @Test
+    public void round_negativeDecimalPlaces()
+    {
+        assertThat(TimeUnitConverter.round(22.859, -1), is(20.0));
+    }
+
 }

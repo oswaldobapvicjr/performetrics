@@ -5,6 +5,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
@@ -222,26 +223,30 @@ public class Counter
     }
 
     /**
-     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if
-     *         {@code unitsAfter} is greater than {@code unitsBefore}; -1 otherwise.
-     */
-    private static long elapsedTime(long unitsBefore, long unitsAfter)
-    {
-        return unitsAfter >= unitsBefore ? unitsAfter - unitsBefore : -1;
-    }
-
-    /**
-     * Returns the elapsed time, in default time unit.
+     * Returns the elapsed time, in the internal time unit.
      *
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
      *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
-     *         is not set. The value is retrieved in the default time unit.
+     *         is not set. The value is retrieved in the internal time unit.
      */
-    public long elapsedTime()
+    protected long elapsedTimeInternal()
     {
         long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.getTime(timeUnit);
-        return elapsedTime(unitsBefore, tempUnitsAfter);
+        return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;
+    }
+
+    /**
+     * Returns the elapsed time.
+     *
+     * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
+     *         units are set; or the difference between {@code unitsBefore} and the current
+     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
+     *         is not set.
+     */
+    public Duration elapsedTime()
+    {
+        return Duration.of(elapsedTimeInternal(), timeUnit);
     }
 
     /**
@@ -274,7 +279,7 @@ public class Counter
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return conversionMode.convert(elapsedTime(), this.timeUnit, timeUnit);
+        return conversionMode.convert(elapsedTimeInternal(), this.timeUnit, timeUnit);
     }
 
     /**

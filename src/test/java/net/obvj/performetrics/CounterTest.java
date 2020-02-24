@@ -19,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
@@ -81,7 +82,7 @@ public class CounterTest
     }
 
     @Test
-    public void elapsedTime_withoutParamAndwithUnitsSet_returnsDifferenceInSeconds()
+    public void elapsedTimeInternal_withUnitsSet_returnsDifferenceInSeconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS);
         assertThat(counter.getTimeUnit(), is(SECONDS));
@@ -91,7 +92,7 @@ public class CounterTest
     }
 
     @Test
-    public void elapsedTime_withoutParamAndwithUnitsSet_returnsDifferenceInMilliseconds()
+    public void elapsedTimeInternal_withUnitsSet_returnsDifferenceInMilliseconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
         assertThat(counter.getTimeUnit(), is(MILLISECONDS));
@@ -101,7 +102,7 @@ public class CounterTest
     }
 
     @Test
-    public void elapsedTime_withoutParamAndwithUnitsSet_returnsDifferenceInNanoseconds()
+    public void elapsedTimeInternal_withUnitsSet_returnsDifferenceInNanoseconds()
     {
         Counter counter = new Counter(SYSTEM_TIME, NANOSECONDS);
         assertThat(counter.getTimeUnit(), is(NANOSECONDS));
@@ -141,7 +142,7 @@ public class CounterTest
     }
 
     @Test
-    public void elapsedTime_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
+    public void elapsedTimeInternal_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
     {
         Mockito.when(SystemUtils.getWallClockTimeNanos()).thenReturn(9000L);
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
@@ -150,7 +151,7 @@ public class CounterTest
     }
 
     @Test
-    public void elapsedTime_unitsAfterLowerThanUnitsBefore_negative1()
+    public void elapsedTimeInternal_unitsAfterLowerThanUnitsBefore_negative1()
     {
         Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(5000);
@@ -202,6 +203,16 @@ public class CounterTest
         counter.setUnitsBefore(2000);
         counter.setUnitsAfter(3500); // 1.5 second after
         assertThat(counter.elapsedTime(TimeUnit.SECONDS, ConversionMode.FAST), is(1.0));
+    }
+
+    @Test
+    public void elapsedTime_withoutParams_returnsDurationWithValidDifference()
+    {
+        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
+        assertThat(counter.getTimeUnit(), is(SECONDS));
+        counter.setUnitsBefore(2);
+        counter.setUnitsAfter(3); // 1 second after
+        assertThat(counter.elapsedTime(), is(Duration.of(1, SECONDS)));
     }
 
 }

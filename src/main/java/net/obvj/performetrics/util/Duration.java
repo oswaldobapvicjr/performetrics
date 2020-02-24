@@ -1,5 +1,7 @@
 package net.obvj.performetrics.util;
 
+import java.time.temporal.ChronoUnit;
+import java.util.EnumMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -85,6 +87,19 @@ public class Duration
 
     private static final FormatStyle DEFAULT_FORMAT_STYLE = FormatStyle.SHORT;
 
+    private static final EnumMap<TimeUnit, ChronoUnit> chronoUnitsByTimeUnit = new EnumMap<>(TimeUnit.class);
+
+    static
+    {
+        chronoUnitsByTimeUnit.put(TimeUnit.NANOSECONDS, ChronoUnit.NANOS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MICROSECONDS, ChronoUnit.MICROS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MILLISECONDS, ChronoUnit.MILLIS);
+        chronoUnitsByTimeUnit.put(TimeUnit.SECONDS, ChronoUnit.SECONDS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MINUTES, ChronoUnit.MINUTES);
+        chronoUnitsByTimeUnit.put(TimeUnit.HOURS, ChronoUnit.HOURS);
+        chronoUnitsByTimeUnit.put(TimeUnit.DAYS, ChronoUnit.DAYS);
+    }
+
     private final long hours;
     private final int minutes;
     private final int seconds;
@@ -119,7 +134,7 @@ public class Duration
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
-        java.time.Duration duration = java.time.Duration.of(amount, timeUnit.toChronoUnit());
+        java.time.Duration duration = java.time.Duration.of(amount, toChronoUnit(timeUnit));
         long effectiveTotalSeconds = duration.getSeconds();
         long hours = effectiveTotalSeconds / SECONDS_PER_HOUR;
         int minutes = (int) ((effectiveTotalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
@@ -218,6 +233,17 @@ public class Duration
     public String toString(FormatStyle style)
     {
         return style.toString(this);
+    }
+
+    /**
+     * Converts a given {@code TimeUnit} to the equivalent {@code ChronoUnit}.
+     *
+     * @param timeUnit the {@code TimeUnit} to be converted
+     * @return the converted equivalent {@code ChronoUnit}
+     */
+    private static ChronoUnit toChronoUnit(TimeUnit timeUnit)
+    {
+        return chronoUnitsByTimeUnit.get(timeUnit);
     }
 
 }

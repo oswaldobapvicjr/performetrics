@@ -19,7 +19,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 - **CPU time:** the total time spent using a CPU for the current thread
 
-- **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running current thread's own code)
+- **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running current thread's  code)
 
 - **System time:** the time spent by the OS kernel to execute all the basic/system level operations on behalf of your application (such as context switching, resource allocation, etc.)
 
@@ -35,7 +35,7 @@ To include **Performetrics** in your Maven project, add it as a dependency on yo
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 

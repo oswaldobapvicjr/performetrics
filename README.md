@@ -11,7 +11,7 @@ A simple performance data generator for Java applications
 
 ## Project overview
 
-Most Java developers use the functions `System.currentTimeMillis()` or `System.currentTimeNanos()` inside their code to measure the elapsed time to perform some key operations. This is not a problem if you want to benchmark an application running in a dedicated system. However, the result is strongly affected by other activities in the system, such as background processes and I/O (e.g. disk and network activities).
+Most Java developers use the functions `System.currentTimeMillis()` or `System.currentTimeNanos()` inside their code to measure the elapsed time to run some key operations. This is not a problem if you want to benchmark an application running in a dedicated system. However, the result is strongly affected by other activities in the system, such as background processes and I/O (e.g. disk and network activities).
 
 As from Java 1.5, it is possible to get additional metrics that may help you benchmark a task with some most accurate units:
 
@@ -21,7 +21,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 - **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running current thread's  code)
 
-- **System time:** the time spent by the OS kernel to execute all the basic/system level operations on behalf of your application (such as context switching, resource allocation, etc.)
+- **System time:** the time spent by the OS kernel to execute all the basic/system-level operations on behalf of your application (such as context switching, resource allocation, etc.)
 
 **Performetrics** provides convenient objects for time evaluation with support to all of the abovementioned counters.
 
@@ -29,7 +29,7 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 ## How to include it
 
-To include **Performetrics** in your Maven project, add it as a dependency on your pom.xml file:
+If you are using Maven, add **Performetrics** as a dependency on your pom.xml file:
 
 ```xml
 <dependency>
@@ -45,7 +45,7 @@ To include **Performetrics** in your Maven project, add it as a dependency on yo
 
 ### Example 1: Using the Stopwatch class
 
-1. Once you have included **Performetrics** into your Java project, add the following import to your class:
+1. Once available in your Java classpath, add the following import to your class:
 
     ```java
     import net.obvj.performetrics.Stopwatch;
@@ -60,7 +60,7 @@ To include **Performetrics** in your Maven project, add it as a dependency on yo
 
     > **Note:** A single call to the factory method `Stopwatch.createStarted()` may create a started stopwatch for convenience.
 
-3. Execute the the code to be profiled and then stop the counters (optional): 
+3. Execute the code to be profiled and then stop the counters (optional): 
 
     ```java
     sw.stop();

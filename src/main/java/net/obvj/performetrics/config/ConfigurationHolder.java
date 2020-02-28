@@ -1,5 +1,7 @@
 package net.obvj.performetrics.config;
 
+import java.util.Objects;
+
 /**
  * A class that holds current {@link Configuration} object.
  *
@@ -35,7 +37,8 @@ public class ConfigurationHolder
      */
     public static void setConfiguration(Configuration configuration)
     {
-        ConfigurationHolder.configuration = configuration;
+        ConfigurationHolder.configuration = Objects.requireNonNull(configuration,
+                "the default configuration cannot be null");
     }
 
     /**

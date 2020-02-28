@@ -1,17 +1,40 @@
 package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static net.obvj.performetrics.config.ConfigurationHolder.getConfiguration;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 
 /**
- * An object that stores units before and after, for elapsed time maintenance.
+ * <p>
+ * An object that stores time units of a particular type for elapsed time evaluation.
+ * </p>
+ * <p>
+ * The associated counter type defines the time fetch strategy applied by the methods
+ * {@code setUnitsBefore()} and {@code setUnitsAfter()}.
+ * <p>
+ * Once the units are set, calling {@code elapsedTime()} will return a {@link Duration}
+ * that represents either:
+ * </p>
+ * <ul>
+ * <li>the elapsed time between calls to {@code setUnitsBefore()} and
+ * {@code setUnitsAfter()} provided that both methods have been called before; or</li>
+ * <li>the elapsed time between calls to {@code setUnitsBefore()} and
+ * {@code elapsedTime()} if {@code setUnitsAfter()} was not called</li>
+ * </ul>
+ * <p>
+ * Optionally, call {@code elapsedTime(TimeUnit)} to return the total elapsed time in a
+ * specific time unit.
+ * </p>
  *
  * @author oswaldo.bapvic.jr
+ * @see Counter.Type
+ * @see Duration
+ * @see ConversionMode
  */
 public class Counter
 {
@@ -21,7 +44,8 @@ public class Counter
     protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
 
     /**
-     * Enumerates all supported counter types.
+     * Enumerates all supported counter types, defining a particular time fetch strategy for
+     * each of them.
      */
     public enum Type
     {
@@ -51,7 +75,7 @@ public class Counter
 
         /**
          * The total CPU time that the current thread has executed in user mode (i.e., the time
-         * spent running current thread's own code).
+         * spent running current thread's code).
          */
         USER_TIME("User time")
         {
@@ -111,39 +135,55 @@ public class Counter
     private boolean unitsAfterFlag = false;
 
     /**
-     * Builds this Counter object with a given type and default time unit.
+     * Builds a Counter with a given type and default time unit.
      *
-     * @param type the type to set
+     * @param type the type to set; cannot be null
+     * @throws NullPointerException if the specified type is null
      */
     public Counter(Type type)
     {
-        this(type, ConfigurationHolder.getConfiguration().getTimeUnit());
+        this(type, null);
     }
 
     /**
-     * Builds this Counter object with the given type and time unit.
+     * Builds a Counter with the given type and time unit.
      *
-     * @param type     the type to set
-     * @param timeUnit the unit to set
+     * @param type     the type to set; cannot be null
+     * @param timeUnit the time unit to set
+     * @throws NullPointerException if the specified type is null
      */
     public Counter(Type type, TimeUnit timeUnit)
     {
-        this(type, timeUnit, ConfigurationHolder.getConfiguration().getConversionMode());
+        this(type, timeUnit, null);
     }
 
     /**
-     * Builds this Counter object with the given type, time unit, and conversion mode.
+     * Builds a Counter with the given type, time unit, and conversion mode.
      *
-     * @param type           the type to set
-     * @param timeUnit       the unit to set
+     * @param type           the type to set; cannot be null
+     * @param timeUnit       the time unit to set
      * @param conversionMode the {@link ConversionMode} to be applied
+     * @throws NullPointerException if the specified type is null
      * @since 2.0.0
      */
     public Counter(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        this.type = type;
-        this.timeUnit = timeUnit;
-        this.conversionMode = conversionMode;
+        this.type = Objects.requireNonNull(type, "the type must not be null");
+        this.timeUnit = defaultIfNull(timeUnit, getConfiguration().getTimeUnit());
+        this.conversionMode = defaultIfNull(conversionMode, getConfiguration().getConversionMode());
+    }
+
+    /**
+     * Returns a default value if the object passed is {@code null}.
+     *
+     * @param <T>          the type of the object
+     * @param object       the {@code Object} to test, may be {@code null}
+     * @param defaultValue the default value to return, may be {@code null}
+     * @return {@code object} if it is not {@code null}, defaultValue otherwise
+     */
+    private static <T> T defaultIfNull(T object, T defaultValue)
+    {
+        return object != null ? object : defaultValue;
     }
 
     /**

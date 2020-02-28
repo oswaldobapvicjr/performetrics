@@ -1,5 +1,6 @@
 package net.obvj.performetrics.config;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
@@ -43,13 +44,14 @@ public class Configuration
     }
 
     /**
-     * Sets a time unit to be maintained by default if no specific time unit is specified.
+     * Defines the time unit to be maintained by default if no specific time unit is
+     * specified.
      *
      * @param timeUnit the {@link TimeUnit} to set
      */
     public void setTimeUnit(TimeUnit timeUnit)
     {
-        this.timeUnit = timeUnit;
+        this.timeUnit = Objects.requireNonNull(timeUnit, "the default time unit must not be null");
     }
 
     /**
@@ -63,14 +65,14 @@ public class Configuration
     }
 
     /**
-     * Sets a conversion mode to be applied in supported operations if no specific mode is
-     * set.
+     * Defines the default conversion mode to be applied in supported operations if no
+     * specific mode is set.
      *
      * @param conversionMode the {@link ConversionMode} to set
      */
     public void setConversionMode(ConversionMode conversionMode)
     {
-        this.conversionMode = conversionMode;
+        this.conversionMode = Objects.requireNonNull(conversionMode, "the default conversion mode must not be null");
     }
 
     /**

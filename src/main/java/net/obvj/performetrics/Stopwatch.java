@@ -58,9 +58,9 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  *
  * <p>
  * Although it is intended that the output methods {@code printStatistics()} should only
- * be called after stop, some suitable, temporary data may be returned if the stopwatch is
- * still running. In this scenario, the initial values will be compared to the most
- * up-to-date ones, retrieved at the moment of the call. The same applies to the
+ * be called after the stop, some suitable, temporary data may be returned if the
+ * stopwatch is still running. In this scenario, the initial values will be compared to
+ * the most up-to-date ones, retrieved at the moment of the call. The same applies to the
  * {@code elapsedTime()} methods available for each counter instance.
  * </p>
  *

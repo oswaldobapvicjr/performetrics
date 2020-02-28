@@ -148,7 +148,7 @@ public class Duration
      * The hours field is a value from 0 to the maximum value that can be held in a
      * {@code long}.
      *
-     * @return the minutes within the hours part of the length of the duration, from 0 to 59
+     * @return the number of hours in this duration
      */
     public long getHours()
     {

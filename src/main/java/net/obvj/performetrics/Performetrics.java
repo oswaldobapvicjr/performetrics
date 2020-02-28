@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
- * A facade for common Performetrics operations.
+ * A Facade class meant to provide a simple interface for common parameters setup.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0

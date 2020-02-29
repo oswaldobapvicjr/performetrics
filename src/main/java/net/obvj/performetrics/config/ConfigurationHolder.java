@@ -33,12 +33,13 @@ public class ConfigurationHolder
     /**
      * Sets a given configuration as current.
      *
-     * @param configuration the configuration to set
+     * @param configuration the configuration to set; must not be null
+     * @throws NullPointerException if the specified configuration is null
      */
     public static void setConfiguration(Configuration configuration)
     {
         ConfigurationHolder.configuration = Objects.requireNonNull(configuration,
-                "the default configuration cannot be null");
+                "the default configuration must not be null");
     }
 
     /**

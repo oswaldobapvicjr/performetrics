@@ -48,6 +48,7 @@ public class Configuration
      * specified.
      *
      * @param timeUnit the {@link TimeUnit} to set
+     * @throws NullPointerException if the specified time unit is null
      */
     public void setTimeUnit(TimeUnit timeUnit)
     {
@@ -69,6 +70,7 @@ public class Configuration
      * specific mode is set.
      *
      * @param conversionMode the {@link ConversionMode} to set
+     * @throws NullPointerException if the specified conversion mode is null
      */
     public void setConversionMode(ConversionMode conversionMode)
     {
@@ -91,7 +93,7 @@ public class Configuration
      * mode is set.
      *
      * @param scale a number between 0 and 16 to be set
-     * @throws IllegalArgumentException if a number outside the allowed range is received
+     * @throws IllegalArgumentException if the specified number is outside the allowed range
      */
     public void setScale(int scale)
     {

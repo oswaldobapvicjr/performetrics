@@ -16,6 +16,7 @@ Changes in this version include:
 
 Fixed Bugs:
  > Missing parameter validation implemented in methods and constructors
+ > Time duration format styles fixed  
  > Documentation fixes in general
 
 

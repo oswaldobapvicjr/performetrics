@@ -40,10 +40,10 @@ public class Duration
         FULL
         {
             @Override
-            public String format(Duration duration)
+            public String format(Duration duration, boolean printLegend)
             {
-                return String.format(H_M_S_NS_FORMAT, duration.hours, duration.minutes, duration.seconds,
-                        duration.nanoseconds);
+                return String.format(HOURS_FORMAT, duration.hours, duration.minutes, duration.seconds,
+                        duration.nanoseconds) + legend(printLegend, HOURS_LEGEND);
             }
         },
 
@@ -55,23 +55,30 @@ public class Duration
         SHORT
         {
             @Override
-            public String format(Duration duration)
+            public String format(Duration duration, boolean printLegend)
             {
                 if (duration.hours > 0)
                 {
-                    return FormatStyle.FULL.format(duration);
+                    return FormatStyle.FULL.format(duration, printLegend);
                 }
                 else if (duration.minutes > 0)
                 {
-                    return String.format(M_S_NS_FORMAT, duration.minutes, duration.seconds, duration.nanoseconds);
+                    return String.format(MINUTES_FORMAT, duration.minutes, duration.seconds, duration.nanoseconds)
+                            + legend(printLegend, MINUTES_LEGEND);
                 }
-                return String.format(S_NS_FORMAT, duration.seconds, duration.nanoseconds);
+                return String.format(SECONDS_FORMAT, duration.seconds, duration.nanoseconds)
+                        + legend(printLegend, SECONDS_LEGEND);
             }
+
         };
 
-        private static final String H_M_S_NS_FORMAT = "%02d:%02d:%02d.%09d";
-        private static final String M_S_NS_FORMAT = "%02d:%02d.%09d";
-        private static final String S_NS_FORMAT = "%02d.%09d";
+        private static final String HOURS_FORMAT = "%d:%02d:%02d.%09d";
+        private static final String MINUTES_FORMAT = "%d:%02d.%09d";
+        private static final String SECONDS_FORMAT = "%d.%09d";
+
+        private static final String HOURS_LEGEND = "hour(s)";
+        private static final String MINUTES_LEGEND = "minute(s)";
+        private static final String SECONDS_LEGEND = "second(s)";
 
         /**
          * Formats a time duration.
@@ -79,7 +86,20 @@ public class Duration
          * @param duration the {@link Duration} to be formatted
          * @return a formatted time duration
          */
-        public abstract String format(Duration duration);
+        public abstract String format(Duration duration, boolean printLegend);
+
+        /**
+         * Returns the {@code legend}, prepended with a white-space, if the
+         * {@code printLegendFlag} argument is {@code true}; or an empty string, otherwise.
+         *
+         * @param printLegendFlag the flag to be evaluated
+         * @param legend          the string to be used as legend
+         * @return the legend string
+         */
+        protected String legend(boolean printLegendFlag, String legend)
+        {
+            return printLegendFlag ? " " + legend : "";
+        }
     }
 
     private static final int SECONDS_PER_MINUTE = 60;
@@ -226,13 +246,27 @@ public class Duration
 
     /**
      * Returns a string representation of this{@code Duration} with custom format style.
+     * <p>
+     * <b>Note:</b> This is equivalent to calling: {@code toString(style, true)}
      *
      * @param style the {@link FormatStyle} to be applied
      * @return a string representation of this object in the given style
      */
     public String toString(FormatStyle style)
     {
-        return style.format(this);
+        return toString(style, true);
+    }
+
+    /**
+     * Returns a string representation of this{@code Duration} with custom format style.
+     *
+     * @param style       the {@link FormatStyle} to be applied
+     * @param printLegend a flag indicating that the string shall contain a legend
+     * @return a string representation of this object in the given style
+     */
+    public String toString(FormatStyle style, boolean printLegend)
+    {
+        return style.format(this, printLegend);
     }
 
     /**

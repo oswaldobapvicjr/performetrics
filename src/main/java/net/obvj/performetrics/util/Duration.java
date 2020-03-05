@@ -35,12 +35,12 @@ public class Duration
     {
         /**
          * Formats a time duration in the following format: {@code H:M:s:ns}. For example:
-         * '01:59:59.987654321'.
+         * {@code 1:59:59.987654321}
          */
         FULL
         {
             @Override
-            public String format(Duration duration, boolean printLegend)
+            public String format(final Duration duration, boolean printLegend)
             {
                 return String.format(HOURS_FORMAT, duration.hours, duration.minutes, duration.seconds,
                         duration.nanoseconds) + legend(printLegend, HOURS_LEGEND);
@@ -48,20 +48,26 @@ public class Duration
         },
 
         /**
-         * Formats a time duration in either of the following formats: {@code H:M:s:ns},
-         * {@code M:S:ns}, or {@code S.ns}. The algorithm always chooses the shortest possible
-         * format that can represent a time duration.
+         * Formats a time duration in any of the following formats: {@code H:M:s:ns},
+         * {@code M:S:ns}, or {@code S.ns}, always choosing the shortest possible format.
+         * <p>
+         * Examples:
+         * <ul>
+         * <li>{@code 0.001000000 second(s)}</li>
+         * <li>{@code 3.200000000 second(s)}</li>
+         * <li>{@code 15:00.005890000 minute(s)}</li>
+         * </ul>
          */
         SHORT
         {
             @Override
-            public String format(Duration duration, boolean printLegend)
+            public String format(final Duration duration, boolean printLegend)
             {
                 if (duration.hours > 0)
                 {
                     return FormatStyle.FULL.format(duration, printLegend);
                 }
-                else if (duration.minutes > 0)
+                if (duration.minutes > 0)
                 {
                     return String.format(MINUTES_FORMAT, duration.minutes, duration.seconds, duration.nanoseconds)
                             + legend(printLegend, MINUTES_LEGEND);
@@ -70,11 +76,92 @@ public class Duration
                         + legend(printLegend, SECONDS_LEGEND);
             }
 
+        },
+
+        /**
+         * Formats a time duration in any of the following formats: {@code H:M:s:ns},
+         * {@code M:S:ns}, or {@code S.ns}, suppressing trailing zeros from the nanosecond part.
+         * <p>
+         * Examples:
+         * <ul>
+         * <li>{@code 0.001 second(s)}</li>
+         * <li>{@code 3.2 second(s)}</li>
+         * <li>{@code 15:00.00589 minute(s)}</li>
+         * </ul>
+         */
+        SHORTER
+        {
+            @Override
+            public String format(final Duration duration, boolean printLegend)
+            {
+                String format = removeTrailingZeros(SHORT.format(duration, false));
+
+                if (!printLegend)
+                {
+                    return format;
+                }
+                if (duration.hours > 0)
+                {
+                    return format + legend(true, HOURS_LEGEND);
+                }
+                if (duration.minutes > 0)
+                {
+                    return format + legend(true, MINUTES_LEGEND);
+                }
+                return format + legend(true, SECONDS_LEGEND);
+            }
+
+        },
+
+        /**
+         * Formats a time duration using ISO-8601 seconds based representation, such as
+         * {@code PT8H6M12.345S}.
+         * <p>
+         * Examples:
+         * <ul>
+         * <li>{@code PT0.001S}</li>
+         * <li>{@code PT3.2S}</li>
+         * <li>{@code PT15M0.00589S}</li>
+         * </ul>
+         */
+        ISO_8601
+        {
+            @Override
+            public String format(final Duration duration, boolean printLegend)
+            {
+                if (ZERO.equals(duration))
+                {
+                    return "PT0S";
+                }
+                StringBuilder builder = new StringBuilder();
+                builder.append("PT");
+                if (duration.hours > 0)
+                {
+                    builder.append(duration.hours).append('H');
+                }
+                if (duration.minutes > 0)
+                {
+                    builder.append(duration.minutes).append('M');
+                }
+                if (duration.seconds > 0 || duration.nanoseconds > 0)
+                {
+                    builder.append(duration.seconds);
+                    if (duration.nanoseconds > 0)
+                    {
+                        String nanos = removeTrailingZeros(String.format(NANOSECONDS_FORMAT, duration.nanoseconds));
+                        builder.append(".").append(nanos);
+                    }
+                    builder.append('S');
+                }
+                return builder.toString();
+            }
+
         };
 
         private static final String HOURS_FORMAT = "%d:%02d:%02d.%09d";
         private static final String MINUTES_FORMAT = "%d:%02d.%09d";
         private static final String SECONDS_FORMAT = "%d.%09d";
+        private static final String NANOSECONDS_FORMAT = "%09d";
 
         private static final String HOURS_LEGEND = "hour(s)";
         private static final String MINUTES_LEGEND = "minute(s)";
@@ -86,7 +173,7 @@ public class Duration
          * @param duration the {@link Duration} to be formatted
          * @return a formatted time duration
          */
-        public abstract String format(Duration duration, boolean printLegend);
+        public abstract String format(final Duration duration, boolean printLegend);
 
         /**
          * Returns the {@code legend}, prepended with a white-space, if the
@@ -96,16 +183,44 @@ public class Duration
          * @param legend          the string to be used as legend
          * @return the legend string
          */
-        protected String legend(boolean printLegendFlag, String legend)
+        static String legend(boolean printLegendFlag, final String legend)
         {
             return printLegendFlag ? " " + legend : "";
         }
+
+        /**
+         * Removes trailing zeros from the specified string. For example:
+         *
+         * <pre>
+         * removeTrailingZeros("9.009000000) //returns: "9.009"
+         * removeTrailingZeros("9.000000009) //returns: "9.000000009"
+         * removeTrailingZeros("9.000000000) //returns: "9"
+         * </pre>
+         *
+         * @param string the string whose trailing zeros are to be removed
+         * @return a string without trailing zeros
+         */
+        static String removeTrailingZeros(final String string)
+        {
+            StringBuilder builder = new StringBuilder(string);
+            while (builder.charAt(builder.length() - 1) == '0')
+            {
+                builder.setLength(builder.length() - 1);
+            }
+            if (builder.charAt(builder.length() - 1) == '.')
+            {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
+        }
     }
+
+    public static final Duration ZERO = new Duration(0, 0, 0, 0);
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
 
-    private static final FormatStyle DEFAULT_FORMAT_STYLE = FormatStyle.SHORT;
+    private static final FormatStyle DEFAULT_FORMAT_STYLE = FormatStyle.SHORTER;
 
     private static final EnumMap<TimeUnit, ChronoUnit> chronoUnitsByTimeUnit = new EnumMap<>(TimeUnit.class);
 
@@ -147,13 +262,20 @@ public class Duration
      * For example, calling {@code Duration.of(65, SECONDS)} produces an object with:
      * {@code [hours = 0, minutes = 1, seconds = 5, nanoseconds = 0]}
      *
-     * @param amount   the amount of the duration, measured in term of the timeUnit argument
+     * @param amount   the amount of the duration, measured in term of the timeUnit argument;
+     *                 it must be a positive integer
      * @param timeUnit the unit that the amount argument is measured in; cannot be null
      * @return a {@code Duration}, not null.
-     * @throws NullPointerException if the specified timeUnit is null
+     * @throws IllegalArgumentException if the specified amount is negative
+     * @throws NullPointerException     if the specified timeUnit is null
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
+        if (amount < 0)
+        {
+            throw new IllegalArgumentException("The amount must be a positive integer");
+        }
+
         java.time.Duration duration = java.time.Duration.of(amount, toChronoUnit(timeUnit));
         long effectiveTotalSeconds = duration.getSeconds();
         long hours = effectiveTotalSeconds / SECONDS_PER_HOUR;

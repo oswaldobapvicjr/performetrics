@@ -170,7 +170,9 @@ public class Duration
         /**
          * Formats a time duration.
          *
-         * @param duration the {@link Duration} to be formatted
+         * @param duration    the {@link Duration} to be formatted
+         * @param printLegend a flag indicating whether or not to include the legend in the
+         *                    generated string
          * @return a formatted time duration
          */
         public abstract String format(final Duration duration, boolean printLegend);
@@ -383,7 +385,8 @@ public class Duration
      * Returns a string representation of this{@code Duration} with custom format style.
      *
      * @param style       the {@link FormatStyle} to be applied
-     * @param printLegend a flag indicating that the string shall contain a legend
+     * @param printLegend a flag indicating whether or not to include the legend in the
+     *                    generated string
      * @return a string representation of this object in the given style
      */
     public String toString(FormatStyle style, boolean printLegend)

@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import net.obvj.performetrics.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 
 /**
  * Test methods for the {@link SystemUtils} class

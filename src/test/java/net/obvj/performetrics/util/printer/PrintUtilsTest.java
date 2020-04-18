@@ -1,7 +1,8 @@
 package net.obvj.performetrics.util.printer;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,10 +16,10 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.TestUtils;
 
 /**
  * Unit tests for the {@link PrintUtils} class.
@@ -69,9 +70,9 @@ public class PrintUtilsTest
         String resultRow = PrintUtils.toRowFormat(c);
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is("1000"));
-        assertThat(columns[3].trim(), is(MILLISECONDS));
+        assertThat(columns[1].trim(), is(equalTo(Type.WALL_CLOCK_TIME.toString())));
+        assertThat(columns[2].trim(), is(equalTo("1000")));
+        assertThat(columns[3].trim(), is(equalTo(MILLISECONDS)));
     }
 
     /**
@@ -86,9 +87,9 @@ public class PrintUtilsTest
         String resultRow = PrintUtils.toRowFormat(c, TimeUnit.SECONDS);
         String[] columns = resultRow.split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(columns[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columns[2].trim(), is("0.789")); // en_US Locale dependent test
-        assertThat(columns[3].trim(), is(SECONDS));
+        assertThat(columns[1].trim(), is(equalTo(Type.WALL_CLOCK_TIME.toString())));
+        assertThat(columns[2].trim(), is(equalTo("0.789"))); // en_US Locale dependent test
+        assertThat(columns[3].trim(), is(equalTo(SECONDS)));
     }
 
     /**
@@ -107,22 +108,21 @@ public class PrintUtilsTest
         // Rows from 1 to 3 should contain the table header
         String[] header = rows[2].split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(header[1].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER));
-        assertThat(header[2].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME));
-        assertThat(header[3].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT));
+        assertThat(header[1].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER)));
+        assertThat(header[2].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME)));
+        assertThat(header[3].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT)));
 
         // Remaining rows should contain counters and elapsed times
         String[] columnsRow1 = rows[4].split(TABLE_COLUMN_SEPARATOR);
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000"));
-        assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
+        assertThat(columnsRow1[1].trim(), is(equalTo(Type.WALL_CLOCK_TIME.toString())));
+        assertThat(columnsRow1[2].trim(), is(equalTo("1000")));
+        assertThat(columnsRow1[3].trim(), is(equalTo(MILLISECONDS)));
 
-        assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        assertThat(columnsRow2[2].trim(), is("200000000000"));
-        // assertThat(columnsRow2[2].trim(), is("2.0E11"));
-        assertThat(columnsRow2[3].trim(), is(NANOSECONDS));
+        assertThat(columnsRow2[1].trim(), is(equalTo(Type.CPU_TIME.toString())));
+        assertThat(columnsRow2[2].trim(), is(equalTo("200000000000")));
+        assertThat(columnsRow2[3].trim(), is(equalTo(NANOSECONDS)));
     }
 
     /**
@@ -141,21 +141,21 @@ public class PrintUtilsTest
         // Rows from 1 to 3 should contain the table header
         String[] header = rows[2].split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(header[1].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER));
-        assertThat(header[2].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME));
-        assertThat(header[3].trim(), is(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT));
+        assertThat(header[1].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_COUNTER)));
+        assertThat(header[2].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_ELAPSED_TIME)));
+        assertThat(header[3].trim(), is(equalTo(PrintUtils.COUNTERS_TABLE_COLUMN_TIME_UNIT)));
 
         // Remaining rows should contain counters and elapsed times
         String[] columnsRow1 = rows[4].split(TABLE_COLUMN_SEPARATOR);
         String[] columnsRow2 = rows[5].split(TABLE_COLUMN_SEPARATOR);
 
-        assertThat(columnsRow1[1].trim(), is(Type.WALL_CLOCK_TIME.toString()));
-        assertThat(columnsRow1[2].trim(), is("1000"));
-        assertThat(columnsRow1[3].trim(), is(MILLISECONDS));
+        assertThat(columnsRow1[1].trim(), is(equalTo(Type.WALL_CLOCK_TIME.toString())));
+        assertThat(columnsRow1[2].trim(), is(equalTo("1000")));
+        assertThat(columnsRow1[3].trim(), is(equalTo(MILLISECONDS)));
 
-        assertThat(columnsRow2[1].trim(), is(Type.CPU_TIME.toString()));
-        assertThat(columnsRow2[2].trim(), is("200000"));
-        assertThat(columnsRow2[3].trim(), is(MILLISECONDS));
+        assertThat(columnsRow2[1].trim(), is(equalTo(Type.CPU_TIME.toString())));
+        assertThat(columnsRow2[2].trim(), is(equalTo("200000")));
+        assertThat(columnsRow2[3].trim(), is(equalTo(MILLISECONDS)));
     }
 
     /**
@@ -169,7 +169,7 @@ public class PrintUtilsTest
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
         String expectedString = PrintUtils.toTableFormat(Arrays.asList(c1, c2));
 
-        // Prepare stopwatch
+        // Prepare the stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
         Mockito.when(stopwatch.getCounters()).thenReturn(Arrays.asList(c1, c2));
 
@@ -178,7 +178,7 @@ public class PrintUtilsTest
         PrintUtils.printStopwatch(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
-        assertThat(printedString, is(expectedString));
+        assertThat(printedString, is(equalTo(expectedString)));
     }
 
     /**

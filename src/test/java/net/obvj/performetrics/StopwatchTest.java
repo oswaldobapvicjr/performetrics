@@ -1,21 +1,18 @@
 package net.obvj.performetrics;
 
-import static net.obvj.performetrics.Counter.Type.CPU_TIME;
-import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
-import static net.obvj.performetrics.Counter.Type.USER_TIME;
-import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static java.util.concurrent.TimeUnit.*;
+import static net.obvj.performetrics.Counter.Type.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
-
-import java.util.concurrent.TimeUnit;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.powermock.api.mockito.PowerMockito.*;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -73,10 +70,10 @@ public class StopwatchTest
      */
     private void assertAllUnitsBefore(Stopwatch stopwatch)
     {
-        assertThat(stopwatch.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(WALL_CLOCK_TIME_BEFORE));
-        assertThat(stopwatch.getCounter(CPU_TIME).getUnitsBefore(), is(CPU_TIME_BEFORE));
-        assertThat(stopwatch.getCounter(USER_TIME).getUnitsBefore(), is(USER_TIME_BEFORE));
-        assertThat(stopwatch.getCounter(SYSTEM_TIME).getUnitsBefore(), is(SYSTEM_TIME_BEFORE));
+        assertThat(stopwatch.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
+        assertThat(stopwatch.getCounter(CPU_TIME).getUnitsBefore(), is(equalTo(CPU_TIME_BEFORE)));
+        assertThat(stopwatch.getCounter(USER_TIME).getUnitsBefore(), is(equalTo(USER_TIME_BEFORE)));
+        assertThat(stopwatch.getCounter(SYSTEM_TIME).getUnitsBefore(), is(equalTo(SYSTEM_TIME_BEFORE)));
     }
 
     /**
@@ -86,10 +83,10 @@ public class StopwatchTest
      */
     private void assertAllUnitsAfter(Stopwatch stopwatch)
     {
-        assertThat(stopwatch.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(WALL_CLOCK_TIME_AFTER));
-        assertThat(stopwatch.getCounter(CPU_TIME).getUnitsAfter(), is(CPU_TIME_AFTER));
-        assertThat(stopwatch.getCounter(USER_TIME).getUnitsAfter(), is(USER_TIME_AFTER));
-        assertThat(stopwatch.getCounter(SYSTEM_TIME).getUnitsAfter(), is(SYSTEM_TIME_AFTER));
+        assertThat(stopwatch.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(WALL_CLOCK_TIME_AFTER)));
+        assertThat(stopwatch.getCounter(CPU_TIME).getUnitsAfter(), is(equalTo(CPU_TIME_AFTER)));
+        assertThat(stopwatch.getCounter(USER_TIME).getUnitsAfter(), is(equalTo(USER_TIME_AFTER)));
+        assertThat(stopwatch.getCounter(SYSTEM_TIME).getUnitsAfter(), is(equalTo(SYSTEM_TIME_AFTER)));
     }
 
     /**
@@ -100,7 +97,7 @@ public class StopwatchTest
     private void assertAllUnitsBeforeEqualZero(Stopwatch stopwatch)
     {
         for (Counter c : stopwatch.getCounters())
-            assertThat("For the counter of type: " + c.getType(), c.getUnitsBefore(), is(0L));
+            assertThat("For the counter of type: " + c.getType(), c.getUnitsBefore(), is(equalTo(0L)));
     }
 
     /**
@@ -112,7 +109,7 @@ public class StopwatchTest
     private void assertAllUnitsAfterEqualZero(Stopwatch stopwatch)
     {
         for (Counter c : stopwatch.getCounters())
-            assertThat("For the counter of type:" + c.getType(), c.getUnitsAfter(), is(0L));
+            assertThat("For the counter of type:" + c.getType(), c.getUnitsAfter(), is(equalTo(0L)));
     }
 
     /**
@@ -122,7 +119,7 @@ public class StopwatchTest
     public void constructor_withNoArguments_assignsAllAvailableTypes()
     {
         Stopwatch sw = new Stopwatch();
-        assertEquals(Type.values().length, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(Type.values().length)));
         assertNotNull("Wall-clock-time counter should not be null", sw.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter should not be null", sw.getCounter(CPU_TIME));
         assertNotNull("User-time counter should not be null", sw.getCounter(USER_TIME));
@@ -136,7 +133,7 @@ public class StopwatchTest
     public void constructor_withOneArgument_assignsCorrectCounter()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
-        assertEquals(1, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(1)));
         assertNotNull("System-time counter not set", sw.getCounter(SYSTEM_TIME));
     }
 
@@ -147,7 +144,7 @@ public class StopwatchTest
     public void constructor_withTwoArguments_assignsCorrectCounters()
     {
         Stopwatch sw = new Stopwatch(CPU_TIME, USER_TIME);
-        assertEquals(2, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(2)));
         assertNotNull("CPU-time counter not set", sw.getCounter(CPU_TIME));
         assertNotNull("User-time counter not set", sw.getCounter(USER_TIME));
     }
@@ -159,7 +156,7 @@ public class StopwatchTest
     public void getAllCounters_withStopwatchUnstarted_returnsAllUnitsEqualToZero()
     {
         Stopwatch sw = new Stopwatch();
-        assertThat(sw.isStarted(), is(false));
+        assertThat(sw.isStarted(), is(equalTo(false)));
         assertAllUnitsBeforeEqualZero(sw);
         assertAllUnitsAfterEqualZero(sw);
     }
@@ -173,8 +170,8 @@ public class StopwatchTest
     {
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted();
-        assertEquals(Type.values().length, sw.getCounters().size());
-        assertThat(sw.isStarted(), is(true));
+        assertThat(sw.getCounters().size(), is(equalTo(Type.values().length)));
+        assertThat(sw.isStarted(), is(equalTo(true)));
         assertAllUnitsBefore(sw);
         assertAllUnitsAfterEqualZero(sw);
     }
@@ -188,21 +185,21 @@ public class StopwatchTest
     {
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
-        assertThat(sw.isStarted(), is(true));
-        assertEquals(1, sw.getCounters().size());
-        assertEquals(WALL_CLOCK_TIME_BEFORE, sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore());
-        assertEquals(0, sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter());
+        assertThat(sw.isStarted(), is(equalTo(true)));
+        assertThat(sw.getCounters().size(), is(equalTo(1)));
+        assertThat(sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
+        assertThat(sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(0L)));
     }
 
     /**
      * Checks that all units are duly set after starting and stopping a stopwatch with default
-     * counters
+     * counters.
      */
     @Test
     public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
         Stopwatch sw = new Stopwatch();
-        assertEquals(Type.values().length, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(Type.values().length)));
         setupExpectsBefore();
         sw.start();
         assertThat(sw.isStarted(), is(true));
@@ -221,17 +218,17 @@ public class StopwatchTest
     public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME, CPU_TIME);
-        assertEquals(2, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(2)));
         setupExpectsBefore();
         sw.start();
         assertThat(sw.isStarted(), is(true));
         setupExpectsAfter();
         sw.stop();
         assertThat(sw.isStarted(), is(false));
-        assertEquals(WALL_CLOCK_TIME_BEFORE, sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore());
-        assertEquals(WALL_CLOCK_TIME_AFTER, sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter());
-        assertEquals(CPU_TIME_BEFORE, sw.getCounter(CPU_TIME).getUnitsBefore());
-        assertEquals(CPU_TIME_AFTER, sw.getCounter(CPU_TIME).getUnitsAfter());
+        assertThat(sw.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
+        assertThat(sw.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(WALL_CLOCK_TIME_AFTER)));
+        assertThat(sw.getCounter(CPU_TIME).getUnitsBefore(), is(equalTo(CPU_TIME_BEFORE)));
+        assertThat(sw.getCounter(CPU_TIME).getUnitsAfter(), is(equalTo(CPU_TIME_AFTER)));
     }
 
     /**
@@ -248,7 +245,7 @@ public class StopwatchTest
         sw.stop();
         assertThat(sw.isStarted(), is(false));
         sw.reset();
-        assertEquals(Type.values().length, sw.getCounters().size());
+        assertThat(sw.getCounters().size(), is(equalTo(Type.values().length)));
         assertAllUnitsBeforeEqualZero(sw);
         assertAllUnitsAfterEqualZero(sw);
     }
@@ -268,11 +265,11 @@ public class StopwatchTest
         assertThat(sw.isStarted(), is(false));
         sw.reset();
         assertThat(sw.isStarted(), is(false));
-        assertEquals(2, sw.getCounters().size());
-        assertEquals(0, sw.getCounter(USER_TIME).getUnitsBefore());
-        assertEquals(0, sw.getCounter(USER_TIME).getUnitsAfter());
-        assertEquals(0, sw.getCounter(SYSTEM_TIME).getUnitsBefore());
-        assertEquals(0, sw.getCounter(SYSTEM_TIME).getUnitsAfter());
+        assertThat(sw.getCounters().size(), is(equalTo(2)));
+        assertThat(sw.getCounter(USER_TIME).getUnitsBefore(), is(equalTo(0L)));
+        assertThat(sw.getCounter(USER_TIME).getUnitsAfter(), is(equalTo(0L)));
+        assertThat(sw.getCounter(SYSTEM_TIME).getUnitsBefore(), is(equalTo(0L)));
+        assertThat(sw.getCounter(SYSTEM_TIME).getUnitsAfter(), is(equalTo(0L)));
     }
 
     /**
@@ -295,15 +292,15 @@ public class StopwatchTest
     public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printStatistics(System.out, TimeUnit.SECONDS);
+        sw.printStatistics(System.out, SECONDS);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printStopwatch(sw, System.out, TimeUnit.SECONDS);
+        PrintUtils.printStopwatch(sw, System.out, SECONDS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getCounter_invalidType_throwsException()
     {
-        Stopwatch sw = new Stopwatch(Type.CPU_TIME, Type.SYSTEM_TIME);
+        Stopwatch sw = new Stopwatch(CPU_TIME, SYSTEM_TIME);
         sw.getCounter(USER_TIME);
     }
 

@@ -44,6 +44,7 @@
         <junit4.version>4.13</junit4.version>
         <powermock.version>2.0.4</powermock.version>
         <hamcrest.version>2.2</hamcrest.version>
+        <junit-utils.version>1.0.0</junit-utils.version>
 
     </properties>
 
@@ -70,6 +71,12 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.obvj</groupId>
+            <artifactId>junit-utils</artifactId>
+            <version>${junit-utils.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

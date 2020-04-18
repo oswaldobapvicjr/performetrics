@@ -1,6 +1,6 @@
 package net.obvj.performetrics.config;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.concurrent.TimeUnit;
@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import net.obvj.performetrics.ConversionMode;
-import net.obvj.performetrics.config.Configuration;
 
 /**
  * Unit tests for the {@link Configuration}.
@@ -23,9 +22,9 @@ public class ConfigurationTest
     public void constructor_default_defaultValues()
     {
         Configuration configuration = new Configuration();
-        assertThat(configuration.getTimeUnit(), is(Configuration.INITIAL_TIME_UNIT));
-        assertThat(configuration.getConversionMode(), is(Configuration.INITIAL_CONVERSION_MODE));
-        assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
+        assertThat(configuration.getTimeUnit(), is(equalTo(Configuration.INITIAL_TIME_UNIT)));
+        assertThat(configuration.getConversionMode(), is(equalTo(Configuration.INITIAL_CONVERSION_MODE)));
+        assertThat(configuration.getScale(), is(equalTo(Configuration.INITIAL_SCALE)));
     }
 
     @Test
@@ -33,7 +32,7 @@ public class ConfigurationTest
     {
         Configuration configuration = new Configuration();
         configuration.setTimeUnit(TimeUnit.SECONDS);
-        assertThat(configuration.getTimeUnit(), is(TimeUnit.SECONDS));
+        assertThat(configuration.getTimeUnit(), is(equalTo(TimeUnit.SECONDS)));
     }
 
     @Test
@@ -41,7 +40,7 @@ public class ConfigurationTest
     {
         Configuration configuration = new Configuration();
         configuration.setConversionMode(ConversionMode.FAST);
-        assertThat(configuration.getConversionMode(), is(ConversionMode.FAST));
+        assertThat(configuration.getConversionMode(), is(equalTo(ConversionMode.FAST)));
     }
 
     @Test
@@ -49,7 +48,7 @@ public class ConfigurationTest
     {
         Configuration configuration = new Configuration();
         configuration.setScale(16);
-        assertThat(configuration.getScale(), is(16));
+        assertThat(configuration.getScale(), is(equalTo(16)));
     }
 
     @Test(expected = IllegalArgumentException.class)

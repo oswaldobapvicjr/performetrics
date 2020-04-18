@@ -1,13 +1,14 @@
 package net.obvj.performetrics.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import net.obvj.performetrics.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 
 /**
  * Unit tests for the {@link TimeUnitConverter}.
@@ -32,49 +33,49 @@ public class TimeUnitConverterTest
     @Test
     public void convert_2MinutesToMilliseconds()
     {
-        assertThat(TimeUnitConverter.convert(2, TimeUnit.MINUTES, TimeUnit.MILLISECONDS), is(2.0 * 60 * 1000));
+        assertThat(TimeUnitConverter.convert(2, TimeUnit.MINUTES, TimeUnit.MILLISECONDS), is(equalTo(2.0 * 60 * 1000)));
     }
 
     @Test
     public void convert_90SecondsToMinutes()
     {
-        assertThat(TimeUnitConverter.convert(30, TimeUnit.SECONDS, TimeUnit.MINUTES), is(0.5));
+        assertThat(TimeUnitConverter.convert(30, TimeUnit.SECONDS, TimeUnit.MINUTES), is(equalTo(0.5)));
     }
 
     @Test
     public void convert_999MillisecondsToSeconds()
     {
-        assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(0.999));
+        assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(equalTo(0.999)));
     }
 
     @Test
     public void convert_988MillisecondsToSecondsAnd2DecimalPlaces()
     {
-        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2), is(0.99));
+        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2), is(equalTo(0.99)));
     }
 
     @Test
     public void convert_988MillisecondsToSecondsAnd0DecimalPlaces()
     {
-        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0), is(1.0));
+        assertThat(TimeUnitConverter.convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0), is(equalTo(1.0)));
     }
 
     @Test
     public void round_positiveDecimalPlaces()
     {
-        assertThat(TimeUnitConverter.round(22.859, 2), is(22.86));
+        assertThat(TimeUnitConverter.round(22.859, 2), is(equalTo(22.86)));
     }
 
     @Test
     public void round_zeroDecimalPlaces()
     {
-        assertThat(TimeUnitConverter.round(22.859, 0), is(23.0));
+        assertThat(TimeUnitConverter.round(22.859, 0), is(equalTo(23.0)));
     }
 
     @Test
     public void round_negativeDecimalPlaces()
     {
-        assertThat(TimeUnitConverter.round(22.859, -1), is(20.0));
+        assertThat(TimeUnitConverter.round(22.859, -1), is(equalTo(20.0)));
     }
 
 }

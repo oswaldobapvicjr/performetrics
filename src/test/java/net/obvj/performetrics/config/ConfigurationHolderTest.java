@@ -1,15 +1,13 @@
 package net.obvj.performetrics.config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.After;
 import org.junit.Test;
 
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.performetrics.ConversionMode;
-import net.obvj.performetrics.TestUtils;
-import net.obvj.performetrics.config.Configuration;
-import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
  * Unit tests for the {@link ConfigurationHolder}.
@@ -40,8 +38,8 @@ public class ConfigurationHolderTest
     public void getConfiguration_initial_defaultValues()
     {
         Configuration configuration = ConfigurationHolder.getConfiguration();
-        assertThat(configuration.getConversionMode(), is(Configuration.INITIAL_CONVERSION_MODE));
-        assertThat(configuration.getScale(), is(Configuration.INITIAL_SCALE));
+        assertThat(configuration.getConversionMode(), is(equalTo(Configuration.INITIAL_CONVERSION_MODE)));
+        assertThat(configuration.getScale(), is(equalTo(Configuration.INITIAL_SCALE)));
     }
 
     @Test
@@ -52,7 +50,7 @@ public class ConfigurationHolderTest
         newConfiguration.setScale(11);
 
         ConfigurationHolder.setConfiguration(newConfiguration);
-        assertThat(ConfigurationHolder.getConfiguration(), is(newConfiguration));
+        assertThat(ConfigurationHolder.getConfiguration(), is(equalTo(newConfiguration)));
     }
 
 }

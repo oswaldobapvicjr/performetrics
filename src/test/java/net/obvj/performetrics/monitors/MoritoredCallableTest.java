@@ -4,8 +4,9 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -77,10 +78,10 @@ public class MoritoredCallableTest
      */
     private void assertAllUnitsBefore(MonitoredOperation operation)
     {
-        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(MOCKED_WALL_CLOCK_TIME));
-        assertThat(operation.getCounter(CPU_TIME).getUnitsBefore(), is(MOCKED_CPU_TIME));
-        assertThat(operation.getCounter(USER_TIME).getUnitsBefore(), is(MOCKED_USER_TIME));
-        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsBefore(), is(MOCKED_SYSTEM_TIME));
+        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(MOCKED_WALL_CLOCK_TIME)));
+        assertThat(operation.getCounter(CPU_TIME).getUnitsBefore(), is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(operation.getCounter(USER_TIME).getUnitsBefore(), is(equalTo(MOCKED_USER_TIME)));
+        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsBefore(), is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
     /**
@@ -88,10 +89,10 @@ public class MoritoredCallableTest
      */
     private void assertAllUnitsAfter(MonitoredOperation operation)
     {
-        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(MOCKED_WALL_CLOCK_TIME));
-        assertThat(operation.getCounter(CPU_TIME).getUnitsAfter(), is(MOCKED_CPU_TIME));
-        assertThat(operation.getCounter(USER_TIME).getUnitsAfter(), is(MOCKED_USER_TIME));
-        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsAfter(), is(MOCKED_SYSTEM_TIME));
+        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(MOCKED_WALL_CLOCK_TIME)));
+        assertThat(operation.getCounter(CPU_TIME).getUnitsAfter(), is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(operation.getCounter(USER_TIME).getUnitsAfter(), is(equalTo(MOCKED_USER_TIME)));
+        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsAfter(), is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
     /**
@@ -100,7 +101,7 @@ public class MoritoredCallableTest
     private void assertAllUnitsBeforeEqualZero(Counter... counters)
     {
         for (Counter c : counters)
-            assertThat("For the counter of type: " + c.getType(), c.getUnitsBefore(), is(0L));
+            assertThat("For the counter of type: " + c.getType(), c.getUnitsBefore(), is(equalTo(0L)));
     }
 
     /**
@@ -110,7 +111,7 @@ public class MoritoredCallableTest
     private void assertAllUnitsAfterEqualZero(Counter... counters)
     {
         for (Counter c : counters)
-            assertThat("For the counter of type: " + c.getType(), c.getUnitsAfter(), is(0L));
+            assertThat("For the counter of type: " + c.getType(), c.getUnitsAfter(), is(equalTo(0L)));
     }
 
     /**
@@ -121,7 +122,7 @@ public class MoritoredCallableTest
     public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);
-        assertThat(op.getCounters().size(), is(1));
+        assertThat(op.getCounters().size(), is(equalTo(1)));
         Counter counter = op.getCounter(WALL_CLOCK_TIME);
         assertAllUnitsBeforeEqualZero(counter);
         assertAllUnitsAfterEqualZero(counter);
@@ -136,7 +137,7 @@ public class MoritoredCallableTest
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, SYSTEM_TIME,
                 USER_TIME);
-        assertThat(op.getCounters().size(), is(2));
+        assertThat(op.getCounters().size(), is(equalTo(2)));
         Counter counter1 = op.getCounter(SYSTEM_TIME);
         Counter counter2 = op.getCounter(USER_TIME);
         assertAllUnitsBeforeEqualZero(counter1, counter2);
@@ -151,7 +152,7 @@ public class MoritoredCallableTest
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable);
-        assertThat(op.getCounters().size(), is(Type.values().length));
+        assertThat(op.getCounters().size(), is(equalTo(Type.values().length)));
         assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
         assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
         assertNotNull("User-time counter not set", op.getCounter(USER_TIME));
@@ -171,7 +172,7 @@ public class MoritoredCallableTest
         PowerMockito.mockStatic(SystemUtils.class);
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         setupExpects();
-        assertThat(operation.call(), is(STRING_CALLABLE_RETURN));
+        assertThat(operation.call(), is(equalTo(STRING_CALLABLE_RETURN)));
         assertAllUnitsBefore(operation);
         assertAllUnitsAfter(operation);
     }

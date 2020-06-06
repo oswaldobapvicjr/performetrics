@@ -7,8 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
-import net.obvj.performetrics.ConversionMode;
-
 /**
  * Unit tests for the {@link ConversionMode}.
  *

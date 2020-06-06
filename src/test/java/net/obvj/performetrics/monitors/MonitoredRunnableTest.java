@@ -23,8 +23,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.monitors.MonitoredOperation;
-import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 

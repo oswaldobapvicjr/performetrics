@@ -1,9 +1,18 @@
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.*;
-import static net.obvj.performetrics.Counter.Type.*;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
+import static net.obvj.performetrics.ConversionMode.FAST;
+import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
+import static net.obvj.performetrics.Counter.Type.USER_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -17,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
@@ -332,6 +342,81 @@ public class StopwatchTest
         Stopwatch sw = Stopwatch.createStarted();
         sw.stop();
         sw.stop();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidType_throwsException()
+    {
+        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        sw.elapsedTime(USER_TIME);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    {
+        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        sw.elapsedTime(USER_TIME, HOURS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_throwsException()
+    {
+        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        sw.elapsedTime(USER_TIME, HOURS, FAST);
+    }
+
+    @Test()
+    public void elapsedTime_validType_returnsValidDurations()
+    {
+        Stopwatch sw = new Stopwatch();
+        setupExpectsBefore();
+        sw.start();
+        setupExpectsAfter();
+
+        assertThat(sw.elapsedTime(WALL_CLOCK_TIME),
+                is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+        assertThat(sw.elapsedTime(CPU_TIME),
+                is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
+        assertThat(sw.elapsedTime(USER_TIME),
+                is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
+        assertThat(sw.elapsedTime(SYSTEM_TIME),
+                is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+    }
+
+    @Test()
+    public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
+    {
+        Stopwatch sw = new Stopwatch();
+        setupExpectsBefore();
+        sw.start();
+        setupExpectsAfter();
+
+        assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS),
+                is(equalTo(sw.getCounter(WALL_CLOCK_TIME).elapsedTime(SECONDS))));
+        assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS),
+                is(equalTo(sw.getCounter(CPU_TIME).elapsedTime(MILLISECONDS))));
+        assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS),
+                is(equalTo(sw.getCounter(USER_TIME).elapsedTime(NANOSECONDS))));
+        assertThat(sw.elapsedTime(SYSTEM_TIME, SECONDS),
+                is(equalTo(sw.getCounter(SYSTEM_TIME).elapsedTime(SECONDS))));
+    }
+
+    @Test()
+    public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
+    {
+        Stopwatch sw = new Stopwatch();
+        setupExpectsBefore();
+        sw.start();
+        setupExpectsAfter();
+
+        assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
+                is(equalTo(sw.getCounter(WALL_CLOCK_TIME).elapsedTime(SECONDS, FAST))));
+        assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS, DOUBLE_PRECISION),
+                is(equalTo(sw.getCounter(CPU_TIME).elapsedTime(MILLISECONDS, DOUBLE_PRECISION))));
+        assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS, FAST),
+                is(equalTo(sw.getCounter(USER_TIME).elapsedTime(NANOSECONDS, FAST))));
+        assertThat(sw.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
+                is(equalTo(sw.getCounter(SYSTEM_TIME).elapsedTime(HOURS, DOUBLE_PRECISION))));
     }
 
 }

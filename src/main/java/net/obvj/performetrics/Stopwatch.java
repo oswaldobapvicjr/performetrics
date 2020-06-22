@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
@@ -266,6 +267,63 @@ public class Stopwatch
                     MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, counters.keySet()));
         }
         return counters.get(type);
+    }
+
+    /**
+     * A convenient method that returns the elapsed time of a specific counter.
+     * <p>
+     * This has the same effect as calling: {@code stopwatch.getCounter(type).elapsedTime()}
+     *
+     * @param type the counter type to be fetched
+     * @return the elapsed time for the specified counter
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
+     * @since 2.1.0
+     */
+    public Duration elapsedTime(Type type)
+    {
+        return getCounter(type).elapsedTime();
+    }
+
+    /**
+     * A convenient method that returns the elapsed time of a specific counter, in the
+     * specified time unit.
+     * <p>
+     * This has the same effect as calling:
+     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit)}
+     *
+     * @param type     the counter type to be fetched
+     * @param timeUnit the time unit to which the elapsed time will be converted
+     * @return the elapsed time for the specified counter, converted to the given time unit
+     *         using the default conversion mode.
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
+     * @since 2.1.0
+     */
+    public double elapsedTime(Type type, TimeUnit timeUnit)
+    {
+        return getCounter(type).elapsedTime(timeUnit);
+    }
+
+    /**
+     * A convenient method that returns the elapsed time of a specific counter, in the
+     * specified time unit, by applying a custom {@link ConversionMode}.
+     * <p>
+     * This has the same effect as calling:
+     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit, conversionMode)}
+     *
+     * @param type           the counter type to be fetched
+     * @param timeUnit       the time unit to which the elapsed time will be converted
+     * @param conversionMode the {@link ConversionMode} to be applied
+     * @return the elapsed time for the specified counter, converted to the given time unit
+     *         using the given conversion mode.
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
+     * @since 2.1.0
+     */
+    public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
+    {
+        return getCounter(type).elapsedTime(timeUnit, conversionMode);
     }
 
     /**

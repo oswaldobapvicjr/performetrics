@@ -68,10 +68,10 @@ public class PerformetricsTestDrive
 
         System.out.println(operation.call());
 
-        System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime());
-        System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.NANOSECONDS));
-        System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS));
-        System.out.println(operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.SECONDS));
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS));
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS));
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS));
         operation.printStatistics(System.out);
         operation.printStatistics(System.out, TimeUnit.MILLISECONDS);
         operation.printStatistics(System.out, TimeUnit.SECONDS);

@@ -43,13 +43,12 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * Use {@code getCounter(Counter.Type)}, then {@code elapsedTime()} to retrieve the
- * elapsed time of a particular counter. E.g.:
+ * Use {@code elapsedTime(Counter.Type)} to retrieve the elapsed time for a particular
+ * counter. E.g.:
  * </p>
  *
  * <pre>
- * Counter cpuTime = stopwatch.getCounter(Counter.Type.CPU_TIME);
- * double elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+ * double elapsedTimeNanos = cpuTime.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
  * </pre>
  *
  * <p>

@@ -1,17 +1,20 @@
 package net.obvj.performetrics.monitors;
 
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-
-import java.util.concurrent.TimeUnit;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +24,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
@@ -180,9 +185,72 @@ public class MonitoredRunnableTest
     public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printStatistics(System.out, TimeUnit.SECONDS);
+        operation.printStatistics(System.out, SECONDS);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printCounters(operation.getCounters(), System.out, TimeUnit.SECONDS);
+        PrintUtils.printCounters(operation.getCounters(), System.out, SECONDS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidType_throwsException()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
+        operation.elapsedTime(USER_TIME);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
+        operation.elapsedTime(USER_TIME, HOURS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_throwsException()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
+        operation.elapsedTime(USER_TIME, HOURS, FAST);
+    }
+
+    @Test()
+    public void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
+    {
+        Counter counter = mock(Counter.class);
+        Stopwatch stopwatch = mock(Stopwatch.class);
+        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        operation.stopwatch = stopwatch;
+
+        operation.elapsedTime(WALL_CLOCK_TIME);
+        verify(counter).elapsedTime();
+    }
+
+    @Test()
+    public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
+    {
+        Counter counter = mock(Counter.class);
+        Stopwatch stopwatch = mock(Stopwatch.class);
+        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        operation.stopwatch = stopwatch;
+
+        operation.elapsedTime(WALL_CLOCK_TIME, HOURS);
+        verify(counter).elapsedTime(HOURS);
+    }
+
+    @Test()
+    public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
+    {
+        Counter counter = mock(Counter.class);
+        Stopwatch stopwatch = mock(Stopwatch.class);
+        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        operation.stopwatch = stopwatch;
+
+        operation.elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
+        verify(counter).elapsedTime(HOURS, ConversionMode.FAST);
     }
 
 }

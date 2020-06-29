@@ -69,8 +69,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 4. Get the elapsed time for a particular counter (e.g. CPU time):
 
     ```java
-    Counter cpuTime = sw.getCounter(Counter.Type.CPU_TIME);
-    long elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+    long cpuTimeMillis = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.MILLISECONDS);
     ```
 
 5. Print statistics to the console:

@@ -14,13 +14,12 @@ import net.obvj.performetrics.Counter.Type;
  * method available in this wrapper. The target {@code Runnable}'s {@code run()} method
  * will be executed and monitored. After the operation, call
  * {@code printStatistics(System.out)} to print the statistics to the system console or
- * {@code getCounter(Counter.Type)}, then {@code elapsedTime()} to retrieve the elapsed
- * time for a particular counter. E.g.:
+ * {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time duration for a
+ * particular counter. E.g.:
  * </p>
  *
  * <pre>
- * Counter cpuTime = monitoredRunnable.getCounter(Counter.Type.CPU_TIME);
- * double elapsedTimeMillis = cpuTime.elapsedTime(TimeUnit.MILLISECONDS);
+ * double cpuTimeNanos = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
  * </pre>
  *
  * <p>

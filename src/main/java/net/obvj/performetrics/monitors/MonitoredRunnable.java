@@ -1,5 +1,7 @@
 package net.obvj.performetrics.monitors;
 
+import java.util.Objects;
+
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 
@@ -80,6 +82,7 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     @Override
     public void run()
     {
+        Objects.requireNonNull(targetRunnable, "the target runnable must not be null");
         stopwatch.reset();
         stopwatch.start();
         try

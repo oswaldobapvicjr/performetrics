@@ -1,5 +1,6 @@
 package net.obvj.performetrics.monitors;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter;
@@ -83,6 +84,7 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
     @Override
     public V call() throws Exception
     {
+        Objects.requireNonNull(targetCallable, "the target callable must not be null");
         stopwatch.reset();
         stopwatch.start();
         try

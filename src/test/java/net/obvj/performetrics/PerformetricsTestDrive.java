@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.monitors.MonitoredCallable;
+import net.obvj.performetrics.monitors.MonitoredRunnable;
 
 public class PerformetricsTestDrive
 {
@@ -31,6 +32,10 @@ public class PerformetricsTestDrive
         Performetrics.setScale(2);
 
         testCallableWithLambda();
+
+        Runnable r = null;
+        MonitoredRunnable mr = new MonitoredRunnable(r);
+        mr.run();
     }
 
     private static void testStopwatch1() throws InterruptedException, IOException

@@ -1,12 +1,11 @@
 package net.obvj.performetrics.util;
 
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
-
-import net.obvj.junit.utils.TestUtils;
 
 /**
  * Test methods for the {@link SystemUtils} class
@@ -15,15 +14,10 @@ import net.obvj.junit.utils.TestUtils;
  */
 public class SystemUtilsTest
 {
-    /**
-     * Tests that no instances of this utility class are created.
-     *
-     * @throws ReflectiveOperationException in case of error getting class metadata
-     */
     @Test
-    public void constructor_throwsException() throws ReflectiveOperationException
+    public void constructor_instantiationNotAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(SystemUtils.class);
+        assertThat(SystemUtils.class, instantiationNotAllowed());
     }
 
     @Test

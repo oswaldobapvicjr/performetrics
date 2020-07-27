@@ -1,8 +1,9 @@
 package net.obvj.performetrics.util.printer;
 
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -16,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
@@ -41,13 +41,11 @@ public class PrintUtilsTest
 
     /**
      * Tests that no instances of this utility class are created.
-     *
-     * @throws ReflectiveOperationException in case of error getting class metadata
      */
     @Test
-    public void constructor_throwsException() throws ReflectiveOperationException
+    public void constructor_instantiationNotAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(PrintUtils.class);
+        assertThat(PrintUtils.class, instantiationNotAllowed());
     }
 
     private Counter newCounter(Type type, TimeUnit timeUnit, long unitsBefore, long unitsAfter)

@@ -1,17 +1,18 @@
 package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Test;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
@@ -55,15 +56,10 @@ public class PerformetricsTest
         ConfigurationHolder.reset();
     }
 
-    /**
-     * Tests that no instances of this utility class are created.
-     *
-     * @throws ReflectiveOperationException in case of error getting class metadata
-     */
     @Test
-    public void constructor_throwsException() throws ReflectiveOperationException
+    public void constructor_instantiationNotAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(Performetrics.class);
+        assertThat(Performetrics.class, instantiationNotAllowed());
     }
 
     @Test

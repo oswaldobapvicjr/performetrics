@@ -177,7 +177,7 @@ public class CounterTest
         Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
         assertThat(counter.getTimeUnit(), is(SECONDS));
         counter.setUnitsAfter(59); // 59 seconds after
-        assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.98333)));
+        assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.983333333)));
     }
 
     @Test

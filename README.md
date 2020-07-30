@@ -132,7 +132,7 @@ Performetrics provides two different conversion modes that can be applied depend
 
 * **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularities. For example, converting 999 milliseconds to seconds results in 0.999
 
-  A precision of 5 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
+  A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
 
 ---
 

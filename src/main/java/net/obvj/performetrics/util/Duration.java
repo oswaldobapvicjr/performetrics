@@ -416,8 +416,8 @@ public class Duration
      * Converts this duration to the total length in a given time unit, with a custom scale.
      *
      * @param timeUnit the target time unit
-     * @param scale    a positive number indicates the number of decimal places to keep; a
-     *                 negative amount indicates no scaling or rounding
+     * @param scale    a positive number indicates the number of decimal places to maintain;
+     *                 if negative, the default scale will be applied
      *
      * @return the total length of the duration in the specified time unit, with a custom
      *         scale, not null

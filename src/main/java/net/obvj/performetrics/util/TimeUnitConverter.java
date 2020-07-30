@@ -29,7 +29,7 @@ public class TimeUnitConverter
      *
      * <p>
      * For example, to convert 10 minutes to milliseconds, use:
-     * {@code TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
+     * {@code TimeUnitConverter.convertAndRound(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      * </p>
      *
      * <p>
@@ -37,14 +37,14 @@ public class TimeUnitConverter
      * {@code ConfigurationHolder.getConfiguration().getScale()}
      * </p>
      *
-     * @param sourceDuration the time duration in the given sourceUnit
+     * @param sourceDuration the time duration to be converted
      * @param sourceTimeUnit the unit of the sourceDuration argument
      * @param targetTimeUnit the target time unit
      * @return the converted duration, as double.
      */
-    public static double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
+    public static double convertAndRound(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
     {
-        return convert(sourceDuration, sourceTimeUnit, targetTimeUnit,
+        return convertAndRound(sourceDuration, sourceTimeUnit, targetTimeUnit,
                 ConfigurationHolder.getConfiguration().getScale());
     }
 
@@ -56,7 +56,7 @@ public class TimeUnitConverter
      * <p>
      * For example, to convert 999 milliseconds to seconds, with a precision of 2 decimal
      * places, use:
-     * {@code TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)}
+     * {@code TimeUnitConverter.convertAndRound(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)}
      * </p>
      *
      * <p>
@@ -76,37 +76,43 @@ public class TimeUnitConverter
      * </p>
      *
      * <pre>
-     * convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)  = 0.99
-     * convert(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0)  = 1
+     * convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)  = 0.99
+     * convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0)  = 1
      * </pre>
      *
-     * @param sourceDuration the time duration in the given sourceUnit
+     * @param sourceDuration the time duration to be converted
      * @param sourceTimeUnit the unit of the sourceDuration argument
      * @param targetTimeUnit the target time unit
      * @param targetTimeUnit the target time unit
      * @param decimalPlaces  the number of decimal places to which the number will be rounded
      * @return the converted duration, as double.
      */
-    public static double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit,
+    public static double convertAndRound(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit,
             int decimalPlaces)
     {
         if (sourceTimeUnit == targetTimeUnit)
         {
             return sourceDuration;
         }
-        return round(rawConvertion(sourceDuration, sourceTimeUnit, targetTimeUnit), decimalPlaces);
+        return round(convert(sourceDuration, sourceTimeUnit, targetTimeUnit), decimalPlaces);
     }
 
     /**
+     * <p>
      * Converts the given duration and time unit into another time unit, as double, with no
      * rounding.
+     * </p>
+     * <p>
+     * For example, to convert 10 minutes to milliseconds, use:
+     * {@code TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
+     * </p>
      *
-     * @param sourceDuration the time duration in the given sourceUnit
+     * @param sourceDuration the time duration to be converted
      * @param sourceTimeUnit the unit of the sourceDuration argument
      * @param targetTimeUnit the target time unit
      * @return the converted duration, as double.
      */
-    private static double rawConvertion(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
+    public static double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
     {
         if (sourceTimeUnit.ordinal() < targetTimeUnit.ordinal())
         {

@@ -2,7 +2,8 @@ package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -186,6 +187,84 @@ public class DurationTest
         assertThat(Duration.of(100,        HOURS       ).toString(FormatStyle.ISO_8601, false), is(equalTo("PT100H")));
     }
 
+    @Test
+    public void toSeconds_validValues()
+    {
+        assertThat(Duration.of(0,          NANOSECONDS ).toSeconds().doubleValue(), is(equalTo(          0D)));
+        assertThat(Duration.of(1,          NANOSECONDS ).toSeconds().doubleValue(), is(equalTo(0.000000001D)));
+        assertThat(Duration.of(1,          MILLISECONDS).toSeconds().doubleValue(), is(equalTo(      0.001D)));
+        assertThat(Duration.of(1,          SECONDS     ).toSeconds().doubleValue(), is(equalTo(          1D)));
+        assertThat(Duration.of(1,          MINUTES     ).toSeconds().doubleValue(), is(equalTo(         60D)));
+        assertThat(Duration.of(1,          HOURS       ).toSeconds().doubleValue(), is(equalTo(       3600D)));
+        assertThat(Duration.of(1,          DAYS        ).toSeconds().doubleValue(), is(equalTo(      86400D)));
+        assertThat(Duration.of(789,        NANOSECONDS ).toSeconds().doubleValue(), is(equalTo(0.000000789D)));
+        assertThat(Duration.of(123456789,  NANOSECONDS ).toSeconds().doubleValue(), is(equalTo(0.123456789D)));
+        assertThat(Duration.of(1000000000, NANOSECONDS ).toSeconds().doubleValue(), is(equalTo(          1D)));
+        assertThat(Duration.of(1001,       MILLISECONDS).toSeconds().doubleValue(), is(equalTo(      1.001D)));
+        assertThat(Duration.of(1601,       MILLISECONDS).toSeconds().doubleValue(), is(equalTo(      1.601D)));
+        assertThat(Duration.of(3601,       MILLISECONDS).toSeconds().doubleValue(), is(equalTo(      3.601D)));
+        assertThat(Duration.of(70,         SECONDS     ).toSeconds().doubleValue(), is(equalTo(         70D)));
+        assertThat(Duration.of(601,        SECONDS     ).toSeconds().doubleValue(), is(equalTo(        601D)));
+        assertThat(Duration.of(959,        SECONDS     ).toSeconds().doubleValue(), is(equalTo(        959D)));
+        assertThat(Duration.of(960,        SECONDS     ).toSeconds().doubleValue(), is(equalTo(        960D)));
+        assertThat(Duration.of(970,        SECONDS     ).toSeconds().doubleValue(), is(equalTo(        970D)));
+        assertThat(Duration.of(3601,       MINUTES     ).toSeconds().doubleValue(), is(equalTo(     216060D)));
+        assertThat(Duration.of(2,          HOURS       ).toSeconds().doubleValue(), is(equalTo(       7200D)));
+        assertThat(Duration.of(100,        HOURS       ).toSeconds().doubleValue(), is(equalTo(     360000D)));
+    }
+    
+    @Test
+    public void toTimeUnit_milliseconds_validValues()
+    {
+        assertThat(Duration.of(0,          NANOSECONDS ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(          0D)));
+        assertThat(Duration.of(1,          NANOSECONDS ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(   0.000001D)));
+        assertThat(Duration.of(1,          MILLISECONDS).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(          1D)));
+        assertThat(Duration.of(1,          SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(       1000D)));
+        assertThat(Duration.of(1,          MINUTES     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(      60000D)));
+        assertThat(Duration.of(1,          HOURS       ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(    3600000D)));
+        assertThat(Duration.of(1,          DAYS        ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(   86400000D)));
+        assertThat(Duration.of(789,        NANOSECONDS ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(   0.000789D)));
+        assertThat(Duration.of(123456789,  NANOSECONDS ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo( 123.456789D)));
+        assertThat(Duration.of(1000000000, NANOSECONDS ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(       1000D)));
+        assertThat(Duration.of(1001,       MILLISECONDS).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(       1001D)));
+        assertThat(Duration.of(1601,       MILLISECONDS).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(       1601D)));
+        assertThat(Duration.of(3601,       MILLISECONDS).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(       3601D)));
+        assertThat(Duration.of(70,         SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(      70000D)));
+        assertThat(Duration.of(601,        SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(     601000D)));
+        assertThat(Duration.of(959,        SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(     959000D)));
+        assertThat(Duration.of(960,        SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(     960000D)));
+        assertThat(Duration.of(970,        SECONDS     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(     970000D)));
+        assertThat(Duration.of(3601,       MINUTES     ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(  216060000D)));
+        assertThat(Duration.of(2,          HOURS       ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(    7200000D)));
+        assertThat(Duration.of(100,        HOURS       ).toTimeUnit(MILLISECONDS).doubleValue(), is(equalTo(  360000000D)));
+    }
+
+    @Test
+    public void toTimeUnit_millisecondsAndScale3_validValues()
+    {
+        assertThat(Duration.of(0,          NANOSECONDS ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(          0D)));
+        assertThat(Duration.of(1,          NANOSECONDS ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(          0D)));
+        assertThat(Duration.of(1,          MILLISECONDS).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(          1D)));
+        assertThat(Duration.of(1,          SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(       1000D)));
+        assertThat(Duration.of(1,          MINUTES     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(      60000D)));
+        assertThat(Duration.of(1,          HOURS       ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(    3600000D)));
+        assertThat(Duration.of(1,          DAYS        ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(   86400000D)));
+        assertThat(Duration.of(789,        NANOSECONDS ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(      0.001D)));
+        assertThat(Duration.of(123456789,  NANOSECONDS ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(    123.457D)));
+        assertThat(Duration.of(1000000000, NANOSECONDS ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(       1000D)));
+        assertThat(Duration.of(1001,       MILLISECONDS).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(       1001D)));
+        assertThat(Duration.of(1601,       MILLISECONDS).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(       1601D)));
+        assertThat(Duration.of(3601,       MILLISECONDS).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(       3601D)));
+        assertThat(Duration.of(70,         SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(      70000D)));
+        assertThat(Duration.of(601,        SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(     601000D)));
+        assertThat(Duration.of(959,        SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(     959000D)));
+        assertThat(Duration.of(960,        SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(     960000D)));
+        assertThat(Duration.of(970,        SECONDS     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(     970000D)));
+        assertThat(Duration.of(3601,       MINUTES     ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(  216060000D)));
+        assertThat(Duration.of(2,          HOURS       ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(    7200000D)));
+        assertThat(Duration.of(100,        HOURS       ).toTimeUnit(MILLISECONDS, 3).doubleValue(), is(equalTo(  360000000D)));
+    }
+    
     @Test
     public void toString_noArguments_appliesShorterStyleWithLegend()
     {

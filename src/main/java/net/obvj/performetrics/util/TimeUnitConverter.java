@@ -90,10 +90,6 @@ public class TimeUnitConverter
     public static double convertAndRound(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit,
             int decimalPlaces)
     {
-        if (sourceTimeUnit == targetTimeUnit)
-        {
-            return sourceDuration;
-        }
         return round(convert(sourceDuration, sourceTimeUnit, targetTimeUnit), decimalPlaces);
     }
 
@@ -114,6 +110,10 @@ public class TimeUnitConverter
      */
     public static double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
     {
+        if (sourceTimeUnit == targetTimeUnit)
+        {
+            return sourceDuration;
+        }
         if (sourceTimeUnit.ordinal() < targetTimeUnit.ordinal())
         {
             // source time unit granularity is finer

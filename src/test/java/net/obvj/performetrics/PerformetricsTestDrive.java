@@ -49,9 +49,12 @@ public class PerformetricsTestDrive
         sw.stop();
 
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS));
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.NANOSECONDS)  + " nanosecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS)  + " nanosecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.SECONDS)      + " seconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS)      + " seconds");
         sw.printStatistics(System.out);
         sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
         sw.printStatistics(System.out, TimeUnit.SECONDS);
@@ -69,9 +72,12 @@ public class PerformetricsTestDrive
         System.out.println(operation.call());
 
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS));
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS));
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS));
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.NANOSECONDS)  + " nanosecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS)  + " nanosecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.SECONDS)      + " seconds");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS)      + " seconds");
         operation.printStatistics(System.out);
         operation.printStatistics(System.out, TimeUnit.MILLISECONDS);
         operation.printStatistics(System.out, TimeUnit.SECONDS);

@@ -396,30 +396,33 @@ public class Duration
     }
 
     /**
-     * Converts this duration to the total length in a given time unit, expressed as a
-     * {@code BigDecimal}.
+     * Converts this duration to the total length in a given time unit, with default scale.
+     * <p>
+     * <b>Note:</b> The number of decimal places applied is determined by
+     * {@code ConfigurationHolder.getConfiguration().getScale()} and may be changed by calling
+     * {@code Performetrics.setScale(int)}.
+     * </p>
      *
      * @param timeUnit the target time unit
      *
-     * @return the total length of the duration in the specified time unit, with no rounding
+     * @return the total length of the duration in the specified time unit, with default scale
      */
-    public BigDecimal toTimeUnit(TimeUnit timeUnit)
+    public double toTimeUnit(TimeUnit timeUnit)
     {
         return toTimeUnit(timeUnit, -1);
     }
 
     /**
-     * Converts this duration to the total length in a given time unit, expressed as a
-     * {@code BigDecimal} with a custom scale.
+     * Converts this duration to the total length in a given time unit, with a custom scale.
      *
      * @param timeUnit the target time unit
-     * @param scale    a positive number indicates the number of decimal places to keep; a
-     *                 negative amount indicates no scaling or rounding
+     * @param scale    a positive number indicates the number of decimal places to maintain;
+     *                 if negative, the default scale will be applied
      *
      * @return the total length of the duration in the specified time unit, with a custom
      *         scale, not null
      */
-    public BigDecimal toTimeUnit(TimeUnit timeUnit, int scale)
+    public double toTimeUnit(TimeUnit timeUnit, int scale)
     {
         BigDecimal targetHours = hours > 0
                 ? BigDecimal.valueOf(timeUnit.convert(hours, TimeUnit.HOURS))
@@ -437,23 +440,25 @@ public class Duration
                 ? convertNanosecondsPart(timeUnit, scale)
                 : BigDecimal.ZERO;
 
-        return targetHours.add(targetMinutes).add(targetSeconds).add(targetNanoseconds);
+        return targetHours.add(targetMinutes).add(targetSeconds).add(targetNanoseconds).doubleValue();
     }
 
     private BigDecimal convertNanosecondsPart(TimeUnit timeUnit, int scale)
     {
         return scale >= 0
                 ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit, scale))
-                : BigDecimal.valueOf(TimeUnitConverter.convert(nanoseconds, TimeUnit.NANOSECONDS, timeUnit));
+                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit));
     }
 
     /**
      * Converts this duration to the total length in seconds and fractional nanoseconds, with
-     * a scale of 9, expressed as a {@code BigDecimal}.
+     * a fixed scale of 9, so nanoseconds precision is preserved.
+     * <p>
+     * <b>Note:</b> This is equivalent to calling: {@code toTimeUnit(TimeUnit.SECONDS, 9)}
      *
      * @return the total length of the duration in seconds, with a scale of 9, not null
      */
-    public BigDecimal toSeconds()
+    public double toSeconds()
     {
         return toTimeUnit(TimeUnit.SECONDS, 9);
     }

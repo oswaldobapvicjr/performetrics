@@ -27,7 +27,7 @@ public class Configuration
      * The initial maximum number of decimal places applicable if double-precision conversion
      * mode is set.
      */
-    protected static final int INITIAL_SCALE = 5;
+    protected static final int INITIAL_SCALE = 9;
 
     private TimeUnit timeUnit = INITIAL_TIME_UNIT;
     private ConversionMode conversionMode = INITIAL_CONVERSION_MODE;

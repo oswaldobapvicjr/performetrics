@@ -39,7 +39,7 @@ public enum ConversionMode
         @Override
         public double convert(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
         {
-            return TimeUnitConverter.convert(sourceDuration, sourceUnit, targetUnit);
+            return TimeUnitConverter.convertAndRound(sourceDuration, sourceUnit, targetUnit);
         }
     };
 

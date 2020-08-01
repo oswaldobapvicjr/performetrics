@@ -3,7 +3,7 @@
 
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Performetrics</name>
     <description>A performance data generator for Java applications</description>
@@ -32,7 +32,7 @@
         <url>https://github.com/oswaldobapvicjr/performetrics</url>
         <connection>scm:git:git://github.com/oswaldobapvicjr/performetrics.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/oswaldobapvicjr/performetrics.git</developerConnection>
-        <tag>performetrics-2.1.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>

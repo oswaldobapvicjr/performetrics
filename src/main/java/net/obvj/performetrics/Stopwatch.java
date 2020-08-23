@@ -1,11 +1,11 @@
 package net.obvj.performetrics;
 
 import java.io.PrintStream;
-import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
@@ -76,9 +76,7 @@ import net.obvj.performetrics.util.printer.PrintUtils;
 public class Stopwatch
 {
     private static final String MSG_STOPWATCH_ALREADY_STARTED = "The stopwatch is already started";
-    private static final String MSG_STOPWATCH_MUST_BE_RESET = "The stopwatch must be reset before being restarted";
     private static final String MSG_STOPWATCH_NOT_RUNNING = "The stopwatch is not running";
-    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this stopwatch. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -124,7 +122,7 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_MUST_BE_RESET);
+                stopwatch.doStart();
             }
 
             @Override
@@ -152,7 +150,7 @@ public class Stopwatch
     }
 
     private final Type[] types;
-    private Map<Type, Counter> counters;
+    private List<TimingSession> sessions;
     private State state = State.READY;
 
     /**
@@ -198,15 +196,11 @@ public class Stopwatch
     }
 
     /**
-     * Resets all counters associated with this stopwatch instance.
+     * Cleans all timing sessions in this stopwatch.
      */
     public void reset()
     {
-        counters = new EnumMap<>(Type.class);
-        for (Type type : types)
-        {
-            counters.put(type, new Counter(type));
-        }
+        sessions = new ArrayList<>();
         state = State.READY;
     }
 
@@ -218,6 +212,7 @@ public class Stopwatch
     public void start()
     {
         state.start(this);
+        state = State.RUNNING;
     }
 
     /**
@@ -228,6 +223,7 @@ public class Stopwatch
     public void stop()
     {
         state.stop(this);
+        state = State.STOPPED;
     }
 
     /**
@@ -241,31 +237,37 @@ public class Stopwatch
     }
 
     /**
+     * Returns the counter types associated with this stopwatch instance.
+     *
+     * @return all counter types associated with this stopwatch instance
+     */
+    public Type[] getTypes()
+    {
+        return types;
+    }
+
+    /**
      * Returns the counters associated with this stopwatch instance.
      *
      * @return all counters associated with this stopwatch instance
      */
-    public Collection<Counter> getCounters()
+    public List<Counter> getCounters()
     {
-        return counters.values();
+        return sessions.stream().map(TimingSession::getCounters).flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     /**
      * Returns the counter instance associated with a given type in this stopwatch.
      *
      * @param type the counter type to be fetched
-     * @return the counter instance associated with the given type in this stopwatch
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @return a list of counters associated with the given type in this stopwatch, or an
+     *         empty list if no object is found for the specified type
+     * @since 2.2.0
      */
-    public Counter getCounter(Type type)
+    public List<Counter> getCounters(Type type)
     {
-        if (!counters.containsKey(type))
-        {
-            throw new IllegalArgumentException(
-                    MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, counters.keySet()));
-        }
-        return counters.get(type);
+        return sessions.stream().map(session -> session.getCounter(type)).collect(Collectors.toList());
     }
 
     /**
@@ -275,13 +277,12 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
     {
-        return getCounter(type).elapsedTime();
+        return getCounters(type).stream().map(Counter::elapsedTime).reduce(Duration::sum)
+                .orElseGet(() -> Duration.ZERO);
     }
 
     /**
@@ -301,7 +302,8 @@ public class Stopwatch
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
     {
-        return getCounter(type).elapsedTime(timeUnit);
+        return getCounters(type).stream().map(counter -> counter.elapsedTime(timeUnit)).reduce(Double::sum)
+                .orElseGet(() -> 0.0);
     }
 
     /**
@@ -322,7 +324,8 @@ public class Stopwatch
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return getCounter(type).elapsedTime(timeUnit, conversionMode);
+        return getCounters(type).stream().map(counter -> counter.elapsedTime(timeUnit, conversionMode))
+                .reduce(Double::sum).orElseGet(() -> 0.0);
     }
 
     /**
@@ -347,29 +350,32 @@ public class Stopwatch
     }
 
     /**
-     * Starts the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Starts a the timing session.
+     *
+     * @throws IllegalStateException if the stopwatch state is not in a suitable state for this action
      */
     private void doStart()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.setUnitsBefore();
-        }
+        TimingSession session = new TimingSession(types);
+        sessions.add(session);
+        session.start();
         state = State.RUNNING;
     }
 
     /**
-     * Stops the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Stops the current timing session.
+     *
+     * @throws IllegalStateException if the stopwatch state is not in a suitable state for this action
      */
     private void doStop()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.setUnitsAfter();
-        }
+        sessions.get(sessions.size() - 1).stop();
         state = State.STOPPED;
+    }
+
+    protected List<TimingSession> getTimingSessions()
+    {
+        return sessions;
     }
 
 }

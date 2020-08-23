@@ -464,6 +464,41 @@ public class Duration
     }
 
     /**
+     * Returns a copy of this duration with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration the duration to add, not null
+     * @return a {@code Duration} based on this duration with the specified duration added,
+     *         not null
+     * @throws NullPointerException if the specified duration is null
+     * @throws ArithmeticException  if numeric overflow occurs
+     */
+    public Duration plus(Duration duration)
+    {
+        Objects.requireNonNull(duration, "The duration must not be null");
+        return new Duration(hours + duration.getHours(), minutes + duration.getMinutes(),
+                seconds + duration.getSeconds(), nanoseconds + duration.getNanoseconds());
+    }
+
+    /**
+     * Returns the sum of two durations.
+     * <p>
+     * This instances are immutable and unaffected by this method call.
+     *
+     * @param duration1 the first duration to add, not null
+     * @param duration2 the second duration to add, not null
+     * @return a {@code Duration} resulting by adding two durations, not null
+     * @throws NullPointerException if the specified duration is null
+     * @throws ArithmeticException  if numeric overflow occurs
+     */
+
+    public static Duration sum(Duration duration1, Duration duration2)
+    {
+        return duration1.plus(duration2);
+    }
+
+    /**
      * Converts a given {@code TimeUnit} to the equivalent {@code ChronoUnit}.
      *
      * @param timeUnit the {@code TimeUnit} to be converted

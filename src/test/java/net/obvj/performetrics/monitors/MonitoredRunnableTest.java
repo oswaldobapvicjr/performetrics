@@ -10,11 +10,14 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +31,7 @@ import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
@@ -65,89 +69,59 @@ public class MonitoredRunnableTest
         given(SystemUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
     }
 
-    /**
-     * Checks that all units-before are equal to the test constants
-     */
-    private void assertAllUnitsBefore(MonitoredOperation operation)
+    private void assertAllUnitsBefore(MonitoredOperation operation, int session)
     {
-        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounter(CPU_TIME).getUnitsBefore(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounter(USER_TIME).getUnitsBefore(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsBefore(), is(equalTo(MOCKED_SYSTEM_TIME)));
+        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsBefore(),
+                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
+        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsBefore(),
+                is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsBefore(),
+                is(equalTo(MOCKED_USER_TIME)));
+        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsBefore(),
+                is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
-    /**
-     * Checks that all units-after are equal to the test constants
-     */
-    private void assertAllUnitsAfter(MonitoredOperation operation)
+    private void assertAllUnitsAfter(MonitoredOperation operation, int session)
     {
-        assertThat(operation.getCounter(WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounter(CPU_TIME).getUnitsAfter(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounter(USER_TIME).getUnitsAfter(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounter(SYSTEM_TIME).getUnitsAfter(), is(equalTo(MOCKED_SYSTEM_TIME)));
+        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsAfter(),
+                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
+        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsAfter(),
+                is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsAfter(),
+                is(equalTo(MOCKED_USER_TIME)));
+        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(),
+                is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
-    /**
-     * Checks that all units-before are equal to zero for the given counters list
-     */
-    private void assertAllUnitsBeforeEqualZero(Counter... counters)
-    {
-        for (Counter c : counters)
-            assertThat("For the counter of type: " + c.getType(), c.getUnitsBefore(), is(equalTo(0L)));
-    }
-
-    /**
-     * Checks that all units-after are equal to zero for the given counters list
-     */
-
-    private void assertAllUnitsAfterEqualZero(Counter... counters)
-    {
-        for (Counter c : counters)
-            assertThat("For the counter of type: " + c.getType(), c.getUnitsAfter(), is(equalTo(0L)));
-    }
-
-    /**
-     * Tests, for a given {@link Runnable} and a single counter, that the correct counter is
-     * specified for this operation and the initial values are zero
-     */
     @Test
-    public void constructor_withOneType_assignsCorrectCounteAndInitialValues()
+    public void constructor_withOneType_assignsCorrectType()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME);
-        assertThat(op.getCounters().size(), is(equalTo(1)));
-        Counter counter = op.getCounter(CPU_TIME);
-        assertAllUnitsBeforeEqualZero(counter);
-        assertAllUnitsAfterEqualZero(counter);
+        Type[] types = op.getTypes();
+        assertThat(types.length, is(equalTo(1)));
+        assertTrue(Arrays.asList(types).contains(CPU_TIME));
     }
 
-    /**
-     * Tests, for a given {@link Runnable} and more than one counter, that the correct
-     * counters are specified for this operation and the initial values are zero
-     */
     @Test
-    public void constructor_withTwoTypes_assignsCorrectCounteAndInitialValues()
+    public void constructor_withTwoTypes_assignsCorrectTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME, USER_TIME);
-        assertThat(op.getCounters().size(), is(equalTo(2)));
-        Counter counter1 = op.getCounter(CPU_TIME);
-        Counter counter2 = op.getCounter(USER_TIME);
-        assertAllUnitsBeforeEqualZero(counter1, counter2);
-        assertAllUnitsAfterEqualZero(counter1, counter2);
+        Type[] types = op.getTypes();
+        assertThat(types.length, is(equalTo(2)));
+        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
     }
 
     /**
-     * Tests, for a given {@link Runnable} and no specific counter, that all available
-     * counters are specified for this operation
+     * Tests, for a given {@link Runnable} and no specific counter, that all available types
+     * are specified for this operation
      */
     @Test
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable);
-        assertThat(op.getCounters().size(), is(equalTo(Type.values().length)));
-        assertNotNull("Wall-clock-time counter not set", op.getCounter(WALL_CLOCK_TIME));
-        assertNotNull("CPU-time counter not set", op.getCounter(CPU_TIME));
-        assertNotNull("User-time counter not set", op.getCounter(USER_TIME));
-        assertNotNull("System-time counter not set", op.getCounter(SYSTEM_TIME));
+        Type[] types = op.getTypes();
+        assertThat(types.length, is(equalTo(Type.values().length)));
+        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
     }
 
     /**
@@ -161,8 +135,8 @@ public class MonitoredRunnableTest
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         setupExpects();
         operation.run();
-        assertAllUnitsBefore(operation);
-        assertAllUnitsAfter(operation);
+        assertAllUnitsBefore(operation, 0);
+        assertAllUnitsAfter(operation, 0);
     }
 
     /**
@@ -190,25 +164,25 @@ public class MonitoredRunnableTest
         PrintUtils.printCounters(operation.getCounters(), System.out, SECONDS);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidType_throwsException()
+    @Test
+    public void elapsedTime_invalidType_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME);
+        assertThat(operation.elapsedTime(USER_TIME), is(equalTo(Duration.ZERO)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    @Test
+    public void elapsedTime_invalidTypeAndValidTimeUnit_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME, HOURS);
+        assertThat(operation.elapsedTime(USER_TIME, HOURS), is(equalTo(0.0)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_throwsException()
+    @Test
+    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME, HOURS, FAST);
+        assertThat(operation.elapsedTime(USER_TIME, HOURS, FAST), is(equalTo(0.0)));
     }
 
     @Test()
@@ -216,13 +190,13 @@ public class MonitoredRunnableTest
     {
         Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
 
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 
         operation.elapsedTime(WALL_CLOCK_TIME);
-        verify(counter).elapsedTime();
+        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME);
     }
 
     @Test()
@@ -230,13 +204,13 @@ public class MonitoredRunnableTest
     {
         Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
 
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 
         operation.elapsedTime(WALL_CLOCK_TIME, HOURS);
-        verify(counter).elapsedTime(HOURS);
+        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS);
     }
 
     @Test()
@@ -244,13 +218,13 @@ public class MonitoredRunnableTest
     {
         Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounter(WALL_CLOCK_TIME)).thenReturn(counter);
+        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
 
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 
         operation.elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
-        verify(counter).elapsedTime(HOURS, ConversionMode.FAST);
+        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
     }
 
 }

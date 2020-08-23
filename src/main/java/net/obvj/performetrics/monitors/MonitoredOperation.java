@@ -1,7 +1,7 @@
 package net.obvj.performetrics.monitors;
 
 import java.io.PrintStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
@@ -40,26 +40,36 @@ abstract class MonitoredOperation
     }
 
     /**
+     * Returns the counter types associated with this monitored operation.
+     *
+     * @return all counter types associated with this monitored operation
+     */
+    protected Type[] getTypes()
+    {
+        return stopwatch.getTypes();
+    }
+
+    /**
      * Returns the counters maintained by this monitored operation.
      *
      * @return all counters maintained by this monitored operation.
      */
-    public Collection<Counter> getCounters()
+    public List<Counter> getCounters()
     {
         return stopwatch.getCounters();
     }
 
     /**
-     * Returns the counter instance associated with a given type in this monitored operation.
+     * Returns the counter instances associated with a given type in this monitored operation.
      *
      * @param type the counter type to be fetched
      * @return the counter instance associated with the given type in this monitored operation
      * @throws IllegalArgumentException if the specified type is not available in this
      *                                  operation
      */
-    public Counter getCounter(Type type)
+    public List<Counter> getCounters(Type type)
     {
-        return stopwatch.getCounter(type);
+        return stopwatch.getCounters(type);
     }
 
     /**
@@ -75,7 +85,7 @@ abstract class MonitoredOperation
      */
     public Duration elapsedTime(Type type)
     {
-        return getCounter(type).elapsedTime();
+        return stopwatch.elapsedTime(type);
     }
 
     /**
@@ -95,7 +105,7 @@ abstract class MonitoredOperation
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
     {
-        return getCounter(type).elapsedTime(timeUnit);
+        return stopwatch.elapsedTime(type, timeUnit);
     }
 
     /**
@@ -116,7 +126,7 @@ abstract class MonitoredOperation
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return getCounter(type).elapsedTime(timeUnit, conversionMode);
+        return stopwatch.elapsedTime(type, timeUnit, conversionMode);
     }
 
     /**

@@ -9,9 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -100,7 +98,7 @@ public class PrintUtilsTest
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
 
-        String result = PrintUtils.toTableFormat(Arrays.asList(c1, c2));
+        String result = PrintUtils.toTableFormat(PrintUtils.groupCountersByType(Arrays.asList(c1, c2)));
         String[] rows = result.split(PrintUtils.LINE_SEPARATOR);
 
         // Rows from 1 to 3 should contain the table header
@@ -133,7 +131,8 @@ public class PrintUtilsTest
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
 
-        String result = PrintUtils.toTableFormat(Arrays.asList(c1, c2), TimeUnit.MILLISECONDS);
+        String result = PrintUtils.toTableFormat(PrintUtils.groupCountersByType(Arrays.asList(c1, c2)),
+                TimeUnit.MILLISECONDS);
         String[] rows = result.split(PrintUtils.LINE_SEPARATOR);
 
         // Rows from 1 to 3 should contain the table header
@@ -165,7 +164,7 @@ public class PrintUtilsTest
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
-        String expectedString = PrintUtils.toTableFormat(Arrays.asList(c1, c2));
+        String expectedString = PrintUtils.toTableFormat(PrintUtils.groupCountersByType(Arrays.asList(c1, c2)));
 
         // Prepare the stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
@@ -189,7 +188,8 @@ public class PrintUtilsTest
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
-        String expectedString = PrintUtils.toTableFormat(Arrays.asList(c1, c2), TimeUnit.MILLISECONDS);
+        String expectedString = PrintUtils
+                .toTableFormat(PrintUtils.groupCountersByType(Arrays.asList(c1, c2)), TimeUnit.MILLISECONDS);
 
         // Prepare stopwatch
         Stopwatch stopwatch = Mockito.mock(Stopwatch.class);
@@ -207,13 +207,14 @@ public class PrintUtilsTest
      * Test counters printing onto a PrintStream.
      */
     @Test
-    public void printCounters_withCollectionAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    public void printCounters_withListAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
         List<Counter> counters = Arrays.asList(c1, c2);
-        String expectedString = PrintUtils.toTableFormat(counters);
+        Map<Type, List<Counter>> countersByType = PrintUtils.groupCountersByType(counters);
+        String expectedString = PrintUtils.toTableFormat(countersByType);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -227,14 +228,15 @@ public class PrintUtilsTest
      * Test counters printing onto a PrintStream with a custom time unit
      */
     @Test
-    public void printCounters_withCollectionsAndPrintStreamAndTimeUnit_printsTableToTheStreamInTheGivenTimeUnit()
+    public void printCounters_withListAndPrintStreamAndTimeUnit_printsTableToTheStreamInTheGivenTimeUnit()
             throws UnsupportedEncodingException
     {
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
         Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
         List<Counter> counters = Arrays.asList(c1, c2);
-        String expectedString = PrintUtils.toTableFormat(counters, TimeUnit.MILLISECONDS);
+        Map<Type, List<Counter>> countersByType = PrintUtils.groupCountersByType(counters);
+        String expectedString = PrintUtils.toTableFormat(countersByType, TimeUnit.MILLISECONDS);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -244,4 +246,58 @@ public class PrintUtilsTest
         assertThat(printedString, is(expectedString));
     }
 
+    /**
+     * Test counters printing onto a PrintStream.
+     */
+    @Test
+    public void printCounters_withMapAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        List<Counter> counters = Arrays.asList(c1, c2);
+        Map<Type, List<Counter>> countersByType = PrintUtils.groupCountersByType(counters);
+        String expectedString = PrintUtils.toTableFormat(countersByType);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printCounters(countersByType, ps);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(expectedString));
+    }
+
+    /**
+     * Test counters printing onto a PrintStream with a custom time unit
+     */
+    @Test
+    public void printCounters_withMapAndPrintStreamAndTimeUnit_printsTableToTheStreamInTheGivenTimeUnit()
+            throws UnsupportedEncodingException
+    {
+        // Prepare data
+        Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
+        Counter c2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
+        List<Counter> counters = Arrays.asList(c1, c2);
+        Map<Type, List<Counter>> countersByType = PrintUtils.groupCountersByType(counters);
+        String expectedString = PrintUtils.toTableFormat(countersByType, TimeUnit.MILLISECONDS);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printCounters(countersByType, ps, TimeUnit.MILLISECONDS);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(expectedString));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void toTotalRowFormat_emptyList_illegalArgumentException()
+    {
+        PrintUtils.toTotalRowFormat(Collections.emptyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void toTotalRowFormat_emptyListAndValidTimeUnit_illegalArgumentException()
+    {
+        PrintUtils.toTotalRowFormat(Collections.emptyList(), TimeUnit.SECONDS);
+    }
 }

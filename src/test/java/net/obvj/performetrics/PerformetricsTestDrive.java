@@ -36,7 +36,16 @@ public class PerformetricsTestDrive
     private static void testStopwatch1() throws InterruptedException, IOException
     {
         Stopwatch sw = Stopwatch.createStarted();
+        test(sw);
 
+        System.out.println("\n\n--------------------------------------\n");
+        System.out.println("Resuming the same stopwatch...\n");
+        sw.start();
+        test(sw);
+    }
+
+    private static void test(Stopwatch sw) throws InterruptedException, IOException
+    {
         // Enforcing some wall-clock time...
         Thread.sleep(2000);
 
@@ -58,6 +67,7 @@ public class PerformetricsTestDrive
         sw.printStatistics(System.out);
         sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
         sw.printStatistics(System.out, TimeUnit.SECONDS);
+
     }
 
     private static void testCallableWithLambda() throws Exception

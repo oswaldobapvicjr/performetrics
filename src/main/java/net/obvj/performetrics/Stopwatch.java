@@ -1,12 +1,14 @@
 package net.obvj.performetrics;
 
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
@@ -78,10 +80,9 @@ public class Stopwatch
 {
     private static final String MSG_STOPWATCH_ALREADY_STARTED = "The stopwatch is already started";
     private static final String MSG_STOPWATCH_NOT_RUNNING = "The stopwatch is not running";
+    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this stopwatch. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
-
-    private static final double UNDEFINED = -1.0;
 
     /**
      * Enumerates possible stopwatch states, with proper behaviors for each of them.
@@ -270,34 +271,57 @@ public class Stopwatch
      */
     public List<Counter> getCounters(Type type)
     {
-        return sessions.stream().map(session -> session.getCounter(type)).collect(Collectors.toList());
+        return getCountersAsStream(type).collect(Collectors.toList());
     }
 
     /**
-     * Returns the total elapsed time for a specific counter, or {@code Duration.ZERO} is the
-     * specified type is not available in this stopwatch.
+     * Returns a stream of counters associated with a given type.
      *
      * @param type the counter type to be fetched
-     * @return the elapsed time for the specified counter, or {@code Duration.ZERO}.
+     * @return a stream of counters, not null
+     * @since 2.2.0
+     */
+    private Stream<Counter> getCountersAsStream(Type type)
+    {
+        return sessions.stream().map(session -> session.getCounter(type));
+    }
+
+    /**
+     * Returns the total elapsed time for a specific counter.
+     *
+     * @param type the counter type to be fetched
+     * @return the elapsed time for the specified counter
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
     {
-        return getCounters(type).stream().map(Counter::elapsedTime).reduce(Duration.ZERO, Duration::sum);
+        if (types.contains(type))
+        {
+            return getCountersAsStream(type).map(Counter::elapsedTime)
+                    .reduce(Duration.ZERO, Duration::sum);
+        }
+        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, types));
     }
 
     /**
-     * Returns the total elapsed time of a specific counter, in the specified time unit, or
-     * {@code -1.0} if no data available yet.
+     * Returns the total elapsed time of a specific counter, in the specified time unit..
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
+     * @throws IllegalArgumentException if the specified type is not available in this
+     *                                  stopwatch instance
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
     {
-        return getCounters(type).stream().map(counter -> counter.elapsedTime(timeUnit)).reduce(Double::sum)
-                .orElse(UNDEFINED);
+        if (types.contains(type))
+        {
+            return getCountersAsStream(type).map(counter -> counter.elapsedTime(timeUnit))
+                    .reduce(0.0, Double::sum);
+        }
+        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, types));
     }
 
     /**
@@ -318,8 +342,12 @@ public class Stopwatch
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return getCounters(type).stream().map(counter -> counter.elapsedTime(timeUnit, conversionMode))
-                .reduce(Double::sum).orElseGet(() -> 0.0);
+        if (types.contains(type))
+        {
+            return getCountersAsStream(type).map(counter -> counter.elapsedTime(timeUnit, conversionMode))
+                    .reduce(0.0, Double::sum);
+        }
+        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, types));
     }
 
     /**

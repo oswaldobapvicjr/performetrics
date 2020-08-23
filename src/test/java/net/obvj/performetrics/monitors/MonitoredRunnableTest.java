@@ -32,7 +32,6 @@ import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.printer.PrintUtils;
 
@@ -165,25 +164,25 @@ public class MonitoredRunnableTest
         PrintUtils.printCounters(operation.getCounters(), System.out, SECONDS);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void elapsedTime_invalidType_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        assertThat(operation.elapsedTime(USER_TIME), is(equalTo(Duration.ZERO)));
+        operation.elapsedTime(USER_TIME);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void elapsedTime_invalidTypeAndValidTimeUnit_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        assertThat(operation.elapsedTime(USER_TIME, HOURS), is(equalTo(0.0)));
+        operation.elapsedTime(USER_TIME, HOURS);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        assertThat(operation.elapsedTime(USER_TIME, HOURS, FAST), is(equalTo(0.0)));
+        operation.elapsedTime(USER_TIME, HOURS, FAST);
     }
 
     @Test()

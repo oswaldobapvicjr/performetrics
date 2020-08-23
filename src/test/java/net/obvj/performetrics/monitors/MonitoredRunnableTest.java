@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -97,18 +98,18 @@ public class MonitoredRunnableTest
     public void constructor_withOneType_assignsCorrectType()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(1)));
-        assertTrue(Arrays.asList(types).contains(CPU_TIME));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(1)));
+        assertTrue(types.contains(CPU_TIME));
     }
 
     @Test
     public void constructor_withTwoTypes_assignsCorrectTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME, USER_TIME);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(2)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(2)));
+        assertTrue(types.containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
     }
 
     /**
@@ -119,9 +120,9 @@ public class MonitoredRunnableTest
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(Type.values().length)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(Type.values().length)));
+        assertTrue(types.containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
     }
 
     /**

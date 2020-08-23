@@ -12,6 +12,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -93,27 +94,27 @@ public class MoritoredCallableTest
     public void constructor_withOneType_assignsCorrectType()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(1)));
-        assertTrue(Arrays.asList(types).contains(WALL_CLOCK_TIME));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(1)));
+        assertTrue(types.contains(WALL_CLOCK_TIME));
     }
 
     @Test
     public void constructor_withTwoTypes_assignsCorrectTypes()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, SYSTEM_TIME, USER_TIME);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(2)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(SYSTEM_TIME, USER_TIME)));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(2)));
+        assertTrue(types.containsAll(Arrays.asList(SYSTEM_TIME, USER_TIME)));
     }
 
     @Test
     public void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable);
-        Type[] types = op.getTypes();
-        assertThat(types.length, is(equalTo(Type.values().length)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
+        List<Type> types = op.getTypes();
+        assertThat(types.size(), is(equalTo(Type.values().length)));
+        assertTrue(types.containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
     }
 
     /**

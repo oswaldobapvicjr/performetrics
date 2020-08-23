@@ -44,7 +44,7 @@ abstract class MonitoredOperation
      *
      * @return all counter types associated with this monitored operation
      */
-    protected Type[] getTypes()
+    protected List<Type> getTypes()
     {
         return stopwatch.getTypes();
     }

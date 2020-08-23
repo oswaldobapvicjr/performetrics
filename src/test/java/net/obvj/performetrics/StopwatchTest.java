@@ -146,9 +146,9 @@ public class StopwatchTest
     public void constructor_noArguments_assignsAllAvailableTypes()
     {
         Stopwatch stopwatch = new Stopwatch();
-        Type[] types = stopwatch.getTypes();
-        assertThat(types.length, is(equalTo(Type.values().length)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, SYSTEM_TIME, USER_TIME)));
+        List<Type> types = stopwatch.getTypes();
+        assertThat(types.size(), is(equalTo(Type.values().length)));
+        assertTrue(types.containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, SYSTEM_TIME, USER_TIME)));
     }
 
     /**
@@ -158,9 +158,9 @@ public class StopwatchTest
     public void constructor_oneArgument_assignsCorrectCounter()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
-        Type[] types = sw.getTypes();
-        assertThat(types.length, is(equalTo(1)));
-        assertThat(types[0], is(equalTo(SYSTEM_TIME)));
+        List<Type> types = sw.getTypes();
+        assertThat(types.size(), is(equalTo(1)));
+        assertThat(types.get(0), is(equalTo(SYSTEM_TIME)));
     }
 
     /**
@@ -170,9 +170,9 @@ public class StopwatchTest
     public void constructor_twoArguments_assignsCorrectCounters()
     {
         Stopwatch sw = new Stopwatch(CPU_TIME, USER_TIME);
-        Type[] types = sw.getTypes();
-        assertThat(types.length, is(equalTo(2)));
-        assertTrue(Arrays.asList(types).containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
+        List<Type> types = sw.getTypes();
+        assertThat(types.size(), is(equalTo(2)));
+        assertTrue(types.containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
     }
 
     @Test

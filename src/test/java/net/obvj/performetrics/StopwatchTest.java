@@ -13,6 +13,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -558,6 +559,23 @@ public class StopwatchTest
         assertThat(sw.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
                 is(equalTo(getCounter(sw, SYSTEM_TIME, 0).elapsedTime(HOURS, DOUBLE_PRECISION)
                         + getCounter(sw, SYSTEM_TIME, 1).elapsedTime(HOURS, DOUBLE_PRECISION))));
+    }
+
+    @Test
+    public void getCurrentTimingSession_unstarted_empty()
+    {
+        Stopwatch sw = new Stopwatch();
+        assertThat(sw.getCurrentTimingSession().isPresent(), is(equalTo(false)));
+    }
+
+    @Test
+    public void getCurrentTimingSession_oneSession_success()
+    {
+        Stopwatch sw = new Stopwatch();
+        // First session
+        setupExpectsBefore();
+        sw.start();
+        assertThat(sw.getCurrentTimingSession().get(), is(notNullValue()));
     }
 
 }

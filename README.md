@@ -66,11 +66,13 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
     sw.stop();
     ```
 
-4. Get the elapsed time for a particular counter (e.g. CPU time):
+4. Get the elapsed time for a particular counter (e.g. CPU time), in a specific time unit:
 
     ```java
-    long cpuTimeMillis = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.MILLISECONDS);
+    long cpuTimeMillis = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
+
+    > **Note:** Check the different `elapsedTime` options available to find out one that is more suitable to your preferences.
 
 5. Print statistics to the console:
 
@@ -93,16 +95,15 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 
 ### Example 2: Using a MonitoredRunnable or MonitoredCallable
 
-In this example, we are using the `MonitoredRunnable` class to measure the CPU time of a given Runnable, in nanoseconds:
+In this example, we are using the `MonitoredRunnable` class to run a procedure represented by a lambda expression and print the elapsed wall-clock time in the system's standard output:
 
-1. Create a `MonitoredRunnable` with the Runnable to be monitored attached:
+1. Create a `MonitoredRunnable` with the procedure to be monitored attached:
 
     ```java
-    Runnable myRunnable; //target runnable initialization omitted
-    MonitoredRunnable monitoredRunnable = new MonitoredRunnable(myRunnable, Type.CPU_TIME);
+    MonitoredRunnable monitoredRunnable = new MonitoredRunnable(() -> myObject.doStuff());
     ```
 
-    > **Note:** If no specific counter type is passed, all available counters will be maintained.
+    > **Note:** If no specific counter type is passed, all available counters will be measured.
 
 2. Run it:
 
@@ -110,12 +111,16 @@ In this example, we are using the `MonitoredRunnable` class to measure the CPU t
     monitoredRunnable.run();
     ```
 
-3. Get the elapsed time:
+3. Print the elapsed time:
 
     ```java
-    long elapsedTimeNanos = monitoredRunnable.elapsedTime(Type.CPU_TIME, TimeUnit.NANOSECONDS);
+    System.out.println(monitoredRunnable.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
     ```
-
+    > **Sample output:**
+    >
+    > ````
+    > 0.025073 second(s)
+    > ````
 ---
     
 ## Configuration

@@ -58,9 +58,9 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
     sw.start();
     ```
 
-    > **Note:** A single call to the factory method `Stopwatch.createStarted()` may create a started stopwatch for convenience.
+    > **Note:** A single call to the factory method `Stopwatch.createStarted()` provides a new, started stopwatch for convenience.
 
-3. Execute the code to be profiled and then stop the counters (optional): 
+3. Execute the code to be profiled and then stop the timing session:
 
     ```java
     sw.stop();
@@ -72,12 +72,12 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
     long cpuTimeMillis = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
-    > **Note:** Check the different `elapsedTime` options available to find out one that is more suitable to your preferences.
+    > **Note:** Check the different `elapsedTime` options available to find one that is more suitable to your preferences.
 
-5. Print statistics to the console:
+5. Print the statistics to the system console:
 
     ```java
-    sw.printStatistics(System.out);
+    sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
     ```
 
     > **Sample output:**
@@ -86,16 +86,16 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
     >  +-----------------+----------------------+--------------+
     >  | Counter         |         Elapsed time | Time unit    |
     >  +-----------------+----------------------+--------------+
-    >  | Wall clock time |             85605718 | nanoseconds  |
-    >  | CPU time        |             78000500 | nanoseconds  |
-    >  | User time       |             62400400 | nanoseconds  |
-    >  | System time     |             15600100 | nanoseconds  |
+    >  | Wall clock time |          2377.312501 | milliseconds |
+    >  | CPU time        |               218.75 | milliseconds |
+    >  | User time       |                93.75 | milliseconds |
+    >  | System time     |                  125 | milliseconds |
     >  +-----------------+----------------------+--------------+
     > ````
 
 ### Example 2: Using a MonitoredRunnable or MonitoredCallable
 
-In this example, we are using the `MonitoredRunnable` class to run a procedure represented by a lambda expression and print the elapsed wall-clock time in the system's standard output:
+In this example, we are using the `MonitoredRunnable` class to run a procedure represented by a lambda expression and print the elapsed wall-clock time to the system console.
 
 1. Create a `MonitoredRunnable` with the procedure to be monitored attached:
 
@@ -125,7 +125,7 @@ In this example, we are using the `MonitoredRunnable` class to run a procedure r
     
 ## Configuration
 
-**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles with a minimum of code.
+**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles with a minimum of code required to the library user.
 
 ### Conversion Modes
 

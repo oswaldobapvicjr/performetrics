@@ -1,7 +1,7 @@
 package net.obvj.performetrics.monitors;
 
 import java.io.PrintStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
@@ -40,83 +40,80 @@ abstract class MonitoredOperation
     }
 
     /**
-     * Returns the counters maintained by this monitored operation.
+     * Returns the counter types associated with this monitored operation.
      *
-     * @return all counters maintained by this monitored operation.
+     * @return all counter types associated with this monitored operation
      */
-    public Collection<Counter> getCounters()
+    protected List<Type> getTypes()
+    {
+        return stopwatch.getTypes();
+    }
+
+    /**
+     * Returns all counters available in this monitored operation.
+     *
+     * @return all counters available in this monitored operation.
+     */
+    public List<Counter> getCounters()
     {
         return stopwatch.getCounters();
     }
 
     /**
-     * Returns the counter instance associated with a given type in this monitored operation.
+     * Returns all counters associated with a given type in this monitored operation.
      *
      * @param type the counter type to be fetched
-     * @return the counter instance associated with the given type in this monitored operation
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  operation
+     * @return all counters associated with the given type
+     * @throws IllegalArgumentException if the type was not specified in this operation
      */
-    public Counter getCounter(Type type)
+    public List<Counter> getCounters(Type type)
     {
-        return stopwatch.getCounter(type);
+        return stopwatch.getCounters(type);
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter.
-     * <p>
-     * This has the same effect as calling: {@code operation.getCounter(type).elapsedTime()}
+     * Returns the total elapsed time of a specific counter type.
      *
      * @param type the counter type to be fetched
-     * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  operation
+     * @return the total elapsed time for the specified counter
+     * @throws IllegalArgumentException if the type was not specified in this operation
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
     {
-        return getCounter(type).elapsedTime();
+        return stopwatch.elapsedTime(type);
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter, in the
-     * specified time unit.
-     * <p>
-     * This has the same effect as calling:
-     * {@code operation.getCounter(type).elapsedTime(timeUnit)}
+     * Returns the total elapsed time of a specific counter type, in the specified time unit.
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  operation
+     * @throws IllegalArgumentException if the type was not specified in this operation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
     {
-        return getCounter(type).elapsedTime(timeUnit);
+        return stopwatch.elapsedTime(type, timeUnit);
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter, in the
-     * specified time unit, by applying a custom {@link ConversionMode}.
-     * <p>
-     * This has the same effect as calling:
-     * {@code operation.getCounter(type).elapsedTime(timeUnit, conversionMode)}
+     * Returns the total elapsed time of a specific counter, in the specified time unit, with
+     * a custom {@link ConversionMode} applied.
      *
      * @param type           the counter type to be fetched
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  operation
+     * @throws IllegalArgumentException if the type was not specified in this operation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return getCounter(type).elapsedTime(timeUnit, conversionMode);
+        return stopwatch.elapsedTime(type, timeUnit, conversionMode);
     }
 
     /**
@@ -126,7 +123,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.printCounters(stopwatch.getCounters(), printStream);
+        PrintUtils.print(stopwatch.getCounters(), printStream);
     }
 
     /**
@@ -137,7 +134,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
-        PrintUtils.printCounters(stopwatch.getCounters(), printStream, timeUnit);
+        PrintUtils.print(stopwatch.getCounters(), printStream, timeUnit);
     }
 
 }

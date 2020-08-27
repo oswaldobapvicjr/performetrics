@@ -2,10 +2,10 @@ package net.obvj.performetrics;
 
 import java.io.PrintStream;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
@@ -13,7 +13,7 @@ import net.obvj.performetrics.util.printer.PrintUtils;
 
 /**
  * <p>
- * A convenient timing object that supports multiple counter types.
+ * A convenient timing object that supports multiple counter types and timing sessions.
  * </p>
  *
  * <p>
@@ -43,8 +43,8 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * Use {@code elapsedTime(Counter.Type)} to retrieve the elapsed time for a particular
- * counter. E.g.:
+ * Use {@code elapsedTime(Counter.Type)} to retrieve the total elapsed time for a
+ * particular counter. E.g.:
  * </p>
  *
  * <pre>
@@ -57,11 +57,11 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * Although it is intended that the output methods {@code printStatistics()} should only
- * be called after the stop, some suitable, temporary data may be returned if the
- * stopwatch is still running. In this scenario, the initial values will be compared to
- * the most up-to-date ones, retrieved at the moment of the call. The same applies to the
- * {@code elapsedTime()} methods available for each counter instance.
+ * Although it is intended that the output methods {@code elapsedTime()} and
+ * {@code printStatistics()} should be called after the stop, some suitable, temporary
+ * data may be returned if the current timing session is still running. In this scenario,
+ * the initial values will be compared to the most up-to-date ones, retrieved at the
+ * moment of the call.
  * </p>
  *
  * <p>
@@ -72,13 +72,13 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * @author oswaldo.bapvic.jr
  * @see Counter
  * @see Counter.Type
+ * @see TimingSession
  */
 public class Stopwatch
 {
-    private static final String MSG_STOPWATCH_ALREADY_STARTED = "The stopwatch is already started";
-    private static final String MSG_STOPWATCH_MUST_BE_RESET = "The stopwatch must be reset before being restarted";
-    private static final String MSG_STOPWATCH_NOT_RUNNING = "The stopwatch is not running";
-    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this stopwatch. Available type(s): {1}";
+    private static final String MSG_ALREADY_STARTED = "The stopwatch is already started";
+    private static final String MSG_NOT_RUNNING = "The stopwatch is not running";
+    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this stopwatch. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -100,7 +100,7 @@ public class Stopwatch
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
+                throw new IllegalStateException(MSG_NOT_RUNNING);
             }
         },
 
@@ -109,7 +109,7 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_ALREADY_STARTED);
+                throw new IllegalStateException(MSG_ALREADY_STARTED);
             }
 
             @Override
@@ -124,13 +124,13 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_MUST_BE_RESET);
+                stopwatch.doStart();
             }
 
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
+                throw new IllegalStateException(MSG_NOT_RUNNING);
             }
         };
 
@@ -151,8 +151,8 @@ public class Stopwatch
         abstract void stop(Stopwatch stopwatch);
     }
 
-    private final Type[] types;
-    private Map<Type, Counter> counters;
+    private final List<Type> types;
+    private List<TimingSession> sessions;
     private State state = State.READY;
 
     /**
@@ -170,7 +170,7 @@ public class Stopwatch
      */
     public Stopwatch(Type... types)
     {
-        this.types = types;
+        this.types = Arrays.asList(types);
         reset();
     }
 
@@ -198,20 +198,16 @@ public class Stopwatch
     }
 
     /**
-     * Resets all counters associated with this stopwatch instance.
+     * Cleans all timing sessions in this stopwatch.
      */
     public void reset()
     {
-        counters = new EnumMap<>(Type.class);
-        for (Type type : types)
-        {
-            counters.put(type, new Counter(type));
-        }
+        sessions = new ArrayList<>();
         state = State.READY;
     }
 
     /**
-     * Starts the timing session.
+     * Starts a new timing session.
      *
      * @throws IllegalStateException if the stopwatch state is not suitable for this action
      */
@@ -221,7 +217,7 @@ public class Stopwatch
     }
 
     /**
-     * Stops the timing session.
+     * Stops the current timing session.
      *
      * @throws IllegalStateException if the stopwatch state is not suitable for this action
      */
@@ -241,88 +237,106 @@ public class Stopwatch
     }
 
     /**
-     * Returns the counters associated with this stopwatch instance.
+     * Returns the counter types associated with this stopwatch instance.
      *
-     * @return all counters associated with this stopwatch instance
+     * @return all counter types associated with this stopwatch instance
      */
-    public Collection<Counter> getCounters()
+    public List<Type> getTypes()
     {
-        return counters.values();
+        return types;
     }
 
     /**
-     * Returns the counter instance associated with a given type in this stopwatch.
+     * Returns a list of counters populated by this stopwatch.
+     * <p>
+     * New counters are created every time the {@code start()} method is called.
+     *
+     * @return all counters available in this stopwatch instance
+     */
+    public List<Counter> getCounters()
+    {
+        return sessions.stream().map(TimingSession::getCounters).flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a list of populated counters for a specific type in this stopwatch, or an empty
+     * list if no counter is found (for example, if the stopwatch was not yet started, or
+     * after reset).
      *
      * @param type the counter type to be fetched
-     * @return the counter instance associated with the given type in this stopwatch
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @return a list of counters associated with the given type, or an empty list
+     * @throws IllegalArgumentException if the type is not specified in this stopwatch
+     * @since 2.2.0
      */
-    public Counter getCounter(Type type)
+    public List<Counter> getCounters(Type type)
     {
-        if (!counters.containsKey(type))
-        {
-            throw new IllegalArgumentException(
-                    MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, counters.keySet()));
-        }
-        return counters.get(type);
+        return getCountersAsStream(type).collect(Collectors.toList());
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter.
-     * <p>
-     * This has the same effect as calling: {@code stopwatch.getCounter(type).elapsedTime()}
+     * Returns a stream of populated counters for a specific type in this stopwatch.
+     *
+     * @param type the counter type to be fetched
+     * @return a stream of counters associated with the given type, not null
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
+     * @since 2.2.0
+     */
+    private Stream<Counter> getCountersAsStream(Type type)
+    {
+        if (types.contains(type))
+        {
+            return sessions.stream().map(session -> session.getCounter(type));
+        }
+        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_SPECIFIED, type, types));
+    }
+
+    /**
+     * Returns the total elapsed time for a specific counter.
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
     {
-        return getCounter(type).elapsedTime();
+        return getCountersAsStream(type).map(Counter::elapsedTime)
+                .reduce(Duration.ZERO, Duration::sum);
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter, in the
-     * specified time unit.
-     * <p>
-     * This has the same effect as calling:
-     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit)}
+     * Returns the total elapsed time for a specific counter, in the specified time unit.
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
     {
-        return getCounter(type).elapsedTime(timeUnit);
+        return getCountersAsStream(type).map(counter -> counter.elapsedTime(timeUnit))
+                .reduce(0.0, Double::sum);
     }
 
     /**
-     * A convenient method that returns the elapsed time of a specific counter, in the
-     * specified time unit, by applying a custom {@link ConversionMode}.
-     * <p>
-     * This has the same effect as calling:
-     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit, conversionMode)}
+     * Returns the total elapsed time for a specific counter, in the specified time unit, with
+     * a custom {@link ConversionMode} applied.
      *
      * @param type           the counter type to be fetched
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return getCounter(type).elapsedTime(timeUnit, conversionMode);
+        return getCountersAsStream(type).map(counter -> counter.elapsedTime(timeUnit, conversionMode))
+                .reduce(0.0, Double::sum);
     }
 
     /**
@@ -332,7 +346,7 @@ public class Stopwatch
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.printStopwatch(this, printStream);
+        PrintUtils.print(this, printStream);
     }
 
     /**
@@ -343,33 +357,56 @@ public class Stopwatch
      */
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
-        PrintUtils.printStopwatch(this, printStream, timeUnit);
+        PrintUtils.print(this, printStream, timeUnit);
     }
 
     /**
-     * Starts the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Starts a new timing session.
+     * <p>
+     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
+     * not this action is allowed.
      */
     private void doStart()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.setUnitsBefore();
-        }
+        TimingSession session = new TimingSession(types.toArray(new Type[types.size()]));
+        sessions.add(session);
+        session.start();
         state = State.RUNNING;
     }
 
     /**
-     * Stops the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Stops the current timing session.
+     * <p>
+     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
+     * not this action is allowed.
      */
     private void doStop()
     {
-        for (Counter counter : counters.values())
-        {
-            counter.setUnitsAfter();
-        }
+        getCurrentTimingSession().ifPresent(TimingSession::stop);
         state = State.STOPPED;
     }
+
+    /**
+     * Returns the current/last timing session available in this stopwatch, or
+     * {@code Optional.empty()} if no timing session available yet.
+     *
+     * @return an {@link Optional} possibly containing the current/last timing session
+     *         available in this stopwatch instance
+     */
+    protected Optional<TimingSession> getCurrentTimingSession()
+    {
+        return sessions.isEmpty() ? Optional.empty() : Optional.of(sessions.get(sessions.size() - 1));
+    }
+
+    /**
+     * Returns all timing sessions available in this stopwatch.
+     *
+     * @return a list of timing sessions
+     */
+    protected List<TimingSession> getTimingSessions()
+    {
+        return sessions;
+    }
+
 
 }

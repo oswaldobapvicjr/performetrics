@@ -251,7 +251,7 @@ public class Stopwatch
      * <p>
      * New counters are created every time the {@code start()} method is called.
      *
-     * @return all counters available with this stopwatch instance
+     * @return all counters available in this stopwatch instance
      */
     public List<Counter> getCounters()
     {
@@ -266,8 +266,7 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return a list of counters associated with the given type, or an empty list
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type is not specified in this stopwatch
      * @since 2.2.0
      */
     public List<Counter> getCounters(Type type)

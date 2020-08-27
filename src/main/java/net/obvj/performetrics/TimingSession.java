@@ -213,8 +213,7 @@ public class TimingSession
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the counter type was not specified in this timing
-     *                                  session
+     * @throws IllegalArgumentException if the type was not specified in this timing session
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
@@ -233,8 +232,7 @@ public class TimingSession
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
-     * @throws IllegalArgumentException if the counter type was not specified in this timing
-     *                                  session
+     * @throws IllegalArgumentException if the type was not specified in this timing session
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
@@ -254,8 +252,7 @@ public class TimingSession
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the counter type was not specified in this timing
-     *                                  session
+     * @throws IllegalArgumentException if the type was not specified in this timing session
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
@@ -288,8 +285,7 @@ public class TimingSession
      *
      * @param type the counter type to be fetched
      * @return the counter instance associated with the given type in this timing session
-     * @throws IllegalArgumentException if the counter type was not specified in this timing
-     *                                  session
+     * @throws IllegalArgumentException if the type was not specified in this timing session
      */
     public Counter getCounter(Type type)
     {

@@ -39,6 +39,8 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 </dependency>
 ```
 
+If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [here](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics).
+
 ---
 
 ## How to use it
@@ -69,7 +71,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 4. Get the elapsed time for a particular counter (e.g. CPU time), in a specific time unit:
 
     ```java
-    long cpuTimeMillis = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+    long cpuTimeNanos = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
     > **Note:** Check the different `elapsedTime` options available to find one that is more suitable to your preferences.

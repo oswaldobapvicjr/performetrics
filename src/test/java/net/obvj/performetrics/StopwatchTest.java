@@ -274,7 +274,7 @@ public class StopwatchTest
         Stopwatch sw = new Stopwatch();
         sw.printStatistics(System.out);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printStopwatch(sw, System.out);
+        PrintUtils.print(sw, System.out);
     }
 
     /**
@@ -287,7 +287,7 @@ public class StopwatchTest
         Stopwatch sw = new Stopwatch();
         sw.printStatistics(System.out, SECONDS);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printStopwatch(sw, System.out, SECONDS);
+        PrintUtils.print(sw, System.out, SECONDS);
     }
 
     @Test

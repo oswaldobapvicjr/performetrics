@@ -26,10 +26,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
-import net.obvj.performetrics.util.printer.PrintUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SystemUtils.class, PrintUtils.class })
+@PrepareForTest(SystemUtils.class)
 public class TimingSessionTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
@@ -46,7 +45,6 @@ public class TimingSessionTest
     public void setup()
     {
         mockStatic(SystemUtils.class);
-        mockStatic(PrintUtils.class);
     }
 
     /**
@@ -101,7 +99,7 @@ public class TimingSessionTest
     /**
      * Checks that all units-after are equal to zero for the given TimingSession
      *
-     * @param the TimingSession to be evaluated
+     * @param session the TimingSession to be evaluated
      */
 
     private void assertAllUnitsAfterEqualZero(TimingSession session)

@@ -15,15 +15,15 @@ import net.obvj.performetrics.util.Duration;
  * </p>
  *
  * <p>
- * Use the default constructor, with no arguments, to create a stopwatch with all of the
- * available metrics. If required, an additional constructor may be used to provide a
- * stopwatch with specific counters. E.g.:
+ * Use the default constructor, with no arguments, to create a timing session with all of
+ * the available metrics. If required, an additional constructor may be used to provide a
+ * timing session with specific counters. E.g.:
  * </p>
  *
  * <pre>
- * new Stopwatch(); // provides all available counter types
- * new Stopwatch(Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
- * new Stopwatch(Counter.Type.CPU_TIME, Counter.Type.USER_TIME); // two counters
+ * new TimingSession(); // provides all available counter types
+ * new TimingSession(Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
+ * new TimingSession(Counter.Type.CPU_TIME, Counter.Type.USER_TIME); // two counters
  * </pre>
  *
  * <p>
@@ -36,11 +36,6 @@ import net.obvj.performetrics.util.Duration;
  * </p>
  *
  * <p>
- * <b>Hint:</b> A single call to the factory method {@code Stopwatch.createStarted()} may
- * create a started stopwatch for convenience.
- * </p>
- *
- * <p>
  * Use {@code elapsedTime(Counter.Type)} to retrieve the elapsed time for a particular
  * counter. E.g.:
  * </p>
@@ -50,16 +45,10 @@ import net.obvj.performetrics.util.Duration;
  * </pre>
  *
  * <p>
- * Use the output method {@code printStatistics(System.out)} to print stopwatch statistics
- * to the system console.
- * </p>
- *
- * <p>
- * Although it is intended that the output methods {@code printStatistics()} should only
- * be called after the stop, some suitable, temporary data may be returned if the
- * stopwatch is still running. In this scenario, the initial values will be compared to
- * the most up-to-date ones, retrieved at the moment of the call. The same applies to the
- * {@code elapsedTime()} methods available for each counter instance.
+ * Although it is intended that the output methods {@code elapsedTime()} should be called
+ * after the stop, some suitable, temporary data may be returned if the timing session is
+ * on going. In this scenario, the initial values will be compared to the most up-to-date
+ * ones, retrieved at the moment of the call.
  * </p>
  *
  * <p>
@@ -71,33 +60,33 @@ import net.obvj.performetrics.util.Duration;
  * @since 2.2.0
  * @see Counter
  * @see Counter.Type
+ * @see Stopwatch
  */
 public class TimingSession
 {
-    private static final String MSG_STOPWATCH_ALREADY_STARTED = "The timing session is already started";
     private static final String MSG_NOT_STARTED = "The timing session is not started";
-    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this timing session. Available type(s): {1}";
+    private static final String MSG_ALREADY_STARTED = "The timing session is already started";
     private static final String MSG_ALREADY_FINISHED = "A finished timing session cannot be restarted";
+    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this timing session. Available type(s): {1}";
 
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
     /**
-     * Enumerates possible states for a Timing Session, with proper behaviors for each of
-     * them.
+     * Enumerates possible states of a timing session, with proper behaviors for each of them.
      */
     private enum State
     {
         READY
         {
             @Override
-            void start(TimingSession stopwatch)
+            void start(TimingSession session)
             {
-                stopwatch.doStart();
+                session.doStart();
             }
 
             @Override
-            void stop(TimingSession stopwatch)
+            void stop(TimingSession session)
             {
                 throw new IllegalStateException(MSG_NOT_STARTED);
             }
@@ -106,48 +95,48 @@ public class TimingSession
         STARTED
         {
             @Override
-            void start(TimingSession stopwatch)
+            void start(TimingSession session)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_ALREADY_STARTED);
+                throw new IllegalStateException(MSG_ALREADY_STARTED);
             }
 
             @Override
-            void stop(TimingSession stopwatch)
+            void stop(TimingSession session)
             {
-                stopwatch.doStop();
+                session.doStop();
             }
         },
 
         FINISHED
         {
             @Override
-            void start(TimingSession stopwatch)
+            void start(TimingSession session)
             {
                 throw new IllegalStateException(MSG_ALREADY_FINISHED);
             }
 
             @Override
-            void stop(TimingSession stopwatch)
+            void stop(TimingSession session)
             {
                 throw new IllegalStateException(MSG_NOT_STARTED);
             }
         };
 
         /**
-         * Starts the given stopwatch, if the state is appropriate for the operation.
+         * Starts the given timing session, if the state is appropriate for the operation.
          *
-         * @param stopwatch the stopwatch to be started
+         * @param session the timing session to be started
          * @throws IllegalStateException if the state is not appropriate for the operation
          */
-        abstract void start(TimingSession stopwatch);
+        abstract void start(TimingSession session);
 
         /**
-         * Stops the given stopwatch, if the state is appropriate for the operation.
+         * Stops the given timing session, if the state is appropriate for the operation.
          *
-         * @param stopwatch the stopwatch to be stopped
+         * @param session the timing session to be stopped
          * @throws IllegalStateException if the state is not appropriate for the operation
          */
-        abstract void stop(TimingSession stopwatch);
+        abstract void stop(TimingSession session);
     }
 
     private final Type[] types;
@@ -155,7 +144,7 @@ public class TimingSession
     private State state;
 
     /**
-     * Creates a new Timing Session with default counter types.
+     * Creates a new timing session with default counter types.
      */
     public TimingSession()
     {
@@ -163,7 +152,7 @@ public class TimingSession
     }
 
     /**
-     * Creates a new Timing Session with custom counter types.
+     * Creates a new timing session with custom counter types.
      *
      * @param types the counter types to set
      */
@@ -174,7 +163,7 @@ public class TimingSession
     }
 
     /**
-     * Resets all counters associated with this session instance.
+     * Resets all counters associated with this timing session.
      */
     public void reset()
     {
@@ -189,7 +178,7 @@ public class TimingSession
     /**
      * Starts the timing session.
      *
-     * @throws IllegalStateException if the stopwatch state is not suitable for this action
+     * @throws IllegalStateException if the session state is not suitable for this action
      */
     public void start()
     {
@@ -199,7 +188,7 @@ public class TimingSession
     /**
      * Stops the timing session.
      *
-     * @throws IllegalStateException if the stopwatch state is not suitable for this action
+     * @throws IllegalStateException if the session state is not suitable for this action
      */
     public void stop()
     {
@@ -219,12 +208,13 @@ public class TimingSession
     /**
      * A convenient method that returns the elapsed time of a specific counter.
      * <p>
-     * This has the same effect as calling: {@code stopwatch.getCounter(type).elapsedTime()}
+     * This has the same effect as calling:
+     * {@code timingSession.getCounter(type).elapsedTime()}
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the counter type was not specified in this timing
+     *                                  session
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
@@ -237,14 +227,14 @@ public class TimingSession
      * specified time unit.
      * <p>
      * This has the same effect as calling:
-     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit)}
+     * {@code timingSession.getCounter(type).elapsedTime(timeUnit)}
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the counter type was not specified in this timing
+     *                                  session
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
@@ -257,15 +247,15 @@ public class TimingSession
      * specified time unit, by applying a custom {@link ConversionMode}.
      * <p>
      * This has the same effect as calling:
-     * {@code stopwatch.getCounter(type).elapsedTime(timeUnit, conversionMode)}
+     * {@code timingSession.getCounter(type).elapsedTime(timeUnit, conversionMode)}
      *
      * @param type           the counter type to be fetched
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the counter type was not specified in this timing
+     *                                  session
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
@@ -274,9 +264,9 @@ public class TimingSession
     }
 
     /**
-     * Returns the counter types associated with this stopwatch instance.
+     * Returns the counter types specified for this timing session.
      *
-     * @return all counter types associated with this stopwatch instance
+     * @return all counter types specified for this timing session
      */
     protected Type[] getTypes()
     {
@@ -284,9 +274,9 @@ public class TimingSession
     }
 
     /**
-     * Returns the counters associated with this stopwatch instance.
+     * Returns the counters associated with this timing session.
      *
-     * @return all counters associated with this stopwatch instance
+     * @return all counters associated with this timing session
      */
     public Collection<Counter> getCounters()
     {
@@ -294,25 +284,27 @@ public class TimingSession
     }
 
     /**
-     * Returns the counter instance associated with a given type in this stopwatch.
+     * Returns the counter instance associated with a given type in this timing session.
      *
      * @param type the counter type to be fetched
-     * @return the counter instance associated with the given type in this stopwatch
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @return the counter instance associated with the given type in this timing session
+     * @throws IllegalArgumentException if the counter type was not specified in this timing
+     *                                  session
      */
     public Counter getCounter(Type type)
     {
         if (!counters.containsKey(type))
         {
-            throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, counters.keySet()));
+            throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_SPECIFIED, type, counters.keySet()));
         }
         return counters.get(type);
     }
 
     /**
-     * Starts the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Starts the timing session.
+     * <p>
+     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
+     * not this action is allowed.
      */
     private void doStart()
     {
@@ -324,8 +316,10 @@ public class TimingSession
     }
 
     /**
-     * Stops the timing session. Only called internally. The current {@link State} defines
-     * whether or not this action is allowed.
+     * Stops the timing session.
+     * <p>
+     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
+     * not this action is allowed.
      */
     private void doStop()
     {

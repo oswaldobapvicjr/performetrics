@@ -172,7 +172,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printStopwatch(stopwatch, ps);
+        PrintUtils.print(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(equalTo(expectedString)));
@@ -197,7 +197,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printStopwatch(stopwatch, ps, TimeUnit.MILLISECONDS);
+        PrintUtils.print(stopwatch, ps, TimeUnit.MILLISECONDS);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));
@@ -218,7 +218,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printCounters(counters, ps);
+        PrintUtils.print(counters, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));
@@ -240,7 +240,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printCounters(counters, ps, TimeUnit.MILLISECONDS);
+        PrintUtils.print(counters, ps, TimeUnit.MILLISECONDS);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));
@@ -261,7 +261,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printCounters(countersByType, ps);
+        PrintUtils.print(countersByType, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));
@@ -283,7 +283,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.printCounters(countersByType, ps, TimeUnit.MILLISECONDS);
+        PrintUtils.print(countersByType, ps, TimeUnit.MILLISECONDS);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(expectedString));

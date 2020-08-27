@@ -148,7 +148,7 @@ public class MonitoredRunnableTest
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printCounters(operation.getCounters(), System.out);
+        PrintUtils.print(operation.getCounters(), System.out);
     }
 
     /**
@@ -161,7 +161,7 @@ public class MonitoredRunnableTest
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.printStatistics(System.out, SECONDS);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printCounters(operation.getCounters(), System.out, SECONDS);
+        PrintUtils.print(operation.getCounters(), System.out, SECONDS);
     }
 
     @Test(expected = IllegalArgumentException.class)

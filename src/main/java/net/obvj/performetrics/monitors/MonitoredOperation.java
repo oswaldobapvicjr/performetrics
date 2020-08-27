@@ -136,7 +136,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.printCounters(stopwatch.getCounters(), printStream);
+        PrintUtils.print(stopwatch.getCounters(), printStream);
     }
 
     /**
@@ -147,7 +147,7 @@ abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
-        PrintUtils.printCounters(stopwatch.getCounters(), printStream, timeUnit);
+        PrintUtils.print(stopwatch.getCounters(), printStream, timeUnit);
     }
 
 }

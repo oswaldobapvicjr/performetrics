@@ -43,8 +43,8 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * Use {@code elapsedTime(Counter.Type)} to retrieve the elapsed time for a particular
- * counter. E.g.:
+ * Use {@code elapsedTime(Counter.Type)} to retrieve the total elapsed time for a
+ * particular counter. E.g.:
  * </p>
  *
  * <pre>
@@ -57,11 +57,11 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </p>
  *
  * <p>
- * Although it is intended that the output methods {@code printStatistics()} should only
- * be called after the stop, some suitable, temporary data may be returned if the
- * stopwatch is still running. In this scenario, the initial values will be compared to
- * the most up-to-date ones, retrieved at the moment of the call. The same applies to the
- * {@code elapsedTime()} methods available for each counter instance.
+ * Although it is intended that the output methods {@code elapsedTime()} and
+ * {@code printStatistics()} should be called after the stop, some suitable, temporary
+ * data may be returned if the current timing session is still running. In this scenario,
+ * the initial values will be compared to the most up-to-date ones, retrieved at the
+ * moment of the call.
  * </p>
  *
  * <p>
@@ -72,12 +72,13 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * @author oswaldo.bapvic.jr
  * @see Counter
  * @see Counter.Type
+ * @see TimingSession
  */
 public class Stopwatch
 {
-    private static final String MSG_STOPWATCH_ALREADY_STARTED = "The stopwatch is already started";
-    private static final String MSG_STOPWATCH_NOT_RUNNING = "The stopwatch is not running";
-    private static final String MSG_TYPE_NOT_AVAILABLE = "\"{0}\" is not available in this stopwatch. Available type(s): {1}";
+    private static final String MSG_ALREADY_STARTED = "The stopwatch is already started";
+    private static final String MSG_NOT_RUNNING = "The stopwatch is not running";
+    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this stopwatch. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -99,7 +100,7 @@ public class Stopwatch
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
+                throw new IllegalStateException(MSG_NOT_RUNNING);
             }
         },
 
@@ -108,7 +109,7 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_ALREADY_STARTED);
+                throw new IllegalStateException(MSG_ALREADY_STARTED);
             }
 
             @Override
@@ -129,7 +130,7 @@ public class Stopwatch
             @Override
             void stop(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_STOPWATCH_NOT_RUNNING);
+                throw new IllegalStateException(MSG_NOT_RUNNING);
             }
         };
 
@@ -279,8 +280,7 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return a stream of counters associated with the given type, not null
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.2.0
      */
     private Stream<Counter> getCountersAsStream(Type type)
@@ -289,7 +289,7 @@ public class Stopwatch
         {
             return sessions.stream().map(session -> session.getCounter(type));
         }
-        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_AVAILABLE, type, types));
+        throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_SPECIFIED, type, types));
     }
 
     /**
@@ -297,8 +297,7 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
@@ -312,8 +311,9 @@ public class Stopwatch
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @return the elapsed time for the specified counter, converted to the given time unit
+     *         using the default conversion mode.
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
@@ -331,8 +331,7 @@ public class Stopwatch
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the specified type is not available in this
-     *                                  stopwatch instance
+     * @throws IllegalArgumentException if the type was not specified in this stopwatch
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
@@ -348,7 +347,7 @@ public class Stopwatch
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.printStopwatch(this, printStream);
+        PrintUtils.print(this, printStream);
     }
 
     /**
@@ -359,7 +358,7 @@ public class Stopwatch
      */
     public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
     {
-        PrintUtils.printStopwatch(this, printStream, timeUnit);
+        PrintUtils.print(this, printStream, timeUnit);
     }
 
     /**

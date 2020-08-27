@@ -51,9 +51,9 @@ public class PrintUtils
      * @param printStream the print stream to which statistics will be sent
      * @throws NullPointerException if a null stopwatch or print stream is received
      */
-    public static void printStopwatch(Stopwatch stopwatch, PrintStream printStream)
+    public static void print(Stopwatch stopwatch, PrintStream printStream)
     {
-        printStopwatch(stopwatch, printStream, null);
+        print(stopwatch, printStream, null);
     }
 
     /**
@@ -65,9 +65,9 @@ public class PrintUtils
      *                    default time unit specified for each counter will be applied
      * @throws NullPointerException if a null stopwatch or print stream is received
      */
-    public static void printStopwatch(Stopwatch stopwatch, PrintStream printStream, TimeUnit timeUnit)
+    public static void print(Stopwatch stopwatch, PrintStream printStream, TimeUnit timeUnit)
     {
-        printCounters(groupCountersByType(stopwatch), printStream, timeUnit);
+        print(groupCountersByType(stopwatch), printStream, timeUnit);
     }
 
     /**
@@ -110,7 +110,7 @@ public class PrintUtils
      * @param printStream the print stream to which statistics will be sent
      * @throws NullPointerException if a null collection or print stream is received
      */
-    public static void printCounters(List<Counter> counters, PrintStream printStream)
+    public static void print(List<Counter> counters, PrintStream printStream)
     {
         printStream.print(toTableFormat(groupCountersByType(counters), null));
     }
@@ -124,8 +124,7 @@ public class PrintUtils
      *                    default time unit specified for each counter will be applied
      * @throws NullPointerException if a null collection or print stream is received
      */
-    public static void printCounters(List<Counter> counters, PrintStream printStream,
-            TimeUnit timeUnit)
+    public static void print(List<Counter> counters, PrintStream printStream, TimeUnit timeUnit)
     {
         printStream.print(toTableFormat(groupCountersByType(counters), timeUnit));
     }
@@ -137,7 +136,7 @@ public class PrintUtils
      * @param printStream    the print stream to which statistics will be sent
      * @throws NullPointerException if a null collection or print stream is received
      */
-    public static void printCounters(Map<Type, List<Counter>> countersByType, PrintStream printStream)
+    public static void print(Map<Type, List<Counter>> countersByType, PrintStream printStream)
     {
         printStream.print(toTableFormat(countersByType, null));
     }
@@ -151,7 +150,7 @@ public class PrintUtils
      *                       the default time unit specified for each counter will be applied
      * @throws NullPointerException if a null collection or print stream is received
      */
-    public static void printCounters(Map<Type, List<Counter>> countersByType, PrintStream printStream,
+    public static void print(Map<Type, List<Counter>> countersByType, PrintStream printStream,
             TimeUnit timeUnit)
     {
         printStream.print(toTableFormat(countersByType, timeUnit));

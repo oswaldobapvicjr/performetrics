@@ -144,7 +144,7 @@ public class MoritoredCallableTest
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         operation.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printCounters(operation.getCounters(), System.out);
+        PrintUtils.print(operation.getCounters(), System.out);
     }
 
     /**
@@ -157,7 +157,7 @@ public class MoritoredCallableTest
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         operation.printStatistics(System.out, TimeUnit.SECONDS);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printCounters(operation.getCounters(), System.out, TimeUnit.SECONDS);
+        PrintUtils.print(operation.getCounters(), System.out, TimeUnit.SECONDS);
     }
 
 }

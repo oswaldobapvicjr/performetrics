@@ -79,6 +79,16 @@ public class PerformetricsTestDrive
             return "File count = " + paths.size();
         });
 
+        testMonitoredCallable(operation);
+
+        System.out.println("\n\n--------------------------------------\n");
+        System.out.println("Calling the same monitored operation again...\n");
+
+        testMonitoredCallable(operation);
+    }
+
+    private static void testMonitoredCallable(MonitoredCallable<String> operation) throws Exception
+    {
         System.out.println(operation.call());
 
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));

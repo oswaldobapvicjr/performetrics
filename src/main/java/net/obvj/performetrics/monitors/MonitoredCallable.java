@@ -85,7 +85,6 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
     public V call() throws Exception
     {
         Objects.requireNonNull(targetCallable, "the target callable must not be null");
-        stopwatch.reset();
         stopwatch.start();
         try
         {

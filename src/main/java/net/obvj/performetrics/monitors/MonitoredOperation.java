@@ -137,4 +137,14 @@ abstract class MonitoredOperation
         PrintUtils.print(stopwatch.getCounters(), printStream, timeUnit);
     }
 
+    /**
+     * Cleans all counters available in this monitored operation.
+     *
+     * @since 2.2.0
+     */
+    public void reset()
+    {
+        stopwatch.reset();
+    }
+
 }

@@ -227,4 +227,14 @@ public class MonitoredRunnableTest
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
     }
 
+    @Test()
+    public void reset_callsStopwatchReset()
+    {
+        Stopwatch stopwatch = mock(Stopwatch.class);
+        MonitoredRunnable operation = new MonitoredRunnable(runnable, WALL_CLOCK_TIME);
+        operation.stopwatch = stopwatch;
+        operation.reset();
+        verify(stopwatch).reset();
+    }
+
 }

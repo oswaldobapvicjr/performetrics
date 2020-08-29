@@ -83,7 +83,6 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     public void run()
     {
         Objects.requireNonNull(targetRunnable, "the target runnable must not be null");
-        stopwatch.reset();
         stopwatch.start();
         try
         {

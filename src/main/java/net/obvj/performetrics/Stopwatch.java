@@ -76,7 +76,6 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  */
 public class Stopwatch
 {
-    private static final String MSG_ALREADY_STARTED = "The stopwatch is already started";
     private static final String MSG_NOT_RUNNING = "The stopwatch is not running";
     private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this stopwatch. Available type(s): {1}";
 
@@ -89,33 +88,19 @@ public class Stopwatch
      */
     private enum State
     {
-        READY
-        {
-            @Override
-            void start(Stopwatch stopwatch)
-            {
-                stopwatch.doStart();
-            }
-
-            @Override
-            void stop(Stopwatch stopwatch)
-            {
-                throw new IllegalStateException(MSG_NOT_RUNNING);
-            }
-        },
-
         RUNNING
         {
             @Override
             void start(Stopwatch stopwatch)
             {
-                throw new IllegalStateException(MSG_ALREADY_STARTED);
+                stopwatch.stopCurrentTimingSession();
+                stopwatch.startNewTimingSession();
             }
 
             @Override
             void stop(Stopwatch stopwatch)
             {
-                stopwatch.doStop();
+                stopwatch.stopCurrentTimingSession();
             }
         },
 
@@ -124,7 +109,7 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                stopwatch.doStart();
+                stopwatch.startNewTimingSession();
             }
 
             @Override
@@ -153,7 +138,7 @@ public class Stopwatch
 
     private final List<Type> types;
     private List<TimingSession> sessions;
-    private State state = State.READY;
+    private State state;
 
     /**
      * Creates a new stopwatch with default counter types.
@@ -203,13 +188,11 @@ public class Stopwatch
     public void reset()
     {
         sessions = new ArrayList<>();
-        state = State.READY;
+        state = State.STOPPED;
     }
 
     /**
      * Starts a new timing session.
-     *
-     * @throws IllegalStateException if the stopwatch state is not suitable for this action
      */
     public void start()
     {
@@ -361,12 +344,12 @@ public class Stopwatch
     }
 
     /**
-     * Starts a new timing session.
+     * Creates and starts a new timing session.
      * <p>
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or
      * not this action is allowed.
      */
-    private void doStart()
+    private void startNewTimingSession()
     {
         TimingSession session = new TimingSession(types.toArray(new Type[types.size()]));
         sessions.add(session);
@@ -380,7 +363,7 @@ public class Stopwatch
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or
      * not this action is allowed.
      */
-    private void doStop()
+    private void stopCurrentTimingSession()
     {
         getCurrentTimingSession().ifPresent(TimingSession::stop);
         state = State.STOPPED;

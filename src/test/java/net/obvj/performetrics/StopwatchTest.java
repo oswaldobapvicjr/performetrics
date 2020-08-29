@@ -345,16 +345,24 @@ public class StopwatchTest
         setupExpectsBefore();
         Stopwatch sw = Stopwatch.createStarted(SYSTEM_TIME);
         List<TimingSession> sessions = sw.getTimingSessions();
+        assertThat(sessions.size(), is(equalTo(1)));
         List<Type> sessionTypes = Arrays.asList(sessions.get(0).getTypes());
         assertThat(sessionTypes.size(), is(equalTo(1)));
         assertTrue(sessionTypes.contains(SYSTEM_TIME));
+        assertTrue(sw.isStarted());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void start_alreadyStarted_illegalStateException()
+    @Test
+    public void start_alreadyStarted_createsNewTimingSession()
     {
-        Stopwatch sw = Stopwatch.createStarted();
+        setupExpectsBefore();
+        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
+        assertTrue(sw.isStarted());
+        setupExpectsAfter();
         sw.start();
+        assertThat(sw.getTimingSessions().size(), is(equalTo(2)));
+        assertTrue(sw.isStarted());
     }
 
     @Test

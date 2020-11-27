@@ -126,8 +126,7 @@ In this example, we are using the `MonitoredRunnable` class to run a procedure r
 ---
     
 ## Configuration
-
-**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles with a minimum of code required to the library user.
+**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
 
 ### Conversion Modes
 
@@ -140,6 +139,8 @@ Performetrics provides two different conversion modes that can be applied depend
 * **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularities. For example, converting 999 milliseconds to seconds results in 0.999
 
   A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
+
+> **Note:** Check the Javadoc to find out how to specify a different conversion mode for a single operation.
 
 ---
 

@@ -7,13 +7,25 @@ import static net.obvj.performetrics.ConversionMode.FAST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.monitors.MonitoredOperation;
+import net.obvj.performetrics.util.SystemUtils;
 
 /**
  * Unit tests for the {@link Performetrics} class.
@@ -21,12 +33,23 @@ import net.obvj.performetrics.config.ConfigurationHolder;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(SystemUtils.class)
 public class PerformetricsTest
 {
     // Default values
     private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
     private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration().getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
+
+    @Mock
+    private Runnable runnable;
+
+    @Before
+    public void setup()
+    {
+        mockStatic(SystemUtils.class);
+    }
 
     private void checkAllDefaultValues()
     {
@@ -109,6 +132,48 @@ public class PerformetricsTest
         {
             checkAllDefaultValues();
         }
+    }
+
+    @Test
+    public void monitorOperation_noSpecificCounter()
+    {
+        MonitoredOperation operation = Performetrics.monitorOperation(runnable);
+
+        then(runnable).should().run();
+        assertThat(operation.getCounters().size(), is(equalTo(Type.values().length)));
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getWallClockTimeNanos();
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getCpuTimeNanos();
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getUserTimeNanos();
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getSystemTimeNanos();
+    }
+
+    @Test
+    public void monitorOperation_twoSpecificCounters()
+    {
+        MonitoredOperation operation = Performetrics.monitorOperation(runnable, Type.WALL_CLOCK_TIME, Type.CPU_TIME);
+
+        then(runnable).should().run();
+        assertThat(operation.getCounters().size(), is(equalTo(2)));
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getWallClockTimeNanos();
+
+        verifyStatic(SystemUtils.class, times(2));
+        SystemUtils.getCpuTimeNanos();
+
+        verifyStatic(SystemUtils.class, never());
+        SystemUtils.getUserTimeNanos();
+
+        verifyStatic(SystemUtils.class, never());
+        SystemUtils.getSystemTimeNanos();
     }
 
 }

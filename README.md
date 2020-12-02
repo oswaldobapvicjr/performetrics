@@ -97,31 +97,27 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
 ### Example 2: Using a MonitoredRunnable or MonitoredCallable
 
-In this example, we are using the `MonitoredRunnable` class to run a procedure represented by a lambda expression and print the elapsed wall-clock time to the system console.
+In this example, we are using the `MonitoredRunnable` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
 
-1. Create a `MonitoredRunnable` with the procedure to be monitored attached:
+1. Use the `Performetrics.monitorOperation` facade method, passing the procedure to be monitored as a lambda expression:
 
     ```java
-    MonitoredRunnable monitoredRunnable = new MonitoredRunnable(() -> myObject.doStuff());
+    MonitoredOperation operation = Performetrics.monitorOperation(() -> myObject.doStuff());
     ```
 
     > **Note:** If no specific counter type is passed, all available counters will be measured.
 
-2. Run it:
+2. Print the elapsed time for each counter:
 
     ```java
-    monitoredRunnable.run();
-    ```
-
-3. Print the elapsed time:
-
-    ```java
-    System.out.println(monitoredRunnable.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
+    System.out.println(operation.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
+    System.out.println(operation.elapsedTime(Counter.Type.CPU_TIME));
     ```
     > **Sample output:**
     >
     > ````
-    > 0.025073 second(s)
+    > 0.250739 second(s)
+    > 0.000001 second(s)
     > ````
 ---
     

@@ -1,6 +1,33 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.2.0
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+New features/enhancements:
+
+ > issue/0007: Support for multiple Timing Sessions inside Stopwatch
+ > issue/0008: Resetting a Stopwatch
+ > issue/0010: Create a new Timing Session whenever the start method is
+               called on a Stopwatch  
+ > issue/0011: New Facade method for simplified Monitored Operation usage
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.1.1
                                  
                                 RELEASE NOTES

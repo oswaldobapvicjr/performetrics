@@ -25,205 +25,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class Duration
 {
+    private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The Duration to add must not be null";
 
-    /**
-     * Enumerates different time format styles, each one with particular behaviors.
-     *
-     * @author oswaldo.bapvic.jr
-     * @since 2.0.0
-     */
-    public enum FormatStyle
-    {
-        /**
-         * Formats a time duration in the following format: {@code H:M:s:ns}. For example:
-         * {@code 1:59:59.987654321}
-         */
-        FULL
-        {
-            @Override
-            public String format(final Duration duration, boolean printLegend)
-            {
-                return String.format(HOURS_FORMAT, duration.hours, duration.minutes, duration.seconds,
-                        duration.nanoseconds) + legend(printLegend, HOURS_LEGEND);
-            }
-        },
-
-        /**
-         * Formats a time duration in any of the following formats: {@code H:M:s:ns},
-         * {@code M:S:ns}, or {@code S.ns}, always choosing the shortest possible format.
-         * <p>
-         * Examples:
-         * <ul>
-         * <li>{@code 0.001000000 second(s)}</li>
-         * <li>{@code 3.200000000 second(s)}</li>
-         * <li>{@code 15:00.005890000 minute(s)}</li>
-         * </ul>
-         */
-        SHORT
-        {
-            @Override
-            public String format(final Duration duration, boolean printLegend)
-            {
-                if (duration.hours > 0)
-                {
-                    return FormatStyle.FULL.format(duration, printLegend);
-                }
-                if (duration.minutes > 0)
-                {
-                    return String.format(MINUTES_FORMAT, duration.minutes, duration.seconds, duration.nanoseconds)
-                            + legend(printLegend, MINUTES_LEGEND);
-                }
-                return String.format(SECONDS_FORMAT, duration.seconds, duration.nanoseconds)
-                        + legend(printLegend, SECONDS_LEGEND);
-            }
-
-        },
-
-        /**
-         * Formats a time duration in any of the following formats: {@code H:M:s:ns},
-         * {@code M:S:ns}, or {@code S.ns}, suppressing trailing zeros from the nanosecond part.
-         * <p>
-         * Examples:
-         * <ul>
-         * <li>{@code 0.001 second(s)}</li>
-         * <li>{@code 3.2 second(s)}</li>
-         * <li>{@code 15:00.00589 minute(s)}</li>
-         * </ul>
-         */
-        SHORTER
-        {
-            @Override
-            public String format(final Duration duration, boolean printLegend)
-            {
-                String format = removeTrailingZeros(SHORT.format(duration, false));
-
-                if (!printLegend)
-                {
-                    return format;
-                }
-                if (duration.hours > 0)
-                {
-                    return format + legend(true, HOURS_LEGEND);
-                }
-                if (duration.minutes > 0)
-                {
-                    return format + legend(true, MINUTES_LEGEND);
-                }
-                return format + legend(true, SECONDS_LEGEND);
-            }
-
-        },
-
-        /**
-         * Formats a time duration using ISO-8601 seconds based representation, such as
-         * {@code PT8H6M12.345S}.
-         * <p>
-         * Examples:
-         * <ul>
-         * <li>{@code PT0.001S}</li>
-         * <li>{@code PT3.2S}</li>
-         * <li>{@code PT15M0.00589S}</li>
-         * </ul>
-         */
-        ISO_8601
-        {
-            @Override
-            public String format(final Duration duration, boolean printLegend)
-            {
-                if (ZERO.equals(duration))
-                {
-                    return "PT0S";
-                }
-                StringBuilder builder = new StringBuilder();
-                builder.append("PT");
-                if (duration.hours > 0)
-                {
-                    builder.append(duration.hours).append('H');
-                }
-                if (duration.minutes > 0)
-                {
-                    builder.append(duration.minutes).append('M');
-                }
-                if (duration.seconds > 0 || duration.nanoseconds > 0)
-                {
-                    builder.append(duration.seconds);
-                    if (duration.nanoseconds > 0)
-                    {
-                        String nanos = removeTrailingZeros(String.format(NANOSECONDS_FORMAT, duration.nanoseconds));
-                        builder.append(".").append(nanos);
-                    }
-                    builder.append('S');
-                }
-                return builder.toString();
-            }
-
-        };
-
-        private static final String HOURS_FORMAT = "%d:%02d:%02d.%09d";
-        private static final String MINUTES_FORMAT = "%d:%02d.%09d";
-        private static final String SECONDS_FORMAT = "%d.%09d";
-        private static final String NANOSECONDS_FORMAT = "%09d";
-
-        private static final String HOURS_LEGEND = "hour(s)";
-        private static final String MINUTES_LEGEND = "minute(s)";
-        private static final String SECONDS_LEGEND = "second(s)";
-
-        /**
-         * Formats a time duration.
-         *
-         * @param duration    the {@link Duration} to be formatted
-         * @param printLegend a flag indicating whether or not to include the legend in the
-         *                    generated string
-         * @return a formatted time duration
-         */
-        public abstract String format(final Duration duration, boolean printLegend);
-
-        /**
-         * Returns the {@code legend}, prepended with a white-space, if the
-         * {@code printLegendFlag} argument is {@code true}; or an empty string, otherwise.
-         *
-         * @param printLegendFlag the flag to be evaluated
-         * @param legend          the string to be used as legend
-         * @return the legend string
-         */
-        static String legend(boolean printLegendFlag, final String legend)
-        {
-            return printLegendFlag ? " " + legend : "";
-        }
-
-        /**
-         * Removes trailing zeros from the specified string. For example:
-         *
-         * <pre>
-         * removeTrailingZeros("9.009000000) //returns: "9.009"
-         * removeTrailingZeros("9.000000009) //returns: "9.000000009"
-         * removeTrailingZeros("9.000000000) //returns: "9"
-         * </pre>
-         *
-         * @param string the string whose trailing zeros are to be removed
-         * @return a string without trailing zeros
-         */
-        static String removeTrailingZeros(final String string)
-        {
-            StringBuilder builder = new StringBuilder(string);
-            while (builder.charAt(builder.length() - 1) == '0')
-            {
-                builder.setLength(builder.length() - 1);
-            }
-            if (builder.charAt(builder.length() - 1) == '.')
-            {
-                builder.setLength(builder.length() - 1);
-            }
-            return builder.toString();
-        }
-    }
-
-    public static final Duration ZERO = new Duration(0, 0, 0, 0);
+    public static final Duration ZERO = new Duration(java.time.Duration.ZERO);
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
-
-    private static final FormatStyle DEFAULT_FORMAT_STYLE = FormatStyle.SHORTER;
 
     private static final EnumMap<TimeUnit, ChronoUnit> chronoUnitsByTimeUnit = new EnumMap<>(TimeUnit.class);
 
@@ -238,53 +45,43 @@ public class Duration
         chronoUnitsByTimeUnit.put(TimeUnit.DAYS, ChronoUnit.DAYS);
     }
 
-    private final long hours;
-    private final int minutes;
-    private final int seconds;
-    private final int nanoseconds;
+    private java.time.Duration internalDuration;
 
     /**
-     * Constructs an instance of {@code Duration} with all mandatory fields.
+     * Constructs an instance of {@code Duration} from the given {@link java.time.Duration}.
      *
-     * @param hours       the number of hours to set
-     * @param minutes     the minutes within the hour
-     * @param seconds     the seconds within the minute
-     * @param nanoseconds the nanoseconds within the second
+     * @param internalDuration the internal {@link java.time.Duration}; must not be null
      */
-    private Duration(long hours, int minutes, int seconds, int nanoseconds)
+    private Duration(java.time.Duration internalDuration)
     {
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.nanoseconds = nanoseconds;
+        this.internalDuration = internalDuration;
     }
 
     /**
      * Obtains a {@code Duration} representing an amount in the specified time unit.
      * <p>
-     * For example, calling {@code Duration.of(65, SECONDS)} produces an object with:
-     * {@code [hours = 0, minutes = 1, seconds = 5, nanoseconds = 0]}
+     * For example, calling {@code Duration.of(65, SECONDS)} produces an object in which the
+     * getters behave according to the example below:
      *
-     * @param amount   the amount of the duration, measured in term of the timeUnit argument;
-     *                 it must be a positive integer
+     * <pre>
+     * duration.getHours()       //returns: 0
+     * duration.getMinutes()     //returns: 1
+     * duration.getSeconds()     //returns: 5
+     * duration.getNanoseconds() //returns: 0
+     * </pre>
+     *
+     * @param amount   the amount of the duration, measured in terms of the timeUnit argument
      * @param timeUnit the unit that the amount argument is measured in; cannot be null
-     * @return a {@code Duration}, not null.
-     * @throws IllegalArgumentException if the specified amount is negative
-     * @throws NullPointerException     if the specified timeUnit is null
+     * @return a {@code Duration}, not null
+     *
+     * @throws NullPointerException if the specified timeUnit is null
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
-        if (amount < 0)
-        {
-            throw new IllegalArgumentException("The amount must be a positive integer");
-        }
-
-        java.time.Duration duration = java.time.Duration.of(amount, toChronoUnit(timeUnit));
-        long effectiveTotalSeconds = duration.getSeconds();
-        long hours = effectiveTotalSeconds / SECONDS_PER_HOUR;
-        int minutes = (int) ((effectiveTotalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
-        int seconds = (int) (effectiveTotalSeconds % SECONDS_PER_MINUTE);
-        return new Duration(hours, minutes, seconds, duration.getNano());
+        Objects.requireNonNull(timeUnit, "The TimeUnit must not be null");
+        ChronoUnit chronoUnit = toChronoUnit(timeUnit);
+        java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
+        return new Duration(internalDuration);
     }
 
     /**
@@ -297,7 +94,7 @@ public class Duration
      */
     public long getHours()
     {
-        return hours;
+        return internalDuration.getSeconds() / SECONDS_PER_HOUR;
     }
 
     /**
@@ -310,7 +107,7 @@ public class Duration
      */
     public int getMinutes()
     {
-        return minutes;
+        return (int) ((internalDuration.getSeconds() % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
     }
 
     /**
@@ -324,7 +121,7 @@ public class Duration
      */
     public int getSeconds()
     {
-        return seconds;
+        return (int) (internalDuration.getSeconds() % SECONDS_PER_MINUTE);
     }
 
     /**
@@ -339,60 +136,66 @@ public class Duration
      */
     public int getNanoseconds()
     {
-        return nanoseconds;
+        return internalDuration.getNano();
     }
 
     @Override
     public boolean equals(Object object)
     {
-        if (this == object) return true;
-        if (!(object instanceof Duration)) return false;
+        if (this == object)
+        {
+            return true;
+        }
+        if (!(object instanceof Duration))
+        {
+            return false;
+        }
         Duration other = (Duration) object;
-        return hours == other.hours && minutes == other.minutes && nanoseconds == other.nanoseconds
-                && seconds == other.seconds;
+        return internalDuration.equals(other.internalDuration);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(hours, minutes, nanoseconds, seconds);
+        return Objects.hash(internalDuration);
     }
 
     /**
-     * Returns a string representation of this {@code Duration} in default format style.
+     * Returns a string representation of this {@code Duration} in default format.
      *
      * @return a string representation of this object
      */
     @Override
     public String toString()
     {
-        return toString(DEFAULT_FORMAT_STYLE);
+        return DurationFormatter.format(this);
     }
 
     /**
-     * Returns a string representation of this{@code Duration} with custom format style.
+     * Returns a string representation of this {@code Duration} with a specific format.
      * <p>
-     * <b>Note:</b> This is equivalent to calling: {@code toString(style, true)}
+     * <b>Note:</b> This is equivalent to calling:
+     * {@code DurationFormatter.format(duration, format)}
      *
-     * @param style the {@link FormatStyle} to be applied
-     * @return a string representation of this object in the given style
+     * @param format the {@link DurationFormat} to be applied
+     * @return a string representation of this object in the specified format
      */
-    public String toString(FormatStyle style)
+    public String toString(DurationFormat format)
     {
-        return toString(style, true);
+        return toString(format, true);
     }
 
     /**
-     * Returns a string representation of this{@code Duration} with custom format style.
+     * Returns a string representation of this {@code Duration} with a specific format.
      *
-     * @param style       the {@link FormatStyle} to be applied
-     * @param printLegend a flag indicating whether or not to include the legend in the
+     * @param format      the {@link DurationFormat} to be applied
+     * @param printLegend a flag indicating whether or not to include a legend in the
      *                    generated string
-     * @return a string representation of this object in the given style
+     * @return a string representation of this object in the specified format
      */
-    public String toString(FormatStyle style, boolean printLegend)
+    public String toString(DurationFormat format, boolean printLegend)
     {
-        return style.format(this, printLegend);
+        return DurationFormatter.format(this, format, printLegend);
     }
 
     /**
@@ -424,30 +227,22 @@ public class Duration
      */
     public double toTimeUnit(TimeUnit timeUnit, int scale)
     {
-        BigDecimal targetHours = hours > 0
-                ? BigDecimal.valueOf(timeUnit.convert(hours, TimeUnit.HOURS))
+        BigDecimal targetSeconds = internalDuration.getSeconds() > 0
+                ? BigDecimal.valueOf(timeUnit.convert(internalDuration.getSeconds(), TimeUnit.SECONDS))
                 : BigDecimal.ZERO;
 
-        BigDecimal targetMinutes = minutes > 0
-                ? BigDecimal.valueOf(timeUnit.convert(minutes, TimeUnit.MINUTES))
-                : BigDecimal.ZERO;
-
-        BigDecimal targetSeconds = seconds > 0
-                ? BigDecimal.valueOf(timeUnit.convert(seconds, TimeUnit.SECONDS))
-                : BigDecimal.ZERO;
-
-        BigDecimal targetNanoseconds = nanoseconds > 0
+        BigDecimal targetNanoseconds = internalDuration.getNano() > 0
                 ? convertNanosecondsPart(timeUnit, scale)
                 : BigDecimal.ZERO;
 
-        return targetHours.add(targetMinutes).add(targetSeconds).add(targetNanoseconds).doubleValue();
+        return targetSeconds.add(targetNanoseconds).doubleValue();
     }
 
     private BigDecimal convertNanosecondsPart(TimeUnit timeUnit, int scale)
     {
         return scale >= 0
-                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit, scale))
-                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit));
+                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(internalDuration.getNano(), TimeUnit.NANOSECONDS, timeUnit, scale))
+                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(internalDuration.getNano(), TimeUnit.NANOSECONDS, timeUnit));
     }
 
     /**
@@ -471,14 +266,14 @@ public class Duration
      * @param duration the duration to add, not null
      * @return a {@code Duration} based on this duration with the specified duration added,
      *         not null
+     *
      * @throws NullPointerException if the specified duration is null
      * @throws ArithmeticException  if numeric overflow occurs
      */
     public Duration plus(Duration duration)
     {
-        Objects.requireNonNull(duration, "The duration must not be null");
-        return new Duration(hours + duration.getHours(), minutes + duration.getMinutes(),
-                seconds + duration.getSeconds(), nanoseconds + duration.getNanoseconds());
+        Objects.requireNonNull(duration, MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL);
+        return new Duration(internalDuration.plus(duration.internalDuration));
     }
 
     /**
@@ -489,13 +284,31 @@ public class Duration
      * @param duration1 the first duration to add, not null
      * @param duration2 the second duration to add, not null
      * @return a {@code Duration} resulting by adding two durations, not null
+     *
      * @throws NullPointerException if the specified duration is null
      * @throws ArithmeticException  if numeric overflow occurs
      */
-
     public static Duration sum(Duration duration1, Duration duration2)
     {
+        Objects.requireNonNull(duration1, MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL);
         return duration1.plus(duration2);
+    }
+
+    /**
+     * Returns a copy of this duration divided by the specified value.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param divisor the value to divide the duration by, positive or negative, not zero
+     * @return a Duration based on this duration divided by the specified divisor, not null
+     *
+     * @throws ArithmeticException if the divisor is zero or if numeric overflow occurs
+     *
+     * @since 2.2.0
+     */
+    public Duration dividedBy(long divisor)
+    {
+        return new Duration(internalDuration.dividedBy(divisor));
     }
 
     /**

@@ -191,4 +191,10 @@ public class DurationTest
         assertThat(Duration.of(1000, MILLISECONDS).dividedBy(5), is(equalTo(Duration.of(200, MILLISECONDS))));
     }
 
+    @Test
+    public void getInternalDuration_success()
+    {
+        assertThat(Duration.of(90, SECONDS).getInternalDuration(), is(equalTo(java.time.Duration.ofSeconds(90))));
+    }
+
 }

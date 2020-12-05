@@ -98,37 +98,15 @@ public enum DurationFormat
      * <li>{@code PT3.2S}</li>
      * <li>{@code PT15M0.00589S}</li>
      * </ul>
+     *
+     * <b>Note:</b> The {@code printLegend} flag has no effect in this format style.
      */
     ISO_8601
     {
         @Override
         public String format(final Duration duration, boolean printLegend)
         {
-            if (Duration.ZERO.equals(duration))
-            {
-                return "PT0S";
-            }
-            StringBuilder builder = new StringBuilder();
-            builder.append("PT");
-            if (duration.getHours() > 0)
-            {
-                builder.append(duration.getHours()).append('H');
-            }
-            if (duration.getMinutes() > 0)
-            {
-                builder.append(duration.getMinutes()).append('M');
-            }
-            if (duration.getSeconds() > 0 || duration.getNanoseconds() > 0)
-            {
-                builder.append(duration.getSeconds());
-                if (duration.getNanoseconds() > 0)
-                {
-                    String nanos = removeTrailingZeros(String.format(NANOSECONDS_FORMAT, duration.getNanoseconds()));
-                    builder.append(".").append(nanos);
-                }
-                builder.append('S');
-            }
-            return builder.toString();
+            return duration.getInternalDuration().toString();
         }
 
     };
@@ -136,7 +114,6 @@ public enum DurationFormat
     private static final String HOURS_FORMAT = "%d:%02d:%02d.%09d";
     private static final String MINUTES_FORMAT = "%d:%02d.%09d";
     private static final String SECONDS_FORMAT = "%d.%09d";
-    private static final String NANOSECONDS_FORMAT = "%09d";
 
     private static final String HOURS_LEGEND = "hour(s)";
     private static final String MINUTES_LEGEND = "minute(s)";
@@ -156,13 +133,13 @@ public enum DurationFormat
      * Returns the {@code legend}, prepended with a white-space, if the
      * {@code printLegendFlag} argument is {@code true}; or an empty string, otherwise.
      *
-     * @param printLegendFlag the flag to be evaluated
-     * @param legend          the string to be used as legend
+     * @param printLegend the flag to be evaluated
+     * @param legend      the string to be used as legend
      * @return the legend string
      */
-    static String legend(boolean printLegendFlag, final String legend)
+    private static String legend(boolean printLegend, final String legend)
     {
-        return printLegendFlag ? " " + legend : "";
+        return printLegend ? " " + legend : "";
     }
 
     /**

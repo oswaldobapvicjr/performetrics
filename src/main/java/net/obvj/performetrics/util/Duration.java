@@ -240,9 +240,10 @@ public class Duration
 
     private BigDecimal convertNanosecondsPart(TimeUnit timeUnit, int scale)
     {
+        int nanoseconds = internalDuration.getNano();
         return scale >= 0
-                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(internalDuration.getNano(), TimeUnit.NANOSECONDS, timeUnit, scale))
-                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(internalDuration.getNano(), TimeUnit.NANOSECONDS, timeUnit));
+                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit, scale))
+                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit));
     }
 
     /**
@@ -314,12 +315,21 @@ public class Duration
     /**
      * Converts a given {@code TimeUnit} to the equivalent {@code ChronoUnit}.
      *
-     * @param timeUnit the {@code TimeUnit} to be converted
+     * @param timeUnit the {@code TimeUnit} to be converted; must not be null
      * @return the converted equivalent {@code ChronoUnit}
      */
     private static ChronoUnit toChronoUnit(TimeUnit timeUnit)
     {
         return chronoUnitsByTimeUnit.get(timeUnit);
+    }
+
+    /**
+     * @return the internal {@code java.time.Duration} object
+     * @since 2.2.0
+     */
+    public java.time.Duration getInternalDuration()
+    {
+        return internalDuration;
     }
 
 }

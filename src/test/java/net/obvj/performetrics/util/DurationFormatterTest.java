@@ -16,6 +16,7 @@ import org.junit.Test;
  * Test methods for the {@link DurationFormatter} class.
  *
  * @author oswaldo.bapvic.jr
+ * @since 2.2.0
  */
 public class DurationFormatterTest
 {

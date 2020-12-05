@@ -76,7 +76,8 @@ public enum DurationFormat
 
     /**
      * Formats a time duration in any of the following formats: {@code H:M:s:ns},
-     * {@code M:S:ns}, or {@code S.ns}, suppressing trailing zeros from the nanosecond part.
+     * {@code M:S:ns}, or {@code S.ns}, always choosing the shortest possible format and
+     * suppressing trailing zeros from the nanoseconds part.
      * <p>
      * Examples:
      * <ul>

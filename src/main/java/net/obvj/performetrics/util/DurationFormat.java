@@ -1,7 +1,28 @@
 package net.obvj.performetrics.util;
 
 /**
- * Enumerates different time format styles, each one with particular behaviors.
+ * Enumerates different duration format styles, each one with particular characteristics.
+ * <p>
+ * Examples:
+ * </p>
+ * <table summary="Duration format examples">
+ * <tr>
+ * <td><b>DurationFormat.SHORTER:</b></td>
+ * <td>{@code 3.2 second(s)}</td>
+ * </tr>
+ * <tr>
+ * <td><b>DurationFormat.SHORT:</b></td>
+ * <td>{@code 3.200000000 second(s)}</td>
+ * </tr>
+ * <tr>
+ * <td><b>DurationFormat.FULL:</b></td>
+ * <td>{@code 0:00:03.200000000}</td>
+ * </tr>
+ * <tr>
+ * <td><b>DurationFormat.ISO_8601:</b></td>
+ * <td>{@code PT3.2S}</td>
+ * </tr>
+ * </table>
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.0
@@ -98,7 +119,7 @@ public enum DurationFormat
      * <li>{@code PT3.2S}</li>
      * <li>{@code PT15M0.00589S}</li>
      * </ul>
-     *
+     * <p>
      * <b>Note:</b> The {@code printLegend} flag has no effect in this format style.
      */
     ISO_8601
@@ -120,12 +141,12 @@ public enum DurationFormat
     private static final String SECONDS_LEGEND = "second(s)";
 
     /**
-     * Formats a time duration.
+     * Formats a given duration.
      *
      * @param duration    the {@link Duration} to be formatted
      * @param printLegend a flag indicating whether or not to include the legend in the
      *                    generated string
-     * @return a formatted time duration
+     * @return a string representing the specified duration, formatted
      */
     public abstract String format(final Duration duration, boolean printLegend);
 

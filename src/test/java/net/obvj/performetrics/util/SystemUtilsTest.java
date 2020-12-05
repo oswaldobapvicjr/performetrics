@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 /**
- * Test methods for the {@link SystemUtils} class
+ * Test methods for the {@link SystemUtils} class.
  *
  * @author oswaldo.bapvic.jr
  */

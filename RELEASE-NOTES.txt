@@ -14,11 +14,18 @@ licensed under the Apache License Version 2.0.
 
 New features/enhancements:
 
- > issue/0007: Support for multiple Timing Sessions inside Stopwatch
+ > issue/0007: Support for multiple Timing Sessions inside a Stopwatch
  > issue/0008: Resetting a Stopwatch
- > issue/0010: Create a new Timing Session whenever the start method is
+ > issue/0010: Creating a new Timing Session whenever the start method is
                called on a Stopwatch  
  > issue/0011: New Facade method for simplified Monitored Operation usage
+ > issue/0017: New methods to calculate the average, minimum and maximum
+               duration from collections of time durations
+
+Fixed bugs:
+
+ > issue/0015: Issue regarding arithmetic operations using Duration objects
+ > Documentation fixes and improvements in general
 
 
 For more information, or suggestions for improvement, visit:

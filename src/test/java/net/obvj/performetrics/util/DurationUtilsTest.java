@@ -2,7 +2,10 @@ package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.obvj.performetrics.util.DurationUtils.*;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.performetrics.util.DurationUtils.average;
+import static net.obvj.performetrics.util.DurationUtils.max;
+import static net.obvj.performetrics.util.DurationUtils.min;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -20,6 +23,12 @@ public class DurationUtilsTest
     private static final Duration D_1250_MILLIS = Duration.of(1250, MILLISECONDS);
     private static final Duration D_1_SECOND = Duration.of(1, SECONDS);
     private static final Duration D_2_SECONDS = Duration.of(2, SECONDS);
+
+    @Test
+    public void constructor_instantiationNotAllowed()
+    {
+        assertThat(DurationUtils.class, instantiationNotAllowed());
+    }
 
     @Test
     public void average_null_zero()
@@ -50,9 +59,15 @@ public class DurationUtilsTest
     @Test
     public void average_containingNullElements_nullElementsDontCount()
     {
-        assertThat(average(Arrays.asList(D_500_MILLIS, D_1_SECOND, null)), is(equalTo(D_750_MILLIS)));
+        assertThat(average(Arrays.asList(D_500_MILLIS, null)), is(equalTo(D_500_MILLIS)));
         assertThat(average(Arrays.asList(null, D_500_MILLIS, D_2_SECONDS)), is(equalTo(D_1250_MILLIS)));
         assertThat(average(Arrays.asList(D_500_MILLIS, null, D_500_MILLIS, D_2_SECONDS)), is(equalTo(D_1_SECOND)));
+    }
+
+    @Test
+    public void average_containingOnlyNullElements_zero()
+    {
+        assertThat(average(Collections.singleton((Duration) null)), is(equalTo(D_ZERO)));
     }
 
     @Test

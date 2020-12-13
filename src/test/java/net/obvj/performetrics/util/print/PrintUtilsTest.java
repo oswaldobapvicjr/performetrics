@@ -73,7 +73,7 @@ public class PrintUtilsTest
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_HORIZONTAL_LINES);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printSummary(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
@@ -89,7 +89,7 @@ public class PrintUtilsTest
         String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_HORIZONTAL_LINES);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printDetails(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 

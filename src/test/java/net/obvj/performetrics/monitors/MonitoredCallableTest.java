@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +28,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
  * Test methods for the {@link MonitoredCallable}.
@@ -138,29 +137,22 @@ public class MonitoredCallableTest
         assertAllUnitsAfter(operation, 0);
     }
 
-    /**
-     * Tests that the method that prints operation statistics calls the PrintUtils class
-     */
     @Test
-    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        operation.printStatistics(System.out);
+        operation.printSummary(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out);
+        PrintUtils.printSummary(operation.stopwatch, System.out);
     }
 
-    /**
-     * Tests that the method that prints operation statistics in custom time unit calls the correct
-     * PrintUtils method
-     */
     @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        operation.printStatistics(System.out, TimeUnit.SECONDS);
+        operation.printDetails(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out, TimeUnit.SECONDS);
+        PrintUtils.printDetails(operation.stopwatch, System.out);
     }
 
     @Test()

@@ -15,9 +15,9 @@ import net.obvj.performetrics.Counter.Type;
  * Specify a target {@code Runnable} via constructor, then execute the {@code run()}
  * method available in this wrapper. The target {@code Runnable}'s {@code run()} method
  * will be executed and monitored. After the operation, call
- * {@code printStatistics(System.out)} to print the statistics to the system console or
- * {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time duration for a
- * particular counter. E.g.:
+ * {@code printSummary(System.out)} or {@code printDetails(System.out)} to print the
+ * elapsed times to the system console or {@code elapsedTime(Counter.Type)}, to retrieve
+ * the elapsed time duration for a particular counter. E.g.:
  * </p>
  *
  * <pre>

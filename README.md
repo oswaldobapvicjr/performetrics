@@ -54,7 +54,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     sw.start();
     ```
 
-    > **Note:** A single call to the factory method `Stopwatch.createStarted()` provides a new, started stopwatch for convenience.
+    > **Note:** A single call `Stopwatch.createStarted()` may provide a started stopwatch for convenience.
 
 2. Execute the code to be profiled and then stop the timing session:
 
@@ -68,25 +68,25 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     double cpuTimeNanos = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
-    > **Note:** Check the different `elapsedTime` options available to find one that is more suitable to your preferences.
+    > **Note:** Check the different `elapsedTime` options available to find the most suitable for you.
 
-4. Print the statistics to the system console:
+4. Print the summary to the system console:
 
     ```java
-    sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
+    sw.printSummary(System.out);
     ```
 
     > **Sample output:**
     >
     > ````
-    >  +-----------------+----------------------+--------------+
-    >  | Counter         |         Elapsed time | Time unit    |
-    >  +-----------------+----------------------+--------------+
-    >  | Wall clock time |          2377.312501 | milliseconds |
-    >  | CPU time        |               218.75 | milliseconds |
-    >  | User time       |                93.75 | milliseconds |
-    >  | System time     |                  125 | milliseconds |
-    >  +-----------------+----------------------+--------------+
+    >  ====================================
+    >  Counter                 Elapsed time
+    >  ------------------------------------
+    >  Wall clock time    0:00:01.062960500
+    >  CPU time           0:00:00.109375000
+    >  User time          0:00:00.046875000
+    >  System time        0:00:00.062500000
+    >  ====================================
     > ````
 
 ### Example 2: Using a MonitoredRunnable or MonitoredCallable

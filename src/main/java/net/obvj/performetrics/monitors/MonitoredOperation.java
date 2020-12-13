@@ -9,7 +9,7 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
  * A base object for monitorable operations that maintains one or more counters.
@@ -117,24 +117,27 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Prints operation statistics in the specified print stream.
+     * Prints summarized elapsed times in the specified print stream.
      *
-     * @param printStream the print stream to which statistics will be sent
+     * @param printStream the print stream to which data will be sent
+     *
+     * @since 2.2.1
      */
-    public void printStatistics(PrintStream printStream)
+    public void printSummary(PrintStream printStream)
     {
-        PrintUtils.print(stopwatch.getCounters(), printStream);
+        PrintUtils.printSummary(stopwatch, printStream);
     }
 
     /**
-     * Prints operation statistics in the specified print stream, with a custom time unit.
+     * Prints detailed information about timing sessions in the specified print stream.
      *
-     * @param printStream the print stream to which statistics will be sent
-     * @param timeUnit    the time unit for the elapsed times to be displayed
+     * @param printStream the print stream to which information will be sent
+     *
+     * @since 2.2.1
      */
-    public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
+    public void printDetails(PrintStream printStream)
     {
-        PrintUtils.print(stopwatch.getCounters(), printStream, timeUnit);
+        PrintUtils.printDetails(stopwatch, printStream);
     }
 
     /**

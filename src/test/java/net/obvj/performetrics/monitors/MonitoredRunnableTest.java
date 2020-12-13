@@ -1,7 +1,6 @@
 package net.obvj.performetrics.monitors;
 
 import static java.util.concurrent.TimeUnit.HOURS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
@@ -33,7 +32,7 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
  * Test methods for the {@link MonitoredRunnable}.
@@ -139,29 +138,22 @@ public class MonitoredRunnableTest
         assertAllUnitsAfter(operation, 0);
     }
 
-    /**
-     * Tests that the method that prints operation statistics calls the PrintUtils class
-     */
     @Test
-    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printStatistics(System.out);
+        operation.printSummary(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out);
+        PrintUtils.printSummary(operation.stopwatch, System.out);
     }
 
-    /**
-     * Tests that the method that prints operation statistics in custom time unit calls the correct
-     * PrintUtils method
-     */
     @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printStatistics(System.out, SECONDS);
+        operation.printDetails(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out, SECONDS);
+        PrintUtils.printDetails(operation.stopwatch, System.out);
     }
 
     @Test(expected = IllegalArgumentException.class)

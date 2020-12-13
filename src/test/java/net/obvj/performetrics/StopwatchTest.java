@@ -33,7 +33,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SystemUtils.class, PrintUtils.class })
@@ -265,29 +265,22 @@ public class StopwatchTest
         assertThat(sw.getCounters(), is(equalTo(Collections.emptyList())));
     }
 
-    /**
-     * Tests that the method that prints stopwatch data calls the PrintUtils class
-     */
     @Test
-    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printStatistics(System.out);
+        sw.printSummary(System.out);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(sw, System.out);
+        PrintUtils.printSummary(sw, System.out);
     }
 
-    /**
-     * Tests that the method that prints stopwatch data in custom time unit calls the correct
-     * PrintUtils method
-     */
     @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
+    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printStatistics(System.out, SECONDS);
+        sw.printDetails(System.out);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(sw, System.out, SECONDS);
+        PrintUtils.printDetails(sw, System.out);
     }
 
     @Test

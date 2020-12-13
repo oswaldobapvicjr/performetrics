@@ -23,7 +23,7 @@ public enum StopwatchFormatter
      * Generates a summarized view which represents the total elapsed time for each counter
      * type available in the stopwatch, one row for each type.
      */
-    SUMMARIZED
+    SUMMARIZED(PrintStyle.SUMMARIZED_HORIZONTAL_LINES)
     {
         @Override
         public String format(Stopwatch stopwatch, PrintStyle style)
@@ -49,7 +49,7 @@ public enum StopwatchFormatter
      * stopwatch, one row for each timing session, and the total elapsed time for each type,
      * as well.
      */
-    DETAILED
+    DETAILED(PrintStyle.DETAILED_HORIZONTAL_LINES)
     {
         @Override
         public String format(Stopwatch stopwatch, PrintStyle style)
@@ -101,8 +101,26 @@ public enum StopwatchFormatter
     private static final String HEADER_ELAPSED_TIME = "Elapsed time";
     private static final String HEADER_ELAPSED_TIME_ACC = "Elapsed time (+)";
 
+    private final PrintStyle defaultStyle;
+
+    private StopwatchFormatter(PrintStyle defaultStyle)
+    {
+        this.defaultStyle = defaultStyle;
+    }
+
     /**
      * Generates a string with formatted stopwatch data.
+     *
+     * @param stopwatch the stopwatch to be printed
+     * @return a string with formatted stopwatch data
+     */
+    public String format(Stopwatch stopwatch)
+    {
+        return format(stopwatch, defaultStyle);
+    }
+
+    /**
+     * Generates a string with formatted stopwatch data and custom style.
      *
      * @param stopwatch the stopwatch to be printed
      * @param style     the {@link PrintStyle} to be applied

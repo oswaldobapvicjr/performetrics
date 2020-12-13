@@ -70,10 +70,10 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
     > **Note:** Check the different `elapsedTime` options available to find the most suitable for you.
 
-4. Print the statistics to the system console:
+4. Print the summary to the system console:
 
     ```java
-    sw.printStatistics(System.out);
+    sw.printSummary(System.out);
     ```
 
     > **Sample output:**

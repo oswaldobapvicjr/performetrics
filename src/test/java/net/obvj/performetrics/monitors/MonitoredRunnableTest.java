@@ -139,15 +139,15 @@ public class MonitoredRunnableTest
     }
 
     /**
-     * Tests that the method that prints operation statistics calls the PrintUtils class
+     * Tests that the method that prints the summary calls the PrintUtils class
      */
     @Test
-    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printStatistics(System.out);
+        operation.printSummary(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.stopwatch, System.out);
+        PrintUtils.printSummary(operation.stopwatch, System.out);
     }
 
     @Test(expected = IllegalArgumentException.class)

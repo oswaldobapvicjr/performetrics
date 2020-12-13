@@ -52,16 +52,16 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </pre>
  *
  * <p>
- * Use the output method {@code printStatistics(System.out)} to print stopwatch statistics
- * to the system console.
+ * Use the output method {@code printSummary(System.out)} to print stopwatch statistics to
+ * the system console.
  * </p>
  *
  * <p>
  * Although it is intended that the output methods {@code elapsedTime()} and
- * {@code printStatistics()} should be called after the stop, some suitable, temporary
- * data may be returned if the current timing session is still running. In this scenario,
- * the initial values will be compared to the most up-to-date ones, retrieved at the
- * moment of the call.
+ * {@code printSummary()} should be called after the stop, some suitable, temporary data
+ * may be returned if the current timing session is still running. In this scenario, the
+ * initial values will be compared to the most up-to-date ones, retrieved at the moment of
+ * the call.
  * </p>
  *
  * <p>
@@ -323,13 +323,15 @@ public class Stopwatch
     }
 
     /**
-     * Prints stopwatch statistics in the specified print stream.
+     * Prints summarized elapsed times in the specified print stream.
      *
-     * @param printStream the print stream to which statistics will be sent
+     * @param printStream the print stream to which data will be sent
+     *
+     * @since 2.2.1
      */
-    public void printStatistics(PrintStream printStream)
+    public void printSummary(PrintStream printStream)
     {
-        PrintUtils.print(this, printStream);
+        PrintUtils.printSummary(this, printStream);
     }
 
     /**

@@ -48,7 +48,7 @@ public class PrintUtilsTest
      * Test stopwatch printing onto a PrintStream.
      */
     @Test
-    public void printStopwatch_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    public void printSummary_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
         // Prepare data
         Counter c1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
@@ -62,7 +62,7 @@ public class PrintUtilsTest
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
-        PrintUtils.print(stopwatch, ps);
+        PrintUtils.printSummary(stopwatch, ps);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(equalTo(expectedString)));

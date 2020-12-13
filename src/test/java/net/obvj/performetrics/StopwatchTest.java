@@ -269,12 +269,12 @@ public class StopwatchTest
      * Tests that the method that prints stopwatch data calls the PrintUtils class
      */
     @Test
-    public void printStatistics_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printStatistics(System.out);
+        sw.printSummary(System.out);
         verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(sw, System.out);
+        PrintUtils.printSummary(sw, System.out);
     }
 
     @Test

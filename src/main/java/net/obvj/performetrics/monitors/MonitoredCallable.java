@@ -16,7 +16,7 @@ import net.obvj.performetrics.Counter.Type;
  * Specify a target {@code Callable} via constructor, then execute the {@code call()}
  * method available in this wrapper. The target {@code Callable}'s {@code call()} method
  * will be executed and monitored. After the operation, call
- * {@code printStatistics(System.out)} to print the statistics to the system console or
+ * {@code printSummary(System.out)} to print the elapsed times to the system console or
  * {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time duration for a
  * particular counter. E.g.:
  * </p>

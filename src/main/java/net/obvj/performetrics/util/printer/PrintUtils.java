@@ -21,15 +21,15 @@ public class PrintUtils
     }
 
     /**
-     * Prints statistics from the given stopwatch in the specified print stream.
+     * Prints summarized elapsed times from the given stopwatch in the specified print stream.
      *
      * @param stopwatch   the stopwatch to be printed
-     * @param printStream the print stream to which statistics will be sent
+     * @param printStream the print stream to which data will be sent
      * @throws NullPointerException if a null stopwatch or print stream is received
      */
-    public static void print(Stopwatch stopwatch, PrintStream printStream)
+    public static void printSummary(Stopwatch stopwatch, PrintStream printStream)
     {
-        printStream.print(StopwatchFormatter.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_HORIZONTAL_LINES));
+        printStream.print(StopwatchFormatter.SUMMARIZED.format(stopwatch));
     }
 
 }

@@ -117,13 +117,15 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Prints operation statistics in the specified print stream.
+     * Prints summarized elapsed times in the specified print stream.
      *
-     * @param printStream the print stream to which statistics will be sent
+     * @param printStream the print stream to which data will be sent
+     *
+     * @since 2.2.1
      */
-    public void printStatistics(PrintStream printStream)
+    public void printSummary(PrintStream printStream)
     {
-        PrintUtils.print(stopwatch, printStream);
+        PrintUtils.printSummary(stopwatch, printStream);
     }
 
     /**

@@ -35,7 +35,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -47,13 +47,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
 ### Example 1: Using the Stopwatch class
 
-1. Once available in your Java classpath, add the following import to your class:
-
-    ```java
-    import net.obvj.performetrics.Stopwatch;
-    ```
-
-2. Create a default stopwatch and start it:
+1. Create a stopwatch and start it:
 
     ```java
     Stopwatch sw = new Stopwatch();
@@ -62,21 +56,21 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
     > **Note:** A single call to the factory method `Stopwatch.createStarted()` provides a new, started stopwatch for convenience.
 
-3. Execute the code to be profiled and then stop the timing session:
+2. Execute the code to be profiled and then stop the timing session:
 
     ```java
     sw.stop();
     ```
 
-4. Get the elapsed time for a particular counter (e.g. CPU time), in a specific time unit:
+3. Get the elapsed time for a particular counter (e.g. CPU time), in a specific time unit:
 
     ```java
-    long cpuTimeNanos = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+    double cpuTimeNanos = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
     > **Note:** Check the different `elapsedTime` options available to find one that is more suitable to your preferences.
 
-5. Print the statistics to the system console:
+4. Print the statistics to the system console:
 
     ```java
     sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
@@ -119,6 +113,33 @@ In this example, we are using the `MonitoredRunnable` to run a procedure represe
     > 0.250739 second(s)
     > 0.000001 second(s)
     > ````
+
+### Example 3: Working with Duration and DurationUtils
+
+The objects from the package `net.obvj.performetrics.util` contain useful features for parsing, conversion, formatting, and working with time durations. See some examples below:
+
+1. Create a collection of time durations (or obtain some using `Stopwatch.elapsedTime()`):
+
+    ```java
+    Duration duration1 = Duration.of(1, TimeUnit.SECONDS);
+    Duration duration2 = Duration.of(500, TimeUnit.MILLISECONDS);
+    List<Duration> durations = Arrays.asList(duration1, duration2);
+    ```
+
+2. Discover the average duration:
+
+    ```java
+    Duration average = DurationUtils.average(durations);
+    System.out.println(average); //result: 0.75 second(s)
+    ```
+
+2. Discover the lowest and highest durations and convert them to seconds:
+
+    ```java
+    double min = DurationUtils.min(durations).toSeconds(); //result: 0.5
+    double max = DurationUtils.max(durations).toSeconds(); //result: 1.0
+    ```
+
 ---
     
 ## Configuration

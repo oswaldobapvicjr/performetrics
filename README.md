@@ -54,7 +54,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     sw.start();
     ```
 
-    > **Note:** A single call to the factory method `Stopwatch.createStarted()` provides a new, started stopwatch for convenience.
+    > **Note:** A single call `Stopwatch.createStarted()` may provide a started stopwatch for convenience.
 
 2. Execute the code to be profiled and then stop the timing session:
 

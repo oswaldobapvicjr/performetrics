@@ -89,6 +89,48 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ====================================
     > ````
 
+5. Call `start` again to add a new timing session to the existing stopwatch:
+
+    ```java
+    sw.start();
+    ```
+
+4. Print stopwatch details:
+
+    ```java
+    sw.printDetails(System.out);
+    ```
+
+    > **Sample output:**
+    >
+    > ````
+    >  ===============================================
+    >      #         Elapsed time     Elapsed time (+)
+    >  ===============================================
+    >  Wall clock time
+    >  -----------------------------------------------
+    >      1    0:00:01.062960500    0:00:01.062960500
+    >      2    0:00:00.935263400    0:00:01.998223900
+    >  -----------------------------------------------
+    >  TOTAL                         0:00:01.998223900
+    >  ===============================================
+    >  CPU time
+    >  -----------------------------------------------
+    >      1    0:00:00.109375000    0:00:00.109375000
+    >      2    0:00:00.140625000    0:00:00.250000000
+    >  -----------------------------------------------
+    >  TOTAL                         0:00:00.250000000
+    >  ===============================================
+    >  User time
+    >  -----------------------------------------------
+    >      1    0:00:00.046875000    0:00:00.046875000
+    >      2    0:00:00.062500000    0:00:00.109375000
+    >  -----------------------------------------------
+    >  TOTAL                         0:00:00.109375000
+    >  ===============================================
+    > ````
+
+
 ### Example 2: Using a MonitoredRunnable or MonitoredCallable
 
 In this example, we are using the `MonitoredRunnable` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
@@ -165,4 +207,4 @@ Performetrics provides two different conversion modes that can be applied depend
 
 The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.1-A.svg)
+[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-A.svg)

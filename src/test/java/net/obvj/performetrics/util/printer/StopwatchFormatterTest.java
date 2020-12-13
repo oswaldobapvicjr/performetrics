@@ -2,9 +2,11 @@ package net.obvj.performetrics.util.printer;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -13,12 +15,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-
-import static net.obvj.performetrics.Counter.Type.*;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
@@ -29,7 +29,7 @@ import net.obvj.performetrics.util.DurationFormat;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
 public class StopwatchFormatterTest
 {
     static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s", null, null, null);
@@ -55,6 +55,8 @@ public class StopwatchFormatterTest
     @Mock Counter s2Counter2;
 
     @Mock Stopwatch stopwatch;
+
+    @Mock StringBuilder stringBuilder;
 
     @Before
     public void setupMocks()
@@ -110,6 +112,24 @@ public class StopwatchFormatterTest
         assertThat(lines[5], is(equalTo(1 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
         assertThat(lines[6], is(equalTo(2 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
         assertThat(lines[7], is(equalTo(STR_DURATION_SUM_C2)));
+    }
+
+    @Test
+    public void appendLine_nullOrEmptyFormat_doNothing()
+    {
+        StopwatchFormatter.appendLine(stringBuilder, null);
+        StopwatchFormatter.appendLine(stringBuilder, null, "");
+        StopwatchFormatter.appendLine(stringBuilder, "");
+        StopwatchFormatter.appendLine(stringBuilder, "", "");
+        verifyNoInteractions(stringBuilder);
+    }
+
+    @Test
+    public void appendLine_validFormat_appendsResultAndLineSepator()
+    {
+        StringBuilder sb = new StringBuilder();
+        StopwatchFormatter.appendLine(sb, "test=%s", "test");
+        assertThat(sb.toString(), is(equalTo("test=test" + StopwatchFormatter.LINE_SEPARATOR)));
     }
 
 }

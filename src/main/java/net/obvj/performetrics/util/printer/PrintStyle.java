@@ -5,7 +5,7 @@ import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Defines a set of attributes used by a {@link StopwatchFormatter} to generate a tabular
- * string output out of {@link Stopwatch} objects.
+ * string output out of a {@link Stopwatch} object.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
@@ -87,8 +87,7 @@ public class PrintStyle
      * @param alternativeLine a string to be used as alternative split line
      */
     protected PrintStyle(DurationFormat durationFormat, String headerFormat, String rowFormat, String totalRowFormat,
-            String simpleLine,
-            String alternativeLine)
+            String simpleLine, String alternativeLine)
     {
         this.durationFormat = durationFormat;
         this.headerFormat = headerFormat;

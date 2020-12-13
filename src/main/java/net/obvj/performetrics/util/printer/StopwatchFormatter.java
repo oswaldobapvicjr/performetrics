@@ -95,11 +95,19 @@ public enum StopwatchFormatter
     };
 
     protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    protected static final String HEADER_SESSION = "#";
-    protected static final String HEADER_COUNTER = "Counter";
-    protected static final String HEADER_ELAPSED_TIME = "Elapsed time";
-    protected static final String HEADER_ELAPSED_TIME_ACC = "Elapsed time (+)";
 
+    private static final String HEADER_SESSION = "#";
+    private static final String HEADER_COUNTER = "Counter";
+    private static final String HEADER_ELAPSED_TIME = "Elapsed time";
+    private static final String HEADER_ELAPSED_TIME_ACC = "Elapsed time (+)";
+
+    /**
+     * Generates a string with formatted stopwatch data.
+     *
+     * @param stopwatch the stopwatch to be printed
+     * @param style     the {@link PrintStyle} to be applied
+     * @return a string with formatted stopwatch data
+     */
     public abstract String format(Stopwatch stopwatch, PrintStyle style);
 
     /**
@@ -141,7 +149,7 @@ public enum StopwatchFormatter
      * @param builder the character sequence to be incremented
      * @param string  the string to be appended
      */
-    protected void appendLine(StringBuilder builder, String string)
+    protected static void appendLine(StringBuilder builder, String string)
     {
         if (string != null && !string.isEmpty())
         {
@@ -158,7 +166,7 @@ public enum StopwatchFormatter
      * @param format  a format string
      * @param string  the arguments referenced by the format specifiers in the format string
      */
-    protected void appendLine(StringBuilder builder, String format, Object... args)
+    protected static void appendLine(StringBuilder builder, String format, Object... args)
     {
         if (format != null && !format.isEmpty())
         {

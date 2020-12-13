@@ -21,7 +21,7 @@ public class PrintUtils
     }
 
     /**
-     * Prints the statistics for the given stopwatch in the specified print stream.
+     * Prints statistics from the given stopwatch in the specified print stream.
      *
      * @param stopwatch   the stopwatch to be printed
      * @param printStream the print stream to which statistics will be sent
@@ -29,7 +29,7 @@ public class PrintUtils
      */
     public static void print(Stopwatch stopwatch, PrintStream printStream)
     {
-        printStream.print(StopwatchFormatter.DETAILED.format(stopwatch, PrintStyle.DETAILED_HORIZONTAL_LINES));
+        printStream.print(StopwatchFormatter.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_HORIZONTAL_LINES));
     }
 
 }

@@ -277,19 +277,6 @@ public class StopwatchTest
         PrintUtils.print(sw, System.out);
     }
 
-    /**
-     * Tests that the method that prints stopwatch data in custom time unit calls the correct
-     * PrintUtils method
-     */
-    @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
-    {
-        Stopwatch sw = new Stopwatch();
-        sw.printStatistics(System.out, SECONDS);
-        verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(sw, System.out, SECONDS);
-    }
-
     @Test
     public void getCounters_noSession_emptyList()
     {

@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -147,20 +146,7 @@ public class MonitoredCallableTest
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         operation.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out);
-    }
-
-    /**
-     * Tests that the method that prints operation statistics in custom time unit calls the correct
-     * PrintUtils method
-     */
-    @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
-    {
-        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        operation.printStatistics(System.out, TimeUnit.SECONDS);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out, TimeUnit.SECONDS);
+        PrintUtils.print(operation.stopwatch, System.out);
     }
 
     @Test()

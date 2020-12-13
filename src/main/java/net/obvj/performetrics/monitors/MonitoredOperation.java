@@ -123,18 +123,7 @@ public abstract class MonitoredOperation
      */
     public void printStatistics(PrintStream printStream)
     {
-        PrintUtils.print(stopwatch.getCounters(), printStream);
-    }
-
-    /**
-     * Prints operation statistics in the specified print stream, with a custom time unit.
-     *
-     * @param printStream the print stream to which statistics will be sent
-     * @param timeUnit    the time unit for the elapsed times to be displayed
-     */
-    public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
-    {
-        PrintUtils.print(stopwatch.getCounters(), printStream, timeUnit);
+        PrintUtils.print(stopwatch, printStream);
     }
 
     /**

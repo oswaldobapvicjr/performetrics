@@ -333,17 +333,6 @@ public class Stopwatch
     }
 
     /**
-     * Prints stopwatch statistics in the specified print stream, with a custom time unit.
-     *
-     * @param printStream the print stream to which statistics will be sent
-     * @param timeUnit    the time unit for the elapsed times to be displayed
-     */
-    public void printStatistics(PrintStream printStream, TimeUnit timeUnit)
-    {
-        PrintUtils.print(this, printStream, timeUnit);
-    }
-
-    /**
      * Creates and starts a new timing session.
      * <p>
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -20,12 +21,12 @@ public class PerformetricsTestDrive
         Locale.setDefault(new Locale("en", "US"));
 
         testStopwatch1();
-        System.out.println("\n\n=======================================\n");
+        System.out.println("\n\n****************************************************\n");
         System.out.println("Now in fast mode...\n");
         Performetrics.setDefaultConversionMode(ConversionMode.FAST);
         testStopwatch1();
 
-        System.out.println("\n\n=======================================\n");
+        System.out.println("\n\n****************************************************\n");
         System.out.println("Now with a custom scale...\n");
         Performetrics.setDefaultConversionMode(ConversionMode.DOUBLE_PRECISION);
         Performetrics.setScale(2);
@@ -38,16 +39,20 @@ public class PerformetricsTestDrive
         Stopwatch sw = Stopwatch.createStarted();
         test(sw);
 
-        System.out.println("\n\n--------------------------------------\n");
-        System.out.println("Resuming the same stopwatch...\n");
-        sw.start();
-        test(sw);
+        for (int i = 0; i < 4; i++)
+        {
+            System.out.println("\nResuming the same stopwatch...\n");
+            sw.start();
+            test(sw);
+        }
     }
 
     private static void test(Stopwatch sw) throws InterruptedException, IOException
     {
         // Enforcing some wall-clock time...
-        Thread.sleep(2000);
+
+        int sleepTimeMillis = new Random(987).nextInt(3000);
+        Thread.sleep(sleepTimeMillis);
 
         // Enforcing some user time...
         UUID.randomUUID();
@@ -58,30 +63,26 @@ public class PerformetricsTestDrive
         sw.stop();
 
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.NANOSECONDS)  + " nanosecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS)  + " nanosecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanosecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanosecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " millisecods");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.SECONDS)      + " seconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS)      + " seconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
         sw.printStatistics(System.out);
-        sw.printStatistics(System.out, TimeUnit.MILLISECONDS);
-        sw.printStatistics(System.out, TimeUnit.SECONDS);
-
     }
 
     private static void testCallableWithLambda() throws Exception
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(() ->
         {
-            List<Path> paths = Files.list(Paths.get(System.getenv("TEMP"))).sorted()
-                    .collect(Collectors.toList());
+            List<Path> paths = Files.list(Paths.get(System.getenv("TEMP"))).sorted().collect(Collectors.toList());
             return "File count = " + paths.size();
         });
 
         testMonitoredCallable(operation);
 
-        System.out.println("\n\n--------------------------------------\n");
+        System.out.println("\n\n-----------------------------------------------------\n");
         System.out.println("Calling the same monitored operation again...\n");
 
         testMonitoredCallable(operation);
@@ -92,14 +93,12 @@ public class PerformetricsTestDrive
         System.out.println(operation.call());
 
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.NANOSECONDS)  + " nanosecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS)  + " nanosecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanosecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanosecods");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " millisecods");
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME,            TimeUnit.SECONDS)      + " seconds");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS)      + " seconds");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
+        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
         operation.printStatistics(System.out);
-        operation.printStatistics(System.out, TimeUnit.MILLISECONDS);
-        operation.printStatistics(System.out, TimeUnit.SECONDS);
     }
 }

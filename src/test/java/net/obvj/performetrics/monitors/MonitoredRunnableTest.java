@@ -1,7 +1,6 @@
 package net.obvj.performetrics.monitors;
 
 import static java.util.concurrent.TimeUnit.HOURS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
@@ -148,20 +147,7 @@ public class MonitoredRunnableTest
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.printStatistics(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out);
-    }
-
-    /**
-     * Tests that the method that prints operation statistics in custom time unit calls the correct
-     * PrintUtils method
-     */
-    @Test
-    public void printStatistics_withPrintWriterAndTimeUnitArguments_callsCorrectPrintUtilMethod()
-    {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printStatistics(System.out, SECONDS);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.print(operation.getCounters(), System.out, SECONDS);
+        PrintUtils.print(operation.stopwatch, System.out);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -89,13 +89,9 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ====================================
     > ````
 
-5. Call `start` again to add a new timing session to the existing stopwatch:
+5. Call `start` again to add a new timing session to the existing stopwatch.
 
-    ```java
-    sw.start();
-    ```
-
-4. Print stopwatch details:
+6. Print stopwatch details:
 
     ```java
     sw.printDetails(System.out);
@@ -130,18 +126,17 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ===============================================
     > ````
 
+---
 
-### Example 2: Using a MonitoredRunnable or MonitoredCallable
+### Example 2: Using a Monitored Operation
 
-In this example, we are using the `MonitoredRunnable` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
+In this example, we are using `Performetrics.monitorOperation(...)` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
 
-1. Use the `Performetrics.monitorOperation` facade method, passing the procedure to be monitored as a lambda expression:
+1. Create a monitored operation, with the the procedure to be executed attached:
 
     ```java
     MonitoredOperation operation = Performetrics.monitorOperation(() -> myObject.doStuff());
     ```
-
-    > **Note:** If no specific counter type is passed, all available counters will be measured.
 
 2. Print the elapsed time for each counter:
 
@@ -156,7 +151,9 @@ In this example, we are using the `MonitoredRunnable` to run a procedure represe
     > 0.000001 second(s)
     > ````
 
-### Example 3: Working with Duration and DurationUtils
+---
+
+### Example 3: Working with Durations
 
 The objects from the package `net.obvj.performetrics.util` contain useful features for parsing, conversion, formatting, and working with time durations. See some examples below:
 
@@ -185,6 +182,7 @@ The objects from the package `net.obvj.performetrics.util` contain useful featur
 ---
     
 ## Configuration
+
 **Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
 
 ### Conversion Modes

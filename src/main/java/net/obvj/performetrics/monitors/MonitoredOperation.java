@@ -129,6 +129,18 @@ public abstract class MonitoredOperation
     }
 
     /**
+     * Prints detailed information about timing sessions in the specified print stream.
+     *
+     * @param printStream the print stream to which information will be sent
+     *
+     * @since 2.2.1
+     */
+    public void printDetails(PrintStream printStream)
+    {
+        PrintUtils.printDetails(stopwatch, printStream);
+    }
+
+    /**
      * Cleans all counters available in this monitored operation.
      *
      * @since 2.2.0

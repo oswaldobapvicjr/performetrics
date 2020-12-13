@@ -24,13 +24,13 @@ import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
- * Unit tests for the {@link StopwatchFormatter}.
+ * Unit tests for the {@link PrintFormat}.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
 @RunWith(PowerMockRunner.class)
-public class StopwatchFormatterTest
+public class PrintFormatTest
 {
     static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s", null, null, null);
     static final PrintStyle DETAILED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s %s", "%s", null, null);
@@ -90,8 +90,8 @@ public class StopwatchFormatterTest
     @Test
     public void summarized_printsTypesAndTotalElapsedTimes()
     {
-        String result = StopwatchFormatter.SUMMARIZED.format(stopwatch, SUMMARIZED_TEST_STYLE);
-        String[] lines = result.split(StopwatchFormatter.LINE_SEPARATOR);
+        String result = PrintFormat.SUMMARIZED.format(stopwatch, SUMMARIZED_TEST_STYLE);
+        String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME + " " + STR_DURATION_SUM_C1)));
         assertThat(lines[1], is(equalTo(CPU_TIME + " " + STR_DURATION_SUM_C2)));
@@ -100,8 +100,8 @@ public class StopwatchFormatterTest
     @Test
     public void detailed_printsElapsedTimesAndAccumulatedValues()
     {
-        String result = StopwatchFormatter.DETAILED.format(stopwatch, DETAILED_TEST_STYLE);
-        String[] lines = result.split(StopwatchFormatter.LINE_SEPARATOR);
+        String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE);
+        String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME.toString())));
         assertThat(lines[1], is(equalTo(1 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
@@ -117,10 +117,10 @@ public class StopwatchFormatterTest
     @Test
     public void appendLine_nullOrEmptyFormat_doNothing()
     {
-        StopwatchFormatter.appendLine(stringBuilder, null);
-        StopwatchFormatter.appendLine(stringBuilder, null, "");
-        StopwatchFormatter.appendLine(stringBuilder, "");
-        StopwatchFormatter.appendLine(stringBuilder, "", "");
+        PrintFormat.appendLine(stringBuilder, null);
+        PrintFormat.appendLine(stringBuilder, null, "");
+        PrintFormat.appendLine(stringBuilder, "");
+        PrintFormat.appendLine(stringBuilder, "", "");
         verifyNoInteractions(stringBuilder);
     }
 
@@ -128,8 +128,8 @@ public class StopwatchFormatterTest
     public void appendLine_validFormat_appendsResultAndLineSepator()
     {
         StringBuilder sb = new StringBuilder();
-        StopwatchFormatter.appendLine(sb, "test=%s", "test");
-        assertThat(sb.toString(), is(equalTo("test=test" + StopwatchFormatter.LINE_SEPARATOR)));
+        PrintFormat.appendLine(sb, "test=%s", "test");
+        assertThat(sb.toString(), is(equalTo("test=test" + PrintFormat.LINE_SEPARATOR)));
     }
 
 }

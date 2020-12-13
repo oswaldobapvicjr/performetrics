@@ -265,9 +265,6 @@ public class StopwatchTest
         assertThat(sw.getCounters(), is(equalTo(Collections.emptyList())));
     }
 
-    /**
-     * Tests that the method that prints stopwatch data calls the PrintUtils class
-     */
     @Test
     public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
@@ -275,6 +272,15 @@ public class StopwatchTest
         sw.printSummary(System.out);
         verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printSummary(sw, System.out);
+    }
+
+    @Test
+    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.printDetails(System.out);
+        verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printDetails(sw, System.out);
     }
 
     @Test

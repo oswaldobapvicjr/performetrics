@@ -17,7 +17,7 @@ import net.obvj.performetrics.util.DurationFormat;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-public enum StopwatchFormatter
+public enum PrintFormat
 {
     /**
      * Generates a summarized view which represents the total elapsed time for each counter
@@ -103,7 +103,7 @@ public enum StopwatchFormatter
 
     private final PrintStyle defaultStyle;
 
-    private StopwatchFormatter(PrintStyle defaultStyle)
+    private PrintFormat(PrintStyle defaultStyle)
     {
         this.defaultStyle = defaultStyle;
     }

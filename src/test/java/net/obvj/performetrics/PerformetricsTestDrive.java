@@ -69,7 +69,7 @@ public class PerformetricsTestDrive
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
-        sw.printSummary(System.out);
+        sw.printDetails(System.out);
     }
 
     private static void testCallableWithLambda() throws Exception
@@ -99,6 +99,9 @@ public class PerformetricsTestDrive
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
         System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
+
         operation.printSummary(System.out);
+        System.out.println();
+        operation.printDetails(System.out);
     }
 }

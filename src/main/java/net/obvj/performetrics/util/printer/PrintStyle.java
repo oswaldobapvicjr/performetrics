@@ -4,7 +4,7 @@ import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
- * Defines a set of attributes used by a {@link StopwatchFormatter} to generate a tabular
+ * Defines a set of attributes used by a {@link PrintFormat} to generate a tabular
  * string output out of a {@link Stopwatch} object.
  *
  * @author oswaldo.bapvic.jr
@@ -29,7 +29,7 @@ public class PrintStyle
      * ====================================
      * </pre>
      *
-     * @see StopwatchFormatter#SUMMARIZED
+     * @see PrintFormat#SUMMARIZED
      */
     public static final PrintStyle SUMMARIZED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%-15s  %19s",
             "%-15s  %19s", null, generateLine('-', 36), generateLine('=', 36));
@@ -64,7 +64,7 @@ public class PrintStyle
      * ===============================================
      * </pre>
      *
-     * @see StopwatchFormatter#DETAILED
+     * @see PrintFormat#DETAILED
      */
     public static final PrintStyle DETAILED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%5s  %19s  %19s",
             "%5s  %19s  %19s", "TOTAL %41s", generateLine('-', 47), generateLine('=', 47));

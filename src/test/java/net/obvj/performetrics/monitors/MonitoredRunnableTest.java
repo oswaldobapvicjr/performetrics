@@ -138,9 +138,6 @@ public class MonitoredRunnableTest
         assertAllUnitsAfter(operation, 0);
     }
 
-    /**
-     * Tests that the method that prints the summary calls the PrintUtils class
-     */
     @Test
     public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
@@ -148,6 +145,15 @@ public class MonitoredRunnableTest
         operation.printSummary(System.out);
         PowerMockito.verifyStatic(PrintUtils.class, times(1));
         PrintUtils.printSummary(operation.stopwatch, System.out);
+    }
+
+    @Test
+    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        operation.printDetails(System.out);
+        PowerMockito.verifyStatic(PrintUtils.class, times(1));
+        PrintUtils.printDetails(operation.stopwatch, System.out);
     }
 
     @Test(expected = IllegalArgumentException.class)

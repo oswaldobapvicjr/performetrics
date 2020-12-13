@@ -335,6 +335,18 @@ public class Stopwatch
     }
 
     /**
+     * Prints detailed information about timing sessions in the specified print stream.
+     *
+     * @param printStream the print stream to which information will be sent
+     *
+     * @since 2.2.1
+     */
+    public void printDetails(PrintStream printStream)
+    {
+        PrintUtils.printDetails(this, printStream);
+    }
+
+    /**
      * Creates and starts a new timing session.
      * <p>
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or

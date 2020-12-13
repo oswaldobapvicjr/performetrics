@@ -33,7 +33,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SystemUtils.class, PrintUtils.class })

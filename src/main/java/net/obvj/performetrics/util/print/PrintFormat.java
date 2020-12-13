@@ -1,4 +1,4 @@
-package net.obvj.performetrics.util.printer;
+package net.obvj.performetrics.util.print;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

@@ -1,4 +1,4 @@
-package net.obvj.performetrics.util.printer;
+package net.obvj.performetrics.util.print;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
+
+import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * Unit tests for the {@link PrintStyle}.

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
-import net.obvj.performetrics.util.printer.PrintUtils;
+import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
  * <p>
@@ -52,16 +52,16 @@ import net.obvj.performetrics.util.printer.PrintUtils;
  * </pre>
  *
  * <p>
- * Use the output method {@code printSummary(System.out)} to print stopwatch statistics to
- * the system console.
+ * Use the output methods {@code printSummary(System.out)} and
+ * {@code printDetails(System.out)} to print stopwatch statistics to the system console.
  * </p>
  *
  * <p>
- * Although it is intended that the output methods {@code elapsedTime()} and
- * {@code printSummary()} should be called after the stop, some suitable, temporary data
- * may be returned if the current timing session is still running. In this scenario, the
- * initial values will be compared to the most up-to-date ones, retrieved at the moment of
- * the call.
+ * Although it is intended that the output methods {@code elapsedTime()},
+ * {@code printSummary()}, and {@code printDetails()} should be called after the stop,
+ * some suitable, temporary data may be returned if the current timing session is still
+ * running. In this scenario, the initial values will be compared to the most up-to-date
+ * ones, retrieved at the moment of the call.
  * </p>
  *
  * <p>

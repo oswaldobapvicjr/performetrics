@@ -1,4 +1,4 @@
-package net.obvj.performetrics.util.printer;
+package net.obvj.performetrics.util.print;
 
 import java.io.PrintStream;
 

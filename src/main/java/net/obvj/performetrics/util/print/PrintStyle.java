@@ -1,4 +1,4 @@
-package net.obvj.performetrics.util.printer;
+package net.obvj.performetrics.util.print;
 
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.DurationFormat;

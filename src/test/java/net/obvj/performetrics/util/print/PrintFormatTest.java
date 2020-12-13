@@ -1,4 +1,4 @@
-package net.obvj.performetrics.util.printer;
+package net.obvj.performetrics.util.print;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
@@ -22,6 +22,8 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
+import net.obvj.performetrics.util.print.PrintFormat;
+import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * Unit tests for the {@link PrintFormat}.

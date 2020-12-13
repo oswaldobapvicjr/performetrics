@@ -32,7 +32,7 @@ public class PrintStyle
      * @see StopwatchFormatter#SUMMARIZED
      */
     public static final PrintStyle SUMMARIZED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%-15s  %19s",
-            null, generateLine('-', 36), generateLine('=', 36));
+            "%-15s  %19s", null, generateLine('-', 36), generateLine('=', 36));
 
     /**
      * A string-based style for use with the detailed stopwatch formatter, with horizontal
@@ -67,9 +67,10 @@ public class PrintStyle
      * @see StopwatchFormatter#DETAILED
      */
     public static final PrintStyle DETAILED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%5s  %19s  %19s",
-            "TOTAL %41s", generateLine('-', 47), generateLine('=', 47));
+            "%5s  %19s  %19s", "TOTAL %41s", generateLine('-', 47), generateLine('=', 47));
 
     private final DurationFormat durationFormat;
+    private final String headerFormat;
     private final String rowFormat;
     private final String totalRowFormat;
     private final String simpleLine;
@@ -79,15 +80,18 @@ public class PrintStyle
      * Creates a PrintStyle with all parameters.
      *
      * @param durationFormat  the {@link DurationFormat} to be applied for each row
-     * @param rowFormat       the string format to be applied for all rows in general
+     * @param headerFormat    the string format to be applied to the table header
+     * @param rowFormat       the string format to be applied to all rows in general
      * @param totalRowFormat  the sting format for the total/summary row(s)
      * @param simpleLine      a string to be used as simple split line
      * @param alternativeLine a string to be used as alternative split line
      */
-    private PrintStyle(DurationFormat durationFormat, String rowFormat, String totalRowFormat, String simpleLine,
+    protected PrintStyle(DurationFormat durationFormat, String headerFormat, String rowFormat, String totalRowFormat,
+            String simpleLine,
             String alternativeLine)
     {
         this.durationFormat = durationFormat;
+        this.headerFormat = headerFormat;
         this.rowFormat = rowFormat;
         this.totalRowFormat = totalRowFormat;
         this.simpleLine = simpleLine;
@@ -95,7 +99,7 @@ public class PrintStyle
     }
 
     /**
-     * @return the {@link DurationFormat} to be applied for each row
+     * @return the {@link DurationFormat} to be applied to all rows in general
      */
     public DurationFormat getDurationFormat()
     {
@@ -103,7 +107,15 @@ public class PrintStyle
     }
 
     /**
-     * @return the string format to be applied for all rows in general
+     * @return the string format to be applied to the table header
+     */
+    public String getHeaderFormat()
+    {
+        return headerFormat;
+    }
+
+    /**
+     * @return the string format to be applied to all rows in general
      */
     public String getRowFormat()
     {

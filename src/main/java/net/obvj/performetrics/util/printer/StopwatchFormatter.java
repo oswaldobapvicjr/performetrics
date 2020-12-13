@@ -30,7 +30,7 @@ public enum StopwatchFormatter
         {
             StringBuilder builder = new StringBuilder();
             appendLine(builder, style.getAlternativeLine());
-            appendLine(builder, style.getRowFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
+            appendLine(builder, style.getHeaderFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
             appendLine(builder, style.getSimpleLine());
             stopwatch.getTypes().forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
             appendLine(builder, style.getAlternativeLine());
@@ -56,7 +56,7 @@ public enum StopwatchFormatter
         {
             StringBuilder builder = new StringBuilder();
             appendLine(builder, style.getAlternativeLine());
-            appendLine(builder, style.getRowFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
+            appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
 
             groupCountersByType(stopwatch).forEach((Type type, List<Counter> counters) ->
             {
@@ -143,8 +143,11 @@ public enum StopwatchFormatter
      */
     protected void appendLine(StringBuilder builder, String string)
     {
-        builder.append(string);
-        builder.append(LINE_SEPARATOR);
+        if (string != null && !string.isEmpty())
+        {
+            builder.append(string);
+            builder.append(LINE_SEPARATOR);
+        }
     }
 
     /**
@@ -157,7 +160,10 @@ public enum StopwatchFormatter
      */
     protected void appendLine(StringBuilder builder, String format, Object... args)
     {
-        appendLine(builder, String.format(format, args));
+        if (format != null && !format.isEmpty())
+        {
+            appendLine(builder, String.format(format, args));
+        }
     }
 
 }

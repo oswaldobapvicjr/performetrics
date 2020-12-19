@@ -132,9 +132,10 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Returns a map of populated counters by type.
+     * Returns a map of populated counters grouped by type, where each entry in the counters
+     * list represents a timing session.
      *
-     * @return a map of counter types, each key associated with a list of counters
+     * @return a map of populated counters grouped by type
      *
      * @since 2.2.1
      */

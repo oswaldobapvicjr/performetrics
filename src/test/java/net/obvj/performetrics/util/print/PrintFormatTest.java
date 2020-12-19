@@ -84,8 +84,10 @@ public class PrintFormatTest
     private void setupStopwatch()
     {
         when(stopwatch.getTypes()).thenReturn(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME));
-        when(stopwatch.getAllCountersByType()).thenReturn(new EnumMap<Type, List<Counter>>(Map.of(WALL_CLOCK_TIME,
-                Arrays.asList(s1Counter1, s2Counter1), CPU_TIME, Arrays.asList(s1Counter2, s2Counter2))));
+        Map<Type, List<Counter>> map = new EnumMap<>(Type.class);
+        map.put(WALL_CLOCK_TIME, Arrays.asList(s1Counter1, s2Counter1));
+        map.put(CPU_TIME, Arrays.asList(s1Counter2, s2Counter2));
+        when(stopwatch.getAllCountersByType()).thenReturn(map);
         when(stopwatch.elapsedTime(WALL_CLOCK_TIME)).thenReturn(DURATION_SUM_C1);
         when(stopwatch.elapsedTime(CPU_TIME)).thenReturn(DURATION_SUM_C2);
     }

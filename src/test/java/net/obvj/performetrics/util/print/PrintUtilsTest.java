@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,13 @@ public class PrintUtilsTest
 {
     private static final Counter C1 = newCounter(WALL_CLOCK_TIME, MILLISECONDS, 5000, 6000);
     private static final Counter C2 = newCounter(CPU_TIME, NANOSECONDS, 700000000000l, 900000000000l);
-    private static final Map<Type, List<Counter>> ALL_COUNTERS = Map.of(WALL_CLOCK_TIME, singletonList(C1), CPU_TIME, singletonList(C2));
+    private static final Map<Type, List<Counter>> ALL_COUNTERS = new EnumMap<>(Type.class);
+
+    static
+    {
+        ALL_COUNTERS.put(WALL_CLOCK_TIME, singletonList(C1));
+        ALL_COUNTERS.put(CPU_TIME, singletonList(C2));
+    }
 
     @Mock Stopwatch stopwatch;
 

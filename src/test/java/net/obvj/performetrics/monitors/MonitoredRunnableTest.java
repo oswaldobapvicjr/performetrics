@@ -10,25 +10,21 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.ConversionMode;
-import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
@@ -39,8 +35,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SystemUtils.class, PrintUtils.class })
+@RunWith(MockitoJUnitRunner.class)
 public class MonitoredRunnableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -51,21 +46,15 @@ public class MonitoredRunnableTest
     @Mock
     private Runnable runnable;
 
-    @Before
-    public void setup()
-    {
-        PowerMockito.mockStatic(PrintUtils.class);
-    }
-
     /**
      * Setup the expects on {@link SystemUtils} mock with constant values
      */
-    private void setupExpects()
+    private void setupExpects(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
-        given(SystemUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(MOCKED_WALL_CLOCK_TIME);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(MOCKED_CPU_TIME);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(MOCKED_USER_TIME);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
     }
 
     private void assertAllUnitsBefore(MonitoredOperation operation, int session)
@@ -130,10 +119,12 @@ public class MonitoredRunnableTest
     @Test
     public void run_givenAllTypes_updatesAllCounters()
     {
-        PowerMockito.mockStatic(SystemUtils.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        setupExpects();
-        operation.run();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpects(systemUtils);
+            operation.run();
+        }
         assertAllUnitsBefore(operation, 0);
         assertAllUnitsAfter(operation, 0);
     }
@@ -142,18 +133,22 @@ public class MonitoredRunnableTest
     public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printSummary(System.out);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printSummary(operation.stopwatch, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printSummary(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out));
+        }
     }
 
     @Test
     public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.printDetails(System.out);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printDetails(operation.stopwatch, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printDetails(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out));
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -180,10 +175,7 @@ public class MonitoredRunnableTest
     @Test()
     public void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
     {
-        Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
-
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 
@@ -194,10 +186,7 @@ public class MonitoredRunnableTest
     @Test()
     public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
     {
-        Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
-
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 
@@ -208,10 +197,7 @@ public class MonitoredRunnableTest
     @Test()
     public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
     {
-        Counter counter = mock(Counter.class);
         Stopwatch stopwatch = mock(Stopwatch.class);
-        PowerMockito.when(stopwatch.getCounters(WALL_CLOCK_TIME)).thenReturn(Collections.singletonList(counter));
-
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         operation.stopwatch = stopwatch;
 

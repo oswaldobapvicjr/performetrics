@@ -4,23 +4,24 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
+import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
@@ -33,8 +34,7 @@ import net.obvj.performetrics.util.SystemUtils;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SystemUtils.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PerformetricsTest
 {
     // Default values
@@ -44,12 +44,6 @@ public class PerformetricsTest
 
     @Mock
     private Runnable runnable;
-
-    @Before
-    public void setup()
-    {
-        mockStatic(SystemUtils.class);
-    }
 
     private void checkAllDefaultValues()
     {
@@ -137,43 +131,34 @@ public class PerformetricsTest
     @Test
     public void monitorOperation_noSpecificCounter()
     {
-        MonitoredOperation operation = Performetrics.monitorOperation(runnable);
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            MonitoredOperation operation = Performetrics.monitorOperation(runnable);
+            then(runnable).should().run();
+            assertThat(operation.getCounters().size(), is(equalTo(Type.values().length)));
 
-        then(runnable).should().run();
-        assertThat(operation.getCounters().size(), is(equalTo(Type.values().length)));
-
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getWallClockTimeNanos();
-
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getCpuTimeNanos();
-
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getUserTimeNanos();
-
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getSystemTimeNanos();
+            systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
+            systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
+            systemUtils.verify(times(2), SystemUtils::getUserTimeNanos);
+            systemUtils.verify(times(2), SystemUtils::getSystemTimeNanos);
+        }
     }
 
     @Test
     public void monitorOperation_twoSpecificCounters()
     {
-        MonitoredOperation operation = Performetrics.monitorOperation(runnable, Type.WALL_CLOCK_TIME, Type.CPU_TIME);
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            MonitoredOperation operation = Performetrics.monitorOperation(runnable, WALL_CLOCK_TIME, CPU_TIME);
 
-        then(runnable).should().run();
-        assertThat(operation.getCounters().size(), is(equalTo(2)));
+            then(runnable).should().run();
+            assertThat(operation.getCounters().size(), is(equalTo(2)));
 
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getWallClockTimeNanos();
-
-        verifyStatic(SystemUtils.class, times(2));
-        SystemUtils.getCpuTimeNanos();
-
-        verifyStatic(SystemUtils.class, never());
-        SystemUtils.getUserTimeNanos();
-
-        verifyStatic(SystemUtils.class, never());
-        SystemUtils.getSystemTimeNanos();
+            systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
+            systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
+            systemUtils.verify(never(), SystemUtils::getUserTimeNanos);
+            systemUtils.verify(never(), SystemUtils::getSystemTimeNanos);
+        }
     }
 
 }

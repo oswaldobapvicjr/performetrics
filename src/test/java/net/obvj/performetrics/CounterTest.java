@@ -12,14 +12,12 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mockStatic;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
@@ -29,16 +27,9 @@ import net.obvj.performetrics.util.SystemUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SystemUtils.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CounterTest
 {
-
-    @Before
-    public void setup()
-    {
-        PowerMockito.mockStatic(SystemUtils.class);
-    }
 
     @Test
     public void constructor_withType_assignsDefaultTimeUnit()
@@ -147,10 +138,13 @@ public class CounterTest
     @Test
     public void elapsedTimeInternal_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
     {
-        Mockito.when(SystemUtils.getWallClockTimeNanos()).thenReturn(9000L);
         Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
         counter.setUnitsBefore(2000);
-        assertThat(counter.elapsedTimeInternal(), is(equalTo(7000L)));
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(9000L);
+            assertThat(counter.elapsedTimeInternal(), is(equalTo(7000L)));
+        }
     }
 
     @Test

@@ -14,21 +14,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.BDDMockito.given;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.mockito.Mockito.mockStatic;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SystemUtils.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TimingSessionTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
@@ -41,32 +38,26 @@ public class TimingSessionTest
     private static final long USER_TIME_AFTER = 1200000201l;
     private static final long SYSTEM_TIME_AFTER = 1200000102l;
 
-    @Before
-    public void setup()
-    {
-        mockStatic(SystemUtils.class);
-    }
-
     /**
      * Setup the expects on PerformetricUtils mock with "_BEFORE" constant values
      */
-    private void setupExpectsBefore()
+    private void setupExpectsBefore(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_BEFORE);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_BEFORE);
-        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_BEFORE);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_BEFORE);
     }
 
     /**
      * Setup the expects on PerformetricUtils mock with "_AFTER" constant values
      */
-    private void setupExpectsAfter()
+    private void setupExpectsAfter(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_AFTER);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_AFTER);
-        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_AFTER);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_AFTER);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_AFTER);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_AFTER);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_AFTER);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_AFTER);
     }
 
     private Counter getCounter(TimingSession timingSession, Type type)
@@ -166,11 +157,14 @@ public class TimingSessionTest
     {
         TimingSession session = new TimingSession();
         assertThat(session.getCounters().size(), is(equalTo(Type.values().length)));
-        setupExpectsBefore();
-        session.start();
-        assertThat(session.isStarted(), is(true));
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            assertThat(session.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         assertThat(session.isStarted(), is(false));
         assertAllUnitsBefore(session);
         assertAllUnitsAfter(session);
@@ -185,11 +179,14 @@ public class TimingSessionTest
     {
         TimingSession session = new TimingSession(WALL_CLOCK_TIME, CPU_TIME);
         assertThat(session.getCounters().size(), is(equalTo(2)));
-        setupExpectsBefore();
-        session.start();
-        assertThat(session.isStarted(), is(true));
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            assertThat(session.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         assertThat(session.isStarted(), is(false));
         assertThat(getCounter(session, WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
         assertThat(getCounter(session, WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(WALL_CLOCK_TIME_AFTER)));
@@ -205,11 +202,14 @@ public class TimingSessionTest
     public void reset_withAllAvailableTypes_setsAllUnitsToZeroAccordingly()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        assertThat(session.isStarted(), is(true));
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            assertThat(session.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         assertThat(session.isStarted(), is(false));
         session.reset();
         assertThat(session.getCounters().size(), is(equalTo(Type.values().length)));
@@ -225,11 +225,14 @@ public class TimingSessionTest
     public void reset_withTwoTypes_setsAllUnitsToZeroAccordingly()
     {
         TimingSession session = new TimingSession(USER_TIME, SYSTEM_TIME);
-        session.start();
-        setupExpectsBefore();
-        assertThat(session.isStarted(), is(true));
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            session.start();
+            setupExpectsBefore(systemUtils);
+            assertThat(session.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         assertThat(session.isStarted(), is(false));
         session.reset();
         assertThat(session.isStarted(), is(false));
@@ -251,8 +254,11 @@ public class TimingSessionTest
     public void start_alreadyStarted_illegalStateException()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+        }
         session.start();
     }
 
@@ -260,10 +266,13 @@ public class TimingSessionTest
     public void start_stopped_illegalStateException()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         session.start();
     }
 
@@ -278,10 +287,13 @@ public class TimingSessionTest
     public void stop_alreadyStopped_illegalStateException()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        setupExpectsAfter();
-        session.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
         session.stop();
     }
 
@@ -310,54 +322,63 @@ public class TimingSessionTest
     public void elapsedTime_validType_returnsValidDurations()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(session.elapsedTime(WALL_CLOCK_TIME),
-                is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
-        assertThat(session.elapsedTime(CPU_TIME),
-                is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
-        assertThat(session.elapsedTime(USER_TIME),
-                is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
-        assertThat(session.elapsedTime(SYSTEM_TIME),
-                is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+            assertThat(session.elapsedTime(WALL_CLOCK_TIME),
+                    is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+            assertThat(session.elapsedTime(CPU_TIME),
+                    is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
+            assertThat(session.elapsedTime(USER_TIME),
+                    is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
+            assertThat(session.elapsedTime(SYSTEM_TIME),
+                    is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+        }
     }
 
     @Test()
     public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(session.elapsedTime(WALL_CLOCK_TIME, SECONDS),
-                is(equalTo(getCounter(session, WALL_CLOCK_TIME).elapsedTime(SECONDS))));
-        assertThat(session.elapsedTime(CPU_TIME, MILLISECONDS),
-                is(equalTo(getCounter(session, CPU_TIME).elapsedTime(MILLISECONDS))));
-        assertThat(session.elapsedTime(USER_TIME, NANOSECONDS),
-                is(equalTo(getCounter(session, USER_TIME).elapsedTime(NANOSECONDS))));
-        assertThat(session.elapsedTime(SYSTEM_TIME, SECONDS),
-                is(equalTo(getCounter(session, SYSTEM_TIME).elapsedTime(SECONDS))));
+            assertThat(session.elapsedTime(WALL_CLOCK_TIME, SECONDS),
+                    is(equalTo(getCounter(session, WALL_CLOCK_TIME).elapsedTime(SECONDS))));
+            assertThat(session.elapsedTime(CPU_TIME, MILLISECONDS),
+                    is(equalTo(getCounter(session, CPU_TIME).elapsedTime(MILLISECONDS))));
+            assertThat(session.elapsedTime(USER_TIME, NANOSECONDS),
+                    is(equalTo(getCounter(session, USER_TIME).elapsedTime(NANOSECONDS))));
+            assertThat(session.elapsedTime(SYSTEM_TIME, SECONDS),
+                    is(equalTo(getCounter(session, SYSTEM_TIME).elapsedTime(SECONDS))));
+        }
     }
 
     @Test()
     public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
     {
         TimingSession session = new TimingSession();
-        setupExpectsBefore();
-        session.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(session.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
-                is(equalTo(getCounter(session, WALL_CLOCK_TIME).elapsedTime(SECONDS, FAST))));
-        assertThat(session.elapsedTime(CPU_TIME, MILLISECONDS, DOUBLE_PRECISION),
-                is(equalTo(getCounter(session, CPU_TIME).elapsedTime(MILLISECONDS, DOUBLE_PRECISION))));
-        assertThat(session.elapsedTime(USER_TIME, NANOSECONDS, FAST),
-                is(equalTo(getCounter(session, USER_TIME).elapsedTime(NANOSECONDS, FAST))));
-        assertThat(session.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
-                is(equalTo(getCounter(session, SYSTEM_TIME).elapsedTime(HOURS, DOUBLE_PRECISION))));
+            assertThat(session.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
+                    is(equalTo(getCounter(session, WALL_CLOCK_TIME).elapsedTime(SECONDS, FAST))));
+            assertThat(session.elapsedTime(CPU_TIME, MILLISECONDS, DOUBLE_PRECISION),
+                    is(equalTo(getCounter(session, CPU_TIME).elapsedTime(MILLISECONDS, DOUBLE_PRECISION))));
+            assertThat(session.elapsedTime(USER_TIME, NANOSECONDS, FAST),
+                    is(equalTo(getCounter(session, USER_TIME).elapsedTime(NANOSECONDS, FAST))));
+            assertThat(session.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
+                    is(equalTo(getCounter(session, SYSTEM_TIME).elapsedTime(HOURS, DOUBLE_PRECISION))));
+        }
     }
 
 }

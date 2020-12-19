@@ -230,13 +230,26 @@ public class Stopwatch
     }
 
     /**
+     * Returns a map of populated counters by type.
+     *
+     * @return a map of counter types, each key associated with a list of counters
+     * @since 2.2.1
+     */
+    public Map<Type, List<Counter>> getAllCountersByType()
+    {
+        Map<Type, List<Counter>> enumMap = new EnumMap<>(Type.class);
+        types.forEach(type -> enumMap.put(type, getCounters(type)));
+        return enumMap;
+    }
+
+    /**
      * Returns a list of counters populated by this stopwatch.
      * <p>
      * New counters are created every time the {@code start()} method is called.
      *
      * @return all counters available in this stopwatch instance
      */
-    public List<Counter> getCounters()
+    protected List<Counter> getCounters()
     {
         return sessions.stream().map(TimingSession::getCounters).flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -388,11 +401,11 @@ public class Stopwatch
      * Returns all timing sessions available in this stopwatch.
      *
      * @return a list of timing sessions
+     * @since 2.2.0
      */
     protected List<TimingSession> getTimingSessions()
     {
         return sessions;
     }
-
 
 }

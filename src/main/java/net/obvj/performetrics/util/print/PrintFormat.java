@@ -1,7 +1,5 @@
 package net.obvj.performetrics.util.print;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +56,8 @@ public enum PrintFormat
             appendLine(builder, style.getAlternativeLine());
             appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
 
-            groupCountersByType(stopwatch).forEach((Type type, List<Counter> counters) ->
+            Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
+            countersByType.forEach((Type type, List<Counter> counters) ->
             {
                 appendLine(builder, style.getAlternativeLine());
                 appendLine(builder, type.toString());
@@ -127,39 +126,6 @@ public enum PrintFormat
      * @return a string with formatted stopwatch data
      */
     public abstract String format(Stopwatch stopwatch, PrintStyle style);
-
-    /**
-     * Returns a map of counters by type from a given stopwatch.
-     *
-     * @param stopwatch the stopwatch which counters are to be grouped
-     */
-    protected static Map<Type, List<Counter>> groupCountersByType(Stopwatch stopwatch)
-    {
-        return groupCountersByType(stopwatch.getCounters());
-    }
-
-    /**
-     * Returns a map of counters by type from a given counters list
-     *
-     * @param counters a list containing counters to be grouped
-     */
-    protected static Map<Type, List<Counter>> groupCountersByType(List<Counter> counters)
-    {
-        Map<Type, List<Counter>> countersByType = new EnumMap<>(Type.class);
-        for (Counter counter : counters)
-        {
-            countersByType.compute(counter.getType(), (Type type, List<Counter> internalList) ->
-            {
-                if (internalList == null)
-                {
-                    internalList = new ArrayList<>();
-                }
-                internalList.add(counter);
-                return internalList;
-            });
-        }
-        return countersByType;
-    }
 
     /**
      * Appends the specified string followed by a line separator.

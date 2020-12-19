@@ -1,6 +1,11 @@
 package net.obvj.performetrics.util.print;
 
+import static java.util.Collections.singletonList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -10,8 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
@@ -22,9 +27,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.util.print.PrintFormat;
-import net.obvj.performetrics.util.print.PrintStyle;
-import net.obvj.performetrics.util.print.PrintUtils;
 import net.obvj.performetrics.Stopwatch;
 
 /**
@@ -35,16 +37,16 @@ import net.obvj.performetrics.Stopwatch;
 @RunWith(MockitoJUnitRunner.class)
 public class PrintUtilsTest
 {
-    private static final Counter C1 = newCounter(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS, 5000, 6000);
-    private static final Counter C2 = newCounter(Type.CPU_TIME, TimeUnit.NANOSECONDS, 700000000000l, 900000000000l);
-    private static final List<Counter> ALL_COUNTERS = Arrays.asList(C1, C2);
+    private static final Counter C1 = newCounter(WALL_CLOCK_TIME, MILLISECONDS, 5000, 6000);
+    private static final Counter C2 = newCounter(CPU_TIME, NANOSECONDS, 700000000000l, 900000000000l);
+    private static final Map<Type, List<Counter>> ALL_COUNTERS = Map.of(WALL_CLOCK_TIME, singletonList(C1), CPU_TIME, singletonList(C2));
 
     @Mock Stopwatch stopwatch;
 
     @Before
     public void setup()
     {
-        when(stopwatch.getCounters()).thenReturn(ALL_COUNTERS);
+        when(stopwatch.getAllCountersByType()).thenReturn(ALL_COUNTERS);
     }
 
     private static Counter newCounter(Type type, TimeUnit timeUnit, long unitsBefore, long unitsAfter)

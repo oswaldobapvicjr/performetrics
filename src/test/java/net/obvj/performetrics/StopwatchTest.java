@@ -35,20 +35,20 @@ import net.obvj.performetrics.util.print.PrintUtils;
 @RunWith(MockitoJUnitRunner.class)
 public class StopwatchTest
 {
-    private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
-    private static final long CPU_TIME_BEFORE = 1200000000l;
-    private static final long USER_TIME_BEFORE = 1200000001l;
-    private static final long SYSTEM_TIME_BEFORE = 1200000002l;
+    static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
+    static final long CPU_TIME_BEFORE = 1200000000l;
+    static final long USER_TIME_BEFORE = 1200000001l;
+    static final long SYSTEM_TIME_BEFORE = 1200000002l;
 
-    private static final long WALL_CLOCK_TIME_AFTER = 3000000000l;
-    private static final long CPU_TIME_AFTER = 1200000300l;
-    private static final long USER_TIME_AFTER = 1200000201l;
-    private static final long SYSTEM_TIME_AFTER = 1200000102l;
+    static final long WALL_CLOCK_TIME_AFTER = 3000000000l;
+    static final long CPU_TIME_AFTER = 1200000300l;
+    static final long USER_TIME_AFTER = 1200000201l;
+    static final long SYSTEM_TIME_AFTER = 1200000102l;
 
-    private static final long WALL_CLOCK_TIME_AFTER_2 = 5000000000l;
-    private static final long CPU_TIME_AFTER_2 = 1200000500l;
-    private static final long USER_TIME_AFTER_2 = 1200000501l;
-    private static final long SYSTEM_TIME_AFTER_2 = 1200000502l;
+    static final long WALL_CLOCK_TIME_AFTER_2 = 5000000000l;
+    static final long CPU_TIME_AFTER_2 = 1200000500l;
+    static final long USER_TIME_AFTER_2 = 1200000501l;
+    static final long SYSTEM_TIME_AFTER_2 = 1200000502l;
 
     /**
      * Setup the expects on PerformetricUtils mock with "_BEFORE" constant values

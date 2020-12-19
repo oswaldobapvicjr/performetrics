@@ -15,28 +15,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SystemUtils.class, PrintUtils.class })
+@RunWith(MockitoJUnitRunner.class)
 public class StopwatchTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
@@ -54,44 +50,37 @@ public class StopwatchTest
     private static final long USER_TIME_AFTER_2 = 1200000501l;
     private static final long SYSTEM_TIME_AFTER_2 = 1200000502l;
 
-    @Before
-    public void setup()
-    {
-        mockStatic(SystemUtils.class);
-        mockStatic(PrintUtils.class);
-    }
-
     /**
      * Setup the expects on PerformetricUtils mock with "_BEFORE" constant values
      */
-    private void setupExpectsBefore()
+    private void setupExpectsBefore(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_BEFORE);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_BEFORE);
-        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_BEFORE);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_BEFORE);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_BEFORE);
     }
 
     /**
      * Setup the expects on PerformetricUtils mock with "_AFTER" constant values
      */
-    private void setupExpectsAfter()
+    private void setupExpectsAfter(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_AFTER);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_AFTER);
-        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_AFTER);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_AFTER);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_AFTER);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_AFTER);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_AFTER);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_AFTER);
     }
 
     /**
      * Setup the expects on PerformetricUtils mock with "_AFTER" constant values
      */
-    private void setupExpectsAfter2()
+    private void setupExpectsAfter2(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(WALL_CLOCK_TIME_AFTER_2);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(CPU_TIME_AFTER_2);
-        given(SystemUtils.getUserTimeNanos()).willReturn(USER_TIME_AFTER_2);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(SYSTEM_TIME_AFTER_2);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_AFTER_2);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_AFTER_2);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_AFTER_2);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_AFTER_2);
     }
 
     private Counter getFirstCounter(Stopwatch stopwatch, Type type)
@@ -191,8 +180,12 @@ public class StopwatchTest
     @Test
     public void createdStarted_noArguments_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        setupExpectsBefore();
-        Stopwatch sw = Stopwatch.createStarted();
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw = Stopwatch.createStarted();
+        }
         assertThat(sw.getCounters().size(), is(equalTo(Type.values().length)));
         assertThat(sw.isStarted(), is(equalTo(true)));
         assertAllUnitsBefore(sw);
@@ -205,8 +198,12 @@ public class StopwatchTest
     @Test
     public void createdStarted_withOneType_assignsSpecificTimeWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
-        setupExpectsBefore();
-        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        }
         assertThat(sw.isStarted(), is(equalTo(true)));
         assertThat(sw.getCounters().size(), is(equalTo(1)));
         assertThat(getFirstCounter(sw, WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
@@ -220,12 +217,16 @@ public class StopwatchTest
     @Test
     public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
-        Stopwatch sw = new Stopwatch();
-        setupExpectsBefore();
-        sw.start();
-        assertThat(sw.isStarted(), is(true));
-        setupExpectsAfter();
-        sw.stop();
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            sw = new Stopwatch();
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            assertThat(sw.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+        }
         assertThat(sw.isStarted(), is(false));
         assertAllUnitsBefore(sw);
         assertAllUnitsAfter(sw);
@@ -238,12 +239,16 @@ public class StopwatchTest
     @Test
     public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
-        Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME, CPU_TIME);
-        setupExpectsBefore();
-        sw.start();
-        assertThat(sw.isStarted(), is(true));
-        setupExpectsAfter();
-        sw.stop();
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            sw = new Stopwatch(WALL_CLOCK_TIME, CPU_TIME);
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            assertThat(sw.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+        }
         assertThat(sw.getCounters().size(), is(equalTo(2)));
         assertThat(sw.isStarted(), is(false));
         assertThat(getFirstCounter(sw, WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
@@ -255,12 +260,16 @@ public class StopwatchTest
     @Test
     public void reset_withAllAvailableTypes_cleansAllSessions()
     {
-        setupExpectsBefore();
-        Stopwatch sw = Stopwatch.createStarted();
-        assertThat(sw.isStarted(), is(true));
-        setupExpectsAfter();
-        sw.stop();
-        assertThat(sw.isStarted(), is(false));
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw = Stopwatch.createStarted();
+            assertThat(sw.isStarted(), is(true));
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+            assertThat(sw.isStarted(), is(false));
+        }
         sw.reset();
         assertThat(sw.getCounters(), is(equalTo(Collections.emptyList())));
     }
@@ -269,18 +278,22 @@ public class StopwatchTest
     public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printSummary(System.out);
-        verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printSummary(sw, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.printSummary(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out));
+        }
     }
 
     @Test
     public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
-        sw.printDetails(System.out);
-        verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printDetails(sw, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.printDetails(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out));
+        }
     }
 
     @Test
@@ -294,10 +307,13 @@ public class StopwatchTest
     public void getCounters_singleTypeAndSingleSession_singletonList()
     {
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME);
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
-        sw.stop();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+        }
         List<Counter> counters = sw.getCounters(WALL_CLOCK_TIME);
         assertThat(counters.size(), is(equalTo(1)));
     }
@@ -306,11 +322,14 @@ public class StopwatchTest
     public void getCounters_singleTypeAndTwoSessions_twoCountersOfSameType()
     {
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME);
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
-        sw.stop();
-        sw.start();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+            sw.start();
+        }
         List<Counter> counters = sw.getCounters(WALL_CLOCK_TIME);
         assertThat(counters.size(), is(equalTo(2)));
         assertThat(counters.get(0).getType(), is(equalTo(WALL_CLOCK_TIME)));
@@ -321,11 +340,14 @@ public class StopwatchTest
     public void getCounters_multipleTypesAndTwoSessions_twoCountersOfSameType()
     {
         Stopwatch sw = new Stopwatch();
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
-        sw.stop();
-        sw.start();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+            sw.start();
+        }
         List<Counter> counters = sw.getCounters(WALL_CLOCK_TIME);
         assertThat(counters.size(), is(equalTo(2)));
         assertThat(counters.get(0).getType(), is(equalTo(WALL_CLOCK_TIME)));
@@ -335,8 +357,12 @@ public class StopwatchTest
     @Test
     public void start_ready_createsNewTimingSessionWithProperTypes()
     {
-        setupExpectsBefore();
-        Stopwatch sw = Stopwatch.createStarted(SYSTEM_TIME);
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw = Stopwatch.createStarted(SYSTEM_TIME);
+        }
         List<TimingSession> sessions = sw.getTimingSessions();
         assertThat(sessions.size(), is(equalTo(1)));
         List<Type> sessionTypes = Arrays.asList(sessions.get(0).getTypes());
@@ -348,12 +374,16 @@ public class StopwatchTest
     @Test
     public void start_alreadyStarted_createsNewTimingSession()
     {
-        setupExpectsBefore();
-        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
-        assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
-        assertTrue(sw.isStarted());
-        setupExpectsAfter();
-        sw.start();
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+            assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
+            assertTrue(sw.isStarted());
+            setupExpectsAfter(systemUtils);
+            sw.start();
+        }
         assertThat(sw.getTimingSessions().size(), is(equalTo(2)));
         assertTrue(sw.isStarted());
     }
@@ -361,7 +391,11 @@ public class StopwatchTest
     @Test
     public void start_stopped_timingSessionsIncreased()
     {
-        Stopwatch sw = Stopwatch.createStarted();
+        Stopwatch sw;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            sw = Stopwatch.createStarted();
+        }
         assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
         sw.stop();
         sw.start();
@@ -405,38 +439,43 @@ public class StopwatchTest
     public void elapsedTime_validType_returnsValidDurations()
     {
         Stopwatch sw = new Stopwatch();
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(sw.elapsedTime(WALL_CLOCK_TIME),
-                is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
-        assertThat(sw.elapsedTime(CPU_TIME),
-                is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
-        assertThat(sw.elapsedTime(USER_TIME),
-                is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
-        assertThat(sw.elapsedTime(SYSTEM_TIME),
-                is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+            assertThat(sw.elapsedTime(WALL_CLOCK_TIME),
+                    is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+            assertThat(sw.elapsedTime(CPU_TIME),
+                    is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
+            assertThat(sw.elapsedTime(USER_TIME),
+                    is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
+            assertThat(sw.elapsedTime(SYSTEM_TIME),
+                    is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+        }
     }
 
     @Test()
     public void elapsedTime_validTypeAndTwoSessions_returnsSumOfDurations()
     {
         Stopwatch sw = new Stopwatch();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            // First session
+            setupExpectsBefore(systemUtils);
+            sw.start();
 
-        // First session
-        setupExpectsBefore();
-        sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
 
-        setupExpectsAfter();
-        sw.stop();
+            // 2nd session - let the "before" values be the same "after" values of the previous
+            // sessions
+            sw.start();
 
-        // 2nd session - let the "before" values be the same "after" values of the previous
-        // sessions
-        sw.start();
-
-        setupExpectsAfter2();
-        sw.stop();
+            setupExpectsAfter2(systemUtils);
+            sw.stop();
+        }
 
         assertThat(sw.elapsedTime(WALL_CLOCK_TIME),
                 is(equalTo(
@@ -464,38 +503,43 @@ public class StopwatchTest
     public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
     {
         Stopwatch sw = new Stopwatch();
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS),
-                is(equalTo(getFirstCounter(sw, WALL_CLOCK_TIME).elapsedTime(SECONDS))));
-        assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS),
-                is(equalTo(getFirstCounter(sw, CPU_TIME).elapsedTime(MILLISECONDS))));
-        assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS),
-                is(equalTo(getFirstCounter(sw, USER_TIME).elapsedTime(NANOSECONDS))));
-        assertThat(sw.elapsedTime(SYSTEM_TIME, SECONDS),
-                is(equalTo(getFirstCounter(sw, SYSTEM_TIME).elapsedTime(SECONDS))));
+            assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS),
+                    is(equalTo(getFirstCounter(sw, WALL_CLOCK_TIME).elapsedTime(SECONDS))));
+            assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS),
+                    is(equalTo(getFirstCounter(sw, CPU_TIME).elapsedTime(MILLISECONDS))));
+            assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS),
+                    is(equalTo(getFirstCounter(sw, USER_TIME).elapsedTime(NANOSECONDS))));
+            assertThat(sw.elapsedTime(SYSTEM_TIME, SECONDS),
+                    is(equalTo(getFirstCounter(sw, SYSTEM_TIME).elapsedTime(SECONDS))));
+        }
     }
 
     @Test()
     public void elapsedTime_validTypeAndTimeUnitAndTwoSessions_sumCountersCorrectly()
     {
         Stopwatch sw = new Stopwatch();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            // First session
+            setupExpectsBefore(systemUtils);
+            sw.start();
 
-        // First session
-        setupExpectsBefore();
-        sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
 
-        setupExpectsAfter();
-        sw.stop();
+            // 2nd session - let the "before" values be the same "after" values of the previous
+            // sessions
+            sw.start();
 
-        // 2nd session - let the "before" values be the same "after" values of the previous
-        // sessions
-        sw.start();
-
-        setupExpectsAfter2();
-        sw.stop();
+            setupExpectsAfter2(systemUtils);
+            sw.stop();
+        }
 
         assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS),
                 is(equalTo(getCounter(sw, WALL_CLOCK_TIME, 0).elapsedTime(SECONDS)
@@ -515,38 +559,43 @@ public class StopwatchTest
     public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
     {
         Stopwatch sw = new Stopwatch();
-        setupExpectsBefore();
-        sw.start();
-        setupExpectsAfter();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
 
-        assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
-                is(equalTo(getFirstCounter(sw, WALL_CLOCK_TIME).elapsedTime(SECONDS, FAST))));
-        assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS, DOUBLE_PRECISION),
-                is(equalTo(getFirstCounter(sw, CPU_TIME).elapsedTime(MILLISECONDS, DOUBLE_PRECISION))));
-        assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS, FAST),
-                is(equalTo(getFirstCounter(sw, USER_TIME).elapsedTime(NANOSECONDS, FAST))));
-        assertThat(sw.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
-                is(equalTo(getFirstCounter(sw, SYSTEM_TIME).elapsedTime(HOURS, DOUBLE_PRECISION))));
+            assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
+                    is(equalTo(getFirstCounter(sw, WALL_CLOCK_TIME).elapsedTime(SECONDS, FAST))));
+            assertThat(sw.elapsedTime(CPU_TIME, MILLISECONDS, DOUBLE_PRECISION),
+                    is(equalTo(getFirstCounter(sw, CPU_TIME).elapsedTime(MILLISECONDS, DOUBLE_PRECISION))));
+            assertThat(sw.elapsedTime(USER_TIME, NANOSECONDS, FAST),
+                    is(equalTo(getFirstCounter(sw, USER_TIME).elapsedTime(NANOSECONDS, FAST))));
+            assertThat(sw.elapsedTime(SYSTEM_TIME, HOURS, DOUBLE_PRECISION),
+                    is(equalTo(getFirstCounter(sw, SYSTEM_TIME).elapsedTime(HOURS, DOUBLE_PRECISION))));
+        }
     }
 
     @Test()
     public void elapsedTime_validTypeAndTimeUnitAndConversionModeAndTwoSessions_sumsCorrectly()
     {
         Stopwatch sw = new Stopwatch();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            // First session
+            setupExpectsBefore(systemUtils);
+            sw.start();
 
-        // First session
-        setupExpectsBefore();
-        sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
 
-        setupExpectsAfter();
-        sw.stop();
+            // 2nd session - let the "before" values be the same "after" values of the previous
+            // sessions
+            sw.start();
 
-        // 2nd session - let the "before" values be the same "after" values of the previous
-        // sessions
-        sw.start();
-
-        setupExpectsAfter2();
-        sw.stop();
+            setupExpectsAfter2(systemUtils);
+            sw.stop();
+        }
 
         assertThat(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS, FAST),
                 is(equalTo(getCounter(sw, WALL_CLOCK_TIME, 0).elapsedTime(SECONDS, FAST)
@@ -573,9 +622,11 @@ public class StopwatchTest
     public void getCurrentTimingSession_oneSession_success()
     {
         Stopwatch sw = new Stopwatch();
-        // First session
-        setupExpectsBefore();
-        sw.start();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            sw.start();
+        }
         assertThat(sw.getCurrentTimingSession().get(), is(notNullValue()));
     }
 

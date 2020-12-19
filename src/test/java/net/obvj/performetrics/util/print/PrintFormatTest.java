@@ -15,15 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
-import net.obvj.performetrics.util.print.PrintFormat;
-import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * Unit tests for the {@link PrintFormat}.
@@ -31,7 +29,7 @@ import net.obvj.performetrics.util.print.PrintStyle;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PrintFormatTest
 {
     static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s", null, null, null);

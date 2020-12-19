@@ -8,22 +8,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
@@ -35,8 +30,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SystemUtils.class, PrintUtils.class })
+@RunWith(MockitoJUnitRunner.class)
 public class MonitoredCallableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -48,21 +42,15 @@ public class MonitoredCallableTest
     @Mock
     private Callable<String> callable;
 
-    @Before
-    public void setup()
-    {
-        PowerMockito.mockStatic(PrintUtils.class);
-    }
-
     /**
      * Setup the expects on {@link SystemUtils} mock with constant values
      */
-    private void setupExpects()
+    private void setupExpects(MockedStatic<SystemUtils> systemUtils)
     {
-        given(SystemUtils.getWallClockTimeNanos()).willReturn(MOCKED_WALL_CLOCK_TIME);
-        given(SystemUtils.getCpuTimeNanos()).willReturn(MOCKED_CPU_TIME);
-        given(SystemUtils.getUserTimeNanos()).willReturn(MOCKED_USER_TIME);
-        given(SystemUtils.getSystemTimeNanos()).willReturn(MOCKED_SYSTEM_TIME);
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(MOCKED_WALL_CLOCK_TIME);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(MOCKED_CPU_TIME);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(MOCKED_USER_TIME);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
     }
 
     /**
@@ -70,8 +58,7 @@ public class MonitoredCallableTest
      */
     public void setupMockedCallable() throws Exception
     {
-        PowerMockito.when(callable.call()).thenReturn(STRING_CALLABLE_RETURN);
-
+        when(callable.call()).thenReturn(STRING_CALLABLE_RETURN);
     }
 
     private void assertAllUnitsBefore(MonitoredOperation operation, int session)
@@ -129,10 +116,12 @@ public class MonitoredCallableTest
     public void call_givenAllTypes_updatesAllCounters() throws Exception
     {
         setupMockedCallable();
-        PowerMockito.mockStatic(SystemUtils.class);
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        setupExpects();
-        assertThat(operation.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpects(systemUtils);
+            assertThat(operation.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+        }
         assertAllUnitsBefore(operation, 0);
         assertAllUnitsAfter(operation, 0);
     }
@@ -141,18 +130,22 @@ public class MonitoredCallableTest
     public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        operation.printSummary(System.out);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printSummary(operation.stopwatch, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printSummary(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out));
+        }
     }
 
     @Test
     public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
-        operation.printDetails(System.out);
-        PowerMockito.verifyStatic(PrintUtils.class, times(1));
-        PrintUtils.printDetails(operation.stopwatch, System.out);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printDetails(System.out);
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out));
+        }
     }
 
     @Test()

@@ -135,7 +135,7 @@ public class PerformetricsTest
         {
             MonitoredOperation operation = Performetrics.monitorOperation(runnable);
             then(runnable).should().run();
-            assertThat(operation.getCounters().size(), is(equalTo(Type.values().length)));
+            assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
 
             systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
             systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
@@ -152,7 +152,7 @@ public class PerformetricsTest
             MonitoredOperation operation = Performetrics.monitorOperation(runnable, WALL_CLOCK_TIME, CPU_TIME);
 
             then(runnable).should().run();
-            assertThat(operation.getCounters().size(), is(equalTo(2)));
+            assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
             systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
             systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);

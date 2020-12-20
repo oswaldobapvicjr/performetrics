@@ -10,6 +10,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,14 +78,16 @@ public class PrintFormatTest
 
     private void setupCounter(Counter counter, Duration elapsedTime, Type type)
     {
-        when(counter.getType()).thenReturn(type);
         when(counter.elapsedTime()).thenReturn(elapsedTime);
     }
 
     private void setupStopwatch()
     {
         when(stopwatch.getTypes()).thenReturn(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME));
-        when(stopwatch.getCounters()).thenReturn(Arrays.asList(s1Counter1, s1Counter2, s2Counter1, s2Counter2));
+        Map<Type, List<Counter>> map = new EnumMap<>(Type.class);
+        map.put(WALL_CLOCK_TIME, Arrays.asList(s1Counter1, s2Counter1));
+        map.put(CPU_TIME, Arrays.asList(s1Counter2, s2Counter2));
+        when(stopwatch.getAllCountersByType()).thenReturn(map);
         when(stopwatch.elapsedTime(WALL_CLOCK_TIME)).thenReturn(DURATION_SUM_C1);
         when(stopwatch.elapsedTime(CPU_TIME)).thenReturn(DURATION_SUM_C2);
     }

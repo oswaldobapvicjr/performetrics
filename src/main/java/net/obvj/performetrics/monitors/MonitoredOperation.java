@@ -2,6 +2,7 @@ package net.obvj.performetrics.monitors;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
@@ -47,16 +48,6 @@ public abstract class MonitoredOperation
     protected List<Type> getTypes()
     {
         return stopwatch.getTypes();
-    }
-
-    /**
-     * Returns all counters available in this monitored operation.
-     *
-     * @return all counters available in this monitored operation.
-     */
-    public List<Counter> getCounters()
-    {
-        return stopwatch.getCounters();
     }
 
     /**
@@ -138,6 +129,19 @@ public abstract class MonitoredOperation
     public void printDetails(PrintStream printStream)
     {
         PrintUtils.printDetails(stopwatch, printStream);
+    }
+
+    /**
+     * Returns a map of populated counters grouped by type, where each entry in the counters
+     * list represents a timing session.
+     *
+     * @return a map of populated counters grouped by type
+     *
+     * @since 2.2.1
+     */
+    public Map<Type, List<Counter>> getAllCountersByType()
+    {
+        return stopwatch.getAllCountersByType();
     }
 
     /**

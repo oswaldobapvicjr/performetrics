@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import net.obvj.performetrics.util.print.PrintStyle;
-
 /**
  * Unit tests for the {@link PrintStyle}.
  *

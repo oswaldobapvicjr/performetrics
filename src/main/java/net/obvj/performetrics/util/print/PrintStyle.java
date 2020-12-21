@@ -83,36 +83,38 @@ public class PrintStyle
             .withAlternativeLine('=', 47)
             .build();
 
-    private final DurationFormat durationFormat;
-    private final boolean printLegend;
     private final boolean printHeader;
-    private final boolean printSectionTotals;
     private final String headerFormat;
     private final String rowFormat;
     private final String sectionHeaderFormat;
+    private final boolean printSectionSummary;
     private final String sectionSummaryRowFormat;
+    private final DurationFormat durationFormat;
+    private final boolean printLegend;
     private final String simpleLine;
     private final String alternativeLine;
 
     /**
-     * Creates a PrintStyle with all parameters.
+     * Creates a new PrintStyle.
+     *
+     * @param builder the {@link PrintStyleBuilder}
      */
     protected PrintStyle(PrintStyleBuilder builder)
     {
-        durationFormat = builder.getDurationFormat();
-        printLegend = builder.isPrintLegend();
         printHeader = builder.isPrintHeader();
-        printSectionTotals = builder.isPrintSectionTotals();
         headerFormat = builder.getHeaderFormat();
         rowFormat = builder.getRowFormat();
         sectionHeaderFormat = builder.getSectionHeaderFormat();
+        printSectionSummary = builder.isPrintSectionSummary();
         sectionSummaryRowFormat = builder.getSectionSummaryRowFormat();
+        durationFormat = builder.getDurationFormat();
+        printLegend = builder.isPrintLegend();
         simpleLine = builder.getSimpleLine();
         alternativeLine = builder.getAlternativeLine();
     }
 
     /**
-     * @return the {@link DurationFormat} to be applied to all rows in general
+     * @return the {@link DurationFormat} to be applied on all rows
      */
     public DurationFormat getDurationFormat()
     {
@@ -138,9 +140,9 @@ public class PrintStyle
     /**
      * @return a flag indicating whether or not a summary shall be printed for each section
      */
-    public boolean isPrintSectionTotals()
+    public boolean isPrintSectionSummary()
     {
-        return printSectionTotals;
+        return printSectionSummary;
     }
 
     /**
@@ -159,6 +161,9 @@ public class PrintStyle
         return rowFormat;
     }
 
+    /**
+     * @return the string format to be applied to each section header
+     */
     public String getSectionHeaderFormat()
     {
         return sectionHeaderFormat;

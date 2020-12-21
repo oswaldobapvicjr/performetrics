@@ -78,7 +78,7 @@ public enum PrintFormat
                     elapsedTimeAcc = elapsedTimeAcc.plus(elapsedTime);
                     appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style));
                 }
-                if (style.isPrintSectionTotals())
+                if (style.isPrintSectionSummary())
                 {
                     appendLine(builder, style.getSimpleLine());
                     appendLine(builder, toTotalRowFormat(elapsedTimeAcc, style));

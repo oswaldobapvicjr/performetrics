@@ -35,8 +35,24 @@ import net.obvj.performetrics.util.DurationFormat;
 @RunWith(MockitoJUnitRunner.class)
 public class PrintFormatTest
 {
-    static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s", null, null, null);
-    static final PrintStyle DETAILED_TEST_STYLE = new PrintStyle(DurationFormat.FULL, null, "%s %s %s", "%s", null, null);
+    static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyleBuilder()
+            .withoutHeader()
+            .withRowFormat("%s %s")
+            .withDurationFormat(DurationFormat.FULL).build();
+
+    static final PrintStyle DETAILED_TEST_STYLE_WITHOUT_TOTALS = new PrintStyleBuilder()
+            .withoutHeader()
+            .withRowFormat("%s %s %s")
+            .withSectionHeaderFormat("%s")
+            .withoutSectionSummary()
+            .withDurationFormat(DurationFormat.FULL).build();
+    
+    static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS = new PrintStyleBuilder()
+            .withoutHeader()
+            .withRowFormat("%s %s %s")
+            .withSectionHeaderFormat("%s")
+            .withSectionSummary("%s")
+            .withDurationFormat(DurationFormat.FULL).build();
 
     static final Duration DURATION_TS1_C1 = Duration.of(1000, MILLISECONDS);
     static final Duration DURATION_TS1_C2 = Duration.of(  50, MILLISECONDS);
@@ -103,9 +119,24 @@ public class PrintFormatTest
     }
 
     @Test
-    public void detailed_printsElapsedTimesAndAccumulatedValues()
+    public void detailed_withoutSectionTotals_printsElapsedTimesAndAccumulatedValues()
     {
-        String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE);
+        String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE_WITHOUT_TOTALS);
+        String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
+
+        assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME.toString())));
+        assertThat(lines[1], is(equalTo(1 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
+        assertThat(lines[2], is(equalTo(2 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
+
+        assertThat(lines[3], is(equalTo(CPU_TIME.toString())));
+        assertThat(lines[4], is(equalTo(1 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
+        assertThat(lines[5], is(equalTo(2 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
+    }
+
+    @Test
+    public void detailed_withSectionTotals_printsElapsedTimesAndAccumulatedValuesAndTotals()
+    {
+        String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE_WITH_TOTALS);
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME.toString())));

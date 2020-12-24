@@ -31,8 +31,14 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%-15s  %19s",
-            "%-15s  %19s", null, generateLine('-', 36), generateLine('=', 36));
+    public static final PrintStyle SUMMARIZED_HORIZONTAL_LINES = new PrintStyleBuilder()
+            .withRowFormat("%-15s  %19s")
+            .withHeader()
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .withSimpleLine('-', 36)
+            .withAlternativeLine('=', 36)
+            .build();
 
     /**
      * A string-based style for use with the detailed stopwatch formatter, with horizontal
@@ -66,43 +72,77 @@ public class PrintStyle
      *
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_HORIZONTAL_LINES = new PrintStyle(DurationFormat.FULL, "%5s  %19s  %19s",
-            "%5s  %19s  %19s", "TOTAL %41s", generateLine('-', 47), generateLine('=', 47));
+    public static final PrintStyle DETAILED_HORIZONTAL_LINES = new PrintStyleBuilder()
+            .withRowFormat("%5s  %19s  %19s")
+            .withHeader()
+            .withSectionHeaderFormat("%s")
+            .withSectionSummary("TOTAL %41s")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .withSimpleLine('-', 47)
+            .withAlternativeLine('=', 47)
+            .build();
 
-    private final DurationFormat durationFormat;
+    private final boolean printHeader;
     private final String headerFormat;
     private final String rowFormat;
-    private final String totalRowFormat;
+    private final String sectionHeaderFormat;
+    private final boolean printSectionSummary;
+    private final String sectionSummaryRowFormat;
+    private final DurationFormat durationFormat;
+    private final boolean printLegend;
     private final String simpleLine;
     private final String alternativeLine;
 
     /**
-     * Creates a PrintStyle with all parameters.
+     * Creates a new PrintStyle.
      *
-     * @param durationFormat  the {@link DurationFormat} to be applied for each row
-     * @param headerFormat    the string format to be applied to the table header
-     * @param rowFormat       the string format to be applied to all rows in general
-     * @param totalRowFormat  the sting format for the total/summary row(s)
-     * @param simpleLine      a string to be used as simple split line
-     * @param alternativeLine a string to be used as alternative split line
+     * @param builder the {@link PrintStyleBuilder}
      */
-    protected PrintStyle(DurationFormat durationFormat, String headerFormat, String rowFormat, String totalRowFormat,
-            String simpleLine, String alternativeLine)
+    protected PrintStyle(PrintStyleBuilder builder)
     {
-        this.durationFormat = durationFormat;
-        this.headerFormat = headerFormat;
-        this.rowFormat = rowFormat;
-        this.totalRowFormat = totalRowFormat;
-        this.simpleLine = simpleLine;
-        this.alternativeLine = alternativeLine;
+        printHeader = builder.isPrintHeader();
+        headerFormat = builder.getHeaderFormat();
+        rowFormat = builder.getRowFormat();
+        sectionHeaderFormat = builder.getSectionHeaderFormat();
+        printSectionSummary = builder.isPrintSectionSummary();
+        sectionSummaryRowFormat = builder.getSectionSummaryRowFormat();
+        durationFormat = builder.getDurationFormat();
+        printLegend = builder.isPrintLegend();
+        simpleLine = builder.getSimpleLine();
+        alternativeLine = builder.getAlternativeLine();
     }
 
     /**
-     * @return the {@link DurationFormat} to be applied to all rows in general
+     * @return the {@link DurationFormat} to be applied on all rows
      */
     public DurationFormat getDurationFormat()
     {
         return durationFormat;
+    }
+
+    /**
+     * @return a flag indicating whether or not duration legends shall be printed
+     */
+    public boolean isPrintLegend()
+    {
+        return printLegend;
+    }
+
+    /**
+     * @return a flag indicating whether or not the header shall be printed
+     */
+    public boolean isPrintHeader()
+    {
+        return printHeader;
+    }
+
+    /**
+     * @return a flag indicating whether or not a summary shall be printed for each section
+     */
+    public boolean isPrintSectionSummary()
+    {
+        return printSectionSummary;
     }
 
     /**
@@ -122,11 +162,19 @@ public class PrintStyle
     }
 
     /**
+     * @return the string format to be applied to each section header
+     */
+    public String getSectionHeaderFormat()
+    {
+        return sectionHeaderFormat;
+    }
+
+    /**
      * @return the string format for the total/summary row(s)
      */
-    public String getTotalRowFormat()
+    public String getSectionSummaryRowFormat()
     {
-        return totalRowFormat;
+        return sectionSummaryRowFormat;
     }
 
     /**
@@ -143,23 +191,6 @@ public class PrintStyle
     public String getAlternativeLine()
     {
         return alternativeLine;
-    }
-
-    /**
-     * Generates a string using the specified character repeated to a given length.
-     *
-     * @param character a character to compose the string
-     * @param length    number of times to repeat the character; must be &gt; 0
-     * @return a string with repeated character
-     */
-    public static String generateLine(char character, int length)
-    {
-        if (length < 1)
-        {
-            return "";
-        }
-        String format = "%" + length + "s";
-        return String.format(format, "").replace(' ', character);
     }
 
 }

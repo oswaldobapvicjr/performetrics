@@ -28,8 +28,11 @@ public enum PrintFormat
         {
             StringBuilder builder = new StringBuilder();
             appendLine(builder, style.getAlternativeLine());
-            appendLine(builder, style.getHeaderFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
-            appendLine(builder, style.getSimpleLine());
+            if (style.isPrintHeader())
+            {
+                appendLine(builder, style.getHeaderFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
+                appendLine(builder, style.getSimpleLine());
+            }
             stopwatch.getTypes().forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
             appendLine(builder, style.getAlternativeLine());
             return builder.toString();
@@ -38,7 +41,7 @@ public enum PrintFormat
         private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
         {
             return String.format(style.getRowFormat(), type,
-                    style.getDurationFormat().format(stopwatch.elapsedTime(type), false));
+                    style.getDurationFormat().format(stopwatch.elapsedTime(type), style.isPrintLegend()));
         }
     },
 
@@ -53,14 +56,17 @@ public enum PrintFormat
         public String format(Stopwatch stopwatch, PrintStyle style)
         {
             StringBuilder builder = new StringBuilder();
-            appendLine(builder, style.getAlternativeLine());
-            appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
 
+            if (style.isPrintHeader())
+            {
+                appendLine(builder, style.getAlternativeLine());
+                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
+            }
             Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
             {
                 appendLine(builder, style.getAlternativeLine());
-                appendLine(builder, type.toString());
+                appendLine(builder, style.getSectionHeaderFormat(), type.toString());
                 appendLine(builder, style.getSimpleLine());
 
                 Duration elapsedTimeAcc = Duration.ZERO;
@@ -72,9 +78,11 @@ public enum PrintFormat
                     elapsedTimeAcc = elapsedTimeAcc.plus(elapsedTime);
                     appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style));
                 }
-
-                appendLine(builder, style.getSimpleLine());
-                appendLine(builder, toTotalRowFormat(elapsedTimeAcc, style));
+                if (style.isPrintSectionSummary())
+                {
+                    appendLine(builder, style.getSimpleLine());
+                    appendLine(builder, toTotalRowFormat(elapsedTimeAcc, style));
+                }
             });
             appendLine(builder, style.getAlternativeLine());
             return builder.toString();
@@ -83,13 +91,15 @@ public enum PrintFormat
         private String toRowFormat(int sequence, Duration elapsedTime, Duration elapsedTimeAcc, PrintStyle style)
         {
             DurationFormat durationFormat = style.getDurationFormat();
-            return String.format(style.getRowFormat(), sequence, durationFormat.format(elapsedTime, false),
-                    durationFormat.format(elapsedTimeAcc, false));
+            boolean printLegend = style.isPrintLegend();
+            return String.format(style.getRowFormat(), sequence, durationFormat.format(elapsedTime, printLegend),
+                    durationFormat.format(elapsedTimeAcc, printLegend));
         }
 
         private String toTotalRowFormat(Duration elapsedTimeAcc, PrintStyle style)
         {
-            return String.format(style.getTotalRowFormat(), style.getDurationFormat().format(elapsedTimeAcc, false));
+            return String.format(style.getSectionSummaryRowFormat(),
+                    style.getDurationFormat().format(elapsedTimeAcc, style.isPrintLegend()));
         }
     };
 
@@ -135,7 +145,7 @@ public enum PrintFormat
      */
     protected static void appendLine(StringBuilder builder, String string)
     {
-        if (string != null && !string.isEmpty())
+        if (!isEmpty(string))
         {
             builder.append(string);
             builder.append(LINE_SEPARATOR);
@@ -152,10 +162,15 @@ public enum PrintFormat
      */
     protected static void appendLine(StringBuilder builder, String format, Object... args)
     {
-        if (format != null && !format.isEmpty())
+        if (!isEmpty(format))
         {
             appendLine(builder, String.format(format, args));
         }
+    }
+
+    private static boolean isEmpty(String string)
+    {
+        return string == null || string.isEmpty();
     }
 
 }

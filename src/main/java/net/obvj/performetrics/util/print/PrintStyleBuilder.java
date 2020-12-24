@@ -56,8 +56,7 @@ public class PrintStyleBuilder
     /**
      * Enables the header row, to be formatted using the same general format for all rows.
      * <p>
-     * To specify a different format for the header row, use
-     * {@link PrintStyleBuilder#withHeader(String)}
+     * To specify a different format for the header row, use {@link #withHeader(String)}.
      *
      * @return a reference to this builder object for chained calls
      */
@@ -69,6 +68,9 @@ public class PrintStyleBuilder
 
     /**
      * Enables the header row and defines a specific string format to be applied.
+     * <p>
+     * To enable header without specifying a format, use the zero-argument option
+     * {@link #withHeader()}.
      *
      * @param format the string format to be applied for the header row
      * @return a reference to this builder object for chained calls

@@ -9,7 +9,6 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -18,10 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
@@ -34,7 +30,6 @@ import net.obvj.performetrics.util.SystemUtils;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PerformetricsTest
 {
     // Default values
@@ -42,8 +37,19 @@ public class PerformetricsTest
     private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration().getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
 
-    @Mock
-    private Runnable runnable;
+    private boolean runFlag = false;
+
+    // Since JDK 17, Mockito cannot mock java.util.Runnable
+    private Runnable runnable = () ->
+    {
+        runFlag = true;
+    };
+
+    @After
+    public void resetFlag()
+    {
+        runFlag = false;
+    }
 
     private void checkAllDefaultValues()
     {
@@ -134,7 +140,7 @@ public class PerformetricsTest
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             MonitoredOperation operation = Performetrics.monitorOperation(runnable);
-            then(runnable).should().run();
+            assertThat(runFlag, is(equalTo(true)));
             assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
 
             systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
@@ -151,7 +157,7 @@ public class PerformetricsTest
         {
             MonitoredOperation operation = Performetrics.monitorOperation(runnable, WALL_CLOCK_TIME, CPU_TIME);
 
-            then(runnable).should().run();
+            assertThat(runFlag, is(equalTo(true)));
             assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
             systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);

@@ -9,6 +9,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -22,9 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -35,7 +33,6 @@ import net.obvj.performetrics.Stopwatch;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PrintUtilsTest
 {
     private static final Counter C1 = newCounter(WALL_CLOCK_TIME, MILLISECONDS, 5000, 6000);
@@ -48,7 +45,7 @@ public class PrintUtilsTest
         ALL_COUNTERS.put(CPU_TIME, singletonList(C2));
     }
 
-    @Mock Stopwatch stopwatch;
+    Stopwatch stopwatch = mock(Stopwatch.class);
 
     @Before
     public void setup()

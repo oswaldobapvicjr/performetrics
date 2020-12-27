@@ -23,16 +23,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintUtils;
 
-@RunWith(MockitoJUnitRunner.class)
 public class StopwatchTest
 {
     static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;

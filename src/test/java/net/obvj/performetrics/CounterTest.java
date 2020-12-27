@@ -15,9 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mockStatic;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
@@ -27,7 +25,6 @@ import net.obvj.performetrics.util.SystemUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(MockitoJUnitRunner.class)
 public class CounterTest
 {
 

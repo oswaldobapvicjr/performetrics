@@ -6,7 +6,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -16,9 +16,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -32,7 +29,6 @@ import net.obvj.performetrics.util.DurationFormat;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PrintFormatTest
 {
     static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyleBuilder()
@@ -46,7 +42,7 @@ public class PrintFormatTest
             .withSectionHeaderFormat("%s")
             .withoutSectionSummary()
             .withDurationFormat(DurationFormat.FULL).build();
-    
+
     static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS = new PrintStyleBuilder()
             .withoutHeader()
             .withRowFormat("%s %s %s")
@@ -68,14 +64,12 @@ public class PrintFormatTest
     static final String STR_DURATION_SUM_C1 = DURATION_SUM_C1.toString(DurationFormat.FULL, false);
     static final String STR_DURATION_SUM_C2 = DURATION_SUM_C2.toString(DurationFormat.FULL, false);
 
-    @Mock Counter s1Counter1;
-    @Mock Counter s1Counter2;
-    @Mock Counter s2Counter1;
-    @Mock Counter s2Counter2;
+    Counter s1Counter1 = mock(Counter.class);
+    Counter s1Counter2 = mock(Counter.class);
+    Counter s2Counter1 = mock(Counter.class);
+    Counter s2Counter2 = mock(Counter.class);
 
-    @Mock Stopwatch stopwatch;
-
-    @Mock StringBuilder stringBuilder;
+    Stopwatch stopwatch = mock(Stopwatch.class);
 
     @Before
     public void setupMocks()
@@ -153,11 +147,12 @@ public class PrintFormatTest
     @Test
     public void appendLine_nullOrEmptyFormat_doNothing()
     {
+        StringBuilder stringBuilder = new StringBuilder();
         PrintFormat.appendLine(stringBuilder, null);
         PrintFormat.appendLine(stringBuilder, null, "");
         PrintFormat.appendLine(stringBuilder, "");
         PrintFormat.appendLine(stringBuilder, "", "");
-        verifyNoInteractions(stringBuilder);
+        assertThat(stringBuilder.length(), is(equalTo(0)));
     }
 
     @Test

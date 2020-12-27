@@ -8,17 +8,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
@@ -30,7 +30,6 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(MockitoJUnitRunner.class)
 public class MonitoredCallableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -39,8 +38,11 @@ public class MonitoredCallableTest
     private static final long MOCKED_SYSTEM_TIME = 1200000002l;
     private static final String STRING_CALLABLE_RETURN = "test234";
 
-    @Mock
-    private Callable<String> callable;
+    // Since JDK 17, Mockito cannot mock java.util.Callable
+    private Callable<String> callable = () ->
+    {
+        return STRING_CALLABLE_RETURN;
+    };
 
     /**
      * Setup the expects on {@link SystemUtils} mock with constant values
@@ -51,14 +53,6 @@ public class MonitoredCallableTest
         systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(MOCKED_CPU_TIME);
         systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(MOCKED_USER_TIME);
         systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
-    }
-
-    /**
-     * Setup the expects on the mocked {@link Callable} object
-     */
-    public void setupMockedCallable() throws Exception
-    {
-        when(callable.call()).thenReturn(STRING_CALLABLE_RETURN);
     }
 
     private void assertAllUnitsBefore(MonitoredOperation operation, int session)
@@ -115,7 +109,6 @@ public class MonitoredCallableTest
     @Test
     public void call_givenAllTypes_updatesAllCounters() throws Exception
     {
-        setupMockedCallable();
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {

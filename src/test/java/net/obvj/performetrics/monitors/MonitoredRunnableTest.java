@@ -19,10 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter.Type;
@@ -35,7 +32,6 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-@RunWith(MockitoJUnitRunner.class)
 public class MonitoredRunnableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
@@ -43,8 +39,8 @@ public class MonitoredRunnableTest
     private static final long MOCKED_USER_TIME = 1200000001l;
     private static final long MOCKED_SYSTEM_TIME = 1200000002l;
 
-    @Mock
-    private Runnable runnable;
+    // Since JDK 17, Mockito cannot mock java.util.Runnable
+    private Runnable runnable = () -> {};
 
     /**
      * Setup the expects on {@link SystemUtils} mock with constant values

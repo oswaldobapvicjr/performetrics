@@ -6,6 +6,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
+import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * A Facade class meant to provide a simple interface for common parameters setup and
@@ -55,6 +56,40 @@ public class Performetrics
     public static void setScale(int scale)
     {
         ConfigurationHolder.getConfiguration().setScale(scale);
+    }
+
+    /**
+     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * <ul>
+     * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
+     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
+     * </ul>
+     *
+     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @throws NullPointerException if the specified PrintStyle is null
+     *
+     * @since 2.2.1
+     */
+    public static void setDefaultPrintStyleForSummary(PrintStyle printStyle)
+    {
+        ConfigurationHolder.getConfiguration().setPrintStyleForSummary(printStyle);
+    }
+
+    /**
+     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * <ul>
+     * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
+     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
+     * </ul>
+     *
+     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @throws NullPointerException if the specified PrintStyle is null
+     *
+     * @since 2.2.1
+     */
+    public static void setDefaultPrintStyleForDetails(PrintStyle printStyle)
+    {
+        ConfigurationHolder.getConfiguration().setPrintStyleForDetails(printStyle);
     }
 
     /**

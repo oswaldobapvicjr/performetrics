@@ -12,9 +12,33 @@ import net.obvj.performetrics.util.DurationFormat;
  */
 public class PrintStyle
 {
+
     /**
-     * A string-based style for use with the summarized stopwatch formatter, with horizontal
-     * lines separating each row.
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * in tabular format without header.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * Wall clock time    0:00:04.455383500
+     * CPU time           0:00:00.109375000
+     * User time          0:00:00.046875000
+     * System time        0:00:00.062500000
+     * </pre>
+     *
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = new PrintStyleBuilder()
+            .withRowFormat("%-15s  %19s")
+            .withoutHeader()
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .build();
+
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * in tabular format, with horizontal lines separating each row.
      * <p>
      * Sample output:
      *
@@ -31,18 +55,60 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_HORIZONTAL_LINES = new PrintStyleBuilder()
-            .withRowFormat("%-15s  %19s")
+    public static final PrintStyle SUMMARIZED_TABLE_FULL = new PrintStyleBuilder(SUMMARIZED_TABLE_NO_HEADER)
             .withHeader()
-            .withDurationFormat(DurationFormat.FULL)
-            .withoutLegends()
             .withSimpleLine('-', 36)
             .withAlternativeLine('=', 36)
             .build();
 
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values).
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Counter","Elapsed time"
+     * "Wall clock time","0:00:04.455383500"
+     * "CPU time","0:00:00.109375000"
+     * "User time","0:00:00.046875000"
+     * "System time","0:00:00.062500000"
+     * </pre>
+     *
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_CSV = new PrintStyleBuilder()
+            .withHeader()
+            .withRowFormat("\"%s\",\"%s\"")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .build();
+
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values), <b>without</b> header.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Wall clock time","0:00:04.455383500"
+     * "CPU time","0:00:00.109375000"
+     * "User time","0:00:00.046875000"
+     * "System time","0:00:00.062500000"
+     * </pre>
+     *
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_CSV_NO_HEADER = new PrintStyleBuilder(SUMMARIZED_CSV)
+            .withoutHeader()
+            .build();
+
+
     /**
      * A string-based style for use with the detailed stopwatch formatter, with horizontal
-     * lines separating each row.
+     * lines separating each row, and total elapsed time for each counter.
      * <p>
      * Sample output:
      *
@@ -72,7 +138,7 @@ public class PrintStyle
      *
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_HORIZONTAL_LINES = new PrintStyleBuilder()
+    public static final PrintStyle DETAILED_TABLE_FULL = new PrintStyleBuilder()
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
             .withSectionHeaderFormat("%s")
@@ -83,16 +149,22 @@ public class PrintStyle
             .withAlternativeLine('=', 47)
             .build();
 
+
     private final boolean printHeader;
     private final String headerFormat;
+
     private final String rowFormat;
     private final String sectionHeaderFormat;
+
     private final boolean printSectionSummary;
     private final String sectionSummaryRowFormat;
+
     private final DurationFormat durationFormat;
     private final boolean printLegend;
+
     private final String simpleLine;
     private final String alternativeLine;
+
 
     /**
      * Creates a new PrintStyle.

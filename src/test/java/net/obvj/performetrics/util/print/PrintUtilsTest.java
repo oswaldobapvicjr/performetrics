@@ -27,6 +27,7 @@ import org.junit.Test;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Unit tests for the {@link PrintUtils} class.
@@ -46,6 +47,7 @@ public class PrintUtilsTest
     }
 
     Stopwatch stopwatch = mock(Stopwatch.class);
+    PrintStyle printStyle = mock(PrintStyle.class);
 
     @Before
     public void setup()
@@ -76,7 +78,7 @@ public class PrintUtilsTest
     @Test
     public void printSummary_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
-        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_HORIZONTAL_LINES);
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -92,11 +94,74 @@ public class PrintUtilsTest
     @Test
     public void printDetails_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
-        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_HORIZONTAL_LINES);
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printDetails(stopwatch, ps);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    private void prepareTestPrintStyle()
+    {
+        when(printStyle.getDurationFormat()).thenReturn(DurationFormat.FULL);
+        when(printStyle.getRowFormat()).thenReturn("%s");
+    }
+
+    @Test
+    public void printSummary_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+            throws UnsupportedEncodingException
+    {
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printSummary(stopwatch, printStream, PrintStyle.SUMMARIZED_CSV);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    @Test
+    public void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+            throws UnsupportedEncodingException
+    {
+        prepareTestPrintStyle();
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, printStyle);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printDetails(stopwatch, printStream, printStyle);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    @Test
+    public void printSummary_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+            throws UnsupportedEncodingException
+    {
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printSummary(stopwatch, ps, null);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    @Test
+    public void printDetails_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+            throws UnsupportedEncodingException
+    {
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printDetails(stopwatch, ps, null);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(equalTo(expectedString)));

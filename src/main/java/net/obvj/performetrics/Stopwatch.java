@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
+import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
@@ -346,7 +347,21 @@ public class Stopwatch
      */
     public void printSummary(PrintStream printStream)
     {
-        PrintUtils.printSummary(this, printStream);
+        printSummary(printStream, null);
+    }
+
+    /**
+     * Prints summarized elapsed times in the specified print stream, with a custom
+     * {@link PrintStyle}.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @param printStyle  the {@link PrintStyle} to be applied
+     *
+     * @since 2.2.1
+     */
+    public void printSummary(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.printSummary(this, printStream, printStyle);
     }
 
     /**
@@ -358,7 +373,21 @@ public class Stopwatch
      */
     public void printDetails(PrintStream printStream)
     {
-        PrintUtils.printDetails(this, printStream);
+        printDetails(printStream, null);
+    }
+
+    /**
+     * Prints detailed information about timing sessions in the specified print stream, with a
+     * custom {@link PrintStyle}.
+     *
+     * @param printStream the print stream to which information will be sent
+     * @param printStyle  the {@link PrintStyle} to be applied
+     *
+     * @since 2.2.1
+     */
+    public void printDetails(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.printDetails(this, printStream, printStyle);
     }
 
     /**

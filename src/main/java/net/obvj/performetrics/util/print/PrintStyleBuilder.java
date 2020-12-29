@@ -1,5 +1,7 @@
 package net.obvj.performetrics.util.print;
 
+import java.util.Objects;
+
 import net.obvj.performetrics.util.DurationFormat;
 import net.obvj.performetrics.util.DurationFormatter;
 
@@ -40,6 +42,41 @@ public class PrintStyleBuilder
 
     private String simpleLine;
     private String alternativeLine;
+
+    /**
+     * Creates an empty PrintStyle builder.
+     */
+    public PrintStyleBuilder()
+    {
+        // Empty block created to avoid hiding the default constructor.
+    }
+
+    /**
+     * Creates a new PrintStyle builder with the same attributes of the specified base
+     * PrintStyle.
+     *
+     * @param baseStyle the base PrintStyle whose attributes are to be copied
+     * @throws NullPointerException if the specified PrintStyle is null
+     */
+    public PrintStyleBuilder(PrintStyle baseStyle)
+    {
+        Objects.requireNonNull(baseStyle, "The base PrintStyle must not be null");
+
+        printHeader = baseStyle.isPrintHeader();
+        headerFormat = baseStyle.getHeaderFormat();
+
+        rowFormat = baseStyle.getRowFormat();
+        sectionHeaderFormat = baseStyle.getSectionHeaderFormat();
+
+        printSectionSummary = baseStyle.isPrintSectionSummary();
+        sectionSummaryRowFormat = baseStyle.getSectionSummaryRowFormat();
+
+        durationFormat = baseStyle.getDurationFormat();
+        printLegend = baseStyle.isPrintLegend();
+
+        simpleLine = baseStyle.getSimpleLine();
+        alternativeLine = baseStyle.getAlternativeLine();
+    }
 
     /**
      * Defines a string format to be applied for all rows.

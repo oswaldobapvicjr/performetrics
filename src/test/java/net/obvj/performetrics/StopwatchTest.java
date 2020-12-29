@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 
@@ -28,6 +29,7 @@ import org.mockito.MockedStatic;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
+import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
 public class StopwatchTest
@@ -278,7 +280,19 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printSummary(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out, null));
+        }
+    }
+
+    @Test
+    public void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.printSummary(System.out, ps);
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out, ps));
         }
     }
 
@@ -289,7 +303,19 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printDetails(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out, null));
+        }
+    }
+
+    @Test
+    public void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.printDetails(System.out, ps);
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out, ps));
         }
     }
 

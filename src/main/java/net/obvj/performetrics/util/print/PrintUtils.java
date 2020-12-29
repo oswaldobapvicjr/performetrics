@@ -41,8 +41,6 @@ public class PrintUtils
     /**
      * Prints summarized elapsed times from the given stopwatch in the specified print stream,
      * with a custom {@link PrintStyle}.
-     * <p>
-     * The default {@link PrintStyle} will be applied.
      *
      * @param stopwatch   the stopwatch to be printed
      * @param printStream the print stream to which data will be sent
@@ -63,6 +61,8 @@ public class PrintUtils
     /**
      * Prints detailed information about timing sessions from the given stopwatch in the
      * specified print stream.
+     * <p>
+     * The default {@link PrintStyle} will be applied.
      *
      * @param stopwatch   the stopwatch to be printed
      * @param printStream the print stream to which information will be sent

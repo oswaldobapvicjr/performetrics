@@ -351,7 +351,8 @@ public class Stopwatch
     }
 
     /**
-     * Prints summarized elapsed times in the specified print stream.
+     * Prints summarized elapsed times in the specified print stream, with a custom
+     * {@link PrintStyle}.
      *
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
@@ -376,7 +377,8 @@ public class Stopwatch
     }
 
     /**
-     * Prints detailed information about timing sessions in the specified print stream.
+     * Prints detailed information about timing sessions in the specified print stream, with a
+     * custom {@link PrintStyle}.
      *
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle} to be applied

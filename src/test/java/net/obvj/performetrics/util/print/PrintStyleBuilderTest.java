@@ -3,7 +3,8 @@ package net.obvj.performetrics.util.print;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.junit.Test;
 
@@ -135,6 +136,30 @@ public class PrintStyleBuilderTest
     {
         PrintStyle printStyle = new PrintStyleBuilder().withoutLegends().build();
         assertThat(printStyle.isPrintLegend(), is(false));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void constructor_nullBasePrintStyle_failure()
+    {
+        new PrintStyleBuilder(null);
+    }
+
+    @Test
+    public void build_validBasePrintStyle_copiesValuesFromBasePrintStyle()
+    {
+        PrintStyle baseStyle = PrintStyle.DETAILED_TABLE_FULL;
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).build();
+
+        assertThat(newStyle.getAlternativeLine(), is(equalTo(newStyle.getAlternativeLine())));
+        assertThat(newStyle.getDurationFormat(), is(equalTo(newStyle.getDurationFormat())));
+        assertThat(newStyle.getHeaderFormat(), is(equalTo(newStyle.getHeaderFormat())));
+        assertThat(newStyle.isPrintHeader(), is(equalTo(newStyle.isPrintHeader())));
+        assertThat(newStyle.isPrintLegend(), is(equalTo(newStyle.isPrintLegend())));
+        assertThat(newStyle.isPrintSectionSummary(), is(equalTo(newStyle.isPrintSectionSummary())));
+        assertThat(newStyle.getRowFormat(), is(equalTo(newStyle.getRowFormat())));
+        assertThat(newStyle.getSectionHeaderFormat(), is(equalTo(newStyle.getSectionHeaderFormat())));
+        assertThat(newStyle.getSectionSummaryRowFormat(), is(equalTo(newStyle.getSectionSummaryRowFormat())));
+        assertThat(newStyle.getSimpleLine(), is(equalTo(newStyle.getSimpleLine())));
     }
 
 }

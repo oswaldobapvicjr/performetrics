@@ -126,7 +126,7 @@ public class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out, null));
         }
     }
 
@@ -137,7 +137,7 @@ public class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out, null));
         }
     }
 

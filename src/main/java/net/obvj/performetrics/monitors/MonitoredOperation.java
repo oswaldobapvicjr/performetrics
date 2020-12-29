@@ -10,6 +10,7 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
+import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
@@ -116,7 +117,20 @@ public abstract class MonitoredOperation
      */
     public void printSummary(PrintStream printStream)
     {
-        PrintUtils.printSummary(stopwatch, printStream);
+        printSummary(printStream, null);
+    }
+
+    /**
+     * Prints summarized elapsed times in the specified print stream.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @param printStyle  the {@link PrintStyle} to be applied
+     *
+     * @since 2.2.1
+     */
+    public void printSummary(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.printSummary(stopwatch, printStream, printStyle);
     }
 
     /**
@@ -128,7 +142,20 @@ public abstract class MonitoredOperation
      */
     public void printDetails(PrintStream printStream)
     {
-        PrintUtils.printDetails(stopwatch, printStream);
+        printDetails(printStream, null);
+    }
+
+    /**
+     * Prints detailed information about timing sessions in the specified print stream.
+     *
+     * @param printStream the print stream to which information will be sent
+     * @param printStyle  the {@link PrintStyle} to be applied
+     *
+     * @since 2.2.1
+     */
+    public void printDetails(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.printDetails(stopwatch, printStream, printStyle);
     }
 
     /**

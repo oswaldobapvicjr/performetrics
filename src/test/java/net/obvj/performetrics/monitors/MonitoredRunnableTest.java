@@ -25,6 +25,7 @@ import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
+import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
@@ -132,7 +133,19 @@ public class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out, null));
+        }
+    }
+
+    @Test
+    public void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printSummary(System.out, ps);
+            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out, ps));
         }
     }
 
@@ -143,7 +156,19 @@ public class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out));
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out, null));
+        }
+    }
+
+    @Test
+    public void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.printDetails(System.out, ps);
+            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out, ps));
         }
     }
 

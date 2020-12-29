@@ -9,6 +9,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -23,6 +24,7 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.SystemUtils;
+import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * Unit tests for the {@link Performetrics} class.
@@ -36,6 +38,8 @@ public class PerformetricsTest
     private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
     private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration().getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
+    private static final PrintStyle INITIAL_PRINT_STYLE_FOR_SUMMARY = ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
+    private static final PrintStyle INITIAL_PRINT_STYLE_FOR_DETAILS = ConfigurationHolder.getConfiguration().getPrintStyleForDetails();
 
     private boolean runFlag = false;
 
@@ -56,6 +60,8 @@ public class PerformetricsTest
         checkDefaultTimeUnit();
         checkDefaultConversionMode();
         checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
     }
 
     private void checkDefaultTimeUnit()
@@ -71,6 +77,18 @@ public class PerformetricsTest
     private void checkDefaulScale()
     {
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(equalTo(INITIAL_SCALE)));
+    }
+
+    private void checkDefaulPrintStyleForSummary()
+    {
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForSummary(),
+                is(equalTo(INITIAL_PRINT_STYLE_FOR_SUMMARY)));
+    }
+
+    private void checkDefaulPrintStyleForDetails()
+    {
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForDetails(),
+                is(equalTo(INITIAL_PRINT_STYLE_FOR_DETAILS)));
     }
 
     @After
@@ -92,6 +110,8 @@ public class PerformetricsTest
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(FAST)));
         checkDefaultTimeUnit();
         checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
     }
 
     @Test
@@ -101,6 +121,9 @@ public class PerformetricsTest
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(equalTo(MILLISECONDS)));
         checkDefaultConversionMode();
         checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
+
     }
 
     @Test
@@ -110,6 +133,9 @@ public class PerformetricsTest
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(DOUBLE_PRECISION)));
         checkDefaultTimeUnit();
         checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
+
     }
 
     @Test
@@ -119,6 +145,9 @@ public class PerformetricsTest
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(equalTo(16)));
         checkDefaultTimeUnit();
         checkDefaultConversionMode();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
+
     }
 
     @Test
@@ -164,6 +193,56 @@ public class PerformetricsTest
             systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
             systemUtils.verify(never(), SystemUtils::getUserTimeNanos);
             systemUtils.verify(never(), SystemUtils::getSystemTimeNanos);
+        }
+    }
+
+    @Test
+    public void setDefaultPrintStyleForSummary_valid_updatesConfiguration()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Performetrics.setDefaultPrintStyleForSummary(ps);
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForSummary(), is(equalTo(ps)));
+        checkDefaultConversionMode();
+        checkDefaultTimeUnit();
+        checkDefaulScale();
+        checkDefaulPrintStyleForDetails();
+    }
+
+    @Test
+    public void setDefaultPrintStyleForSummary_null_doesNotUpdateConfiguration()
+    {
+        try
+        {
+            Performetrics.setDefaultPrintStyleForSummary(null);
+        }
+        catch (NullPointerException e)
+        {
+            checkAllDefaultValues();
+        }
+    }
+
+    @Test
+    public void setDefaultPrintStyleForDetails_valid_updatesConfiguration()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Performetrics.setDefaultPrintStyleForDetails(ps);
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForDetails(), is(equalTo(ps)));
+        checkDefaultConversionMode();
+        checkDefaultTimeUnit();
+        checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+    }
+
+    @Test
+    public void setDefaultPrintStyleForDetails_null_doesNotUpdateConfiguration()
+    {
+        try
+        {
+            Performetrics.setDefaultPrintStyleForDetails(null);
+        }
+        catch (NullPointerException e)
+        {
+            checkAllDefaultValues();
         }
     }
 

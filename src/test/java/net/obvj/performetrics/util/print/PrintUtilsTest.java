@@ -10,7 +10,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -27,6 +27,8 @@ import org.junit.Test;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Unit tests for the {@link PrintUtils} class.
@@ -46,6 +48,8 @@ public class PrintUtilsTest
     }
 
     Stopwatch stopwatch = mock(Stopwatch.class);
+    PrintStream printStream = mock(PrintStream.class);
+    PrintStyle printStyle = mock(PrintStyle.class);
 
     @Before
     public void setup()
@@ -76,7 +80,7 @@ public class PrintUtilsTest
     @Test
     public void printSummary_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
-        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_HORIZONTAL_LINES);
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -92,7 +96,7 @@ public class PrintUtilsTest
     @Test
     public void printDetails_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
-        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_HORIZONTAL_LINES);
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, "UTF-8");
@@ -100,6 +104,44 @@ public class PrintUtilsTest
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    private void prepareTestPrintStyle()
+    {
+        when(printStyle.getDurationFormat()).thenReturn(DurationFormat.FULL);
+        when(printStyle.getRowFormat()).thenReturn("%s");
+    }
+
+    @Test
+    public void printSummary_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+    {
+        prepareTestPrintStyle();
+        PrintUtils.printSummary(stopwatch, printStream, printStyle);
+        verify(printStream).print(PrintFormat.SUMMARIZED.format(stopwatch, printStyle));
+    }
+
+    @Test
+    public void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+    {
+        prepareTestPrintStyle();
+        PrintUtils.printDetails(stopwatch, printStream, printStyle);
+        verify(printStream).print(PrintFormat.DETAILED.format(stopwatch, printStyle));
+    }
+
+    @Test
+    public void printSummary_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+    {
+        PrintUtils.printSummary(stopwatch, printStream, null);
+        verify(printStream).print(PrintFormat.SUMMARIZED.format(stopwatch,
+                ConfigurationHolder.getConfiguration().getPrintStyleForSummary()));
+    }
+
+    @Test
+    public void printDetails_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+    {
+        PrintUtils.printDetails(stopwatch, printStream, null);
+        verify(printStream).print(PrintFormat.DETAILED.format(stopwatch,
+                ConfigurationHolder.getConfiguration().getPrintStyleForDetails()));
     }
 
 }

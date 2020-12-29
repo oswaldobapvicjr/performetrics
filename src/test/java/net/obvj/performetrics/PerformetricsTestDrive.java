@@ -1,6 +1,7 @@
 package net.obvj.performetrics;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.monitors.MonitoredCallable;
+import net.obvj.performetrics.util.print.PrintStyle;
 
 public class PerformetricsTestDrive
 {
@@ -39,7 +41,7 @@ public class PerformetricsTestDrive
         Stopwatch sw = Stopwatch.createStarted();
         test(sw);
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             System.out.println("\nResuming the same stopwatch...\n");
             sw.start();
@@ -51,11 +53,12 @@ public class PerformetricsTestDrive
     {
         // Enforcing some wall-clock time...
 
-        int sleepTimeMillis = new Random(987).nextInt(3000);
+        int sleepTimeMillis = new Random(9999).nextInt(3000);
         Thread.sleep(sleepTimeMillis);
 
         // Enforcing some user time...
         UUID.randomUUID();
+        System.out.println(sleepTimeMillis + "! = " + factorial(sleepTimeMillis));
 
         // Enforcing some system time...
         Files.list(Paths.get("/")).sorted().collect(Collectors.toList());
@@ -102,6 +105,21 @@ public class PerformetricsTestDrive
 
         operation.printSummary(System.out);
         System.out.println();
+
+        operation.printSummary(System.out, PrintStyle.SUMMARIZED_CSV_NO_HEADER);
+        System.out.println();
+
         operation.printDetails(System.out);
     }
+
+    public static BigInteger factorial(long x)
+    {
+        if (x == 0)
+        {
+            return BigInteger.ONE;
+        }
+
+        return BigInteger.valueOf(x).multiply(factorial(x - 1));
+    }
+
 }

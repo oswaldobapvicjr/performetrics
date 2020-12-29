@@ -10,7 +10,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +27,6 @@ import org.junit.Test;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
@@ -49,7 +47,6 @@ public class PrintUtilsTest
     }
 
     Stopwatch stopwatch = mock(Stopwatch.class);
-    PrintStream printStream = mock(PrintStream.class);
     PrintStyle printStyle = mock(PrintStyle.class);
 
     @Before
@@ -115,34 +112,59 @@ public class PrintUtilsTest
 
     @Test
     public void printSummary_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+            throws UnsupportedEncodingException
     {
-        prepareTestPrintStyle();
-        PrintUtils.printSummary(stopwatch, printStream, printStyle);
-        verify(printStream).print(PrintFormat.SUMMARIZED.format(stopwatch, printStyle));
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printSummary(stopwatch, printStream, PrintStyle.SUMMARIZED_CSV);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
     }
 
     @Test
     public void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+            throws UnsupportedEncodingException
     {
         prepareTestPrintStyle();
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, printStyle);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos, true, "UTF-8");
         PrintUtils.printDetails(stopwatch, printStream, printStyle);
-        verify(printStream).print(PrintFormat.DETAILED.format(stopwatch, printStyle));
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
     }
 
     @Test
     public void printSummary_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+            throws UnsupportedEncodingException
     {
-        PrintUtils.printSummary(stopwatch, printStream, null);
-        verify(printStream).print(PrintFormat.SUMMARIZED.format(stopwatch,
-                ConfigurationHolder.getConfiguration().getPrintStyleForSummary()));
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printSummary(stopwatch, ps, null);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
     }
 
     @Test
     public void printDetails_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+            throws UnsupportedEncodingException
     {
-        PrintUtils.printDetails(stopwatch, printStream, null);
-        verify(printStream).print(PrintFormat.DETAILED.format(stopwatch,
-                ConfigurationHolder.getConfiguration().getPrintStyleForDetails()));
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.printDetails(stopwatch, ps, null);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
     }
 
 }

@@ -1,7 +1,7 @@
 package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
@@ -100,7 +100,7 @@ public class PerformetricsTest
     @Test
     public void constructor_instantiationNotAllowed()
     {
-        assertThat(Performetrics.class, instantiationNotAllowed());
+        assertThat(Performetrics.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test

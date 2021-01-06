@@ -1,6 +1,6 @@
 package net.obvj.performetrics.util;
 
-import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -20,7 +20,7 @@ public class TimeUnitConverterTest
     @Test
     public void constructor_instantiationNotAllowed()
     {
-        assertThat(TimeUnitConverter.class, instantiationNotAllowed());
+        assertThat(TimeUnitConverter.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test

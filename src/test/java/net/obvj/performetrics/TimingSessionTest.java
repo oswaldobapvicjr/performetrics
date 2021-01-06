@@ -23,6 +23,12 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 
+/**
+ * Unit tests for the {@link TimingSession} class.
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 2.2.0
+ */
 public class TimingSessionTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;

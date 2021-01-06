@@ -23,7 +23,7 @@ public class DurationFormatter
      */
     private DurationFormatter()
     {
-        throw new UnsupportedOperationException("Instantiation not allowed");
+        throw new IllegalStateException("Instantiation not allowed");
     }
 
     /**

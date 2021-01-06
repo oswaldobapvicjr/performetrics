@@ -44,7 +44,7 @@
         <junit4.version>4.13.1</junit4.version>
         <mockito.version>3.6.28</mockito.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <junit-utils.version>1.2.0</junit-utils.version>
+        <junit-utils.version>1.2.1</junit-utils.version>
 
     </properties>
 

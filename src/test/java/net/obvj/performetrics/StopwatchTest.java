@@ -32,6 +32,12 @@ import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
+/**
+ * Unit tests for the {@link Stopwatch} class.
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 1.0.0
+ */
 public class StopwatchTest
 {
     static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;

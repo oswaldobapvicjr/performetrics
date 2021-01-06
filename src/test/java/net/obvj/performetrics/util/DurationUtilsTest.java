@@ -2,7 +2,7 @@ package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static net.obvj.performetrics.util.DurationUtils.average;
 import static net.obvj.performetrics.util.DurationUtils.max;
 import static net.obvj.performetrics.util.DurationUtils.min;
@@ -15,6 +15,12 @@ import java.util.Collections;
 
 import org.junit.Test;
 
+/**
+ * Unit tests for the {@link DurationUtils} class.
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 2.2.0
+ */
 public class DurationUtilsTest
 {
     private static final Duration D_ZERO = Duration.ZERO;
@@ -27,7 +33,7 @@ public class DurationUtilsTest
     @Test
     public void constructor_instantiationNotAllowed()
     {
-        assertThat(DurationUtils.class, instantiationNotAllowed());
+        assertThat(DurationUtils.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test

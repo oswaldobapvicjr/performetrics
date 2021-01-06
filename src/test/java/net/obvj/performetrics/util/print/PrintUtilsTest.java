@@ -3,7 +3,7 @@ package net.obvj.performetrics.util.print;
 import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -69,7 +69,7 @@ public class PrintUtilsTest
     @Test
     public void constructor_instantiationNotAllowed()
     {
-        assertThat(PrintUtils.class, instantiationNotAllowed());
+        assertThat(PrintUtils.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     /**

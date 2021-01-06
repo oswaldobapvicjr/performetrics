@@ -13,7 +13,7 @@ public class DurationUtils
 {
     private DurationUtils()
     {
-        throw new UnsupportedOperationException("Instantiation not allowed");
+        throw new IllegalStateException("Instantiation not allowed");
     }
 
     /**

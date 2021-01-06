@@ -1,6 +1,6 @@
 package net.obvj.performetrics.config;
 
-import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +27,7 @@ public class ConfigurationHolderTest
     @Test
     public void constructor_instantiationNotAllowed()
     {
-        assertThat(ConfigurationHolder.class, instantiationNotAllowed());
+        assertThat(ConfigurationHolder.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test

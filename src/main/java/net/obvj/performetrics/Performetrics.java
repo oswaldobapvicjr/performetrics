@@ -59,7 +59,9 @@ public class Performetrics
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * Defines the default {@link PrintStyle} to be applied by the <b>summarized</b> stopwatch
+     * formatter.
+     * <p>
      * <ul>
      * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
      * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
@@ -76,7 +78,9 @@ public class Performetrics
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * Defines the default {@link PrintStyle} to be applied by the <b>detailed</b> stopwatch
+     * formatter.
+     * <p>
      * <ul>
      * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
      * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>

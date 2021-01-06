@@ -4,8 +4,8 @@ import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
- * Defines a set of attributes used by a {@link PrintFormat} to generate a tabular
- * string output out of a {@link Stopwatch} object.
+ * Defines a set of attributes used by a {@link PrintFormat} to generate a String output
+ * out of a {@link Stopwatch} object.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1

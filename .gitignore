@@ -29,3 +29,6 @@ hs_err_pid*
 .project
 .classpath
 *.prefs
+
+# Test files
+*.csv

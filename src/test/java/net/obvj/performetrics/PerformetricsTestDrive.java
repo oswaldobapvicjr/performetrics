@@ -1,6 +1,9 @@
 package net.obvj.performetrics;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -106,7 +109,7 @@ public class PerformetricsTestDrive
         operation.printSummary(System.out);
         System.out.println();
 
-        operation.printSummary(System.out, PrintStyle.SUMMARIZED_CSV_NO_HEADER);
+        operation.printSummary(new PrintStream("stopwatch.csv"), PrintStyle.SUMMARIZED_CSV);
         System.out.println();
 
         operation.printDetails(System.out);

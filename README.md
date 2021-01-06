@@ -35,7 +35,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
@@ -89,7 +89,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ====================================
     > ````
 
-    > **Hint:** Call `sw.printSummary(printWriter, PrintStyle.SUMMARIZED_CSV)` to print in CSV style, for data interchange.
+    > **Hint:** Call `sw.printSummary(new PrintStream("stopwatch.csv"), PrintStyle.SUMMARIZED_CSV)` to generate a CSV file for data interchange.
 
 5. Call `start` again to add a new timing session to the existing stopwatch.
 

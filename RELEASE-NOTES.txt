@@ -1,7 +1,37 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.2.1
+                                   2021-01
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+New features/enhancements:
+
+ > issue/0020: Introducing the new Print Format and Print Style classes for
+               enhanced Stopwatch data output
+ > issue/0022: Introducing the new Print Style Builder
+ > issue/0024: Stopwatch and Monitored Operation API improvements
+ > issue/0028: New built-in Print Styles (table/CSV) and default PrintStyle
+               configuration
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.2.0
+                                   2020-12
                                  
                                 RELEASE NOTES
 
@@ -36,6 +66,7 @@ https://obvj.net/performetrics
 
                           P E R F O R M E T R I C S
                                 version 2.1.1
+                                   2020-08
                                  
                                 RELEASE NOTES
 
@@ -61,6 +92,7 @@ https://obvj.net/performetrics
 
                           P E R F O R M E T R I C S
                                 version 2.1.0
+                                   2020-07
                                  
                                 RELEASE NOTES
 
@@ -90,6 +122,7 @@ https://obvj.net/performetrics
 
                           P E R F O R M E T R I C S
                                 version 2.0.1
+                                   2020-02
                                  
                                 RELEASE NOTES
 
@@ -116,6 +149,7 @@ https://obvj.net/performetrics
 
                           P E R F O R M E T R I C S
                                 version 2.0.0
+                                   2020-02
                                  
                                 RELEASE NOTES
 
@@ -150,6 +184,7 @@ https://obvj.net/performetrics
 
                           P E R F O R M E T R I C S
                                 version 1.0.0
+                                   2019-12
 
                                 RELEASE NOTES
 

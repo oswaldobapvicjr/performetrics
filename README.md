@@ -89,6 +89,8 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ====================================
     > ````
 
+    > **Hint:** Call `sw.printSummary(printWriter, PrintStyle.SUMMARIZED_CSV)` to print in CSV style, for data interchange.
+
 5. Call `start` again to add a new timing session to the existing stopwatch.
 
 6. Print stopwatch details:
@@ -205,4 +207,4 @@ Performetrics provides two different conversion modes that can be applied depend
 
 The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-A.svg)
+[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)

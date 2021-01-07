@@ -50,8 +50,8 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 1. Create a stopwatch and start it:
 
     ```java
-    Stopwatch sw = new Stopwatch();
-    sw.start();
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.start();
     ```
 
     > **Note:** A single call `Stopwatch.createStarted()` may provide a started stopwatch for convenience.
@@ -59,13 +59,13 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 2. Execute the code to be profiled and then stop the timing session:
 
     ```java
-    sw.stop();
+    stopwatch.stop();
     ```
 
 3. Get the elapsed time for a particular counter (e.g. CPU time), in a specific time unit:
 
     ```java
-    double cpuTimeNanos = sw.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+    double cpuTimeNanos = stopwatch.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
     > **Note:** Check the different `elapsedTime` options available to find the most suitable for you.
@@ -73,7 +73,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 4. Print the summary to the system console:
 
     ```java
-    sw.printSummary(System.out);
+    stopwatch.printSummary(System.out);
     ```
 
     > **Sample output:**
@@ -89,14 +89,14 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ====================================
     > ````
 
-    > **Hint:** Call `sw.printSummary(new PrintStream("stopwatch.csv"), PrintStyle.SUMMARIZED_CSV)` to generate a CSV file for data interchange.
+    > **Hint:** Call `stopwatch.printSummary(new PrintStream("stopwatch.csv"), PrintStyle.SUMMARIZED_CSV)` to generate a file with stopwatch data in CSV format.
 
 5. Call `start` again to add a new timing session to the existing stopwatch.
 
 6. Print stopwatch details:
 
     ```java
-    sw.printDetails(System.out);
+    stopwatch.printDetails(System.out);
     ```
 
     > **Sample output:**
@@ -207,4 +207,4 @@ Performetrics provides two different conversion modes that can be applied depend
 
 The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.0-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)
+[![High-level classes overview](resources/High-level%20overview%20-%20v2.2-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)

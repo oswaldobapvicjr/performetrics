@@ -15,14 +15,17 @@ import net.obvj.performetrics.Counter.Type;
  * <p>
  * Specify a target {@code Callable} via constructor, then execute the {@code call()}
  * method available in this wrapper. The target {@code Callable}'s {@code call()} method
- * will be executed and monitored. After the operation, call
- * {@code printSummary(System.out)} or {@code printDetails(System.out)} to print the
- * elapsed times to the system console or {@code elapsedTime(Counter.Type)}, to retrieve
- * the elapsed time duration for a particular counter. E.g.:
+ * will be executed and monitored.
+ * </p>
+ *
+ * <p>
+ * After the operation, call {@code printSummary()} or {@code printDetails()} to print the
+ * elapsed times or {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time
+ * duration for a particular counter. E.g.:
  * </p>
  *
  * <pre>
- * double cpuTimeNanos = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+ * Duration cpuTime = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME);
  * </pre>
  *
  * <p>
@@ -46,49 +49,51 @@ import net.obvj.performetrics.Counter.Type;
  * </p>
  *
  * @param <V> the result type of method call
+ *
  * @author oswaldo.bapvic.jr
  * @see Counter
  * @see Counter.Type
  */
 public class MonitoredCallable<V> extends MonitoredOperation implements Callable<V>
 {
-    private Callable<V> targetCallable;
+    private Callable<V> callable;
 
     /**
      * Builds this monitored operation with a given {@link Callable}. All available counter
      * types will be maintained.
      *
-     * @param targetCallable the Callable to be executed
+     * @param callable the Callable to be executed, not null
+     *
+     * @throws NullPointerException if the specified Runnable is null
      */
-    public MonitoredCallable(Callable<V> targetCallable)
+    public MonitoredCallable(Callable<V> callable)
     {
-        this(targetCallable, NO_SPECIFIC_TYPE);
+        this(callable, NO_SPECIFIC_TYPE);
     }
 
     /**
      * Builds this monitored operation with a given {@link Callable} and one or more specific
      * counter types to be maintained.
      *
-     * @param targetCallable the Callable to be executed
-     * @param types          the counter types to be maintained with the operation
+     * @param callable the Callable to be executed, not null
+     * @param types    the counter types to be maintained with the operation
+     *
+     * @throws NullPointerException if the specified Runnable is null
      */
-    public MonitoredCallable(Callable<V> targetCallable, Type... types)
+    public MonitoredCallable(Callable<V> callable, Type... types)
     {
         super(types);
-        this.targetCallable = targetCallable;
+        this.callable = Objects.requireNonNull(callable, "The target Callable must not be null");
     }
 
-    /**
-     * See {@link Callable#call()}.
-     */
     @Override
     public V call() throws Exception
     {
-        Objects.requireNonNull(targetCallable, "the target callable must not be null");
+
         stopwatch.start();
         try
         {
-            return targetCallable.call();
+            return callable.call();
         }
         finally
         {

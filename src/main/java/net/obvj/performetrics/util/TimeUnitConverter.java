@@ -2,6 +2,7 @@ package net.obvj.performetrics.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.config.ConfigurationHolder;
@@ -14,6 +15,9 @@ import net.obvj.performetrics.config.ConfigurationHolder;
  */
 public class TimeUnitConverter
 {
+    private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
+    private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
+
     /**
      * This is a utility class, not meant to be instantiated.
      */
@@ -38,9 +42,12 @@ public class TimeUnitConverter
      * </p>
      *
      * @param sourceDuration the time duration to be converted
-     * @param sourceTimeUnit the unit of the sourceDuration argument
-     * @param targetTimeUnit the target time unit
+     * @param sourceTimeUnit the unit of the sourceDuration argument, not null
+     * @param targetTimeUnit the target time unit, not null
+     *
      * @return the converted duration, as double.
+     *
+     * @throws NullPointerException if any of the specified time units is null
      */
     public static double convertAndRound(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
     {
@@ -81,11 +88,13 @@ public class TimeUnitConverter
      * </pre>
      *
      * @param sourceDuration the time duration to be converted
-     * @param sourceTimeUnit the unit of the sourceDuration argument
-     * @param targetTimeUnit the target time unit
-     * @param targetTimeUnit the target time unit
+     * @param sourceTimeUnit the unit of the sourceDuration argument, not null
+     * @param targetTimeUnit the target time unit, not null
      * @param decimalPlaces  the number of decimal places to which the number will be rounded
+     *
      * @return the converted duration, as double.
+     *
+     * @throws NullPointerException if any of the specified time units is null
      */
     public static double convertAndRound(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit,
             int decimalPlaces)
@@ -103,13 +112,19 @@ public class TimeUnitConverter
      * {@code TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      * </p>
      *
-     * @param sourceDuration the time duration to be converted
-     * @param sourceTimeUnit the unit of the sourceDuration argument
+     * @param sourceDuration the time duration to be converted, not null
+     * @param sourceTimeUnit the unit of the sourceDuration argument, not null
      * @param targetTimeUnit the target time unit
-     * @return the converted duration, as double.
+     *
+     * @return the converted duration, as double
+     *
+     * @throws NullPointerException if any of the specified time units is null
      */
     public static double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
     {
+        Objects.requireNonNull(sourceTimeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL);
+        Objects.requireNonNull(targetTimeUnit, MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL);
+
         if (sourceTimeUnit == targetTimeUnit)
         {
             return sourceDuration;

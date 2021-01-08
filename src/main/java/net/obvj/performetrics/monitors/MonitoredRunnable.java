@@ -14,14 +14,17 @@ import net.obvj.performetrics.Counter.Type;
  * <p>
  * Specify a target {@code Runnable} via constructor, then execute the {@code run()}
  * method available in this wrapper. The target {@code Runnable}'s {@code run()} method
- * will be executed and monitored. After the operation, call
- * {@code printSummary(System.out)} or {@code printDetails(System.out)} to print the
- * elapsed times to the system console or {@code elapsedTime(Counter.Type)}, to retrieve
- * the elapsed time duration for a particular counter. E.g.:
+ * will be executed and monitored.
+ * </p>
+ *
+ * <p>
+ * After the operation, call {@code printSummary()} or {@code printDetails()} to print the
+ * elapsed times or {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time
+ * duration for a particular counter. E.g.:
  * </p>
  *
  * <pre>
- * double cpuTimeNanos = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+ * Duration cpuTime = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME);
  * </pre>
  *
  * <p>
@@ -45,48 +48,46 @@ import net.obvj.performetrics.Counter.Type;
  * </p>
  *
  * @author oswaldo.bapvic.jr
+ *
  * @see Counter
  * @see Counter.Type
  */
 public class MonitoredRunnable extends MonitoredOperation implements Runnable
 {
-    private Runnable targetRunnable;
+    private Runnable runnable;
 
     /**
      * Builds this monitored operation with a given {@link Runnable}. All available counter
      * types will be maintained.
      *
-     * @param targetRunnable the {@link Runnable} to be executed and profiled
+     * @param runnable the {@link Runnable} to be executed and profiled
      */
-    public MonitoredRunnable(Runnable targetRunnable)
+    public MonitoredRunnable(Runnable runnable)
     {
-        this(targetRunnable, NO_SPECIFIC_TYPE);
+        this(runnable, NO_SPECIFIC_TYPE);
     }
 
     /**
      * Builds this monitored operation with a given {@link Runnable} and one or more specific
      * counter types to be maintained.
      *
-     * @param targetRunnable the {@link Runnable} to be executed and profiled
-     * @param types          the counter types to be maintained with the operation
+     * @param runnable the {@link Runnable} to be executed and profiled
+     * @param types    the counter types to be maintained with the operation
      */
-    public MonitoredRunnable(Runnable targetRunnable, Type... types)
+    public MonitoredRunnable(Runnable runnable, Type... types)
     {
         super(types);
-        this.targetRunnable = targetRunnable;
+        this.runnable = runnable;
     }
 
-    /**
-     * See {@link Runnable#run()}.
-     */
     @Override
     public void run()
     {
-        Objects.requireNonNull(targetRunnable, "the target runnable must not be null");
+        Objects.requireNonNull(runnable, "The target Runnable must not be null");
         stopwatch.start();
         try
         {
-            targetRunnable.run();
+            runnable.run();
         }
         finally
         {

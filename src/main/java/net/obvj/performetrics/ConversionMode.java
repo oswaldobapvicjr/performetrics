@@ -22,9 +22,9 @@ public enum ConversionMode
     FAST
     {
         @Override
-        public double convert(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
+        public double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
         {
-            return targetUnit.convert(sourceDuration, sourceUnit);
+            return targetTimeUnit.convert(sourceDuration, sourceTimeUnit);
         }
     },
 
@@ -37,9 +37,9 @@ public enum ConversionMode
     DOUBLE_PRECISION
     {
         @Override
-        public double convert(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit)
+        public double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit)
         {
-            return TimeUnitConverter.convertAndRound(sourceDuration, sourceUnit, targetUnit);
+            return TimeUnitConverter.convertAndRound(sourceDuration, sourceTimeUnit, targetTimeUnit);
         }
     };
 
@@ -50,10 +50,13 @@ public enum ConversionMode
      * {@code TimeUnitConverter.convert(10L, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      *
      * @param sourceDuration the time duration in the given sourceUnit
-     * @param sourceUnit     the unit of the sourceDuration argument
-     * @param targetUnit     the target time unit
-     * @return the converted duration, as double.
+     * @param sourceTimeUnit the unit of the sourceDuration argument, not null
+     * @param targetTimeUnit the target time unit, not null
+     *
+     * @return the converted duration, as double
+     *
+     * @throws NullPointerException if any of the specified time units is null
      */
-    public abstract double convert(long sourceDuration, TimeUnit sourceUnit, TimeUnit targetUnit);
+    public abstract double convert(long sourceDuration, TimeUnit sourceTimeUnit, TimeUnit targetTimeUnit);
 
 }

@@ -144,10 +144,12 @@ public enum DurationFormat
     /**
      * Formats a given duration.
      *
-     * @param duration    the {@link Duration} to be formatted
+     * @param duration    the {@link Duration} to be formatted, not null
      * @param printLegend a flag indicating whether or not to include the legend in the
      *                    generated string
      * @return a string representing the specified duration, formatted
+     *
+     * @throws NullPointerException if the specified Duration is null
      */
     public abstract String format(final Duration duration, boolean printLegend);
 

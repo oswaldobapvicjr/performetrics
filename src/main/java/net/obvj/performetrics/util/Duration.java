@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 public class Duration
 {
     private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The Duration to add must not be null";
+    private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
+    private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
 
     public static final Duration ZERO = new Duration(java.time.Duration.ZERO);
 
@@ -74,11 +76,11 @@ public class Duration
      * @param timeUnit the unit that the amount argument is measured in; cannot be null
      * @return a {@code Duration}, not null
      *
-     * @throws NullPointerException if the specified timeUnit is null
+     * @throws NullPointerException if the specified time unit is null
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
-        Objects.requireNonNull(timeUnit, "The TimeUnit must not be null");
+        Objects.requireNonNull(timeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL);
         ChronoUnit chronoUnit = toChronoUnit(timeUnit);
         java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
         return new Duration(internalDuration);
@@ -206,9 +208,11 @@ public class Duration
      * {@code Performetrics.setScale(int)}.
      * </p>
      *
-     * @param timeUnit the target time unit
+     * @param timeUnit the target time unit, not null
      *
      * @return the total length of the duration in the specified time unit, with default scale
+     *
+     * @throws NullPointerException if the specified time unit is null
      */
     public double toTimeUnit(TimeUnit timeUnit)
     {
@@ -218,15 +222,19 @@ public class Duration
     /**
      * Converts this duration to the total length in a given time unit, with a custom scale.
      *
-     * @param timeUnit the target time unit
+     * @param timeUnit the target time unit, not null
      * @param scale    a positive number indicates the number of decimal places to maintain;
      *                 if negative, the default scale will be applied
      *
      * @return the total length of the duration in the specified time unit, with a custom
      *         scale, not null
+     *
+     * @throws NullPointerException if the specified time unit is null
      */
     public double toTimeUnit(TimeUnit timeUnit, int scale)
     {
+        Objects.requireNonNull(timeUnit, MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL);
+
         BigDecimal targetSeconds = internalDuration.getSeconds() > 0
                 ? BigDecimal.valueOf(timeUnit.convert(internalDuration.getSeconds(), TimeUnit.SECONDS))
                 : BigDecimal.ZERO;

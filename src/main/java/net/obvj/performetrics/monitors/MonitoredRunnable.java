@@ -60,9 +60,7 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
      * Builds this monitored operation with a given {@link Runnable}. All available counter
      * types will be maintained.
      *
-     * @param runnable the {@link Runnable} to be executed and profiled, not null.
-     *
-     * @throws NullPointerException if the specified Runnable is null
+     * @param runnable the {@link Runnable} to be executed and profiled
      */
     public MonitoredRunnable(Runnable runnable)
     {
@@ -73,20 +71,19 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
      * Builds this monitored operation with a given {@link Runnable} and one or more specific
      * counter types to be maintained.
      *
-     * @param runnable the {@link Runnable} to be executed and profiled, not null
+     * @param runnable the {@link Runnable} to be executed and profiled
      * @param types    the counter types to be maintained with the operation
-     *
-     * @throws NullPointerException if the specified Runnable is null
      */
     public MonitoredRunnable(Runnable runnable, Type... types)
     {
         super(types);
-        this.runnable = Objects.requireNonNull(runnable, "The target Runnable must not be null");
+        this.runnable = runnable;
     }
 
     @Override
     public void run()
     {
+        Objects.requireNonNull(runnable, "The target Runnable must not be null");
         stopwatch.start();
         try
         {

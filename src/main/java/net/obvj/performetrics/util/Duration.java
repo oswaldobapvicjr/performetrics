@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Duration
 {
-    private static final String MSG_DURATION_MUST_NOT_BE_NULL = "The Duration must not be null";
+    private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The Duration to add must not be null";
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
 
@@ -281,7 +281,7 @@ public class Duration
      */
     public Duration plus(Duration duration)
     {
-        Objects.requireNonNull(duration, MSG_DURATION_MUST_NOT_BE_NULL);
+        Objects.requireNonNull(duration, MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL);
         return new Duration(internalDuration.plus(duration.internalDuration));
     }
 
@@ -299,7 +299,7 @@ public class Duration
      */
     public static Duration sum(Duration duration1, Duration duration2)
     {
-        Objects.requireNonNull(duration1, MSG_DURATION_MUST_NOT_BE_NULL);
+        Objects.requireNonNull(duration1, MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL);
         return duration1.plus(duration2);
     }
 

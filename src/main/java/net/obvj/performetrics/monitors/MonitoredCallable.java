@@ -62,9 +62,7 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
      * Builds this monitored operation with a given {@link Callable}. All available counter
      * types will be maintained.
      *
-     * @param callable the Callable to be executed, not null
-     *
-     * @throws NullPointerException if the specified Runnable is null
+     * @param callable the Callable to be executed
      */
     public MonitoredCallable(Callable<V> callable)
     {
@@ -75,21 +73,19 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
      * Builds this monitored operation with a given {@link Callable} and one or more specific
      * counter types to be maintained.
      *
-     * @param callable the Callable to be executed, not null
+     * @param callable the Callable to be executed
      * @param types    the counter types to be maintained with the operation
-     *
-     * @throws NullPointerException if the specified Runnable is null
      */
     public MonitoredCallable(Callable<V> callable, Type... types)
     {
         super(types);
-        this.callable = Objects.requireNonNull(callable, "The target Callable must not be null");
+        this.callable = callable;
     }
 
     @Override
     public V call() throws Exception
     {
-
+        Objects.requireNonNull(callable, "The target Callable must not be null");
         stopwatch.start();
         try
         {

@@ -15,7 +15,7 @@ licensed under the Apache License Version 2.0.
 
 Minor enhancements:
 
- > issue/0032: General improvements in documentation and exception handling
+ > issue/0032: General improvements in exception handling and documentation
 
 
 For more information, or suggestions for improvement, visit:

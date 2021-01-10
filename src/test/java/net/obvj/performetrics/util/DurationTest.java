@@ -205,5 +205,13 @@ public class DurationTest
     {
         assertThat(Duration.of(90, SECONDS).getInternalDuration(), is(equalTo(java.time.Duration.ofSeconds(90))));
     }
+    
+    @Test
+    public void isZero_validDurations_success()
+    {
+        assertThat(Duration.of(   0, HOURS       ).isZero(), is(true));
+        assertThat(Duration.of(   0, MILLISECONDS).isZero(), is(true));
+        assertThat(Duration.of(   1, NANOSECONDS ).isZero(), is(false));
+    }
 
 }

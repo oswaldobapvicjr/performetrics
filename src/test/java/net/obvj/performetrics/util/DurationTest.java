@@ -182,6 +182,15 @@ public class DurationTest
         assertThat(Duration.of(3599, SECONDS     ).plus(Duration.of(3601, SECONDS     )), is(equalTo(Duration.of(2, HOURS))));
         assertThat(Duration.of( 500, MILLISECONDS).plus(Duration.of( 500, MILLISECONDS)), is(equalTo(Duration.of(1, SECONDS))));
     }
+    
+    @Test
+    public void plus_validDurationsAsLong_success()
+    {
+        assertThat(Duration.of(  60, SECONDS     ).plus(  60, SECONDS     ), is(equalTo(Duration.of(2, MINUTES))));
+        assertThat(Duration.of(1800, SECONDS     ).plus(1800, SECONDS     ), is(equalTo(Duration.of(1, HOURS))));
+        assertThat(Duration.of(3599, SECONDS     ).plus(3601, SECONDS     ), is(equalTo(Duration.of(2, HOURS))));
+        assertThat(Duration.of( 500, MILLISECONDS).plus( 500, MILLISECONDS), is(equalTo(Duration.of(1, SECONDS))));
+    }
 
     @Test
     public void dividedBy_positiveDivisor_success()

@@ -2,6 +2,8 @@ package net.obvj.performetrics.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.temporal.ChronoUnit;
+import java.util.EnumMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +19,19 @@ public class TimeUnitConverter
 {
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
+
+    private static final EnumMap<TimeUnit, ChronoUnit> chronoUnitsByTimeUnit = new EnumMap<>(TimeUnit.class);
+
+    static
+    {
+        chronoUnitsByTimeUnit.put(TimeUnit.NANOSECONDS, ChronoUnit.NANOS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MICROSECONDS, ChronoUnit.MICROS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MILLISECONDS, ChronoUnit.MILLIS);
+        chronoUnitsByTimeUnit.put(TimeUnit.SECONDS, ChronoUnit.SECONDS);
+        chronoUnitsByTimeUnit.put(TimeUnit.MINUTES, ChronoUnit.MINUTES);
+        chronoUnitsByTimeUnit.put(TimeUnit.HOURS, ChronoUnit.HOURS);
+        chronoUnitsByTimeUnit.put(TimeUnit.DAYS, ChronoUnit.DAYS);
+    }
 
     /**
      * This is a utility class, not meant to be instantiated.
@@ -175,4 +190,17 @@ public class TimeUnitConverter
     {
         return BigDecimal.valueOf(number).setScale(decimalPlaces, RoundingMode.HALF_EVEN).doubleValue();
     }
+
+    /**
+     * Converts a given {@code TimeUnit} to the equivalent {@code ChronoUnit}.
+     *
+     * @param timeUnit the {@code TimeUnit} to be converted
+     * @return the converted equivalent {@code ChronoUnit}
+     * @since 2.2.2
+     */
+    public static ChronoUnit toChronoUnit(TimeUnit timeUnit)
+    {
+        return chronoUnitsByTimeUnit.get(timeUnit);
+    }
+
 }

@@ -2,7 +2,6 @@ package net.obvj.performetrics.util;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import java.util.EnumMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -34,19 +33,6 @@ public class Duration
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
 
-    private static final EnumMap<TimeUnit, ChronoUnit> chronoUnitsByTimeUnit = new EnumMap<>(TimeUnit.class);
-
-    static
-    {
-        chronoUnitsByTimeUnit.put(TimeUnit.NANOSECONDS, ChronoUnit.NANOS);
-        chronoUnitsByTimeUnit.put(TimeUnit.MICROSECONDS, ChronoUnit.MICROS);
-        chronoUnitsByTimeUnit.put(TimeUnit.MILLISECONDS, ChronoUnit.MILLIS);
-        chronoUnitsByTimeUnit.put(TimeUnit.SECONDS, ChronoUnit.SECONDS);
-        chronoUnitsByTimeUnit.put(TimeUnit.MINUTES, ChronoUnit.MINUTES);
-        chronoUnitsByTimeUnit.put(TimeUnit.HOURS, ChronoUnit.HOURS);
-        chronoUnitsByTimeUnit.put(TimeUnit.DAYS, ChronoUnit.DAYS);
-    }
-
     private java.time.Duration internalDuration;
 
     /**
@@ -72,8 +58,8 @@ public class Duration
      * duration.getNanoseconds() //returns: 0
      * </pre>
      *
-     * @param amount   the amount of the duration, measured in terms of the timeUnit argument
-     * @param timeUnit the unit that the amount argument is measured in; cannot be null
+     * @param amount   the amount of the duration, measured in terms of the time unit argument
+     * @param timeUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *
      * @throws NullPointerException if the specified time unit is null
@@ -81,7 +67,7 @@ public class Duration
     public static Duration of(long amount, TimeUnit timeUnit)
     {
         Objects.requireNonNull(timeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL);
-        ChronoUnit chronoUnit = toChronoUnit(timeUnit);
+        ChronoUnit chronoUnit = TimeUnitConverter.toChronoUnit(timeUnit);
         java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
         return new Duration(internalDuration);
     }
@@ -139,6 +125,17 @@ public class Duration
     public int getNanoseconds()
     {
         return internalDuration.getNano();
+    }
+
+    /**
+     * Checks if this duration is zero length.
+     *
+     * @return true if this duration has a total length equal to zero
+     * @since 2.2.2
+     */
+    public boolean isZero()
+    {
+        return internalDuration.isZero();
     }
 
     @Override
@@ -286,6 +283,27 @@ public class Duration
     }
 
     /**
+     * Returns a copy of this duration with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount   the amount to add, measured in terms of the timeUnit argument
+     * @param timeUnit the unit that the amount to add is measured in, not null
+     *
+     * @return a {@code Duration} based on this duration with the specified duration added,
+     *         not null
+     *
+     * @throws NullPointerException if the specified time unit is null
+     * @throws ArithmeticException  if numeric overflow occurs
+     *
+     * @since 2.2.2
+     */
+    public Duration plus(long amount, TimeUnit timeUnit)
+    {
+        return plus(Duration.of(amount, timeUnit));
+    }
+
+    /**
      * Returns the sum of two durations.
      * <p>
      * This instances are immutable and unaffected by this method call.
@@ -321,21 +339,10 @@ public class Duration
     }
 
     /**
-     * Converts a given {@code TimeUnit} to the equivalent {@code ChronoUnit}.
-     *
-     * @param timeUnit the {@code TimeUnit} to be converted; must not be null
-     * @return the converted equivalent {@code ChronoUnit}
-     */
-    private static ChronoUnit toChronoUnit(TimeUnit timeUnit)
-    {
-        return chronoUnitsByTimeUnit.get(timeUnit);
-    }
-
-    /**
      * @return the internal {@code java.time.Duration} object
      * @since 2.2.0
      */
-    public java.time.Duration getInternalDuration()
+    protected java.time.Duration getInternalDuration()
     {
         return internalDuration;
     }

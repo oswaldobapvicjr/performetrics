@@ -182,6 +182,15 @@ public class DurationTest
         assertThat(Duration.of(3599, SECONDS     ).plus(Duration.of(3601, SECONDS     )), is(equalTo(Duration.of(2, HOURS))));
         assertThat(Duration.of( 500, MILLISECONDS).plus(Duration.of( 500, MILLISECONDS)), is(equalTo(Duration.of(1, SECONDS))));
     }
+    
+    @Test
+    public void plus_validDurationsAsLong_success()
+    {
+        assertThat(Duration.of(  60, SECONDS     ).plus(  60, SECONDS     ), is(equalTo(Duration.of(2, MINUTES))));
+        assertThat(Duration.of(1800, SECONDS     ).plus(1800, SECONDS     ), is(equalTo(Duration.of(1, HOURS))));
+        assertThat(Duration.of(3599, SECONDS     ).plus(3601, SECONDS     ), is(equalTo(Duration.of(2, HOURS))));
+        assertThat(Duration.of( 500, MILLISECONDS).plus( 500, MILLISECONDS), is(equalTo(Duration.of(1, SECONDS))));
+    }
 
     @Test
     public void dividedBy_positiveDivisor_success()
@@ -195,6 +204,14 @@ public class DurationTest
     public void getInternalDuration_success()
     {
         assertThat(Duration.of(90, SECONDS).getInternalDuration(), is(equalTo(java.time.Duration.ofSeconds(90))));
+    }
+    
+    @Test
+    public void isZero_validDurations_success()
+    {
+        assertThat(Duration.of(   0, HOURS       ).isZero(), is(true));
+        assertThat(Duration.of(   0, MILLISECONDS).isZero(), is(true));
+        assertThat(Duration.of(   1, NANOSECONDS ).isZero(), is(false));
     }
 
 }

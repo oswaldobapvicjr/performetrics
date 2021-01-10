@@ -61,11 +61,6 @@ public class Performetrics
     /**
      * Defines the default {@link PrintStyle} to be applied by the <b>summarized</b> stopwatch
      * formatter.
-     * <p>
-     * <ul>
-     * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
-     * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; must not be null
      * @throws NullPointerException if the specified PrintStyle is null
@@ -80,11 +75,6 @@ public class Performetrics
     /**
      * Defines the default {@link PrintStyle} to be applied by the <b>detailed</b> stopwatch
      * formatter.
-     * <p>
-     * <ul>
-     * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
-     * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; must not be null
      * @throws NullPointerException if the specified PrintStyle is null
@@ -104,7 +94,7 @@ public class Performetrics
      *
      * <pre>
      * {@code MonitoredOperation operation = Performetrics.monitorOperation(() -> myObj.doStuff());}
-     * {@code System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));}
+     * {@code Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
      * </pre>
      *
      * @param runnable the {@link Runnable} to be run and monitored
@@ -119,14 +109,14 @@ public class Performetrics
 
     /**
      * Runs the specified {@link Runnable}, which can also be a lambda expression, and
-     * collects metrics for the specified counter type(s).
+     * collects metrics for the specified counter type(s) only.
      * <p>
      * For example:
      *
      * <pre>
-     * {@code MonitoredOperation operation = Performetrics
-     *        .monitorOperation(() -> myObj.doStuff(), Type.CPU_TIME);}
-     * {@code System.out.println(operation.elapsedTime(Type.CPU_TIME));}
+     * {@code MonitoredOperation operation =
+     *         Performetrics.monitorOperation(() -> myObj.doStuff(), Type.CPU_TIME);}
+     * {@code Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
      * </pre>
      *
      * @param runnable the {@link Runnable} to be run and monitored

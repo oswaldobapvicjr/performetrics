@@ -16,6 +16,7 @@ licensed under the Apache License Version 2.0.
 Minor enhancements:
 
  > issue/0032: General improvements in exception handling and documentation
+ > issue/0034: Duration API improvements
 
 
 For more information, or suggestions for improvement, visit:

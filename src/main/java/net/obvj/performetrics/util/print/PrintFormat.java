@@ -60,7 +60,7 @@ public enum PrintFormat
             if (style.isPrintHeader())
             {
                 appendLine(builder, style.getAlternativeLine());
-                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
+                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
             }
             Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
@@ -76,7 +76,7 @@ public enum PrintFormat
                     Counter counter = counters.get(sequence);
                     Duration elapsedTime = counter.elapsedTime();
                     elapsedTimeAcc = elapsedTimeAcc.plus(elapsedTime);
-                    appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style));
+                    appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style, type));
                 }
                 if (style.isPrintSectionSummary())
                 {
@@ -88,12 +88,12 @@ public enum PrintFormat
             return builder.toString();
         }
 
-        private String toRowFormat(int sequence, Duration elapsedTime, Duration elapsedTimeAcc, PrintStyle style)
+        private String toRowFormat(int sequence, Duration elapsedTime, Duration elapsedTimeAcc, PrintStyle style, Type type)
         {
             DurationFormat durationFormat = style.getDurationFormat();
             boolean printLegend = style.isPrintLegend();
             return String.format(style.getRowFormat(), sequence, durationFormat.format(elapsedTime, printLegend),
-                    durationFormat.format(elapsedTimeAcc, printLegend));
+                    durationFormat.format(elapsedTimeAcc, printLegend), type);
         }
 
         private String toTotalRowFormat(Duration elapsedTimeAcc, PrintStyle style)

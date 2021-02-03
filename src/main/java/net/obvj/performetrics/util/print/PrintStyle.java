@@ -28,7 +28,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = new PrintStyleBuilder()
+    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder()
             .withRowFormat("%-15s  %19s")
             .withoutHeader()
             .withDurationFormat(DurationFormat.FULL)
@@ -55,7 +55,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_TABLE_FULL = new PrintStyleBuilder(SUMMARIZED_TABLE_NO_HEADER)
+    public static final PrintStyle SUMMARIZED_TABLE_FULL = PrintStyle.builder(SUMMARIZED_TABLE_NO_HEADER)
             .withHeader()
             .withSimpleLine('-', 36)
             .withAlternativeLine('=', 36)
@@ -78,7 +78,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_CSV = new PrintStyleBuilder()
+    public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder()
             .withHeader()
             .withRowFormat("\"%s\",\"%s\"")
             .withDurationFormat(DurationFormat.FULL)
@@ -101,7 +101,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_CSV_NO_HEADER = new PrintStyleBuilder(SUMMARIZED_CSV)
+    public static final PrintStyle SUMMARIZED_CSV_NO_HEADER = PrintStyle.builder(SUMMARIZED_CSV)
             .withoutHeader()
             .build();
 
@@ -138,7 +138,7 @@ public class PrintStyle
      *
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_TABLE_FULL = new PrintStyleBuilder()
+    public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder()
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
             .withSectionHeaderFormat("%s")
@@ -149,7 +149,56 @@ public class PrintStyle
             .withAlternativeLine('=', 47)
             .build();
 
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values).
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Counter","Session","Elapsed time","Elapsed time (+)"
+     * "Wall clock time",1,"0:00:00.032319200","0:00:00.032319200"
+     * "Wall clock time",2,"0:00:00.016766500","0:00:00.049085700"
+     * "Wall clock time",3,"0:00:00.014459500","0:00:00.063545200"
+     * "CPU time",1,"0:00:00.031250000","0:00:00.031250000"
+     * "CPU time",2,"0:00:00.015625000","0:00:00.046875000"
+     * "CPU time",3,"0:00:00.015625000","0:00:00.062500000"
+     * </pre>
+     * 
+     * @since 2.2.2
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_CSV = PrintStyle.builder()
+            .withRowFormat("\"%4$s\",%1$s,\"%2$s\",\"%3$s\"")
+            .withHeader("\"%4$s\",\"Session\",\"%2$s\",\"%3$s\"")
+            .withoutSectionSummary()
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .build();
 
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values), <b>without</b> header.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Wall clock time",1,"0:00:00.032319200","0:00:00.032319200"
+     * "Wall clock time",2,"0:00:00.016766500","0:00:00.049085700"
+     * "Wall clock time",3,"0:00:00.014459500","0:00:00.063545200"
+     * "CPU time",1,"0:00:00.031250000","0:00:00.031250000"
+     * "CPU time",2,"0:00:00.015625000","0:00:00.046875000"
+     * "CPU time",3,"0:00:00.015625000","0:00:00.062500000"
+     * </pre>
+     *
+     * @since 2.2.2
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_CSV_NO_HEADER = PrintStyle.builder(DETAILED_CSV)
+            .withoutHeader()
+            .build();
+    
+    
     private final boolean printHeader;
     private final String headerFormat;
 

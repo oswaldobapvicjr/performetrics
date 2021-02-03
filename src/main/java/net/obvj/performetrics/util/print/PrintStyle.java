@@ -165,6 +165,30 @@ public class PrintStyle
     private final String simpleLine;
     private final String alternativeLine;
 
+    /**
+     * Returns an empty PrintStyle builder.
+     *
+     * @return a {@link PrintStyleBuilder} instance
+     * @since 2.2.2
+     */
+    public static PrintStyleBuilder builder()
+    {
+        return new PrintStyleBuilder();
+    }
+
+    /**
+     * Returns a PrintStyle builder with the same attributes of an existing PrintStyle.
+     *
+     * @param source the PrintStyle whose attributes are to be copied
+     * @return a new {@link PrintStyleBuilder} instance with the same attributes of the
+     *         specified source object
+     * @throws NullPointerException if the specified PrintStyle is null
+     * @since 2.2.2
+     */
+    public static PrintStyleBuilder builder(PrintStyle source)
+    {
+        return new PrintStyleBuilder(source);
+    }
 
     /**
      * Creates a new PrintStyle.

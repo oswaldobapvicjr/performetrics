@@ -52,30 +52,29 @@ public class PrintStyleBuilder
     }
 
     /**
-     * Creates a new PrintStyle builder with the same attributes of the specified base
-     * PrintStyle.
+     * Creates a new PrintStyle builder with the same attributes of an existing PrintStyle.
      *
-     * @param baseStyle the base PrintStyle whose attributes are to be copied
+     * @param source the PrintStyle whose attributes are to be copied
      * @throws NullPointerException if the specified PrintStyle is null
      */
-    public PrintStyleBuilder(PrintStyle baseStyle)
+    public PrintStyleBuilder(PrintStyle source)
     {
-        Objects.requireNonNull(baseStyle, "The base PrintStyle must not be null");
+        Objects.requireNonNull(source, "The base PrintStyle must not be null");
 
-        printHeader = baseStyle.isPrintHeader();
-        headerFormat = baseStyle.getHeaderFormat();
+        printHeader = source.isPrintHeader();
+        headerFormat = source.getHeaderFormat();
 
-        rowFormat = baseStyle.getRowFormat();
-        sectionHeaderFormat = baseStyle.getSectionHeaderFormat();
+        rowFormat = source.getRowFormat();
+        sectionHeaderFormat = source.getSectionHeaderFormat();
 
-        printSectionSummary = baseStyle.isPrintSectionSummary();
-        sectionSummaryRowFormat = baseStyle.getSectionSummaryRowFormat();
+        printSectionSummary = source.isPrintSectionSummary();
+        sectionSummaryRowFormat = source.getSectionSummaryRowFormat();
 
-        durationFormat = baseStyle.getDurationFormat();
-        printLegend = baseStyle.isPrintLegend();
+        durationFormat = source.getDurationFormat();
+        printLegend = source.isPrintLegend();
 
-        simpleLine = baseStyle.getSimpleLine();
-        alternativeLine = baseStyle.getAlternativeLine();
+        simpleLine = source.getSimpleLine();
+        alternativeLine = source.getAlternativeLine();
     }
 
     /**

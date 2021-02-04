@@ -43,7 +43,7 @@ public class TimeUnitConverter
 
     /**
      * <p>
-     * Converts the given duration to a different time unit, with double-precision;
+     * Converts the given duration to a different time unit, with double-precision.
      * </p>
      *
      * <p>

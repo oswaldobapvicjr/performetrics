@@ -20,6 +20,21 @@ public enum PrintFormat
     /**
      * Generates a summarized view which represents the total elapsed time for each counter
      * type available in the stopwatch, one row for each type.
+     * <p>
+     * Sample output (applying {@code PrintStyle.SUMMARIZED_TABLE_FULL}):
+     *
+     * <pre>
+     * ====================================
+     * Counter                 Elapsed time
+     * ------------------------------------
+     * Wall clock time    0:00:04.455383500
+     * CPU time           0:00:00.109375000
+     * User time          0:00:00.046875000
+     * System time        0:00:00.062500000
+     * ====================================
+     * </pre>
+     *
+     * @see PrintStyle
      */
     SUMMARIZED
     {
@@ -49,6 +64,34 @@ public enum PrintFormat
      * Generates a detailed view of each counter type and timing session available in the
      * stopwatch, one row for each timing session, and the total elapsed time for each type,
      * as well.
+     * <p>
+     * Sample output (applying {@code PrintStyle.DETAILED_TABLE_FULL}):
+     *
+     * <pre>
+     * ===============================================
+     *     #         Elapsed time     Elapsed time (+)
+     * ===============================================
+     * Wall clock time
+     * -----------------------------------------------
+     *     1    0:00:01.055824100    0:00:01.055824100
+     *     2    0:00:00.836569500    0:00:01.892393600
+     *     3    0:00:00.836091100    0:00:02.728484700
+     *     4    0:00:00.837092700    0:00:03.565577400
+     * -----------------------------------------------
+     * TOTAL                         0:00:03.565577400
+     * ===============================================
+     * CPU time
+     * -----------------------------------------------
+     *     1    0:00:00.109375000    0:00:00.109375000
+     *     2    0:00:00.000000000    0:00:00.109375000
+     *     3    0:00:00.000000000    0:00:00.109375000
+     *     4    0:00:00.015625000    0:00:00.125000000
+     * -----------------------------------------------
+     * TOTAL                         0:00:00.125000000
+     * ===============================================
+     * </pre>
+     *
+     * @see PrintStyle
      */
     DETAILED
     {

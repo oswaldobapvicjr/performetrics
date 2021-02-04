@@ -80,7 +80,7 @@ public class PrintStyleBuilder
     /**
      * Defines a string format to be applied for all rows.
      * <p>
-     * The number and sequence of string positions shall be defined according to the target
+     * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      *
      * <ul>
@@ -131,7 +131,7 @@ public class PrintStyleBuilder
     /**
      * Enables the header row and defines a specific string format to be applied.
      * <p>
-     * The number and sequence of string positions shall be defined according to the target
+     * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      *
      * <ul>
@@ -154,7 +154,7 @@ public class PrintStyleBuilder
      *
      * </ul>
      * <p>
-     * To enable header without specifying a format, use the zero-argument option
+     * To enable the header without specifying a custom format, use the zero-argument option
      * {@link #withHeader()}.
      *
      * @param format the string format to be applied for the header row

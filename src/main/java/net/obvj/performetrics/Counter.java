@@ -187,7 +187,9 @@ public class Counter
     }
 
     /**
-     * @return the units before
+     * Returns the value of the {@code unitsBefore} field.
+     *
+     * @return the value of the {@code unitsBefore} field
      */
     public long getUnitsBefore()
     {
@@ -195,6 +197,8 @@ public class Counter
     }
 
     /**
+     * Populates the {@code unitsBefore} field with an arbitrary value.
+     *
      * @param unitsBefore the units to be set
      */
     public void setUnitsBefore(long unitsBefore)
@@ -203,7 +207,9 @@ public class Counter
     }
 
     /**
-     * @return the units after
+     * Returns the value of the {@code unitsAfter} field.
+     *
+     * @return the value of the {@code unitsAfter} field
      */
     public long getUnitsAfter()
     {
@@ -211,6 +217,8 @@ public class Counter
     }
 
     /**
+     * Populates the {@code unitsAfter} field with an arbitrary value.
+     *
      * @param unitsAfter the units to be set
      */
     public void setUnitsAfter(long unitsAfter)
@@ -220,7 +228,9 @@ public class Counter
     }
 
     /**
-     * @return the type of measurement
+     * Returns the {@link Type} associated with this counter.
+     *
+     * @return the {@link Type} associated with this counter
      */
     public Type getType()
     {
@@ -228,7 +238,9 @@ public class Counter
     }
 
     /**
-     * @return the time unit
+     * Returns the time unit associated with this counter.
+     *
+     * @return the time unit associated with this counter
      */
     public TimeUnit getTimeUnit()
     {
@@ -236,7 +248,9 @@ public class Counter
     }
 
     /**
-     * @return the {@link ConversionMode} used by this counter
+     * Returns the {@link ConversionMode} associated with this counter.
+     *
+     * @return the {@link ConversionMode} associated with this counter
      * @since 2.0.0
      */
     public ConversionMode getConversionMode()
@@ -245,8 +259,8 @@ public class Counter
     }
 
     /**
-     * Populates the {@code unitsBefore} field with the value retrieved by the time fetching
-     * mode defined by this counter's type.
+     * Populates the {@code unitsBefore} field with the value retrieved by the time source
+     * defined by this counter's type.
      */
     public void setUnitsBefore()
     {
@@ -254,8 +268,8 @@ public class Counter
     }
 
     /**
-     * Populates the {@code unitsAfter} field with the value retrieved by the time fetching
-     * mode defined by this counter's type.
+     * Populates the {@code unitsAfter} field with the value retrieved by the time source
+     * defined by this counter's type.
      */
     public void setUnitsAfter()
     {
@@ -267,8 +281,7 @@ public class Counter
      *
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
-     *         is not set. The value is retrieved in the internal time unit.
+     *         value retrieved by the counter's time source, if {@code unitsAfter} is not set
      */
     protected long elapsedTimeInternal()
     {
@@ -281,8 +294,7 @@ public class Counter
      *
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
-     *         is not set.
+     *         value retrieved by the counter's time source, if {@code unitsAfter} is not set.
      */
     public Duration elapsedTime()
     {
@@ -290,13 +302,13 @@ public class Counter
     }
 
     /**
-     * Returns the elapsed time, in a given {@link TimeUnit}.
+     * Returns the elapsed time in the specified {@link TimeUnit}.
      *
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
-     *         is not set. The value is converted to the given time unit using the default
+     *         value retrieved by the counter's time source, if {@code unitsAfter} is not set.
+     *         The value is converted into the specified time unit applying the default
      *         conversion mode.
      */
     public double elapsedTime(TimeUnit timeUnit)
@@ -312,8 +324,8 @@ public class Counter
      * @param conversionMode the {@link ConversionMode} to be used
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
-     *         value retrieved by the counter's default data fetch mode, if {@code unitsAfter}
-     *         is not set. The value converted to the given time unit using the given
+     *         value retrieved by the counter's time source, if {@code unitsAfter} is not set.
+     *         The value is converted into the specified time unit applying the given
      *         conversion mode.
      * @since 2.0.0
      */

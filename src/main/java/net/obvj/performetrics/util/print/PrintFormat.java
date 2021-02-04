@@ -20,6 +20,21 @@ public enum PrintFormat
     /**
      * Generates a summarized view which represents the total elapsed time for each counter
      * type available in the stopwatch, one row for each type.
+     * <p>
+     * Sample output (applying {@code PrintStyle.SUMMARIZED_TABLE_FULL}):
+     *
+     * <pre>
+     * ====================================
+     * Counter                 Elapsed time
+     * ------------------------------------
+     * Wall clock time    0:00:04.455383500
+     * CPU time           0:00:00.109375000
+     * User time          0:00:00.046875000
+     * System time        0:00:00.062500000
+     * ====================================
+     * </pre>
+     *
+     * @see PrintStyle
      */
     SUMMARIZED
     {
@@ -49,6 +64,34 @@ public enum PrintFormat
      * Generates a detailed view of each counter type and timing session available in the
      * stopwatch, one row for each timing session, and the total elapsed time for each type,
      * as well.
+     * <p>
+     * Sample output (applying {@code PrintStyle.DETAILED_TABLE_FULL}):
+     *
+     * <pre>
+     * ===============================================
+     *     #         Elapsed time     Elapsed time (+)
+     * ===============================================
+     * Wall clock time
+     * -----------------------------------------------
+     *     1    0:00:01.055824100    0:00:01.055824100
+     *     2    0:00:00.836569500    0:00:01.892393600
+     *     3    0:00:00.836091100    0:00:02.728484700
+     *     4    0:00:00.837092700    0:00:03.565577400
+     * -----------------------------------------------
+     * TOTAL                         0:00:03.565577400
+     * ===============================================
+     * CPU time
+     * -----------------------------------------------
+     *     1    0:00:00.109375000    0:00:00.109375000
+     *     2    0:00:00.000000000    0:00:00.109375000
+     *     3    0:00:00.000000000    0:00:00.109375000
+     *     4    0:00:00.015625000    0:00:00.125000000
+     * -----------------------------------------------
+     * TOTAL                         0:00:00.125000000
+     * ===============================================
+     * </pre>
+     *
+     * @see PrintStyle
      */
     DETAILED
     {
@@ -60,7 +103,7 @@ public enum PrintFormat
             if (style.isPrintHeader())
             {
                 appendLine(builder, style.getAlternativeLine());
-                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC);
+                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
             }
             Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
@@ -76,7 +119,7 @@ public enum PrintFormat
                     Counter counter = counters.get(sequence);
                     Duration elapsedTime = counter.elapsedTime();
                     elapsedTimeAcc = elapsedTimeAcc.plus(elapsedTime);
-                    appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style));
+                    appendLine(builder, toRowFormat(sequence + 1, elapsedTime, elapsedTimeAcc, style, type));
                 }
                 if (style.isPrintSectionSummary())
                 {
@@ -88,12 +131,12 @@ public enum PrintFormat
             return builder.toString();
         }
 
-        private String toRowFormat(int sequence, Duration elapsedTime, Duration elapsedTimeAcc, PrintStyle style)
+        private String toRowFormat(int sequence, Duration elapsedTime, Duration elapsedTimeAcc, PrintStyle style, Type type)
         {
             DurationFormat durationFormat = style.getDurationFormat();
             boolean printLegend = style.isPrintLegend();
             return String.format(style.getRowFormat(), sequence, durationFormat.format(elapsedTime, printLegend),
-                    durationFormat.format(elapsedTimeAcc, printLegend));
+                    durationFormat.format(elapsedTimeAcc, printLegend), type);
         }
 
         private String toTotalRowFormat(Duration elapsedTimeAcc, PrintStyle style)

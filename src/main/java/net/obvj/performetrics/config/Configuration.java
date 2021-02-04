@@ -129,14 +129,9 @@ public class Configuration
     }
 
     /**
-     * Returns the default {@link PrintStyle} to be applied by the following operations:
-     * <ul>
-     * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
-     * </ul>
+     * Returns the default {@link PrintStyle} for the summarized stopwatch formatter.
      *
-     * @return the default {@link PrintStyle}
-     *
+     * @return the default {@link PrintStyle} for the summarized stopwatch formatter
      * @since 2.2.1
      */
     public PrintStyle getPrintStyleForSummary()
@@ -145,13 +140,16 @@ public class Configuration
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * Defines the default {@link PrintStyle} for the summarized stopwatch formatter.
+     * <p>
+     * The object will be used by the following operations:
+     * </p>
      * <ul>
      * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
      * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
      * </ul>
      *
-     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @param printStyle the {@link PrintStyle} to be set; not null
      * @throws NullPointerException if the specified PrintStyle is null
      *
      * @since 2.2.1
@@ -162,14 +160,9 @@ public class Configuration
     }
 
     /**
-     * Returns the default {@link PrintStyle} to be applied by the following operations:
-     * <ul>
-     * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
-     * </ul>
+     * Returns the default {@link PrintStyle} for the detailed stopwatch formatter.
      *
-     * @return the default {@link PrintStyle}
-     *
+     * @return the default {@link PrintStyle} for the detailed stopwatch formatter
      * @since 2.2.1
      */
     public PrintStyle getPrintStyleForDetails()
@@ -178,13 +171,16 @@ public class Configuration
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the following operations:
+     * Defines the default {@link PrintStyle} for the detailed stopwatch formatter.
+     * <p>
+     * The object will be used by the following operations:
+     * </p>
      * <ul>
      * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
      * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
      * </ul>
      *
-     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @param printStyle the {@link PrintStyle} to be set; not null
      * @throws NullPointerException if the specified PrintStyle is null
      *
      * @since 2.2.1

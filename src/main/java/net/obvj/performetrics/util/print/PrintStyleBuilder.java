@@ -79,9 +79,36 @@ public class PrintStyleBuilder
 
     /**
      * Defines a string format to be applied for all rows.
+     * <p>
+     * The number and sequence of string positions must be defined according to the target
+     * stopwatch formatter:
+     * </p>
+     * <table summary="Sequence of string positions by PrintFormat">
+     * <tr>
+     * <td valign="top"><b>SUMMARIZED:</b></td>
+     * <td>
+     * <ol>
+     * <li>Counter type (e.g.: "Wall-clock time")</li>
+     * <li>Elapsed time</li>
+     * </ol>
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign="top"><b>DETAILED:</b></td>
+     * <td>
+     * <ol>
+     * <li>Sequential timing session identifier</li>
+     * <li>Elapsed time</li>
+     * <li>Elapsed time (accumulated)</li>
+     * <li>(Optional) Counter type (e.g.: "Wall-clock time")</li>
+     * </ol>
+     * </td>
+     * </table>
      *
      * @param format the string format to be applied
      * @return a reference to this builder object for chained calls
+     *
+     * @see java.util.Formatter
      */
     public PrintStyleBuilder withRowFormat(String format)
     {
@@ -90,7 +117,8 @@ public class PrintStyleBuilder
     }
 
     /**
-     * Enables the header row, to be formatted using the same general format for all rows.
+     * Enables the header row, to be formatted using the same general row format and preset
+     * column names.
      * <p>
      * To specify a different format for the header row, use {@link #withHeader(String)}.
      *
@@ -105,11 +133,38 @@ public class PrintStyleBuilder
     /**
      * Enables the header row and defines a specific string format to be applied.
      * <p>
-     * To enable header without specifying a format, use the zero-argument option
+     * The number and sequence of string positions must be defined according to the target
+     * stopwatch formatter:
+     * </p>
+     * <table summary="Sequence of string positions by PrintFormat">
+     * <tr>
+     * <td valign="top"><b>SUMMARIZED:</b></td>
+     * <td>
+     * <ol>
+     * <li>Counter type</li>
+     * <li>Elapsed time</li>
+     * </ol>
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign="top"><b>DETAILED:</b></td>
+     * <td>
+     * <ol>
+     * <li>Sequential timing session identifier</li>
+     * <li>Elapsed time</li>
+     * <li>Elapsed time (accumulated)</li>
+     * <li>(Optional) Counter type</li>
+     * </ol>
+     * </td>
+     * </table>
+     * <p>
+     * To enable the header without specifying a custom format, use the zero-argument option
      * {@link #withHeader()}.
      *
      * @param format the string format to be applied for the header row
      * @return a reference to this builder object for chained calls
+     *
+     * @see java.util.Formatter
      */
     public PrintStyleBuilder withHeader(String format)
     {
@@ -154,6 +209,9 @@ public class PrintStyleBuilder
 
     /**
      * Enables the section summary row and defines the string format to be applied.
+     * <p>
+     * <b>Note:</b> The property modified by this method is only applicable for the
+     * <b>detailed</b> stopwatch formatter.
      *
      * @param format the string format to be applied for the section summary row
      * @return a reference to this builder object for chained calls

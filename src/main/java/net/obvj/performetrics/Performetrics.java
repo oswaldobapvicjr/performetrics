@@ -59,10 +59,17 @@ public class Performetrics
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the <b>summarized</b> stopwatch
+     * Defines the default {@link PrintStyle} to be applied by the summarized stopwatch
      * formatter.
+     * <p>
+     * The object will be used by the following operations:
+     * </p>
+     * <ul>
+     * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
+     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
+     * </ul>
      *
-     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @param printStyle the {@link PrintStyle} to be set; not null
      * @throws NullPointerException if the specified PrintStyle is null
      *
      * @since 2.2.1
@@ -73,10 +80,17 @@ public class Performetrics
     }
 
     /**
-     * Defines the default {@link PrintStyle} to be applied by the <b>detailed</b> stopwatch
+     * Defines the default {@link PrintStyle} to be applied by the detailed stopwatch
      * formatter.
+     * <p>
+     * The object will be used by the following operations:
+     * </p>
+     * <ul>
+     * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
+     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
+     * </ul>
      *
-     * @param printStyle the {@link PrintStyle} to be set; must not be null
+     * @param printStyle the {@link PrintStyle} to be set; not null
      * @throws NullPointerException if the specified PrintStyle is null
      *
      * @since 2.2.1

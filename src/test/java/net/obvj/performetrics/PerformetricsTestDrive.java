@@ -107,7 +107,7 @@ public class PerformetricsTestDrive
         operation.printSummary(System.out);
         System.out.println();
 
-        operation.printSummary(new PrintStream("stopwatch.csv"), PrintStyle.SUMMARIZED_CSV);
+        operation.printDetails(new PrintStream("stopwatch.csv"), PrintStyle.DETAILED_CSV_NO_HEADER);
         System.out.println();
 
         operation.printDetails(System.out);

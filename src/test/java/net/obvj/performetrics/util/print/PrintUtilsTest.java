@@ -104,8 +104,9 @@ public class PrintUtilsTest
         assertThat(printedString, is(equalTo(expectedString)));
     }
 
-    private void prepareTestPrintStyle()
+    private void prepareTestPrintStyle(PrintFormat printFormat)
     {
+        when(printStyle.getFormat()).thenReturn(printFormat);
         when(printStyle.getDurationFormat()).thenReturn(DurationFormat.FULL);
         when(printStyle.getRowFormat()).thenReturn("%s");
     }
@@ -128,7 +129,7 @@ public class PrintUtilsTest
     public void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
             throws UnsupportedEncodingException
     {
-        prepareTestPrintStyle();
+        prepareTestPrintStyle(PrintFormat.DETAILED);
         String expectedString = PrintFormat.DETAILED.format(stopwatch, printStyle);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -31,19 +31,19 @@ import net.obvj.performetrics.util.DurationFormat;
  */
 public class PrintFormatTest
 {
-    static final PrintStyle SUMMARIZED_TEST_STYLE = new PrintStyleBuilder()
+    static final PrintStyle SUMMARIZED_TEST_STYLE = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withoutHeader()
             .withRowFormat("%s %s")
             .withDurationFormat(DurationFormat.FULL).build();
 
-    static final PrintStyle DETAILED_TEST_STYLE_WITHOUT_TOTALS = new PrintStyleBuilder()
+    static final PrintStyle DETAILED_TEST_STYLE_WITHOUT_TOTALS = PrintStyle.builder(PrintFormat.DETAILED)
             .withoutHeader()
             .withRowFormat("%s %s %s")
             .withSectionHeaderFormat("%s")
             .withoutSectionSummary()
             .withDurationFormat(DurationFormat.FULL).build();
 
-    static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS = new PrintStyleBuilder()
+    static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS = PrintStyle.builder(PrintFormat.DETAILED)
             .withoutHeader()
             .withRowFormat("%s %s %s")
             .withSectionHeaderFormat("%s")
@@ -161,6 +161,18 @@ public class PrintFormatTest
         StringBuilder sb = new StringBuilder();
         PrintFormat.appendLine(sb, "test=%s", "test");
         assertThat(sb.toString(), is(equalTo("test=test" + PrintFormat.LINE_SEPARATOR)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkCompatibility_summarized_incompatiblePrintStyle_exception()
+    {
+    	PrintFormat.SUMMARIZED.checkCompatibility(DETAILED_TEST_STYLE_WITH_TOTALS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkCompatibility_detailed_incompatiblePrintStyle_exception()
+    {
+    	PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE);
     }
 
 }

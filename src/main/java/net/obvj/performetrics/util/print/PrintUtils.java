@@ -47,7 +47,9 @@ public class PrintUtils
      * @param printStyle  the {@link PrintStyle} to be applied; if {@code null}, the default
      *                    PrintStyle will be applied
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException     if a null stopwatch or print stream is received
+     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
+     *                                  {@link PrintFormat#SUMMARIZED}
      *
      * @since 2.2.1
      */
@@ -85,7 +87,9 @@ public class PrintUtils
      * @param printStyle  the {@link PrintStyle} to be applied; if {@code null}, the default
      *                    PrintStyle will be applied
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException     if a null stopwatch or print stream is received
+     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
+     *                                  {@link PrintFormat#DETAILED}
      *
      * @since 2.2.1
      */

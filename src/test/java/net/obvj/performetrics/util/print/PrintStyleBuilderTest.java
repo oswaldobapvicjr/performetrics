@@ -42,7 +42,7 @@ public class PrintStyleBuilderTest
     @Test
     public void build_nullObjects_defaultValues()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
         assertThat(printStyle.isPrintHeader(), is(false));
         assertThat(printStyle.isPrintSectionSummary(), is(false));
@@ -54,21 +54,22 @@ public class PrintStyleBuilderTest
     @Test
     public void build_emptyRowFormat_emptyRowFormat()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withRowFormat("").build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withRowFormat("").build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
     }
 
     @Test
     public void build_withoutHeader_false()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withoutHeader().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withoutHeader().build();
         assertThat(printStyle.isPrintHeader(), is(false));
     }
 
     @Test
     public void build_withRowFormatAndHeader_applyRowFormatForHeader()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withRowFormat(ROW_FORMAT1).withHeader().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withRowFormat(ROW_FORMAT1).withHeader()
+                .build();
         assertThat(printStyle.getRowFormat(), is(equalTo(ROW_FORMAT1)));
         assertThat(printStyle.getHeaderFormat(), is(equalTo(ROW_FORMAT1)));
         assertThat(printStyle.isPrintHeader(), is(true));
@@ -77,7 +78,7 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withNoRowFormatAndWithHeader_applyDefaultFormatForHeader()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withHeader().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withHeader().build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
         assertThat(printStyle.getHeaderFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
         assertThat(printStyle.isPrintHeader(), is(true));
@@ -86,7 +87,7 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withRowFormatAndHeaderAndHeaderFormat_applySpecificFormatForHeader()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withHeader(ROW_FORMAT1).build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withHeader(ROW_FORMAT1).build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
         assertThat(printStyle.getHeaderFormat(), is(equalTo(ROW_FORMAT1)));
         assertThat(printStyle.isPrintHeader(), is(true));
@@ -95,7 +96,7 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withSimpleLine_lineFormatAppliesToSimpleAndAlternativeLines()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withSimpleLine(LINE1).build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine(LINE1).build();
         assertThat(printStyle.getSimpleLine(), is(equalTo(LINE1)));
         assertThat(printStyle.getAlternativeLine(), is(equalTo(LINE1)));
     }
@@ -103,7 +104,8 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withSimpleLineAndAlternativeLine_lineFormatsApplied()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withSimpleLine(LINE1).withAlternativeLine(LINE2).build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine(LINE1)
+                .withAlternativeLine(LINE2).build();
         assertThat(printStyle.getSimpleLine(), is(equalTo(LINE1)));
         assertThat(printStyle.getAlternativeLine(), is(equalTo(LINE2)));
     }
@@ -111,7 +113,7 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withoutSimpleLineAndWithAlternativeLine_alternativeLineAppliedButNoSimpleLine()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withAlternativeLine(LINE1).build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withAlternativeLine(LINE1).build();
         assertThat(printStyle.getSimpleLine(), is(nullValue()));
         assertThat(printStyle.getAlternativeLine(), is(equalTo(LINE1)));
     }
@@ -119,7 +121,8 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withLineCharacterAndLength_formattedLines()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withSimpleLine('0', 3).withAlternativeLine('X', 5).build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine('0', 3)
+                .withAlternativeLine('X', 5).build();
         assertThat(printStyle.getSimpleLine(), is(equalTo("000")));
         assertThat(printStyle.getAlternativeLine(), is(equalTo("XXXXX")));
     }
@@ -127,21 +130,21 @@ public class PrintStyleBuilderTest
     @Test
     public void build_withLegends_true()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withLegends().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withLegends().build();
         assertThat(printStyle.isPrintLegend(), is(true));
     }
 
     @Test
     public void build_withoutLegends_false()
     {
-        PrintStyle printStyle = new PrintStyleBuilder().withoutLegends().build();
+        PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withoutLegends().build();
         assertThat(printStyle.isPrintLegend(), is(false));
     }
 
     @Test(expected = NullPointerException.class)
     public void constructor_nullBasePrintStyle_failure()
     {
-        new PrintStyleBuilder(null);
+        new PrintStyleBuilder((PrintStyle) null);
     }
 
     @Test

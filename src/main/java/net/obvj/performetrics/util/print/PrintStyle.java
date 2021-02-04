@@ -28,7 +28,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder()
+    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withRowFormat("%-15s  %19s")
             .withoutHeader()
             .withDurationFormat(DurationFormat.FULL)
@@ -78,7 +78,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder()
+    public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withHeader()
             .withRowFormat("\"%s\",\"%s\"")
             .withDurationFormat(DurationFormat.FULL)
@@ -138,7 +138,7 @@ public class PrintStyle
      *
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder()
+    public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
             .withSectionHeaderFormat("%s")
@@ -168,7 +168,7 @@ public class PrintStyle
      * @since 2.2.2
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_CSV = PrintStyle.builder()
+    public static final PrintStyle DETAILED_CSV = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("\"%4$s\",%1$s,\"%2$s\",\"%3$s\"")
             .withHeader("\"%4$s\",\"Session\",\"%2$s\",\"%3$s\"")
             .withoutSectionSummary()
@@ -199,6 +199,8 @@ public class PrintStyle
             .build();
     
     
+    private final PrintFormat targetPrintFormat;
+    
     private final boolean printHeader;
     private final String headerFormat;
 
@@ -217,12 +219,13 @@ public class PrintStyle
     /**
      * Returns an empty PrintStyle builder.
      *
+     * @param format the target {@link PrintFormat}
      * @return a {@link PrintStyleBuilder} instance
      * @since 2.2.2
      */
-    public static PrintStyleBuilder builder()
+    public static PrintStyleBuilder builder(PrintFormat format)
     {
-        return new PrintStyleBuilder();
+        return new PrintStyleBuilder(format);
     }
 
     /**
@@ -246,6 +249,7 @@ public class PrintStyle
      */
     protected PrintStyle(PrintStyleBuilder builder)
     {
+    	targetPrintFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
         headerFormat = builder.getHeaderFormat();
         rowFormat = builder.getRowFormat();
@@ -259,6 +263,14 @@ public class PrintStyle
     }
 
     /**
+     * @return the target {@link PrintFormat}
+     */
+    public PrintFormat getFormat()
+    {
+		return targetPrintFormat;
+	}
+
+	/**
      * @return the {@link DurationFormat} to be applied on all rows
      */
     public DurationFormat getDurationFormat()

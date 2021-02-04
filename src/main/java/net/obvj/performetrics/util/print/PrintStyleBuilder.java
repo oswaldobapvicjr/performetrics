@@ -82,26 +82,28 @@ public class PrintStyleBuilder
      * <p>
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
-     *
-     * <ul>
-     *
-     * <li><b>SUMMARIZED</b>
+     * </p>
+     * <table summary="Sequence of string positions by PrintFormat">
+     * <tr>
+     * <td valign="top"><b>SUMMARIZED:</b></td>
+     * <td>
      * <ol>
      * <li>Counter type (e.g.: "Wall-clock time")</li>
      * <li>Elapsed time</li>
      * </ol>
-     * </li>
-     *
-     * <li><b>DETAILED</b>
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign="top"><b>DETAILED:</b></td>
+     * <td>
      * <ol>
      * <li>Sequential timing session identifier</li>
      * <li>Elapsed time</li>
      * <li>Elapsed time (accumulated)</li>
      * <li>(Optional) Counter type (e.g.: "Wall-clock time")</li>
      * </ol>
-     * </li>
-     *
-     * </ul>
+     * </td>
+     * </table>
      *
      * @param format the string format to be applied
      * @return a reference to this builder object for chained calls
@@ -133,26 +135,28 @@ public class PrintStyleBuilder
      * <p>
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
-     *
-     * <ul>
-     *
-     * <li><b>SUMMARIZED</b>
+     * </p>
+     * <table summary="Sequence of string positions by PrintFormat">
+     * <tr>
+     * <td valign="top"><b>SUMMARIZED:</b></td>
+     * <td>
      * <ol>
      * <li>Counter type</li>
      * <li>Elapsed time</li>
      * </ol>
-     * </li>
-     *
-     * <li><b>DETAILED</b>
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign="top"><b>DETAILED:</b></td>
+     * <td>
      * <ol>
      * <li>Sequential timing session identifier</li>
      * <li>Elapsed time</li>
      * <li>Elapsed time (accumulated)</li>
      * <li>(Optional) Counter type</li>
      * </ol>
-     * </li>
-     *
-     * </ul>
+     * </td>
+     * </table>
      * <p>
      * To enable the header without specifying a custom format, use the zero-argument option
      * {@link #withHeader()}.

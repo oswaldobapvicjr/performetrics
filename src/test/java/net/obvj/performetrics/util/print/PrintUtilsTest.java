@@ -106,7 +106,7 @@ public class PrintUtilsTest
 
     private void prepareTestPrintStyle(PrintFormat printFormat)
     {
-        when(printStyle.getFormat()).thenReturn(printFormat);
+        when(printStyle.getPrintFormat()).thenReturn(printFormat);
         when(printStyle.getDurationFormat()).thenReturn(DurationFormat.FULL);
         when(printStyle.getRowFormat()).thenReturn("%s");
     }

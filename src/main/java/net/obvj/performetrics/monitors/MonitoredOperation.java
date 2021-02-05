@@ -57,6 +57,7 @@ public abstract class MonitoredOperation
      *
      * @param type the counter type to be fetched
      * @return all counters associated with the given type
+     *
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  operation during instantiation
      */
@@ -70,6 +71,7 @@ public abstract class MonitoredOperation
      *
      * @param type the counter type to be fetched
      * @return the total elapsed time for the specified counter
+     *
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  operation during instantiation
      * @since 2.1.0
@@ -86,6 +88,7 @@ public abstract class MonitoredOperation
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
+     *
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  operation during instantiation
      * @since 2.1.0
@@ -104,6 +107,7 @@ public abstract class MonitoredOperation
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
+     * 
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  operation during instantiation
      * @since 2.1.0

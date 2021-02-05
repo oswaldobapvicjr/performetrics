@@ -48,24 +48,28 @@ public class PrintStyleBuilder
     /**
      * Creates an empty PrintStyle builder.
      *
-     * @param format the target {@link PrintFormat}, not null
+     * @param printFormat the target {@link PrintFormat}, not null
+     *
+     * @throws NullPointerException if the specified PrintFormat is null
+     * @since 2.2.2
      */
-    public PrintStyleBuilder(PrintFormat format)
+    public PrintStyleBuilder(PrintFormat printFormat)
     {
-        this.printFormat = Objects.requireNonNull(format, "The target PrintFormat must not be null");
+        this.printFormat = Objects.requireNonNull(printFormat, "The target PrintFormat must not be null");
     }
 
     /**
      * Creates a new PrintStyle builder with the same attributes of an existing PrintStyle.
      *
      * @param source the PrintStyle whose attributes are to be copied
+     *
      * @throws NullPointerException if the specified PrintStyle is null
      */
     public PrintStyleBuilder(PrintStyle source)
     {
         Objects.requireNonNull(source, "The base PrintStyle must not be null");
 
-        printFormat = source.getFormat();
+        printFormat = source.getPrintFormat();
 
         printHeader = source.isPrintHeader();
         headerFormat = source.getHeaderFormat();

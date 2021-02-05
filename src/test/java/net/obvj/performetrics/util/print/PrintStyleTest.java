@@ -20,7 +20,7 @@ public class PrintStyleTest
     @Test
     public void builder_noArguments_defaultBuilder()
     {
-        PrintStyleBuilder builder = PrintStyle.builder();
+        PrintStyleBuilder builder = PrintStyle.builder(PrintFormat.SUMMARIZED);
         assertThat(builder, is(not(nullValue())));
     }
 

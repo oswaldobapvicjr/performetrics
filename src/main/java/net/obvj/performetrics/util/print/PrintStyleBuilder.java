@@ -26,7 +26,9 @@ import net.obvj.performetrics.util.DurationFormatter;
  */
 public class PrintStyleBuilder
 {
-    public static final String DEFAULT_FORMAT = "%s";
+    protected static final String DEFAULT_FORMAT = "%s";
+
+    private final PrintFormat printFormat;
 
     private boolean printHeader;
     private String headerFormat;
@@ -45,21 +47,29 @@ public class PrintStyleBuilder
 
     /**
      * Creates an empty PrintStyle builder.
+     *
+     * @param printFormat the target {@link PrintFormat}, not null
+     *
+     * @throws NullPointerException if the specified PrintFormat is null
+     * @since 2.2.2
      */
-    public PrintStyleBuilder()
+    public PrintStyleBuilder(PrintFormat printFormat)
     {
-        // Empty block created to avoid hiding the default constructor.
+        this.printFormat = Objects.requireNonNull(printFormat, "The target PrintFormat must not be null");
     }
 
     /**
      * Creates a new PrintStyle builder with the same attributes of an existing PrintStyle.
      *
      * @param source the PrintStyle whose attributes are to be copied
+     *
      * @throws NullPointerException if the specified PrintStyle is null
      */
     public PrintStyleBuilder(PrintStyle source)
     {
         Objects.requireNonNull(source, "The base PrintStyle must not be null");
+
+        printFormat = source.getPrintFormat();
 
         printHeader = source.isPrintHeader();
         headerFormat = source.getHeaderFormat();
@@ -334,6 +344,14 @@ public class PrintStyleBuilder
             durationFormat = DurationFormatter.DEFAULT_FORMAT;
         }
         return new PrintStyle(this);
+    }
+
+    /**
+     * @return the target {@link PrintFormat}
+     */
+    protected PrintFormat getPrintFormat()
+    {
+        return printFormat;
     }
 
     /**

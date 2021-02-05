@@ -2,6 +2,7 @@ package net.obvj.performetrics.util.print;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -41,6 +42,7 @@ public enum PrintFormat
         @Override
         public String format(Stopwatch stopwatch, PrintStyle style)
         {
+            checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
             appendLine(builder, style.getAlternativeLine());
             if (style.isPrintHeader())
@@ -98,6 +100,7 @@ public enum PrintFormat
         @Override
         public String format(Stopwatch stopwatch, PrintStyle style)
         {
+            checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
 
             if (style.isPrintHeader())
@@ -159,6 +162,9 @@ public enum PrintFormat
      * @param stopwatch the stopwatch to be printed
      * @param style     the {@link PrintStyle} to be applied
      * @return a string with formatted stopwatch data
+     *
+     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
+     *                                  this PrintFormat.
      */
     public abstract String format(Stopwatch stopwatch, PrintStyle style);
 
@@ -196,6 +202,26 @@ public enum PrintFormat
     private static boolean isEmpty(String string)
     {
         return string == null || string.isEmpty();
+    }
+
+    /**
+     * Checks if a given {@link PrintStyle} is compatible with this {@link PrintFormat}.
+     *
+     * @param printStyle the {@link PrintStyle} to be checked, not null
+     *
+     * @throws NullPointerException     if the PrintStyle is null
+     * @throws IllegalArgumentException if the PrintStyle is not compatible
+     *
+     * @since 2.2.2
+     */
+    public void checkCompatibility(PrintStyle printStyle)
+    {
+        Objects.requireNonNull(printStyle, "The PrintStyle must not be null");
+        if (printStyle.getPrintFormat() != this)
+        {
+            throw new IllegalArgumentException(String.format("Incompatible PrintStyle. Expected %s but received %s.",
+                    this, printStyle.getPrintFormat()));
+        }
     }
 
 }

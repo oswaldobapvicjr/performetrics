@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.util.Duration;
+import net.obvj.performetrics.util.print.PrintFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
@@ -78,7 +79,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
 public class Stopwatch
 {
     private static final String MSG_NOT_RUNNING = "The stopwatch is not running";
-    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this stopwatch. Available type(s): {1}";
+    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -265,7 +266,9 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return a list of counters associated with the given type, or an empty list
-     * @throws IllegalArgumentException if the type is not specified in this stopwatch
+     *
+     * @throws IllegalArgumentException if the specified type was not assigned to the
+     *                                  stopwatch during instantiation
      * @since 2.2.0
      */
     public List<Counter> getCounters(Type type)
@@ -278,7 +281,9 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return a stream of counters associated with the given type, not null
-     * @throws IllegalArgumentException if the type was not specified in this stopwatch
+     *
+     * @throws IllegalArgumentException if the specified type was not assigned to the
+     *                                  stopwatch during instantiation
      * @since 2.2.0
      */
     private Stream<Counter> getCountersAsStream(Type type)
@@ -295,7 +300,9 @@ public class Stopwatch
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
-     * @throws IllegalArgumentException if the type was not specified in this stopwatch
+     *
+     * @throws IllegalArgumentException if the specified type was not assigned to the
+     *                                  stopwatch during instantiation
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
@@ -311,7 +318,9 @@ public class Stopwatch
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the default conversion mode.
-     * @throws IllegalArgumentException if the type was not specified in this stopwatch
+     *
+     * @throws IllegalArgumentException if the specified type was not assigned to the
+     *                                  stopwatch during instantiation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
@@ -329,7 +338,9 @@ public class Stopwatch
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         using the given conversion mode.
-     * @throws IllegalArgumentException if the type was not specified in this stopwatch
+     *
+     * @throws IllegalArgumentException if the specified type was not assigned to the
+     *                                  stopwatch during instantiation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
@@ -342,6 +353,8 @@ public class Stopwatch
      * Prints summarized elapsed times in the specified print stream.
      *
      * @param printStream the print stream to which data will be sent
+     *
+     * @throws NullPointerException if the PrintStream is null
      *
      * @since 2.2.1
      */
@@ -357,6 +370,9 @@ public class Stopwatch
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
+     * @throws NullPointerException     if the PrintStream is null
+     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
+     *                                  {@link PrintFormat#SUMMARIZED}
      * @since 2.2.1
      */
     public void printSummary(PrintStream printStream, PrintStyle printStyle)
@@ -368,6 +384,8 @@ public class Stopwatch
      * Prints detailed information about timing sessions in the specified print stream.
      *
      * @param printStream the print stream to which information will be sent
+     *
+     * @throws NullPointerException if the PrintStream is null
      *
      * @since 2.2.1
      */
@@ -383,6 +401,9 @@ public class Stopwatch
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
+     * @throws NullPointerException     if the PrintStream is null
+     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
+     *                                  {@link PrintFormat#DETAILED}
      * @since 2.2.1
      */
     public void printDetails(PrintStream printStream, PrintStyle printStyle)

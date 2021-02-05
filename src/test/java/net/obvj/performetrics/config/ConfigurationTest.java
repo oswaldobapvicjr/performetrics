@@ -1,6 +1,7 @@
 package net.obvj.performetrics.config;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.concurrent.TimeUnit;
@@ -8,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import net.obvj.performetrics.ConversionMode;
+import net.obvj.performetrics.util.print.PrintFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
-import net.obvj.performetrics.util.print.PrintStyleBuilder;
 
 /**
  * Unit tests for the {@link Configuration}.
@@ -73,7 +74,7 @@ public class ConfigurationTest
     @Test
     public void setSummarizedPrintStyle_notNull_succeeds()
     {
-        PrintStyle style = new PrintStyleBuilder().build();
+        PrintStyle style = PrintStyle.builder(PrintFormat.SUMMARIZED).build();
         configuration.setPrintStyleForSummary(style);
         assertThat(configuration.getPrintStyleForSummary(), is(equalTo(style)));
     }
@@ -87,7 +88,7 @@ public class ConfigurationTest
     @Test
     public void setDetailedPrintStyle_notNull_succeeds()
     {
-        PrintStyle style = new PrintStyleBuilder().build();
+        PrintStyle style = PrintStyle.builder(PrintFormat.DETAILED).build();
         configuration.setPrintStyleForDetails(style);
         assertThat(configuration.getPrintStyleForDetails(), is(equalTo(style)));
     }

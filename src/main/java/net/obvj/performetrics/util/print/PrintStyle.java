@@ -28,7 +28,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder()
+    public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withRowFormat("%-15s  %19s")
             .withoutHeader()
             .withDurationFormat(DurationFormat.FULL)
@@ -78,7 +78,7 @@ public class PrintStyle
      *
      * @see PrintFormat#SUMMARIZED
      */
-    public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder()
+    public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withHeader()
             .withRowFormat("\"%s\",\"%s\"")
             .withDurationFormat(DurationFormat.FULL)
@@ -138,7 +138,7 @@ public class PrintStyle
      *
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder()
+    public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
             .withSectionHeaderFormat("%s")
@@ -164,11 +164,11 @@ public class PrintStyle
      * "CPU time",2,"0:00:00.015625000","0:00:00.046875000"
      * "CPU time",3,"0:00:00.015625000","0:00:00.062500000"
      * </pre>
-     * 
+     *
      * @since 2.2.2
      * @see PrintFormat#DETAILED
      */
-    public static final PrintStyle DETAILED_CSV = PrintStyle.builder()
+    public static final PrintStyle DETAILED_CSV = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("\"%4$s\",%1$s,\"%2$s\",\"%3$s\"")
             .withHeader("\"%4$s\",\"Session\",\"%2$s\",\"%3$s\"")
             .withoutSectionSummary()
@@ -197,8 +197,10 @@ public class PrintStyle
     public static final PrintStyle DETAILED_CSV_NO_HEADER = PrintStyle.builder(DETAILED_CSV)
             .withoutHeader()
             .build();
-    
-    
+
+
+    private final PrintFormat printFormat;
+
     private final boolean printHeader;
     private final String headerFormat;
 
@@ -217,12 +219,15 @@ public class PrintStyle
     /**
      * Returns an empty PrintStyle builder.
      *
+     * @param printFormat the target {@link PrintFormat}, not null
      * @return a {@link PrintStyleBuilder} instance
+     *
+     * @throws NullPointerException if the specified PrintFormat is null
      * @since 2.2.2
      */
-    public static PrintStyleBuilder builder()
+    public static PrintStyleBuilder builder(PrintFormat printFormat)
     {
-        return new PrintStyleBuilder();
+        return new PrintStyleBuilder(printFormat);
     }
 
     /**
@@ -231,6 +236,7 @@ public class PrintStyle
      * @param source the PrintStyle whose attributes are to be copied
      * @return a new {@link PrintStyleBuilder} instance with the same attributes of the
      *         specified source object
+     *
      * @throws NullPointerException if the specified PrintStyle is null
      * @since 2.2.2
      */
@@ -246,6 +252,7 @@ public class PrintStyle
      */
     protected PrintStyle(PrintStyleBuilder builder)
     {
+        printFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
         headerFormat = builder.getHeaderFormat();
         rowFormat = builder.getRowFormat();
@@ -256,6 +263,14 @@ public class PrintStyle
         printLegend = builder.isPrintLegend();
         simpleLine = builder.getSimpleLine();
         alternativeLine = builder.getAlternativeLine();
+    }
+
+    /**
+     * @return the target {@link PrintFormat}
+     */
+    public PrintFormat getPrintFormat()
+    {
+        return printFormat;
     }
 
     /**

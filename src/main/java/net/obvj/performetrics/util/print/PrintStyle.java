@@ -249,7 +249,7 @@ public class PrintStyle
      */
     protected PrintStyle(PrintStyleBuilder builder)
     {
-    	targetPrintFormat = builder.getPrintFormat();
+        targetPrintFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
         headerFormat = builder.getHeaderFormat();
         rowFormat = builder.getRowFormat();
@@ -267,10 +267,10 @@ public class PrintStyle
      */
     public PrintFormat getFormat()
     {
-		return targetPrintFormat;
-	}
+        return targetPrintFormat;
+    }
 
-	/**
+    /**
      * @return the {@link DurationFormat} to be applied on all rows
      */
     public DurationFormat getDurationFormat()

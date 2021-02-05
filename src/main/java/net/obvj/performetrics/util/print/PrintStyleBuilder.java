@@ -48,7 +48,7 @@ public class PrintStyleBuilder
     /**
      * Creates an empty PrintStyle builder.
      *
-     * @param format the target {@link PrintFormat}
+     * @param format the target {@link PrintFormat}, not null
      */
     public PrintStyleBuilder(PrintFormat format)
     {
@@ -347,8 +347,8 @@ public class PrintStyleBuilder
      */
     protected PrintFormat getPrintFormat()
     {
-		return printFormat;
-	}
+        return printFormat;
+    }
 
     /**
      * @return the {@link DurationFormat} to be applied on all rows

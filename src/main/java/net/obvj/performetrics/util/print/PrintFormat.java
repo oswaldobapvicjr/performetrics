@@ -205,7 +205,7 @@ public enum PrintFormat
     /**
      * Checks if a given {@link PrintStyle} is compatible with this {@link PrintFormat}.
      *
-     * @param style the {@link PrintStyle} to be checked
+     * @param style the {@link PrintStyle} to be checked, not null
      * @throws IllegalArgumentException if the style is not compatible
      *
      * @since 2.2.2

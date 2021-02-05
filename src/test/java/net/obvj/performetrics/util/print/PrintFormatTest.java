@@ -166,13 +166,13 @@ public class PrintFormatTest
     @Test(expected = IllegalArgumentException.class)
     public void checkCompatibility_summarized_incompatiblePrintStyle_exception()
     {
-    	PrintFormat.SUMMARIZED.checkCompatibility(DETAILED_TEST_STYLE_WITH_TOTALS);
+        PrintFormat.SUMMARIZED.checkCompatibility(DETAILED_TEST_STYLE_WITH_TOTALS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCompatibility_detailed_incompatiblePrintStyle_exception()
     {
-    	PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE);
+        PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE);
     }
 
 }

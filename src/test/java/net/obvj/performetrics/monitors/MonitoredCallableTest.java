@@ -5,8 +5,8 @@ import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -126,7 +126,7 @@ public class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(operation.stopwatch, System.out, null));
+            printUtils.verify(() -> PrintUtils.printSummary(operation.stopwatch, System.out, null), times(1));
         }
     }
 
@@ -137,7 +137,7 @@ public class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(operation.stopwatch, System.out, null));
+            printUtils.verify(() -> PrintUtils.printDetails(operation.stopwatch, System.out, null), times(1));
         }
     }
 

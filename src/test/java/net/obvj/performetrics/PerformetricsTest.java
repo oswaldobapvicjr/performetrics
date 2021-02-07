@@ -6,9 +6,9 @@ import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
@@ -172,10 +172,10 @@ public class PerformetricsTest
             assertThat(runFlag, is(equalTo(true)));
             assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
 
-            systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
-            systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
-            systemUtils.verify(times(2), SystemUtils::getUserTimeNanos);
-            systemUtils.verify(times(2), SystemUtils::getSystemTimeNanos);
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, times(2));
         }
     }
 
@@ -189,10 +189,10 @@ public class PerformetricsTest
             assertThat(runFlag, is(equalTo(true)));
             assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
-            systemUtils.verify(times(2), SystemUtils::getWallClockTimeNanos);
-            systemUtils.verify(times(2), SystemUtils::getCpuTimeNanos);
-            systemUtils.verify(never(), SystemUtils::getUserTimeNanos);
-            systemUtils.verify(never(), SystemUtils::getSystemTimeNanos);
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, never());
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, never());
         }
     }
 

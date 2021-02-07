@@ -1,9 +1,9 @@
 package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -182,7 +182,7 @@ public class DurationTest
         assertThat(Duration.of(3599, SECONDS     ).plus(Duration.of(3601, SECONDS     )), is(equalTo(Duration.of(2, HOURS))));
         assertThat(Duration.of( 500, MILLISECONDS).plus(Duration.of( 500, MILLISECONDS)), is(equalTo(Duration.of(1, SECONDS))));
     }
-    
+
     @Test
     public void plus_validDurationsAsLong_success()
     {
@@ -205,7 +205,7 @@ public class DurationTest
     {
         assertThat(Duration.of(90, SECONDS).getInternalDuration(), is(equalTo(java.time.Duration.ofSeconds(90))));
     }
-    
+
     @Test
     public void isZero_validDurations_success()
     {

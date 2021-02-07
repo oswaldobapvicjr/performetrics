@@ -7,9 +7,9 @@ import static net.obvj.performetrics.util.DurationFormat.ISO_8601;
 import static net.obvj.performetrics.util.DurationFormat.SHORT;
 import static net.obvj.performetrics.util.DurationFormatter.MSG_DURATION_FORMAT_MUST_NOT_BE_NULL;
 import static net.obvj.performetrics.util.DurationFormatter.MSG_DURATION_MUST_NOT_BE_NULL;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 

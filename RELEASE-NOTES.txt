@@ -18,7 +18,7 @@ Minor enhancements:
  > issue/0032: General improvements in exception handling and documentation
  > issue/0034: Duration API improvements
  > issue/0036: New Print Styles for CSV output generation
- > issue/0038: Print Style compatibility checks
+ > issue/0038: Print Style compatibility validation
 
 
 For more information, or suggestions for improvement, visit:

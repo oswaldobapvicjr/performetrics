@@ -1,9 +1,9 @@
 package net.obvj.performetrics.util;
 
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.TimeUnit;
 

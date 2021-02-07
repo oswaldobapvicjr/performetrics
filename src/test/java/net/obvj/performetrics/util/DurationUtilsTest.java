@@ -6,9 +6,9 @@ import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAll
 import static net.obvj.performetrics.util.DurationUtils.average;
 import static net.obvj.performetrics.util.DurationUtils.max;
 import static net.obvj.performetrics.util.DurationUtils.min;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
 import java.util.Collections;

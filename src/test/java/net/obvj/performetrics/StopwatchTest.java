@@ -10,10 +10,10 @@ import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -286,7 +286,7 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printSummary(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out, null));
+            printUtils.verify(() -> PrintUtils.printSummary(sw, System.out, null), times(1));
         }
     }
 
@@ -298,7 +298,7 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printSummary(System.out, ps);
-            printUtils.verify(times(1), () -> PrintUtils.printSummary(sw, System.out, ps));
+            printUtils.verify(() -> PrintUtils.printSummary(sw, System.out, ps), times(1));
         }
     }
 
@@ -309,7 +309,7 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printDetails(System.out);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out, null));
+            printUtils.verify(() -> PrintUtils.printDetails(sw, System.out, null), times(1));
         }
     }
 
@@ -321,7 +321,7 @@ public class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printDetails(System.out, ps);
-            printUtils.verify(times(1), () -> PrintUtils.printDetails(sw, System.out, ps));
+            printUtils.verify(() -> PrintUtils.printDetails(sw, System.out, ps), times(1));
         }
     }
 

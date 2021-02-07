@@ -1,9 +1,8 @@
 package net.obvj.performetrics.util;
 
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
@@ -23,12 +22,12 @@ public class SystemUtilsTest
     @Test
     public void getWallClockTimeMillis_positiveAmount()
     {
-        assertThat(SystemUtils.getWallClockTimeMillis(), is(greaterThan(0L)));
+        assertThat(SystemUtils.getWallClockTimeMillis() > 0, is(true));
     }
 
     @Test
     public void getWallClockTimeNanos_positiveAmount()
     {
-        assertThat(SystemUtils.getWallClockTimeNanos(), is(greaterThan(0L)));
+        assertThat(SystemUtils.getWallClockTimeNanos() > 0, is(true));
     }
 }

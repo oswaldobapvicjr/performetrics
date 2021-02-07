@@ -1,10 +1,9 @@
 package net.obvj.performetrics.util.print;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class PrintStyleBuilderTest
     @Test
     public void generateLine_lengthZero_empty()
     {
-        assertThat(PrintStyleBuilder.generateLine('-', 0), is(emptyString()));
+        assertThat(PrintStyleBuilder.generateLine('-', 0), is(""));
     }
 
     @Test

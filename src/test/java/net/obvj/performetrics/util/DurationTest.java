@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -209,9 +210,30 @@ public class DurationTest
     @Test
     public void isZero_validDurations_success()
     {
-        assertThat(Duration.of(   0, HOURS       ).isZero(), is(true));
-        assertThat(Duration.of(   0, MILLISECONDS).isZero(), is(true));
-        assertThat(Duration.of(   1, NANOSECONDS ).isZero(), is(false));
+        assertThat(Duration.of(0, HOURS       ).isZero(), is(true));
+        assertThat(Duration.of(0, MILLISECONDS).isZero(), is(true));
+        assertThat(Duration.of(1, NANOSECONDS ).isZero(), is(false));
+    }
+
+    @Test
+    public void compareTo_equalDurations_zero()
+    {
+        assertThat(Duration.of(1, SECONDS     ).compareTo(Duration.of(   1000, MILLISECONDS)), is(equalTo(0)));
+        assertThat(Duration.of(1, MILLISECONDS).compareTo(Duration.of(1000000, NANOSECONDS )), is(equalTo(0)));
+    }
+
+    @Test
+    public void compareTo_lowerDurations_positive()
+    {
+        assertTrue(Duration.of(  1, SECONDS    ).compareTo(Duration.of(750, MILLISECONDS)) > 0);
+        assertTrue(Duration.of(100, NANOSECONDS).compareTo(Duration.of( 20, NANOSECONDS )) > 0);
+    }
+
+    @Test
+    public void compareTo_lowerDurations_negative()
+    {
+        assertTrue(Duration.of( 1, MILLISECONDS).compareTo(Duration.of(2000000, NANOSECONDS)) < 0);
+        assertTrue(Duration.of(40, MINUTES     ).compareTo(Duration.of(      1, HOURS      )) < 0);
     }
 
 }

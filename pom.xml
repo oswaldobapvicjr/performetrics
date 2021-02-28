@@ -41,9 +41,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Test dependencies versions -->
-        <junit4.version>4.13.1</junit4.version>
-        <mockito.version>3.7.7</mockito.version>
-        <junit-utils.version>1.2.1</junit-utils.version>
+        <junit4.version>4.13.2</junit4.version>
+        <mockito.version>3.8.0</mockito.version>
+        <junit-utils.version>1.3.0</junit-utils.version>
 
     </properties>
 

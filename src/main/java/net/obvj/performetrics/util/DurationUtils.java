@@ -1,7 +1,6 @@
 package net.obvj.performetrics.util;
 
 import java.util.Collection;
-import java.util.Comparator;
 
 /**
  * Common methods for working with durations.
@@ -44,7 +43,7 @@ public class DurationUtils
     }
 
     /**
-     * Computes and returns the lowest/minimum Duration of the given collection of Durations.
+     * Returns the lowest/minimum Duration of a given collection.
      *
      * @param durations the collection which the minimum element is to be calculated
      * @return the lowest Duration in the collection; or {@code Duration.ZERO}, if the
@@ -57,11 +56,11 @@ public class DurationUtils
             return Duration.ZERO;
         }
         // We compare the seconds with the fractional nanoseconds after the decimal point
-        return durations.stream().min(Comparator.comparingDouble(Duration::toSeconds)).orElse(Duration.ZERO);
+        return durations.stream().min(Comparable::compareTo).orElse(Duration.ZERO);
     }
 
     /**
-     * Computes and returns the highest/maximum Duration of the given collection of Durations.
+     * Returns the highest/maximum Duration of a given collection.
      *
      * @param durations the collection which the maximum element is to be calculated
      * @return the highest Duration in the collection; or {@code Duration.ZERO}, if the
@@ -74,7 +73,7 @@ public class DurationUtils
             return Duration.ZERO;
         }
         // We compare the seconds with the fractional nanoseconds after the decimal point
-        return durations.stream().max(Comparator.comparingDouble(Duration::toSeconds)).orElse(Duration.ZERO);
+        return durations.stream().max(Comparable::compareTo).orElse(Duration.ZERO);
     }
 
 }

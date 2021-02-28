@@ -1,6 +1,8 @@
 package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.isNegative;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.isPositive;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -209,9 +211,30 @@ public class DurationTest
     @Test
     public void isZero_validDurations_success()
     {
-        assertThat(Duration.of(   0, HOURS       ).isZero(), is(true));
-        assertThat(Duration.of(   0, MILLISECONDS).isZero(), is(true));
-        assertThat(Duration.of(   1, NANOSECONDS ).isZero(), is(false));
+        assertThat(Duration.of(0, HOURS       ).isZero(), is(true));
+        assertThat(Duration.of(0, MILLISECONDS).isZero(), is(true));
+        assertThat(Duration.of(1, NANOSECONDS ).isZero(), is(false));
+    }
+
+    @Test
+    public void compareTo_equalDurations_zero()
+    {
+        assertThat(Duration.of(1, SECONDS     ).compareTo(Duration.of(   1000, MILLISECONDS)), is(equalTo(0)));
+        assertThat(Duration.of(1, MILLISECONDS).compareTo(Duration.of(1000000, NANOSECONDS )), is(equalTo(0)));
+    }
+
+    @Test
+    public void compareTo_lowerDurations_positive()
+    {
+        assertThat(Duration.of(  1, SECONDS    ).compareTo(Duration.of(750, MILLISECONDS)), isPositive());
+        assertThat(Duration.of(100, NANOSECONDS).compareTo(Duration.of( 20, NANOSECONDS )), isPositive());
+    }
+
+    @Test
+    public void compareTo_lowerDurations_negative()
+    {
+        assertThat(Duration.of( 1, MILLISECONDS).compareTo(Duration.of(2000000, NANOSECONDS)), isNegative());
+        assertThat(Duration.of(40, MINUTES     ).compareTo(Duration.of(      1, HOURS      )), isNegative());
     }
 
 }

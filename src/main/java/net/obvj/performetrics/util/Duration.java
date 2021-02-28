@@ -19,12 +19,15 @@ import java.util.concurrent.TimeUnit;
  * <li><b>nanoseconds within the second</b>, from 0 to 999,999,999</li>
  * </ul>
  *
+ * @implSpec This class is immutable and thread-safe.
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class Duration
+public class Duration implements Comparable<Duration>
 {
-    private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The Duration to add must not be null";
+    private static final String MSG_DURATION_MUST_NOT_BE_NULL = "The other duration must not be null";
+    private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The duration to add must not be null";
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
 
@@ -336,6 +339,22 @@ public class Duration
     public Duration dividedBy(long divisor)
     {
         return new Duration(internalDuration.dividedBy(divisor));
+    }
+
+    /**
+     * Compares this duration to the specified {@code Duration} based on the total length of
+     * the durations, as defined by {@link Comparable}.
+     *
+     * @param otherDuration the other duration to compare to; not null
+     * @return the comparator value, negative if less, positive if greater
+     *
+     * @since 2.2.3
+     */
+    @Override
+    public int compareTo(Duration otherDuration)
+    {
+        Objects.requireNonNull(otherDuration, MSG_DURATION_MUST_NOT_BE_NULL);
+        return internalDuration.compareTo(otherDuration.internalDuration);
     }
 
     /**

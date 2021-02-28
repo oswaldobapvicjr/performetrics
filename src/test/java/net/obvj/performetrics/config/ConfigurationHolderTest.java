@@ -5,8 +5,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import net.obvj.performetrics.ConversionMode;
 
@@ -16,22 +16,22 @@ import net.obvj.performetrics.ConversionMode;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class ConfigurationHolderTest
+class ConfigurationHolderTest
 {
-    @After
-    public void reset()
+    @AfterEach
+    void reset()
     {
         ConfigurationHolder.reset();
     }
 
     @Test
-    public void constructor_instantiationNotAllowed()
+    void constructor_instantiationNotAllowed()
     {
         assertThat(ConfigurationHolder.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test
-    public void getConfiguration_initial_defaultValues()
+    void getConfiguration_initial_defaultValues()
     {
         Configuration configuration = ConfigurationHolder.getConfiguration();
         assertThat(configuration.getConversionMode(), is(equalTo(Configuration.INITIAL_CONVERSION_MODE)));
@@ -39,7 +39,7 @@ public class ConfigurationHolderTest
     }
 
     @Test
-    public void setConfiguration_ValidConfiguration_suceeds()
+    void setConfiguration_ValidConfiguration_suceeds()
     {
         Configuration newConfiguration = new Configuration();
         newConfiguration.setConversionMode(ConversionMode.FAST);

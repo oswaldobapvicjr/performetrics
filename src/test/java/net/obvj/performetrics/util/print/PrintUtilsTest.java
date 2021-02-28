@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -34,7 +34,7 @@ import net.obvj.performetrics.util.DurationFormat;
  *
  * @author oswaldo.bapvic.jr
  */
-public class PrintUtilsTest
+class PrintUtilsTest
 {
     private static final Counter C1 = newCounter(WALL_CLOCK_TIME, MILLISECONDS, 5000, 6000);
     private static final Counter C2 = newCounter(CPU_TIME, NANOSECONDS, 700000000000l, 900000000000l);
@@ -49,8 +49,8 @@ public class PrintUtilsTest
     Stopwatch stopwatch = mock(Stopwatch.class);
     PrintStyle printStyle = mock(PrintStyle.class);
 
-    @Before
-    public void setup()
+    @BeforeEach
+    void setup()
     {
         when(stopwatch.getAllCountersByType()).thenReturn(ALL_COUNTERS);
     }
@@ -67,7 +67,7 @@ public class PrintUtilsTest
      * Tests that no instances of this utility class are created.
      */
     @Test
-    public void constructor_instantiationNotAllowed()
+    void constructor_instantiationNotAllowed()
     {
         assertThat(PrintUtils.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
@@ -76,7 +76,7 @@ public class PrintUtilsTest
      * Test stopwatch summary printing onto a PrintStream.
      */
     @Test
-    public void printSummary_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    void printSummary_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
 
@@ -92,7 +92,7 @@ public class PrintUtilsTest
      * Test stopwatch details printing onto a PrintStream.
      */
     @Test
-    public void printDetails_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
+    void printDetails_withStopwatchAndPrintStream_printsTableToTheStream() throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);
 
@@ -112,7 +112,7 @@ public class PrintUtilsTest
     }
 
     @Test
-    public void printSummary_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+    void printSummary_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
             throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
@@ -126,7 +126,7 @@ public class PrintUtilsTest
     }
 
     @Test
-    public void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+    void printDetails_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
             throws UnsupportedEncodingException
     {
         prepareTestPrintStyle(PrintFormat.DETAILED);
@@ -141,7 +141,7 @@ public class PrintUtilsTest
     }
 
     @Test
-    public void printSummary_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+    void printSummary_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
             throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_TABLE_FULL);
@@ -155,7 +155,7 @@ public class PrintUtilsTest
     }
 
     @Test
-    public void printDetails_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
+    void printDetails_withStopwatchAndPrintStreamAndNullPrintStyle_printsUsingDefaultStyle()
             throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_TABLE_FULL);

@@ -14,9 +14,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
@@ -29,7 +30,7 @@ import net.obvj.performetrics.util.SystemUtils;
  * @author oswaldo.bapvic.jr
  * @since 2.2.0
  */
-public class TimingSessionTest
+class TimingSessionTest
 {
     private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
     private static final long CPU_TIME_BEFORE = 1200000000l;
@@ -106,7 +107,7 @@ public class TimingSessionTest
      * Checks that all of the known counters are available by default in a TimingSession
      */
     @Test
-    public void constructor_withNoArguments_assignsAllAvailableTypes()
+    void constructor_withNoArguments_assignsAllAvailableTypes()
     {
         TimingSession session = new TimingSession();
         assertThat(session.getCounters().size(), is(equalTo(Type.values().length)));
@@ -120,7 +121,7 @@ public class TimingSessionTest
      * Checks that only the counter passed to the constructor will be maintained (one type)
      */
     @Test
-    public void constructor_withOneArgument_assignsCorrectCounter()
+    void constructor_withOneArgument_assignsCorrectCounter()
     {
         TimingSession session = new TimingSession(SYSTEM_TIME);
         assertThat(session.getCounters().size(), is(equalTo(1)));
@@ -131,7 +132,7 @@ public class TimingSessionTest
      * Checks that only the counters passed to the constructor will be maintained (two types)
      */
     @Test
-    public void constructor_withTwoArguments_assignsCorrectCounters()
+    void constructor_withTwoArguments_assignsCorrectCounters()
     {
         TimingSession session = new TimingSession(CPU_TIME, USER_TIME);
         assertThat(session.getCounters().size(), is(equalTo(2)));
@@ -143,7 +144,7 @@ public class TimingSessionTest
      * Checks that all units are equal to zero when a new TimingSession is created
      */
     @Test
-    public void getAllCounters_withTimingSessionUnstarted_returnsAllUnitsEqualToZero()
+    void getAllCounters_withTimingSessionUnstarted_returnsAllUnitsEqualToZero()
     {
         TimingSession session = new TimingSession();
         assertThat(session.isStarted(), is(equalTo(false)));
@@ -156,7 +157,7 @@ public class TimingSessionTest
      * default counters.
      */
     @Test
-    public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
+    void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
         TimingSession session = new TimingSession();
         assertThat(session.getCounters().size(), is(equalTo(Type.values().length)));
@@ -178,7 +179,7 @@ public class TimingSessionTest
      * specific counters
      */
     @Test
-    public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
+    void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
         TimingSession session = new TimingSession(WALL_CLOCK_TIME, CPU_TIME);
         assertThat(session.getCounters().size(), is(equalTo(2)));
@@ -202,7 +203,7 @@ public class TimingSessionTest
      * created with default counters
      */
     @Test
-    public void reset_withAllAvailableTypes_setsAllUnitsToZeroAccordingly()
+    void reset_withAllAvailableTypes_setsAllUnitsToZeroAccordingly()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -225,7 +226,7 @@ public class TimingSessionTest
      * created with specific counters
      */
     @Test
-    public void reset_withTwoTypes_setsAllUnitsToZeroAccordingly()
+    void reset_withTwoTypes_setsAllUnitsToZeroAccordingly()
     {
         TimingSession session = new TimingSession(USER_TIME, SYSTEM_TIME);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -246,15 +247,15 @@ public class TimingSessionTest
         assertThat(getCounter(session, SYSTEM_TIME).getUnitsAfter(), is(equalTo(0L)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getCounter_invalidType_throwsException()
+    @Test
+    void getCounter_invalidType_throwsException()
     {
         TimingSession session = new TimingSession(CPU_TIME, SYSTEM_TIME);
-        getCounter(session, USER_TIME);
+        assertThrows(IllegalArgumentException.class, () -> getCounter(session, USER_TIME));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void start_alreadyStarted_illegalStateException()
+    @Test
+    void start_alreadyStarted_illegalStateException()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -262,32 +263,11 @@ public class TimingSessionTest
             setupExpectsBefore(systemUtils);
             session.start();
         }
-        session.start();
+        assertThrows(IllegalStateException.class, () -> session.start());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void start_stopped_illegalStateException()
-    {
-        TimingSession session = new TimingSession();
-        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
-        {
-            setupExpectsBefore(systemUtils);
-            session.start();
-            setupExpectsAfter(systemUtils);
-            session.stop();
-        }
-        session.start();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void stop_notStarted_illegalStateException()
-    {
-        TimingSession session = new TimingSession();
-        session.stop();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void stop_alreadyStopped_illegalStateException()
+    @Test
+    void start_stopped_illegalStateException()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -297,32 +277,53 @@ public class TimingSessionTest
             setupExpectsAfter(systemUtils);
             session.stop();
         }
-        session.stop();
+        assertThrows(IllegalStateException.class, () -> session.start());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidType_throwsException()
+    @Test
+    void stop_notStarted_illegalStateException()
     {
-        TimingSession session = new TimingSession(SYSTEM_TIME);
-        session.elapsedTime(USER_TIME);
+        TimingSession session = new TimingSession();
+        assertThrows(IllegalStateException.class, () -> session.stop());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    @Test
+    void stop_alreadyStopped_illegalStateException()
     {
-        TimingSession session = new TimingSession(SYSTEM_TIME);
-        session.elapsedTime(USER_TIME, HOURS);
+        TimingSession session = new TimingSession();
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBefore(systemUtils);
+            session.start();
+            setupExpectsAfter(systemUtils);
+            session.stop();
+        }
+        assertThrows(IllegalStateException.class, () -> session.stop());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_throwsException()
+    @Test
+    void elapsedTime_invalidType_throwsException()
     {
         TimingSession session = new TimingSession(SYSTEM_TIME);
-        session.elapsedTime(USER_TIME, HOURS, FAST);
+        assertThrows(IllegalArgumentException.class, () -> session.elapsedTime(USER_TIME));
+    }
+
+    @Test
+    void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    {
+        TimingSession session = new TimingSession(SYSTEM_TIME);
+        assertThrows(IllegalArgumentException.class, () -> session.elapsedTime(USER_TIME, HOURS));
+    }
+
+    @Test
+    void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_throwsException()
+    {
+        TimingSession session = new TimingSession(SYSTEM_TIME);
+        assertThrows(IllegalArgumentException.class, () -> session.elapsedTime(USER_TIME, HOURS, FAST));
     }
 
     @Test()
-    public void elapsedTime_validType_returnsValidDurations()
+    void elapsedTime_validType_returnsValidDurations()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -343,7 +344,7 @@ public class TimingSessionTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
+    void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -364,7 +365,7 @@ public class TimingSessionTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
+    void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
     {
         TimingSession session = new TimingSession();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))

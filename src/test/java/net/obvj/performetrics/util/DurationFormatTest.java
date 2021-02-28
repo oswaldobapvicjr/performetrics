@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link DurationFormat}.
@@ -13,11 +13,11 @@ import org.junit.Test;
  * @author oswaldo.bapvic.jr
  * @since 2.2.0
  */
-public class DurationFormatTest
+class DurationFormatTest
 {
 
     @Test
-    public void toString_full_displaysAllUnits()
+    void toString_full_displaysAllUnits()
     {
         assertThat(DurationFormat.FULL.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000000")));
         assertThat(DurationFormat.FULL.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000001")));
@@ -43,7 +43,7 @@ public class DurationFormatTest
     }
 
     @Test
-    public void toString_short_abbreviatesIfPossible()
+    void toString_short_abbreviatesIfPossible()
     {
         assertThat(DurationFormat.SHORT.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(        "0.000000000")));
         assertThat(DurationFormat.SHORT.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(        "0.000000001")));
@@ -69,7 +69,7 @@ public class DurationFormatTest
     }
 
     @Test
-    public void toString_shorterWithLegend_supressesTrailingZeros()
+    void toString_shorterWithLegend_supressesTrailingZeros()
     {
         assertThat(DurationFormat.SHORTER.format(Duration.of(0,          NANOSECONDS ), true), is(equalTo(          "0 second(s)")));
         assertThat(DurationFormat.SHORTER.format(Duration.of(1,          NANOSECONDS ), true), is(equalTo("0.000000001 second(s)")));
@@ -95,7 +95,7 @@ public class DurationFormatTest
     }
 
     @Test
-    public void toString_shorterWithoutLegend_supressesTrailingZeros()
+    void toString_shorterWithoutLegend_supressesTrailingZeros()
     {
         assertThat(DurationFormat.SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0")));
         assertThat(DurationFormat.SHORTER.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0.000000001")));
@@ -121,7 +121,7 @@ public class DurationFormatTest
     }
 
     @Test
-    public void toString_iso8601()
+    void toString_iso8601()
     {
         assertThat(DurationFormat.ISO_8601.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("PT0S")));
         assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("PT0.000000001S")));
@@ -147,20 +147,20 @@ public class DurationFormatTest
     }
 
     @Test
-    public void toString_noArguments_appliesShorterStyleWithLegend()
+    void toString_noArguments_appliesShorterStyleWithLegend()
     {
         assertThat(Duration.of(3601, MILLISECONDS).toString(), is(equalTo("3.601 second(s)")));
     }
 
     @Test
-    public void toString_full_appliesFullStyleWithLegend()
+    void toString_full_appliesFullStyleWithLegend()
     {
         assertThat(Duration.of(3601, MILLISECONDS).toString(DurationFormat.FULL),
                 is(equalTo("0:00:03.601000000 hour(s)")));
     }
 
     @Test
-    public void removeTrailingZeros_validStrings_success()
+    void removeTrailingZeros_validStrings_success()
     {
         assertThat(DurationFormat.removeTrailingZeros("9.009000000"), is(equalTo("9.009")));
         assertThat(DurationFormat.removeTrailingZeros("9.000000009"), is(equalTo("9.000000009")));

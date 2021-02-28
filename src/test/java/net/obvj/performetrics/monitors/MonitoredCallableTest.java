@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
@@ -30,7 +30,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-public class MonitoredCallableTest
+class MonitoredCallableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
     private static final long MOCKED_CPU_TIME = 1200000000l;
@@ -74,7 +74,7 @@ public class MonitoredCallableTest
     }
 
     @Test
-    public void constructor_withOneType_assignsCorrectType()
+    void constructor_withOneType_assignsCorrectType()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);
         List<Type> types = op.getTypes();
@@ -83,7 +83,7 @@ public class MonitoredCallableTest
     }
 
     @Test
-    public void constructor_withTwoTypes_assignsCorrectTypes()
+    void constructor_withTwoTypes_assignsCorrectTypes()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable, SYSTEM_TIME, USER_TIME);
         List<Type> types = op.getTypes();
@@ -92,7 +92,7 @@ public class MonitoredCallableTest
     }
 
     @Test
-    public void constructor_withoutType_assignsAllAvailableCounterTypes()
+    void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredCallable<String> op = new MonitoredCallable<>(callable);
         List<Type> types = op.getTypes();
@@ -107,7 +107,7 @@ public class MonitoredCallableTest
      * @throws Exception in case of an exception inside the {@link Callable}
      */
     @Test
-    public void call_givenAllTypes_updatesAllCounters() throws Exception
+    void call_givenAllTypes_updatesAllCounters() throws Exception
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -120,7 +120,7 @@ public class MonitoredCallableTest
     }
 
     @Test
-    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -131,7 +131,7 @@ public class MonitoredCallableTest
     }
 
     @Test
-    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -142,7 +142,7 @@ public class MonitoredCallableTest
     }
 
     @Test()
-    public void reset_callsStopwatchReset() throws Exception
+    void reset_callsStopwatchReset() throws Exception
     {
         Stopwatch stopwatch = mock(Stopwatch.class);
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);

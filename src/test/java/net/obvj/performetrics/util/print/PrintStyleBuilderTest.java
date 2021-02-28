@@ -4,8 +4,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link PrintStyleBuilder}.
@@ -13,7 +14,7 @@ import org.junit.Test;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-public class PrintStyleBuilderTest
+class PrintStyleBuilderTest
 {
 
     private static final String ROW_FORMAT1 = "rowFormat1";
@@ -21,25 +22,25 @@ public class PrintStyleBuilderTest
     private static final String LINE2 = "line2";
 
     @Test
-    public void generateLine_lengthZero_empty()
+    void generateLine_lengthZero_empty()
     {
         assertThat(PrintStyleBuilder.generateLine('-', 0), is(""));
     }
 
     @Test
-    public void generateLine_lengthOne_singleCharacterString()
+    void generateLine_lengthOne_singleCharacterString()
     {
         assertThat(PrintStyleBuilder.generateLine('-', 1), is(equalTo("-")));
     }
 
     @Test
-    public void generateLine_lengthFive_repeatedFiveTimes()
+    void generateLine_lengthFive_repeatedFiveTimes()
     {
         assertThat(PrintStyleBuilder.generateLine('>', 5), is(equalTo(">>>>>")));
     }
 
     @Test
-    public void build_nullObjects_defaultValues()
+    void build_nullObjects_defaultValues()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
@@ -51,21 +52,21 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_emptyRowFormat_emptyRowFormat()
+    void build_emptyRowFormat_emptyRowFormat()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withRowFormat("").build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
     }
 
     @Test
-    public void build_withoutHeader_false()
+    void build_withoutHeader_false()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withoutHeader().build();
         assertThat(printStyle.isPrintHeader(), is(false));
     }
 
     @Test
-    public void build_withRowFormatAndHeader_applyRowFormatForHeader()
+    void build_withRowFormatAndHeader_applyRowFormatForHeader()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withRowFormat(ROW_FORMAT1).withHeader()
                 .build();
@@ -75,7 +76,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withNoRowFormatAndWithHeader_applyDefaultFormatForHeader()
+    void build_withNoRowFormatAndWithHeader_applyDefaultFormatForHeader()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withHeader().build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
@@ -84,7 +85,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withRowFormatAndHeaderAndHeaderFormat_applySpecificFormatForHeader()
+    void build_withRowFormatAndHeaderAndHeaderFormat_applySpecificFormatForHeader()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withHeader(ROW_FORMAT1).build();
         assertThat(printStyle.getRowFormat(), is(equalTo(PrintStyleBuilder.DEFAULT_FORMAT)));
@@ -93,7 +94,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withSimpleLine_lineFormatAppliesToSimpleAndAlternativeLines()
+    void build_withSimpleLine_lineFormatAppliesToSimpleAndAlternativeLines()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine(LINE1).build();
         assertThat(printStyle.getSimpleLine(), is(equalTo(LINE1)));
@@ -101,7 +102,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withSimpleLineAndAlternativeLine_lineFormatsApplied()
+    void build_withSimpleLineAndAlternativeLine_lineFormatsApplied()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine(LINE1)
                 .withAlternativeLine(LINE2).build();
@@ -110,7 +111,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withoutSimpleLineAndWithAlternativeLine_alternativeLineAppliedButNoSimpleLine()
+    void build_withoutSimpleLineAndWithAlternativeLine_alternativeLineAppliedButNoSimpleLine()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withAlternativeLine(LINE1).build();
         assertThat(printStyle.getSimpleLine(), is(nullValue()));
@@ -118,7 +119,7 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withLineCharacterAndLength_formattedLines()
+    void build_withLineCharacterAndLength_formattedLines()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withSimpleLine('0', 3)
                 .withAlternativeLine('X', 5).build();
@@ -127,27 +128,27 @@ public class PrintStyleBuilderTest
     }
 
     @Test
-    public void build_withLegends_true()
+    void build_withLegends_true()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withLegends().build();
         assertThat(printStyle.isPrintLegend(), is(true));
     }
 
     @Test
-    public void build_withoutLegends_false()
+    void build_withoutLegends_false()
     {
         PrintStyle printStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withoutLegends().build();
         assertThat(printStyle.isPrintLegend(), is(false));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void constructor_nullBasePrintStyle_failure()
+    @Test
+    void constructor_nullBasePrintStyle_failure()
     {
-        new PrintStyleBuilder((PrintStyle) null);
+        assertThrows(NullPointerException.class, () -> new PrintStyleBuilder((PrintStyle) null));
     }
 
     @Test
-    public void build_validBasePrintStyle_copiesValuesFromBasePrintStyle()
+    void build_validBasePrintStyle_copiesValuesFromBasePrintStyle()
     {
         PrintStyle baseStyle = PrintStyle.DETAILED_TABLE_FULL;
         PrintStyle newStyle = new PrintStyleBuilder(baseStyle).build();

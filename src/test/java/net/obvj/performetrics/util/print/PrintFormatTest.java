@@ -6,6 +6,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,8 +15,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -29,7 +30,7 @@ import net.obvj.performetrics.util.DurationFormat;
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
  */
-public class PrintFormatTest
+class PrintFormatTest
 {
     static final PrintStyle SUMMARIZED_TEST_STYLE = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withoutHeader()
@@ -71,7 +72,7 @@ public class PrintFormatTest
 
     Stopwatch stopwatch = mock(Stopwatch.class);
 
-    @Before
+    @BeforeEach
     public void setupMocks()
     {
         setupCounters();
@@ -103,7 +104,7 @@ public class PrintFormatTest
     }
 
     @Test
-    public void summarized_printsTypesAndTotalElapsedTimes()
+    void summarized_printsTypesAndTotalElapsedTimes()
     {
         String result = PrintFormat.SUMMARIZED.format(stopwatch, SUMMARIZED_TEST_STYLE);
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
@@ -113,7 +114,7 @@ public class PrintFormatTest
     }
 
     @Test
-    public void detailed_withoutSectionTotals_printsElapsedTimesAndAccumulatedValues()
+    void detailed_withoutSectionTotals_printsElapsedTimesAndAccumulatedValues()
     {
         String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE_WITHOUT_TOTALS);
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
@@ -128,7 +129,7 @@ public class PrintFormatTest
     }
 
     @Test
-    public void detailed_withSectionTotals_printsElapsedTimesAndAccumulatedValuesAndTotals()
+    void detailed_withSectionTotals_printsElapsedTimesAndAccumulatedValuesAndTotals()
     {
         String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE_WITH_TOTALS);
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
@@ -145,7 +146,7 @@ public class PrintFormatTest
     }
 
     @Test
-    public void appendLine_nullOrEmptyFormat_doNothing()
+    void appendLine_nullOrEmptyFormat_doNothing()
     {
         StringBuilder stringBuilder = new StringBuilder();
         PrintFormat.appendLine(stringBuilder, null);
@@ -156,23 +157,25 @@ public class PrintFormatTest
     }
 
     @Test
-    public void appendLine_validFormat_appendsResultAndLineSepator()
+    void appendLine_validFormat_appendsResultAndLineSepator()
     {
         StringBuilder sb = new StringBuilder();
         PrintFormat.appendLine(sb, "test=%s", "test");
         assertThat(sb.toString(), is(equalTo("test=test" + PrintFormat.LINE_SEPARATOR)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkCompatibility_summarized_incompatiblePrintStyle_exception()
+    @Test
+    void checkCompatibility_summarized_incompatiblePrintStyle_exception()
     {
-        PrintFormat.SUMMARIZED.checkCompatibility(DETAILED_TEST_STYLE_WITH_TOTALS);
+        assertThrows(IllegalArgumentException.class,
+                () -> PrintFormat.SUMMARIZED.checkCompatibility(DETAILED_TEST_STYLE_WITH_TOTALS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkCompatibility_detailed_incompatiblePrintStyle_exception()
+    @Test
+    void checkCompatibility_detailed_incompatiblePrintStyle_exception()
     {
-        PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE);
+        assertThrows(IllegalArgumentException.class,
+                () -> PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE));
     }
 
 }

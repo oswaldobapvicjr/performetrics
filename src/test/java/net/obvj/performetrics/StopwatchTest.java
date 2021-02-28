@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
@@ -38,7 +39,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
  * @author oswaldo.bapvic.jr
  * @since 1.0.0
  */
-public class StopwatchTest
+class StopwatchTest
 {
     static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
     static final long CPU_TIME_BEFORE = 1200000000l;
@@ -138,7 +139,7 @@ public class StopwatchTest
      * Checks that all of the known counters are available by default in a stopwatch
      */
     @Test
-    public void constructor_noArguments_assignsAllAvailableTypes()
+    void constructor_noArguments_assignsAllAvailableTypes()
     {
         Stopwatch stopwatch = new Stopwatch();
         List<Type> types = stopwatch.getTypes();
@@ -150,7 +151,7 @@ public class StopwatchTest
      * Checks that only the counter passed to the constructor will be maintained (one type)
      */
     @Test
-    public void constructor_oneArgument_assignsCorrectCounter()
+    void constructor_oneArgument_assignsCorrectCounter()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
         List<Type> types = sw.getTypes();
@@ -162,7 +163,7 @@ public class StopwatchTest
      * Checks that only the counters passed to the constructor will be maintained (two types)
      */
     @Test
-    public void constructor_twoArguments_assignsCorrectCounters()
+    void constructor_twoArguments_assignsCorrectCounters()
     {
         Stopwatch sw = new Stopwatch(CPU_TIME, USER_TIME);
         List<Type> types = sw.getTypes();
@@ -171,7 +172,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void getAllCounters_withStopwatchUnstarted_emptyList()
+    void getAllCounters_withStopwatchUnstarted_emptyList()
     {
         Stopwatch sw = new Stopwatch();
         assertThat(sw.isStarted(), is(equalTo(false)));
@@ -183,7 +184,7 @@ public class StopwatchTest
      * default types. All units-after shall still be equal to zero.
      */
     @Test
-    public void createdStarted_noArguments_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
+    void createdStarted_noArguments_assignsAllAvailableTypesWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -201,7 +202,7 @@ public class StopwatchTest
      * specific counter type. The units-after shall still be equal to zero.
      */
     @Test
-    public void createdStarted_withOneType_assignsSpecificTimeWithAllUnitsBeforeSetAndUnitsAfterUnset()
+    void createdStarted_withOneType_assignsSpecificTimeWithAllUnitsBeforeSetAndUnitsAfterUnset()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -220,7 +221,7 @@ public class StopwatchTest
      * counters.
      */
     @Test
-    public void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
+    void stop_withAllAvailableTypes_updatesAllUnitsAfterAccordingly()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -242,7 +243,7 @@ public class StopwatchTest
      * specific counters
      */
     @Test
-    public void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
+    void stop_withTwoTypes_updatesAllUnitsAfterAccordingly()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -263,7 +264,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void reset_withAllAvailableTypes_cleansAllSessions()
+    void reset_withAllAvailableTypes_cleansAllSessions()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -280,7 +281,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -291,7 +292,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
         Stopwatch sw = new Stopwatch();
@@ -303,7 +304,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -314,7 +315,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
         Stopwatch sw = new Stopwatch();
@@ -326,14 +327,14 @@ public class StopwatchTest
     }
 
     @Test
-    public void getCounters_noSession_emptyList()
+    void getCounters_noSession_emptyList()
     {
         Stopwatch sw = new Stopwatch(CPU_TIME, SYSTEM_TIME);
         assertThat(sw.getCounters(CPU_TIME), is(equalTo(Collections.emptyList())));
     }
 
     @Test
-    public void getCounters_singleTypeAndSingleSession_singletonList()
+    void getCounters_singleTypeAndSingleSession_singletonList()
     {
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -348,7 +349,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void getCounters_singleTypeAndTwoSessions_twoCountersOfSameType()
+    void getCounters_singleTypeAndTwoSessions_twoCountersOfSameType()
     {
         Stopwatch sw = new Stopwatch(WALL_CLOCK_TIME);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -366,7 +367,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void getCounters_multipleTypesAndTwoSessions_twoCountersOfSameType()
+    void getCounters_multipleTypesAndTwoSessions_twoCountersOfSameType()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -384,7 +385,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void start_ready_createsNewTimingSessionWithProperTypes()
+    void start_ready_createsNewTimingSessionWithProperTypes()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -401,7 +402,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void start_alreadyStarted_createsNewTimingSession()
+    void start_alreadyStarted_createsNewTimingSession()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -418,7 +419,7 @@ public class StopwatchTest
     }
 
     @Test
-    public void start_stopped_timingSessionsIncreased()
+    void start_stopped_timingSessionsIncreased()
     {
         Stopwatch sw;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -431,41 +432,41 @@ public class StopwatchTest
         assertThat(sw.getTimingSessions().size(), is(equalTo(2)));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void stop_notStarted_illegalStateException()
+    @Test
+    void stop_notStarted_illegalStateException()
     {
         Stopwatch sw = new Stopwatch();
-        sw.stop();
+        assertThrows(IllegalStateException.class, () -> sw.stop());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void stop_alreadyStopped_illegalStateException()
+    @Test
+    void stop_alreadyStopped_illegalStateException()
     {
         Stopwatch sw = Stopwatch.createStarted();
         sw.stop();
-        sw.stop();
+        assertThrows(IllegalStateException.class, () -> sw.stop());
     }
 
-    public void elapsedTime_invalidType_zero()
+    void elapsedTime_invalidType_zero()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
         assertThat(sw.elapsedTime(USER_TIME), is(equalTo(Duration.ZERO)));
     }
 
-    public void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
         assertThat(sw.elapsedTime(USER_TIME, HOURS), is(equalTo(0.0)));
     }
 
-    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
+    void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
         assertThat(sw.elapsedTime(USER_TIME, HOURS, FAST), is(equalTo(0.0)));
     }
 
     @Test()
-    public void elapsedTime_validType_returnsValidDurations()
+    void elapsedTime_validType_returnsValidDurations()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -486,7 +487,7 @@ public class StopwatchTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTwoSessions_returnsSumOfDurations()
+    void elapsedTime_validTypeAndTwoSessions_returnsSumOfDurations()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -529,7 +530,7 @@ public class StopwatchTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
+    void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -550,7 +551,7 @@ public class StopwatchTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnitAndTwoSessions_sumCountersCorrectly()
+    void elapsedTime_validTypeAndTimeUnitAndTwoSessions_sumCountersCorrectly()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -585,7 +586,7 @@ public class StopwatchTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
+    void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -606,7 +607,7 @@ public class StopwatchTest
     }
 
     @Test()
-    public void elapsedTime_validTypeAndTimeUnitAndConversionModeAndTwoSessions_sumsCorrectly()
+    void elapsedTime_validTypeAndTimeUnitAndConversionModeAndTwoSessions_sumsCorrectly()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -641,14 +642,14 @@ public class StopwatchTest
     }
 
     @Test
-    public void getCurrentTimingSession_unstarted_empty()
+    void getCurrentTimingSession_unstarted_empty()
     {
         Stopwatch sw = new Stopwatch();
         assertThat(sw.getCurrentTimingSession().isPresent(), is(equalTo(false)));
     }
 
     @Test
-    public void getCurrentTimingSession_oneSession_success()
+    void getCurrentTimingSession_oneSession_success()
     {
         Stopwatch sw = new Stopwatch();
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))

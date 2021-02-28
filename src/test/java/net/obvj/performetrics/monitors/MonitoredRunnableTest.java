@@ -10,6 +10,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.ConversionMode;
@@ -33,7 +34,7 @@ import net.obvj.performetrics.util.print.PrintUtils;
  *
  * @author oswaldo.bapvic.jr
  */
-public class MonitoredRunnableTest
+class MonitoredRunnableTest
 {
     private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
     private static final long MOCKED_CPU_TIME = 1200000000l;
@@ -79,7 +80,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void constructor_withOneType_assignsCorrectType()
+    void constructor_withOneType_assignsCorrectType()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME);
         List<Type> types = op.getTypes();
@@ -88,7 +89,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void constructor_withTwoTypes_assignsCorrectTypes()
+    void constructor_withTwoTypes_assignsCorrectTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable, CPU_TIME, USER_TIME);
         List<Type> types = op.getTypes();
@@ -101,7 +102,7 @@ public class MonitoredRunnableTest
      * are specified for this operation
      */
     @Test
-    public void constructor_withoutType_assignsAllAvailableCounterTypes()
+    void constructor_withoutType_assignsAllAvailableCounterTypes()
     {
         MonitoredRunnable op = new MonitoredRunnable(runnable);
         List<Type> types = op.getTypes();
@@ -114,7 +115,7 @@ public class MonitoredRunnableTest
      * counters)
      */
     @Test
-    public void run_givenAllTypes_updatesAllCounters()
+    void run_givenAllTypes_updatesAllCounters()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
@@ -127,7 +128,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -138,7 +139,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -150,7 +151,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
@@ -161,7 +162,7 @@ public class MonitoredRunnableTest
     }
 
     @Test
-    public void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -172,29 +173,29 @@ public class MonitoredRunnableTest
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidType_zero()
+    @Test
+    void elapsedTime_invalidType_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME);
+        assertThrows(IllegalArgumentException.class, () -> operation.elapsedTime(USER_TIME));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnit_zero()
+    @Test
+    void elapsedTime_invalidTypeAndValidTimeUnit_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME, HOURS);
+        assertThrows(IllegalArgumentException.class, () -> operation.elapsedTime(USER_TIME, HOURS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
+    @Test
+    void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable, CPU_TIME);
-        operation.elapsedTime(USER_TIME, HOURS, FAST);
+        assertThrows(IllegalArgumentException.class, () -> operation.elapsedTime(USER_TIME, HOURS, FAST));
     }
 
-    @Test()
-    public void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
+    @Test
+    void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
     {
         Stopwatch stopwatch = mock(Stopwatch.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -204,8 +205,8 @@ public class MonitoredRunnableTest
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME);
     }
 
-    @Test()
-    public void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
+    @Test
+    void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
     {
         Stopwatch stopwatch = mock(Stopwatch.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -215,8 +216,8 @@ public class MonitoredRunnableTest
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS);
     }
 
-    @Test()
-    public void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
+    @Test
+    void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
     {
         Stopwatch stopwatch = mock(Stopwatch.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -226,8 +227,8 @@ public class MonitoredRunnableTest
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
     }
 
-    @Test()
-    public void reset_callsStopwatchReset()
+    @Test
+    void reset_callsStopwatchReset()
     {
         Stopwatch stopwatch = mock(Stopwatch.class);
         MonitoredRunnable operation = new MonitoredRunnable(runnable, WALL_CLOCK_TIME);

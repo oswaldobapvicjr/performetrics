@@ -3,10 +3,11 @@ package net.obvj.performetrics.config;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.util.print.PrintFormat;
@@ -18,12 +19,12 @@ import net.obvj.performetrics.util.print.PrintStyle;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class ConfigurationTest
+class ConfigurationTest
 {
     Configuration configuration = new Configuration();
 
     @Test
-    public void constructor_default_defaultValues()
+    void constructor_default_defaultValues()
     {
         assertThat(configuration.getTimeUnit(), is(equalTo(Configuration.INITIAL_TIME_UNIT)));
         assertThat(configuration.getConversionMode(), is(equalTo(Configuration.INITIAL_CONVERSION_MODE)));
@@ -33,60 +34,60 @@ public class ConfigurationTest
     }
 
     @Test
-    public void setTimeUnit_validTimeUnit_suceeds()
+    void setTimeUnit_validTimeUnit_suceeds()
     {
         configuration.setTimeUnit(TimeUnit.SECONDS);
         assertThat(configuration.getTimeUnit(), is(equalTo(TimeUnit.SECONDS)));
     }
 
     @Test
-    public void setConversionMode_validMode_suceeds()
+    void setConversionMode_validMode_suceeds()
     {
         configuration.setConversionMode(ConversionMode.FAST);
         assertThat(configuration.getConversionMode(), is(equalTo(ConversionMode.FAST)));
     }
 
     @Test
-    public void setScale_validNumber_suceeds()
+    void setScale_validNumber_suceeds()
     {
         configuration.setScale(16);
         assertThat(configuration.getScale(), is(equalTo(16)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setScale_negativeNumber_fails()
+    @Test
+    void setScale_negativeNumber_fails()
     {
-        configuration.setScale(-1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setScale_higherThanMaximum_fails()
-    {
-        configuration.setScale(17);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void setSummarizedPrintStyle_null_fails()
-    {
-        configuration.setPrintStyleForSummary(null);
+        assertThrows(IllegalArgumentException.class, () -> configuration.setScale(-1));
     }
 
     @Test
-    public void setSummarizedPrintStyle_notNull_succeeds()
+    void setScale_higherThanMaximum_fails()
+    {
+        assertThrows(IllegalArgumentException.class, () -> configuration.setScale(17));
+    }
+
+    @Test
+    void setSummarizedPrintStyle_null_fails()
+    {
+        assertThrows(NullPointerException.class, () -> configuration.setPrintStyleForSummary(null));
+    }
+
+    @Test
+    void setSummarizedPrintStyle_notNull_succeeds()
     {
         PrintStyle style = PrintStyle.builder(PrintFormat.SUMMARIZED).build();
         configuration.setPrintStyleForSummary(style);
         assertThat(configuration.getPrintStyleForSummary(), is(equalTo(style)));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void setDetailedPrintStyle_null_fails()
+    @Test
+    void setDetailedPrintStyle_null_fails()
     {
-        configuration.setPrintStyleForDetails(null);
+        assertThrows(NullPointerException.class, () -> configuration.setPrintStyleForDetails(null));
     }
 
     @Test
-    public void setDetailedPrintStyle_notNull_succeeds()
+    void setDetailedPrintStyle_notNull_succeeds()
     {
         PrintStyle style = PrintStyle.builder(PrintFormat.DETAILED).build();
         configuration.setPrintStyleForDetails(style);

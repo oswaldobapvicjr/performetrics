@@ -16,8 +16,8 @@ import static org.mockito.Mockito.times;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
@@ -32,7 +32,7 @@ import net.obvj.performetrics.util.print.PrintStyle;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class PerformetricsTest
+class PerformetricsTest
 {
     // Default values
     private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
@@ -49,10 +49,11 @@ public class PerformetricsTest
         runFlag = true;
     };
 
-    @After
-    public void resetFlag()
+    @AfterEach
+    void resetFlag()
     {
         runFlag = false;
+        ConfigurationHolder.reset();
     }
 
     private void checkAllDefaultValues()
@@ -91,20 +92,14 @@ public class PerformetricsTest
                 is(equalTo(INITIAL_PRINT_STYLE_FOR_DETAILS)));
     }
 
-    @After
-    public void reset()
-    {
-        ConfigurationHolder.reset();
-    }
-
     @Test
-    public void constructor_instantiationNotAllowed()
+    void constructor_instantiationNotAllowed()
     {
         assertThat(Performetrics.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
     @Test
-    public void setDefaultConversionMode_fast_updatesConfiguration()
+    void setDefaultConversionMode_fast_updatesConfiguration()
     {
         Performetrics.setDefaultConversionMode(FAST);
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(FAST)));
@@ -115,7 +110,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultTimeUnit_seconds_updatesConfiguration()
+    void setDefaultTimeUnit_seconds_updatesConfiguration()
     {
         Performetrics.setDefaultTimeUnit(MILLISECONDS);
         assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(equalTo(MILLISECONDS)));
@@ -127,7 +122,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultConversionMode_doublePrecision_updatesConfiguration()
+    void setDefaultConversionMode_doublePrecision_updatesConfiguration()
     {
         Performetrics.setDefaultConversionMode(DOUBLE_PRECISION);
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(DOUBLE_PRECISION)));
@@ -139,7 +134,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setScale_valid_updatesConfiguration()
+    void setScale_valid_updatesConfiguration()
     {
         Performetrics.setScale(16);
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(equalTo(16)));
@@ -151,7 +146,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setScale_invalid_doesNotUpdateConfiguration()
+    void setScale_invalid_doesNotUpdateConfiguration()
     {
         try
         {
@@ -164,7 +159,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void monitorOperation_noSpecificCounter()
+    void monitorOperation_noSpecificCounter()
     {
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
@@ -180,7 +175,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void monitorOperation_twoSpecificCounters()
+    void monitorOperation_twoSpecificCounters()
     {
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
@@ -197,7 +192,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultPrintStyleForSummary_valid_updatesConfiguration()
+    void setDefaultPrintStyleForSummary_valid_updatesConfiguration()
     {
         PrintStyle ps = mock(PrintStyle.class);
         Performetrics.setDefaultPrintStyleForSummary(ps);
@@ -209,7 +204,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultPrintStyleForSummary_null_doesNotUpdateConfiguration()
+    void setDefaultPrintStyleForSummary_null_doesNotUpdateConfiguration()
     {
         try
         {
@@ -222,7 +217,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultPrintStyleForDetails_valid_updatesConfiguration()
+    void setDefaultPrintStyleForDetails_valid_updatesConfiguration()
     {
         PrintStyle ps = mock(PrintStyle.class);
         Performetrics.setDefaultPrintStyleForDetails(ps);
@@ -234,7 +229,7 @@ public class PerformetricsTest
     }
 
     @Test
-    public void setDefaultPrintStyleForDetails_null_doesNotUpdateConfiguration()
+    void setDefaultPrintStyleForDetails_null_doesNotUpdateConfiguration()
     {
         try
         {

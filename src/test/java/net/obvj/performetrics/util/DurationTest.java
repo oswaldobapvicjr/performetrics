@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link Duration}.
@@ -18,11 +18,11 @@ import org.junit.Test;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class DurationTest
+class DurationTest
 {
 
     @Test
-    public void of_validAmountAndTimeUnitAndNanosecondsPrecision_populatesAccordingly()
+    void of_validAmountAndTimeUnitAndNanosecondsPrecision_populatesAccordingly()
     {
         Duration td1 = Duration.of(1999888777, NANOSECONDS);
         assertThat(td1.getHours(),       is(equalTo(0L)));
@@ -32,7 +32,7 @@ public class DurationTest
     }
 
     @Test
-    public void of_validAmountAndTimeUnitAndSecondsPrecision_populatesAccordingly()
+    void of_validAmountAndTimeUnitAndSecondsPrecision_populatesAccordingly()
     {
         Duration td1 = Duration.of(5410, SECONDS);
         assertThat(td1.getHours(),       is(equalTo(1L)));
@@ -42,7 +42,7 @@ public class DurationTest
     }
 
     @Test
-    public void toSeconds_validValues()
+    void toSeconds_validValues()
     {
         assertThat(Duration.of(0,          NANOSECONDS ).toSeconds(), is(equalTo(          0D)));
         assertThat(Duration.of(1,          NANOSECONDS ).toSeconds(), is(equalTo(0.000000001D)));
@@ -68,7 +68,7 @@ public class DurationTest
     }
 
     @Test
-    public void toTimeUnit_milliseconds_validValuesDefaultScale()
+    void toTimeUnit_milliseconds_validValuesDefaultScale()
     {
         assertThat(Duration.of(0,          NANOSECONDS ).toTimeUnit(MILLISECONDS), is(equalTo(          0D)));
         assertThat(Duration.of(1,          NANOSECONDS ).toTimeUnit(MILLISECONDS), is(equalTo(   0.000001D)));
@@ -94,7 +94,7 @@ public class DurationTest
     }
 
     @Test
-    public void toTimeUnit_millisecondsAndScale3_validValues()
+    void toTimeUnit_millisecondsAndScale3_validValues()
     {
         assertThat(Duration.of(0,          NANOSECONDS ).toTimeUnit(MILLISECONDS, 3), is(equalTo(          0D)));
         assertThat(Duration.of(1,          NANOSECONDS ).toTimeUnit(MILLISECONDS, 3), is(equalTo(          0D)));
@@ -120,27 +120,27 @@ public class DurationTest
     }
 
     @Test
-    public void toString_noArguments_appliesShorterStyleWithLegend()
+    void toString_noArguments_appliesShorterStyleWithLegend()
     {
         assertThat(Duration.of(3601, MILLISECONDS).toString(), is(equalTo("3.601 second(s)")));
     }
 
     @Test
-    public void toString_full_appliesFullStyleWithLegend()
+    void toString_full_appliesFullStyleWithLegend()
     {
         assertThat(Duration.of(3601, MILLISECONDS).toString(DurationFormat.FULL),
                 is(equalTo("0:00:03.601000000 hour(s)")));
     }
 
     @Test
-    public void equals_sameObjects_true()
+    void equals_sameObjects_true()
     {
         Duration td60seconds = Duration.of(60, SECONDS);
         assertThat(td60seconds.equals(td60seconds), is(true));
     }
 
     @Test
-    public void equals_similarButNotSameObjects_true()
+    void equals_similarButNotSameObjects_true()
     {
         Duration td60seconds = Duration.of(60, SECONDS);
         Duration td1Minute = Duration.of(1, MINUTES);
@@ -148,13 +148,13 @@ public class DurationTest
     }
 
     @Test
-    public void equals_similarZeroObjects_true()
+    void equals_similarZeroObjects_true()
     {
         assertThat(Duration.of(0, NANOSECONDS).equals(Duration.ZERO), is(true));
     }
 
     @Test
-    public void equals_differentTimes_false()
+    void equals_differentTimes_false()
     {
         Duration td1001millis = Duration.of(1001, MILLISECONDS);
         Duration td1second = Duration.of(1, SECONDS);
@@ -162,13 +162,13 @@ public class DurationTest
     }
 
     @Test
-    public void equals_incompatibleTypes_false()
+    void equals_incompatibleTypes_false()
     {
         assertThat(Duration.of(60, SECONDS).equals(new Object()), is(false));
     }
 
     @Test
-    public void hashCode_twoSimilarObjectsInAHashSet_setMaintainsOnlyOneObject()
+    void hashCode_twoSimilarObjectsInAHashSet_setMaintainsOnlyOneObject()
     {
         Set<Duration> set = new HashSet<>();
         set.add(Duration.of(60, SECONDS));
@@ -177,7 +177,7 @@ public class DurationTest
     }
 
     @Test
-    public void plus_validDurations_success()
+    void plus_validDurations_success()
     {
         assertThat(Duration.of(  60, SECONDS     ).plus(Duration.of(  60, SECONDS     )), is(equalTo(Duration.of(2, MINUTES))));
         assertThat(Duration.of(1800, SECONDS     ).plus(Duration.of(1800, SECONDS     )), is(equalTo(Duration.of(1, HOURS))));
@@ -186,7 +186,7 @@ public class DurationTest
     }
 
     @Test
-    public void plus_validDurationsAsLong_success()
+    void plus_validDurationsAsLong_success()
     {
         assertThat(Duration.of(  60, SECONDS     ).plus(  60, SECONDS     ), is(equalTo(Duration.of(2, MINUTES))));
         assertThat(Duration.of(1800, SECONDS     ).plus(1800, SECONDS     ), is(equalTo(Duration.of(1, HOURS))));
@@ -195,7 +195,7 @@ public class DurationTest
     }
 
     @Test
-    public void dividedBy_positiveDivisor_success()
+    void dividedBy_positiveDivisor_success()
     {
         assertThat(Duration.of(   2, HOURS       ).dividedBy(2), is(equalTo(Duration.of(  1, HOURS))));
         assertThat(Duration.of(   3, HOURS       ).dividedBy(2), is(equalTo(Duration.of( 90, MINUTES))));
@@ -203,13 +203,13 @@ public class DurationTest
     }
 
     @Test
-    public void getInternalDuration_success()
+    void getInternalDuration_success()
     {
         assertThat(Duration.of(90, SECONDS).getInternalDuration(), is(equalTo(java.time.Duration.ofSeconds(90))));
     }
 
     @Test
-    public void isZero_validDurations_success()
+    void isZero_validDurations_success()
     {
         assertThat(Duration.of(0, HOURS       ).isZero(), is(true));
         assertThat(Duration.of(0, MILLISECONDS).isZero(), is(true));
@@ -217,21 +217,21 @@ public class DurationTest
     }
 
     @Test
-    public void compareTo_equalDurations_zero()
+    void compareTo_equalDurations_zero()
     {
         assertThat(Duration.of(1, SECONDS     ).compareTo(Duration.of(   1000, MILLISECONDS)), is(equalTo(0)));
         assertThat(Duration.of(1, MILLISECONDS).compareTo(Duration.of(1000000, NANOSECONDS )), is(equalTo(0)));
     }
 
     @Test
-    public void compareTo_lowerDurations_positive()
+    void compareTo_lowerDurations_positive()
     {
         assertThat(Duration.of(  1, SECONDS    ).compareTo(Duration.of(750, MILLISECONDS)), isPositive());
         assertThat(Duration.of(100, NANOSECONDS).compareTo(Duration.of( 20, NANOSECONDS )), isPositive());
     }
 
     @Test
-    public void compareTo_lowerDurations_negative()
+    void compareTo_lowerDurations_negative()
     {
         assertThat(Duration.of( 1, MILLISECONDS).compareTo(Duration.of(2000000, NANOSECONDS)), isNegative());
         assertThat(Duration.of(40, MINUTES     ).compareTo(Duration.of(      1, HOURS      )), isNegative());

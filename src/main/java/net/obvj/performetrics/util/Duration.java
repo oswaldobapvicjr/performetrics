@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * <li><b>nanoseconds within the second</b>, from 0 to 999,999,999</li>
  * </ul>
  *
- * @implSpec This class is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0.0

@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link PrintStyle} class.
@@ -14,18 +14,18 @@ import org.junit.Test;
  * @author oswaldo.bapvic.jr
  * @since 2.2.2
  */
-public class PrintStyleTest
+class PrintStyleTest
 {
 
     @Test
-    public void builder_noArguments_defaultBuilder()
+    void builder_noArguments_defaultBuilder()
     {
         PrintStyleBuilder builder = PrintStyle.builder(PrintFormat.SUMMARIZED);
         assertThat(builder, is(not(nullValue())));
     }
 
     @Test
-    public void builder_validPrintStyle_presetBuilder()
+    void builder_validPrintStyle_presetBuilder()
     {
         PrintStyle sourcePrintStyle = PrintStyle.SUMMARIZED_CSV_NO_HEADER;
         PrintStyleBuilder builder = PrintStyle.builder(sourcePrintStyle);

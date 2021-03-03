@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * <li><b>seconds within the minute</b>, from 0 to 59</li>
  * <li><b>nanoseconds within the second</b>, from 0 to 999,999,999</li>
  * </ul>
- *
+ * <p>
  * This class is immutable and thread-safe.
  *
  * @author oswaldo.bapvic.jr
@@ -26,12 +26,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class Duration implements Comparable<Duration>
 {
+    /**
+     * Constant for a duration of zero.
+     */
+    public static final Duration ZERO = new Duration(java.time.Duration.ZERO);
+
     private static final String MSG_DURATION_MUST_NOT_BE_NULL = "The other duration must not be null";
     private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The duration to add must not be null";
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
-
-    public static final Duration ZERO = new Duration(java.time.Duration.ZERO);
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;

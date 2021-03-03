@@ -48,8 +48,11 @@ public class TimeUnitConverter
      *
      * <p>
      * For example, to convert 10 minutes to milliseconds, use:
-     * {@code TimeUnitConverter.convertAndRound(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      * </p>
+     *
+     * <pre>
+     * TimeUnitConverter.convertAndRound(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS);
+     * </pre>
      *
      * <p>
      * <b>Note:</b> The number of decimal places applied is determined by calling
@@ -78,8 +81,11 @@ public class TimeUnitConverter
      * <p>
      * For example, to convert 999 milliseconds to seconds, with a precision of 2 decimal
      * places, use:
-     * {@code TimeUnitConverter.convertAndRound(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)}
      * </p>
+     *
+     * <pre>
+     * TimeUnitConverter.convertAndRound(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2);
+     * </pre>
      *
      * <p>
      * Remarks:
@@ -124,8 +130,11 @@ public class TimeUnitConverter
      * </p>
      * <p>
      * For example, to convert 10 minutes to milliseconds, use:
-     * {@code TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
      * </p>
+     *
+     * <pre>
+     * TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS);
+     * </pre>
      *
      * @param sourceDuration the time duration to be converted, not null
      * @param sourceTimeUnit the unit of the sourceDuration argument, not null

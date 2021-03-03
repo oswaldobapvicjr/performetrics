@@ -107,8 +107,8 @@ public class PrintStyle
 
 
     /**
-     * A string-based style for use with the detailed stopwatch formatter, with horizontal
-     * lines separating each row, and total elapsed time for each counter.
+     * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
+     * separating each row, and total elapsed time for each counter.
      * <p>
      * Sample output:
      *
@@ -266,6 +266,8 @@ public class PrintStyle
     }
 
     /**
+     * Returns the target {@code PrintFormat}.
+     *
      * @return the target {@link PrintFormat}
      */
     public PrintFormat getPrintFormat()
@@ -274,7 +276,9 @@ public class PrintStyle
     }
 
     /**
-     * @return the {@link DurationFormat} to be applied on all rows
+     * Returns the format to be applied to all durations in the output.
+     *
+     * @return the {@link DurationFormat} to be applied to all rows
      */
     public DurationFormat getDurationFormat()
     {
@@ -282,6 +286,9 @@ public class PrintStyle
     }
 
     /**
+     * Returns a flag indicating whether or not duration legends shall be printed for
+     * durations in the output.
+     *
      * @return a flag indicating whether or not duration legends shall be printed
      */
     public boolean isPrintLegend()
@@ -290,6 +297,8 @@ public class PrintStyle
     }
 
     /**
+     * Returns a flag indicating whether or not the header shall be printed.
+     *
      * @return a flag indicating whether or not the header shall be printed
      */
     public boolean isPrintHeader()
@@ -298,7 +307,10 @@ public class PrintStyle
     }
 
     /**
-     * @return a flag indicating whether or not a summary shall be printed for each section
+     * Returns a flag indicating whether or not a summary line shall be printed for each
+     * section in the output.
+     *
+     * @return a flag indicating whether or not the section summary shall be printed
      */
     public boolean isPrintSectionSummary()
     {
@@ -306,7 +318,9 @@ public class PrintStyle
     }
 
     /**
-     * @return the string format to be applied to the table header
+     * Returns the format to be applied to the header string of the output.
+     *
+     * @return the string format to be applied to the header
      */
     public String getHeaderFormat()
     {
@@ -314,7 +328,9 @@ public class PrintStyle
     }
 
     /**
-     * @return the string format to be applied to all rows in general
+     * Returns the general row format to be applied.
+     *
+     * @return the format to be applied to all rows in general
      */
     public String getRowFormat()
     {
@@ -322,7 +338,9 @@ public class PrintStyle
     }
 
     /**
-     * @return the string format to be applied to each section header
+     * Returns the format to be applied to each section header.
+     *
+     * @return the format to be applied to each section header
      */
     public String getSectionHeaderFormat()
     {
@@ -330,7 +348,9 @@ public class PrintStyle
     }
 
     /**
-     * @return the string format for the total/summary row(s)
+     * Returns the format to be applied to the total/summary row for each section.
+     *
+     * @return the format to be applied to the total/summary row(s)
      */
     public String getSectionSummaryRowFormat()
     {
@@ -338,6 +358,8 @@ public class PrintStyle
     }
 
     /**
+     * Returns a simple string to be applied to the table style.
+     *
      * @return a string to be used as simple split line
      */
     public String getSimpleLine()
@@ -346,6 +368,8 @@ public class PrintStyle
     }
 
     /**
+     * Returns an alternative string to be applied to the table style.
+     *
      * @return a string to be used as alternative split line
      */
     public String getAlternativeLine()

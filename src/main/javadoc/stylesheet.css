@@ -19,15 +19,15 @@ body {
 }
 a:link, a:visited {
     text-decoration:none;
-    color:#9d1616ff;
+    color:#733939;
 }
 a:hover, a:focus {
     text-decoration:none;
-    color:rgb(193, 66, 66);
+    color:rgb(206, 53, 53);
 }
 a:active {
     text-decoration:none;
-    color:#999999ff;
+    color:#DCDCDCff;
 }
 a[name] {
     color:#353833;
@@ -105,6 +105,7 @@ Document title and Copyright styles
 }
 .legalCopy {
     margin-left:.3em;
+    line-height:2em;
 }
 .bar a, .bar a:link, .bar a:visited, .bar a:active {
     color:#FFFFFF;
@@ -130,16 +131,16 @@ Navigation bar styles
 /* The "All Classes" (or active package name) bar at the left pane */
 .bar {
 	height: 100%;
-    background-image: linear-gradient(#a02c2cff, #8d2727ff 50%, #782121ff 3%, #501616ff);
+    background-image: linear-gradient(#a02c2c66, #8d2727ff 50%, #782121ff 3%, #501616ff);
     color:#FFFFFF;
     padding:.8em .5em .4em .8em;
     height:auto;/*height:1.8em;*/
-    font-size:14px;
+    font-size:13px;
     margin:0;
 }
 .topNav {
 	height: 100%;
-    background-image: linear-gradient(#a02c2cff, #8d2727ff 50%, #782121ff 3%, #501616ff);
+    background-image: linear-gradient(#a02c2c66, #8d2727ff 50%, #782121ff 3%, #501616ff);
     color:#FFFFFF;
     float:left;
     padding:0;
@@ -154,7 +155,7 @@ Navigation bar styles
 .bottomNav {
     margin-top:10px;
 	height: 100%;
-    background-image: linear-gradient(#a02c2cff, #8d2727ff 50%, #782121ff 3%, #501616ff);
+    background-image: linear-gradient(#a02c2c66, #8d2727ff 50%, #782121ff 3%, #501616ff);
     color:#FFFFFF;
     float:left;
     padding:0;
@@ -168,7 +169,7 @@ Navigation bar styles
 }
 .subNav {
     height:100%;
-    background-color:#FCF7F7;
+    background-color:#FAF4F4;
     float:left;
     width:100%;
     overflow:hidden;
@@ -205,7 +206,7 @@ ul.subNavList li{
 /* Text in focus from the top/bottom navigation bar */
 .topNav a:hover, .bottomNav a:hover {
     text-decoration:none;
-    color:#FFCCCC;
+    color:#FFD0D0;
     text-transform:uppercase;
 }
 
@@ -213,7 +214,7 @@ ul.subNavList li{
 .navBarCell1Rev {
     height: 100%;
     background-image: linear-gradient(#ffffffdd, #ffffffff);
-    color:rgb(193, 66, 66);
+    color:rgb(206, 53, 53);
     margin: auto 5px;
     font-weight:bold;
     border-radius:2px;
@@ -248,7 +249,7 @@ Page header and footer styles
     font-size:13px;
 }
 .title {
-    color:#2c4557;
+    color:#000000;
     margin:10px 0;
     font-weight:bolder;
     font-size:21px;
@@ -278,17 +279,21 @@ Heading styles
 /* The heading for constructors and method names */
 div.details ul.blockList ul.blockList ul.blockList li.blockList h4, div.details ul.blockList ul.blockList ul.blockListLast li.blockList h4 {
     height: 100%;
-    background-image: linear-gradient(#e9dede55, #e9dedeff);
+    background-image: linear-gradient(#e9dede66, #e0d0d0ff);
     border:1px solid #e0d0d0ff;
     margin:0 0 6px -8px;
     padding:7px 5px;
+    font-size:14px;
 }
+
+/* The heading for the "Methods inherited from..." boxes */
 ul.blockList ul.blockList ul.blockList li.blockList h3 {
     height: 100%;
-    background-image: linear-gradient(#e9dede55, #e9dedeff);
-    border:1px solid #e0d0d0ff;
+    background-image: linear-gradient(#f5f5f5, #e0e0e0);
+    border:1px solid #e0e0e0;
     margin:0 0 6px -8px;
     padding:7px 5px;
+    font-size:14px;
 }
 ul.blockList ul.blockList li.blockList h3 {
     padding:0;
@@ -504,7 +509,7 @@ Table styles
     width:5px;
     position:relative;
     float:left;
-    background-color:rgb(193, 66, 66);
+    background-color:rgb(206, 53, 53);
     color:#ffffff;
 }
 .memberSummary .activeTableTab .tabEnd {
@@ -513,7 +518,7 @@ Table styles
     margin-right:3px;
     position:relative; 
     float:left;
-    background-color:rgb(193, 66, 66);
+    background-color:rgb(206, 53, 53);
     color:#ffffff;
 }
 .memberSummary .tableTab .tabEnd {
@@ -539,7 +544,7 @@ td.colOne, td.colFirst, td.colLast, .useSummary td, .constantsSummary td{
 }
 th.colFirst, th.colLast, th.colOne, .constantsSummary th {
     height: 100%;
-    background-image: linear-gradient(#e9dede55, #e9dedeff);
+    background-image: linear-gradient(#f5f5f5, #e0e0e0);
     text-align:left;
     font-size:14px;
     padding:8px 3px 3px 7px;
@@ -575,7 +580,7 @@ td.colOne a:link, td.colOne a:active, td.colOne a:visited, td.colOne a:hover, td
     background-color:#FFFFFF;
 }
 .rowColor {
-    background-color:#EFEFEF;
+    background-color:#F7F7F7;
 }
 
 

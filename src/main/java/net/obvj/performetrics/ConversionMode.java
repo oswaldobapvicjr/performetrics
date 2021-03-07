@@ -47,7 +47,11 @@ public enum ConversionMode
      * Converts the given duration and time unit into another time unit.
      * <p>
      * For example, to convert 10 minutes to milliseconds, use:
-     * {@code TimeUnitConverter.convert(10L, TimeUnit.MINUTES, TimeUnit.MILLISECONDS)}
+     * </p>
+     *
+     * <pre>
+     * TimeUnitConverter.convert(10L, TimeUnit.MINUTES, TimeUnit.MILLISECONDS);
+     * </pre>
      *
      * @param sourceDuration the time duration in the given sourceUnit
      * @param sourceTimeUnit the unit of the sourceDuration argument, not null

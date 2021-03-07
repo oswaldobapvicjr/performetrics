@@ -107,8 +107,9 @@ public class Performetrics
      * For example:
      *
      * <pre>
-     * {@code MonitoredOperation operation = Performetrics.monitorOperation(() -> myObj.doStuff());}
-     * {@code Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
+     * {@code MonitoredOperation operation =
+     *         Performetrics.monitorOperation(() -> myObj.exec());
+     * Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
      * </pre>
      *
      * @param runnable the {@link Runnable} to be run and monitored
@@ -129,8 +130,8 @@ public class Performetrics
      *
      * <pre>
      * {@code MonitoredOperation operation =
-     *         Performetrics.monitorOperation(() -> myObj.doStuff(), Type.CPU_TIME);}
-     * {@code Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
+     *         Performetrics.monitorOperation(() -> myObj.exec(), Type.CPU_TIME);
+     * Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
      * </pre>
      *
      * @param runnable the {@link Runnable} to be run and monitored

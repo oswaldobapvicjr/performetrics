@@ -93,7 +93,7 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <table summary="Sequence of string positions by PrintFormat">
+     * <table>
      * <tr>
      * <td valign="top"><b>SUMMARIZED:</b></td>
      * <td>
@@ -146,7 +146,7 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <table summary="Sequence of string positions by PrintFormat">
+     * <table>
      * <tr>
      * <td valign="top"><b>SUMMARIZED:</b></td>
      * <td>

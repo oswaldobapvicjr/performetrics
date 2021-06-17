@@ -5,7 +5,7 @@ package net.obvj.performetrics.util;
  * <p>
  * Examples:
  * </p>
- * <table summary="Duration format examples">
+ * <table>
  * <tr>
  * <td><b>DurationFormat.SHORTER:</b></td>
  * <td>{@code 3.2 second(s)}</td>

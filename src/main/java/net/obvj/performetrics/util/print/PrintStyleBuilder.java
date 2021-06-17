@@ -94,6 +94,7 @@ public class PrintStyleBuilder
      * stopwatch formatter:
      * </p>
      * <table>
+     * <caption>Sequence of string positions by PrintFormat</caption>
      * <tr>
      * <td valign="top"><b>SUMMARIZED:</b></td>
      * <td>
@@ -147,6 +148,7 @@ public class PrintStyleBuilder
      * stopwatch formatter:
      * </p>
      * <table>
+     * <caption>Sequence of string positions by PrintFormat</caption>
      * <tr>
      * <td valign="top"><b>SUMMARIZED:</b></td>
      * <td>

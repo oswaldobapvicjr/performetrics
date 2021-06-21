@@ -101,7 +101,7 @@ public class PrintStyleBuilder
      * <p><b>DETAILED:</b></p>
      * <ul>
      * <li>Sequential timing session identifier
-     * <li>Elapsed time</li>
+     * <li>Elapsed time
      * <li>Elapsed time (accumulated)
      * <li>(Optional) Counter type (e.g.: "Wall-clock time")
      * </ul>

@@ -93,12 +93,12 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <h3>SUMMARIZED:</h3>
+     * <p><b>SUMMARIZED:</b></p>
      * <ul>
      * <li>Counter type (e.g.: "Wall-clock time")
      * <li>Elapsed time
      * </ul>
-     * <h3>DETAILED:</h3>
+     * <p><b>DETAILED:</b></p>
      * <ul>
      * <li>Sequential timing session identifier
      * <li>Elapsed time</li>
@@ -137,12 +137,12 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <h3>SUMMARIZED:</h3>
+     * <p><b>SUMMARIZED:</b></p>
      * <ul>
      * <li>Counter type
      * <li>Elapsed time
      * </ul>
-     * <h3>DETAILED:</h3>
+     * <p><b>DETAILED:</b></p>
      * <ul>
      * <li>Sequential timing session identifier
      * <li>Elapsed time

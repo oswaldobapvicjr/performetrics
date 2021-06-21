@@ -93,28 +93,18 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <table>
-     * <caption>Sequence of string positions by PrintFormat</caption>
-     * <tr>
-     * <td valign="top"><b>SUMMARIZED:</b></td>
-     * <td>
-     * <ol>
-     * <li>Counter type (e.g.: "Wall-clock time")</li>
+     * <h3>SUMMARIZED:</h3>
+     * <ul>
+     * <li>Counter type (e.g.: "Wall-clock time")
+     * <li>Elapsed time
+     * </ul>
+     * <h3>DETAILED:</h3>
+     * <ul>
+     * <li>Sequential timing session identifier
      * <li>Elapsed time</li>
-     * </ol>
-     * </td>
-     * </tr>
-     * <tr>
-     * <td valign="top"><b>DETAILED:</b></td>
-     * <td>
-     * <ol>
-     * <li>Sequential timing session identifier</li>
-     * <li>Elapsed time</li>
-     * <li>Elapsed time (accumulated)</li>
-     * <li>(Optional) Counter type (e.g.: "Wall-clock time")</li>
-     * </ol>
-     * </td>
-     * </table>
+     * <li>Elapsed time (accumulated)
+     * <li>(Optional) Counter type (e.g.: "Wall-clock time")
+     * </ul>
      *
      * @param format the string format to be applied
      * @return a reference to this builder object for chained calls
@@ -147,28 +137,18 @@ public class PrintStyleBuilder
      * The number and sequence of string positions must be defined according to the target
      * stopwatch formatter:
      * </p>
-     * <table>
-     * <caption>Sequence of string positions by PrintFormat</caption>
-     * <tr>
-     * <td valign="top"><b>SUMMARIZED:</b></td>
-     * <td>
-     * <ol>
-     * <li>Counter type</li>
-     * <li>Elapsed time</li>
-     * </ol>
-     * </td>
-     * </tr>
-     * <tr>
-     * <td valign="top"><b>DETAILED:</b></td>
-     * <td>
-     * <ol>
-     * <li>Sequential timing session identifier</li>
-     * <li>Elapsed time</li>
-     * <li>Elapsed time (accumulated)</li>
-     * <li>(Optional) Counter type</li>
-     * </ol>
-     * </td>
-     * </table>
+     * <h3>SUMMARIZED:</h3>
+     * <ul>
+     * <li>Counter type
+     * <li>Elapsed time
+     * </ul>
+     * <h3>DETAILED:</h3>
+     * <ul>
+     * <li>Sequential timing session identifier
+     * <li>Elapsed time
+     * <li>Elapsed time (accumulated)
+     * <li>(Optional) Counter type
+     * </ul>
      * <p>
      * To enable the header without specifying a custom format, use the zero-argument option
      * {@link #withHeader()}.

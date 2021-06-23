@@ -5,25 +5,12 @@ package net.obvj.performetrics.util;
  * <p>
  * Examples:
  * </p>
- * <table>
- * <caption>Duration format examples</caption>
- * <tr>
- * <td><b>DurationFormat.SHORTER:</b></td>
- * <td>{@code 3.2 second(s)}</td>
- * </tr>
- * <tr>
- * <td><b>DurationFormat.SHORT:</b></td>
- * <td>{@code 3.200000000 second(s)}</td>
- * </tr>
- * <tr>
- * <td><b>DurationFormat.FULL:</b></td>
- * <td>{@code 0:00:03.200000000}</td>
- * </tr>
- * <tr>
- * <td><b>DurationFormat.ISO_8601:</b></td>
- * <td>{@code PT3.2S}</td>
- * </tr>
- * </table>
+ * <ul>
+ * <li><b>DurationFormat.FULL:</b> {@code 0:00:03.200000000}</li>
+ * <li><b>DurationFormat.SHORT:</b> {@code 3.200000000 second(s)}</li>
+ * <li><b>DurationFormat.SHORTER:</b> {@code 3.2 second(s)}</li>
+ * <li><b>DurationFormat.ISO_8601:</b> {@code PT3.2S}</li>
+ * </ul>
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.0

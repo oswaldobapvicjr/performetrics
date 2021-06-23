@@ -128,7 +128,7 @@ public class PrintStyleBuilder
      * produces {@code "0:00:00.049085700"}.
      * </p>
      *
-     * @param format the string format to be applied
+     * @param format the format string to be applied
      * @return a reference to this builder object for chained calls
      *
      * @see java.util.Formatter
@@ -215,9 +215,9 @@ public class PrintStyleBuilder
     }
 
     /**
-     * Defines a string format to the applied for the section headers.
+     * Defines a format string in printf-style to the applied for the section headers.
      *
-     * @param format the string format to be applied for each section header row
+     * @param format the format string to be applied for each section header row
      * @return a reference to this builder object for chained calls
      */
     public PrintStyleBuilder withSectionHeaderFormat(String format)
@@ -238,12 +238,13 @@ public class PrintStyleBuilder
     }
 
     /**
-     * Enables the section summary row and defines the string format to be applied.
+     * Enables the section summary row and defines the format string in printf-style to be
+     * applied.
      * <p>
      * <b>Note:</b> The property modified by this method is only applicable for the
      * <b>detailed</b> stopwatch formatter.
      *
-     * @param format the string format to be applied for the section summary row
+     * @param format the format string to be applied for the section summary row
      * @return a reference to this builder object for chained calls
      */
     public PrintStyleBuilder withSectionSummary(String format)

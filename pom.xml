@@ -94,6 +94,11 @@
                 <version>0.8.7</version>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>report</id>
                         <phase>test</phase>
                         <goals>

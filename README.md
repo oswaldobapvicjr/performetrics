@@ -1,7 +1,7 @@
 ![Performetrics logo](resources/performetrics_logo.svg)
 
-[![Build Status](https://travis-ci.org/oswaldobapvicjr/performetrics.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/performetrics)
-[![Coverage Status](https://coveralls.io/repos/github/oswaldobapvicjr/performetrics/badge.svg?branch=master)](https://coveralls.io/github/oswaldobapvicjr/performetrics?branch=master)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oswaldobapvicjr/performetrics/Java%20CI%20with%20Maven)](https://github.com/oswaldobapvicjr/performetrics/actions/workflows/maven.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/oswaldobapvicjr/performetrics)](https://codecov.io/gh/oswaldobapvicjr/performetrics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics)
 [![Javadoc](https://javadoc.io/badge2/net.obvj/performetrics/javadoc.svg)](https://javadoc.io/doc/net.obvj/performetrics)
 

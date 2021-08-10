@@ -26,8 +26,9 @@ public enum DurationFormat
         @Override
         public String format(final Duration duration, boolean printLegend)
         {
-            return String.format(HOURS_FORMAT, duration.getHours(), duration.getMinutes(), duration.getSeconds(),
-                    duration.getNanoseconds()) + legend(printLegend, HOURS_LEGEND);
+            return String.format(TimeUnit.HOURS.format, duration.getHours(), duration.getMinutes(),
+                    duration.getSeconds(),
+                    duration.getNanoseconds()) + legend(printLegend, TimeUnit.HOURS.legend);
         }
     },
 
@@ -53,11 +54,11 @@ public enum DurationFormat
             }
             if (duration.getMinutes() > 0)
             {
-                return String.format(MINUTES_FORMAT, duration.getMinutes(), duration.getSeconds(),
-                        duration.getNanoseconds()) + legend(printLegend, MINUTES_LEGEND);
+                return String.format(TimeUnit.MINUTES.format, duration.getMinutes(), duration.getSeconds(),
+                        duration.getNanoseconds()) + legend(printLegend, TimeUnit.MINUTES.legend);
             }
-            return String.format(SECONDS_FORMAT, duration.getSeconds(), duration.getNanoseconds())
-                    + legend(printLegend, SECONDS_LEGEND);
+            return String.format(TimeUnit.SECONDS.format, duration.getSeconds(), duration.getNanoseconds())
+                    + legend(printLegend, TimeUnit.SECONDS.legend);
         }
 
     },
@@ -87,20 +88,31 @@ public enum DurationFormat
             }
             if (duration.getHours() > 0)
             {
-                return format + legend(true, HOURS_LEGEND);
+                return format + legend(true, TimeUnit.HOURS.legend);
             }
             if (duration.getMinutes() > 0)
             {
-                return format + legend(true, MINUTES_LEGEND);
+                return format + legend(true, TimeUnit.MINUTES.legend);
             }
-            return format + legend(true, SECONDS_LEGEND);
+            return format + legend(true, TimeUnit.SECONDS.legend);
         }
 
     },
 
     /**
      * Formats a time duration using ISO-8601 seconds based representation, such as
-     * {@code PT8H6M12.345S}.
+     * {@code PT8H6M12.345S}, where:
+     * <ul>
+     * <li>{@code P} is the duration designator (referred to as "period"), and is always
+     * placed at the beginning of the duration</li>
+     * <li>{@code T} is the time designator that precedes the time components</li>
+     * <li>{@code H} is the hour designator that follows the value for the number of hours
+     * </li>
+     * <li>{@code M} is the minute designator that follows the value for the number of
+     * minutes</li>
+     * <li>{@code S} is the second designator that follows the value for the number of
+     * seconds</li>
+     * </ul>
      * <p>
      * Examples:
      * <ul>
@@ -120,14 +132,6 @@ public enum DurationFormat
         }
 
     };
-
-    private static final String HOURS_FORMAT = "%d:%02d:%02d.%09d";
-    private static final String MINUTES_FORMAT = "%d:%02d.%09d";
-    private static final String SECONDS_FORMAT = "%d.%09d";
-
-    private static final String HOURS_LEGEND = "hour(s)";
-    private static final String MINUTES_LEGEND = "minute(s)";
-    private static final String SECONDS_LEGEND = "second(s)";
 
     /**
      * Formats a given duration.
@@ -179,4 +183,30 @@ public enum DurationFormat
         }
         return builder.toString();
     }
+
+    /**
+     * Enumerates the time units and associated formatting objects.
+     *
+     * @author oswaldo.bavic.jr
+     * @since 2.2.4
+     */
+    private enum TimeUnit
+    {
+        HOURS("hour(s)", "%d:%02d:%02d.%09d"),
+
+        MINUTES("minute(s)", "%d:%02d.%09d"),
+
+        SECONDS("second(s)", "%d.%09d");
+
+        private final String legend;
+        private final String format;
+
+        private TimeUnit(String legend, String format)
+        {
+            this.legend = legend;
+            this.format = format;
+        }
+
+    }
+
 }

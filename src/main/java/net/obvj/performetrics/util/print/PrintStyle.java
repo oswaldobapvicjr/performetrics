@@ -85,7 +85,6 @@ public class PrintStyle
             .withoutLegends()
             .build();
 
-
     /**
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * as CSV (comma-separated values), <b>without</b> header.
@@ -105,6 +104,50 @@ public class PrintStyle
             .withoutHeader()
             .build();
 
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values), with elapsed times expressed using the ISO-8601
+     * duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Counter","Elapsed time"
+     * "Wall clock time","PT4.4553835S"
+     * "CPU time","PT0.109375S"
+     * "User time","PT0.046875S"
+     * "System time","PT0.0625S"
+     * </pre>
+     *
+     * @since 2.2.4
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_CSV_ISO_8601 = PrintStyle.builder(SUMMARIZED_CSV)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as CSV (comma-separated values), with elapsed times expressed using the ISO-8601
+     * duration format and <b>no</b> header.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Wall clock time","PT4.4553835S"
+     * "CPU time","PT0.109375S"
+     * "User time","PT0.046875S"
+     * "System time","PT0.0625S"
+     * </pre>
+     *
+     * @since 2.2.4
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_CSV_ISO_8601_NO_HEADER = PrintStyle.builder(SUMMARIZED_CSV_ISO_8601)
+            .withoutHeader()
+            .build();
 
     /**
      * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
@@ -195,6 +238,51 @@ public class PrintStyle
      * @see PrintFormat#DETAILED
      */
     public static final PrintStyle DETAILED_CSV_NO_HEADER = PrintStyle.builder(DETAILED_CSV)
+            .withoutHeader()
+            .build();
+
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * CSV (comma-separated values), with elapsed times expressed using the ISO-8601 duration
+     * format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Counter","Session","Elapsed time","Elapsed time (+)"
+     * "Wall clock time",1,"PT0.0323192S","PT0.0323192S"
+     * "Wall clock time",2,"PT0.0167665S","PT0.0490857S"
+     * "CPU time",1,"PT0.03125S","PT0.03125S"
+     * "CPU time",2,"PT0.015625S","PT0.046875S"
+     * </pre>
+     *
+     * @since 2.2.4
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_CSV_ISO_8601 = PrintStyle.builder(DETAILED_CSV)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * CSV (comma-separated values), with elapsed times expressed using the ISO-8601 duration
+     * format and <b>no</b> header.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * "Wall clock time",1,"PT0.0323192S","PT0.0323192S"
+     * "Wall clock time",2,"PT0.0167665S","PT0.0490857S"
+     * "CPU time",1,"PT0.03125S","PT0.03125S"
+     * "CPU time",2,"PT0.015625S","PT0.046875S"
+     * </pre>
+     *
+     * @since 2.2.4
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_CSV_ISO_8601_NO_HEADER = PrintStyle.builder(DETAILED_CSV_ISO_8601)
             .withoutHeader()
             .build();
 

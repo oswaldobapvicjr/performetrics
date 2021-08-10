@@ -27,8 +27,7 @@ public enum DurationFormat
         public String format(final Duration duration, boolean printLegend)
         {
             return String.format(TimeUnit.HOURS.format, duration.getHours(), duration.getMinutes(),
-                    duration.getSeconds(),
-                    duration.getNanoseconds()) + legend(printLegend, TimeUnit.HOURS.legend);
+                    duration.getSeconds(), duration.getNanoseconds()) + legend(printLegend, TimeUnit.HOURS.legend);
         }
     },
 

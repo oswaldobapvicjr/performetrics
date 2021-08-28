@@ -96,6 +96,8 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
     /**
      * Builds this monitored operation with a given {@link Callable} and one or more specific
      * counter types to be maintained.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param callable the Callable to be executed
      * @param types    the counter types to be maintained with the operation

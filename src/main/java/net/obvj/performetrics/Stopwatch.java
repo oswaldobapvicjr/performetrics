@@ -205,6 +205,8 @@ public class Stopwatch
 
     /**
      * Creates a new stopwatch with specific counter types.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param types the types to be set
      */
@@ -215,7 +217,7 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with default counter types.
+     * Provides a started stopwatch with default counter types, for convenience.
      *
      * @return a new, started stopwatch
      */
@@ -225,7 +227,9 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with specific counter types.
+     * Provides a started stopwatch with specific counter types, for convenience.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param types the types to be set
      * @return a new, started stopwatch

@@ -94,6 +94,8 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     /**
      * Builds this monitored operation with a given {@link Runnable} and one or more specific
      * counter types to be maintained.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param runnable the {@link Runnable} to be executed and profiled
      * @param types    the counter types to be maintained with the operation

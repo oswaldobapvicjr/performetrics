@@ -315,7 +315,7 @@ public class Stopwatch
     /**
      * Checks whether this stopwatch maintains exactly one counter type.
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     private void checkSingleCounter()
@@ -327,12 +327,12 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in this stopwatch,
-     * provided that this stopwatch maintains a single type.
+     * Returns the total elapsed time for a single counter type, provided that this stopwatch
+     * is keeping a single type.
      *
-     * @return the elapsed time for the single counter available in this stopwatch
+     * @return the elapsed time for a single counter type in this stopwatch
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public Duration elapsedTime()
@@ -342,14 +342,14 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in the specified time
-     * unit, provided that this stopwatch maintains a single type.
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this stopwatch is keeping a single type.
      *
      * @param timeUnit the time unit to which the elapsed time will be converted
-     * @return the elapsed time for the single counter available in this stopwatch, converted
-     *         to the given time unit with the default conversion mode
+     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     *         given time unit with the default conversion mode
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit)
@@ -359,15 +359,15 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in the specified time
-     * unit, provided that this stopwatch maintains single type.
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this stopwatch is keeping a single type.
      *
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
-     * @return the elapsed time for the single counter available in this stopwatch, converted
-     *         to the given time unit with the given conversion mode
+     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     *         given time unit with the given conversion mode
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
@@ -541,7 +541,7 @@ public class Stopwatch
     }
 
     /**
-     * Returns a string containing stopwatch summary.
+     * Returns a string containing a formatted stopwatch summary.
      *
      * @return a string containing stopwatch summary
      * @since 2.2.4

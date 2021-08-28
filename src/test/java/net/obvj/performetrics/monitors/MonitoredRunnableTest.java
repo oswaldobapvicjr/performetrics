@@ -17,6 +17,7 @@
 package net.obvj.performetrics.monitors;
 
 import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
@@ -60,6 +61,8 @@ class MonitoredRunnableTest
     // Since JDK 17, Mockito cannot mock java.util.Runnable
     private Runnable runnable = () -> {};
 
+    Stopwatch stopwatch = mock(Stopwatch.class);
+
     /**
      * Setup the expects on {@link SystemUtils} mock with constant values
      */
@@ -93,6 +96,13 @@ class MonitoredRunnableTest
                 is(equalTo(MOCKED_USER_TIME)));
         assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(),
                 is(equalTo(MOCKED_SYSTEM_TIME)));
+    }
+
+    private MonitoredRunnable newMonitoredRunnableWithMockedStopwatch()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable, WALL_CLOCK_TIME);
+        operation.stopwatch = this.stopwatch;
+        return operation;
     }
 
     @Test
@@ -213,10 +223,7 @@ class MonitoredRunnableTest
     @Test
     void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
     {
-        Stopwatch stopwatch = mock(Stopwatch.class);
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.stopwatch = stopwatch;
-
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
         operation.elapsedTime(WALL_CLOCK_TIME);
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME);
     }
@@ -224,10 +231,7 @@ class MonitoredRunnableTest
     @Test
     void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
     {
-        Stopwatch stopwatch = mock(Stopwatch.class);
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.stopwatch = stopwatch;
-
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
         operation.elapsedTime(WALL_CLOCK_TIME, HOURS);
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS);
     }
@@ -235,22 +239,50 @@ class MonitoredRunnableTest
     @Test
     void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
     {
-        Stopwatch stopwatch = mock(Stopwatch.class);
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.stopwatch = stopwatch;
-
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
         operation.elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
         verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
     }
 
     @Test
+    void elapsedTime_noTypeOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
+    {
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
+        operation.elapsedTime();
+        verify(stopwatch).elapsedTime();
+    }
+
+    @Test
+    void elapsedTime_timeUnitOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        operation.stopwatch = this.stopwatch;
+
+        operation.elapsedTime(NANOSECONDS);
+        verify(stopwatch).elapsedTime(NANOSECONDS);
+    }
+
+    @Test
+    void elapsedTime_timeUnitAndConversionModeOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
+    {
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
+        operation.elapsedTime(NANOSECONDS, FAST);
+        verify(stopwatch).elapsedTime(NANOSECONDS, FAST);
+    }
+
+    @Test
     void reset_callsStopwatchReset()
     {
-        Stopwatch stopwatch = mock(Stopwatch.class);
-        MonitoredRunnable operation = new MonitoredRunnable(runnable, WALL_CLOCK_TIME);
-        operation.stopwatch = stopwatch;
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
         operation.reset();
         verify(stopwatch).reset();
+    }
+
+    @Test
+    void toString_callsCorrectPrintUtilMethod()
+    {
+        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
+        assertThat(operation.toString(), equalTo(stopwatch.toString()));
     }
 
 }

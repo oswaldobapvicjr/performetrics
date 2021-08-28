@@ -94,8 +94,9 @@ import net.obvj.performetrics.util.print.PrintUtils;
  */
 public class Stopwatch
 {
-    private static final String MSG_NOT_RUNNING = "The stopwatch is not running";
-    private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
+    protected static final String MSG_NOT_RUNNING = "The stopwatch is not running";
+    protected static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
+    protected static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -321,7 +322,7 @@ public class Stopwatch
     {
         if (types.size() != 1)
         {
-            throw new IllegalStateException("This stopwatch maintains more than one counter type");
+            throw new IllegalStateException(MSG_NOT_A_SINGLE_TYPE);
         }
     }
 

@@ -667,6 +667,14 @@ class StopwatchTest
     }
 
     @Test
+    void elapsedTime_noTypeOnStowatchWithMoreThanOneCounter_valid()
+    {
+        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME, SYSTEM_TIME);
+        assertThat(() -> sw.elapsedTime(),
+                throwsException(IllegalStateException.class).withMessageContaining(Stopwatch.MSG_NOT_A_SINGLE_TYPE));
+    }
+
+    @Test
     void elapsedTime_noTypeOnSingleTypeStowatch_valid()
     {
         Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);

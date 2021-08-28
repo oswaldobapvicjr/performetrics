@@ -39,9 +39,13 @@ import net.obvj.performetrics.Counter.Type;
  * duration for a particular counter. E.g.:
  * </p>
  *
+ * <blockquote>
+ *
  * <pre>
  * Duration cpuTime = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME);
  * </pre>
+ *
+ * </blockquote>
  *
  * <p>
  * By default, all available counter types will be measured, if no specific counter types
@@ -49,10 +53,14 @@ import net.obvj.performetrics.Counter.Type;
  * set up one or more specific counters to be maintained. E.g.:
  * </p>
  *
+ * <blockquote>
+ *
  * <pre>
  * new MonitoredRunnable(runnable); // maintains all available counter types
  * new MonitoredRunnable(runnable, Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
  * </pre>
+ *
+ * </blockquote>
  *
  * <p>
  * For a list of available counters, refer to {@link Counter.Type}.
@@ -86,6 +94,8 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     /**
      * Builds this monitored operation with a given {@link Runnable} and one or more specific
      * counter types to be maintained.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param runnable the {@link Runnable} to be executed and profiled
      * @param types    the counter types to be maintained with the operation

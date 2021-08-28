@@ -122,11 +122,15 @@ public class Performetrics
      * <p>
      * For example:
      *
+     * <blockquote>
+     *
      * <pre>
-     * {@code MonitoredOperation operation =
-     *         Performetrics.monitorOperation(() -> myObj.exec());
-     * Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
+     * {@code MonitoredOperation operation =}
+     * {@code         Performetrics.monitorOperation(() -> myObj.exec());}
+     * {@code Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
      * </pre>
+     *
+     * </blockquote>
      *
      * @param runnable the {@link Runnable} to be run and monitored
      * @return the resulting {@link MonitoredOperation}, which can be used to retrieve the
@@ -144,11 +148,19 @@ public class Performetrics
      * <p>
      * For example:
      *
+     * <blockquote>
+     *
      * <pre>
-     * {@code MonitoredOperation operation =
-     *         Performetrics.monitorOperation(() -> myObj.exec(), Type.CPU_TIME);
-     * Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
+     * {@code MonitoredOperation operation = Performetrics}
+     * {@code         .monitorOperation(() -> myObj.exec(), Type.CPU_TIME);}
+     * {@code Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
      * </pre>
+     *
+     * </blockquote>
+     *
+     * <p>
+     * <b>Note:</b> If no type is specified, then all of the available types will be
+     * maintained.
      *
      * @param runnable the {@link Runnable} to be run and monitored
      * @param types    the counter types to be measured in the operation

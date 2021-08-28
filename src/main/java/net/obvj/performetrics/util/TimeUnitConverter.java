@@ -66,9 +66,13 @@ public class TimeUnitConverter
      * For example, to convert 10 minutes to milliseconds, use:
      * </p>
      *
+     * <blockquote>
+     *
      * <pre>
      * TimeUnitConverter.convertAndRound(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS);
      * </pre>
+     *
+     * </blockquote>
      *
      * <p>
      * <b>Note:</b> The number of decimal places applied is determined by calling
@@ -99,9 +103,13 @@ public class TimeUnitConverter
      * places, use:
      * </p>
      *
+     * <blockquote>
+     *
      * <pre>
      * TimeUnitConverter.convertAndRound(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2);
      * </pre>
+     *
+     * </blockquote>
      *
      * <p>
      * Remarks:
@@ -119,10 +127,14 @@ public class TimeUnitConverter
      * Examples:
      * </p>
      *
+     * <blockquote>
+     *
      * <pre>
      * convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2)  = 0.99
      * convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0)  = 1
      * </pre>
+     *
+     * </blockquote>
      *
      * @param sourceDuration the time duration to be converted
      * @param sourceTimeUnit the unit of the sourceDuration argument, not null
@@ -148,9 +160,13 @@ public class TimeUnitConverter
      * For example, to convert 10 minutes to milliseconds, use:
      * </p>
      *
+     * <blockquote>
+     *
      * <pre>
      * TimeUnitConverter.convert(10, TimeUnit.MINUTES, TimeUnit.MILLISECONDS);
      * </pre>
+     *
+     * </blockquote>
      *
      * @param sourceDuration the time duration to be converted, not null
      * @param sourceTimeUnit the unit of the sourceDuration argument, not null
@@ -200,12 +216,15 @@ public class TimeUnitConverter
      * <p>
      * Examples:
      * </p>
+     * <blockquote>
      *
      * <pre>
      * round(22.859, 2)  = 22.86
      * round(22.859, 0)  = 23
      * round(22.859, -1) = 20
      * </pre>
+     *
+     * </blockquote>
      *
      * @param number        the number to be rounded
      * @param decimalPlaces the number of decimal places to which the number will be rounded

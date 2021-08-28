@@ -83,6 +83,53 @@ public abstract class MonitoredOperation
     }
 
     /**
+     * Returns the total elapsed time for a single counter type, provided that this monitor is
+     * keeping a single type.
+     *
+     * @return the elapsed time for a single counter type in this monitor
+     *
+     * @throws IllegalStateException if this monitor is keeping more than one counter type
+     * @since 2.2.4
+     */
+    public Duration elapsedTime()
+    {
+        return stopwatch.elapsedTime();
+    }
+
+    /**
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this monitor is keeping a single type.
+     *
+     * @param timeUnit the time unit to which the elapsed time will be converted
+     * @return the elapsed time for a single counter type in this monitor, converted to the
+     *         given time unit with the default conversion mode
+     *
+     * @throws IllegalStateException if this monitor is keeping more than one counter type
+     * @since 2.2.4
+     */
+    public double elapsedTime(TimeUnit timeUnit)
+    {
+        return stopwatch.elapsedTime(timeUnit);
+    }
+
+    /**
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this monitor is keeping a single type.
+     *
+     * @param timeUnit       the time unit to which the elapsed time will be converted
+     * @param conversionMode the {@link ConversionMode} to be applied
+     * @return the elapsed time for a single counter type in this monitor, converted to the
+     *         given time unit with the given conversion mode
+     *
+     * @throws IllegalStateException if this monitor is keeping more than one counter type
+     * @since 2.2.4
+     */
+    public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
+    {
+        return stopwatch.elapsedTime(timeUnit, conversionMode);
+    }
+
+    /**
      * Returns the total elapsed time of a specific counter type.
      *
      * @param type the counter type to be fetched
@@ -218,4 +265,15 @@ public abstract class MonitoredOperation
         stopwatch.reset();
     }
 
+    /**
+     * Returns a string containing a formatted monitor summary.
+     *
+     * @return a string containing monitor summary
+     * @since 2.2.4
+     */
+    @Override
+    public String toString()
+    {
+        return stopwatch.toString();
+    }
 }

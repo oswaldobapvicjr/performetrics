@@ -40,11 +40,15 @@ import net.obvj.performetrics.util.print.PrintUtils;
  * stopwatch with specific counters. E.g.:
  * </p>
  *
+ * <blockquote>
+ *
  * <pre>
  * new Stopwatch(); // provides all available counter types
  * new Stopwatch(Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
  * new Stopwatch(Counter.Type.CPU_TIME, Counter.Type.USER_TIME); // two counters
  * </pre>
+ *
+ * </blockquote>
  *
  * <p>
  * <b>Note:</b> For a list of available counters, refer to {@link Counter.Type}.
@@ -60,14 +64,46 @@ import net.obvj.performetrics.util.print.PrintUtils;
  * create a started stopwatch for convenience.
  * </p>
  *
+ *
  * <p>
  * Use {@code elapsedTime(Counter.Type)} to retrieve the total elapsed time for a
- * particular counter. E.g.:
+ * particular counter type. E.g.:
  * </p>
  *
+ * <blockquote>
+ *
  * <pre>
- * double elapsedTimeNanos = cpuTime.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+ * Duration cpuTime = stopwatch.elapsedTime(Counter.Type.CPU_TIME);
  * </pre>
+ *
+ * </blockquote>
+ *
+ *
+ * <p>
+ * Use {@code elapsedTime(Counter.Type, TimeUnit)} to retrieve the total elapsed time
+ * converted into a specific time unit. E.g.:
+ * </p>
+ *
+ * <blockquote>
+ *
+ * <pre>
+ * double cpuTimeNanos = stopwatch.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+ * </pre>
+ *
+ * </blockquote>
+ *
+ * <p>
+ * <strong>Hint:</strong> If the stopwatch was created with only one counter type, then no
+ * argument is needed to retrieve the total elapsed time. E.g.:
+ * </p>
+ *
+ * <blockquote>
+ *
+ * <pre>
+ * Duration elapsedTime = stopwatch.elapsedTime();
+ * </pre>
+ *
+ * </blockquote>
  *
  * <p>
  * Use the output methods {@code printSummary(System.out)} and
@@ -169,6 +205,8 @@ public class Stopwatch
 
     /**
      * Creates a new stopwatch with specific counter types.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param types the types to be set
      */
@@ -179,7 +217,7 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with default counter types.
+     * Provides a started stopwatch with default counter types, for convenience.
      *
      * @return a new, started stopwatch
      */
@@ -189,7 +227,9 @@ public class Stopwatch
     }
 
     /**
-     * Provides a started stopwatch for convenience with specific counter types.
+     * Provides a started stopwatch with specific counter types, for convenience.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
      *
      * @param types the types to be set
      * @return a new, started stopwatch
@@ -315,7 +355,7 @@ public class Stopwatch
     /**
      * Checks whether this stopwatch maintains exactly one counter type.
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     private void checkSingleCounter()
@@ -327,12 +367,12 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in this stopwatch,
-     * provided that this stopwatch maintains a single type.
+     * Returns the total elapsed time for a single counter type, provided that this stopwatch
+     * is keeping a single type.
      *
-     * @return the elapsed time for the single counter available in this stopwatch
+     * @return the elapsed time for a single counter type in this stopwatch
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public Duration elapsedTime()
@@ -342,14 +382,14 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in the specified time
-     * unit, provided that this stopwatch maintains a single type.
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this stopwatch is keeping a single type.
      *
      * @param timeUnit the time unit to which the elapsed time will be converted
-     * @return the elapsed time for the single counter available in this stopwatch, converted
-     *         to the given time unit with the default conversion mode
+     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     *         given time unit with the default conversion mode
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit)
@@ -359,15 +399,15 @@ public class Stopwatch
     }
 
     /**
-     * Returns the total elapsed time for a single counter available in the specified time
-     * unit, provided that this stopwatch maintains single type.
+     * Returns the total elapsed time in the specified time unit for a single counter type,
+     * provided that this stopwatch is keeping a single type.
      *
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
-     * @return the elapsed time for the single counter available in this stopwatch, converted
-     *         to the given time unit with the given conversion mode
+     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     *         given time unit with the given conversion mode
      *
-     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
@@ -541,7 +581,7 @@ public class Stopwatch
     }
 
     /**
-     * Returns a string containing stopwatch summary.
+     * Returns a string containing a formatted stopwatch summary.
      *
      * @return a string containing stopwatch summary
      * @since 2.2.4

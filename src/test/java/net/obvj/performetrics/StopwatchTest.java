@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.throwsException;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
@@ -71,6 +72,8 @@ class StopwatchTest
     static final long CPU_TIME_AFTER_2 = 1200000500l;
     static final long USER_TIME_AFTER_2 = 1200000501l;
     static final long SYSTEM_TIME_AFTER_2 = 1200000502l;
+
+    private static final String NOT_ASSIGNED = "not assigned";
 
     /**
      * Setup the expects on PerformetricUtils mock with "_BEFORE" constant values
@@ -463,22 +466,28 @@ class StopwatchTest
         assertThrows(IllegalStateException.class, () -> sw.stop());
     }
 
-    void elapsedTime_invalidType_zero()
+    @Test
+    void elapsedTime_invalidType_illegalArgumentException()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
-        assertThat(sw.elapsedTime(USER_TIME), is(equalTo(Duration.ZERO)));
+        assertThat(() -> sw.elapsedTime(USER_TIME),
+                throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
 
-    void elapsedTime_invalidTypeAndValidTimeUnit_throwsException()
+    @Test
+    void elapsedTime_invalidTypeAndValidTimeUnit_ilegalArgumentException()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
-        assertThat(sw.elapsedTime(USER_TIME, HOURS), is(equalTo(0.0)));
+        assertThat(() -> sw.elapsedTime(USER_TIME, HOURS),
+                throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
 
+    @Test
     void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
         Stopwatch sw = new Stopwatch(SYSTEM_TIME);
-        assertThat(sw.elapsedTime(USER_TIME, HOURS, FAST), is(equalTo(0.0)));
+        assertThat(() -> sw.elapsedTime(USER_TIME, HOURS, FAST),
+                throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
 
     @Test()
@@ -658,6 +667,39 @@ class StopwatchTest
     }
 
     @Test
+    void elapsedTime_noTypeOnSingleTypeStowatch_valid()
+    {
+        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        sw.stop();
+        sw.start();
+        sw.stop();
+        assertThat(sw.elapsedTime(), is(equalTo(sw.elapsedTime(WALL_CLOCK_TIME))));
+    }
+
+    @Test
+    void elapsedTime_timeUnitOnSingleTypeStowatch_valid()
+    {
+        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        sw.stop();
+        sw.start();
+        sw.stop();
+        assertThat(sw.elapsedTime(NANOSECONDS), is(equalTo(sw.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS))));
+    }
+
+    @Test
+    void elapsedTime_timeUnitAndConversionModeOnSingleTypeStowatch_valid()
+    {
+        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
+        sw.stop();
+        sw.start();
+        sw.stop();
+        assertThat(sw.elapsedTime(NANOSECONDS, FAST),
+                is(equalTo(sw.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS, FAST))));
+        assertThat(sw.elapsedTime(NANOSECONDS, DOUBLE_PRECISION),
+                is(equalTo(sw.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS, DOUBLE_PRECISION))));
+    }
+
+    @Test
     void getCurrentTimingSession_unstarted_empty()
     {
         Stopwatch sw = new Stopwatch();
@@ -674,6 +716,17 @@ class StopwatchTest
             sw.start();
         }
         assertThat(sw.getCurrentTimingSession().get(), is(notNullValue()));
+    }
+
+    @Test
+    void toString_callsCorrectPrintUtilMethod()
+    {
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.toString();
+            printUtils.verify(() -> PrintUtils.summaryToString(sw), times(1));
+        }
     }
 
 }

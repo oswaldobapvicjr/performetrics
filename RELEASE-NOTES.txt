@@ -17,6 +17,9 @@ Minor enhancement(s):
 
  > issue/0053: New Print Styles with durations expressed using ISO-8601
 
+ > issue/0055: Stopwatch API improvements: elapsedTime() method choices for
+               single-type instances; toString() implementation
+
 
 For more information, or suggestions for improvement, visit:
 https://obvj.net/performetrics

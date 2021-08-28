@@ -43,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
@@ -184,4 +185,20 @@ class PrintUtilsTest
         assertThat(printedString, is(equalTo(expectedString)));
     }
 
+    @Test
+    void summaryToString_withStopwatch_validString()
+    {
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch,
+                ConfigurationHolder.getConfiguration().getPrintStyleForSummary());
+        String actualString = PrintUtils.summaryToString(stopwatch);
+        assertThat(actualString, is(equalTo(expectedString)));
+    }
+
+    @Test
+    void summaryToString_withStopwatchAndPrintStyle_validString()
+    {
+        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
+        String actualString = PrintUtils.summaryToString(stopwatch, PrintStyle.SUMMARIZED_CSV);
+        assertThat(actualString, is(equalTo(expectedString)));
+    }
 }

@@ -71,9 +71,7 @@ public class PrintUtils
      */
     public static void printSummary(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
     {
-        PrintStyle style = printStyle != null ? printStyle
-                : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
-        printStream.print(PrintFormat.SUMMARIZED.format(stopwatch, style));
+        printStream.print(summaryToString(stopwatch, printStyle));
     }
 
     /**
@@ -114,6 +112,37 @@ public class PrintUtils
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForDetails();
         printStream.print(PrintFormat.DETAILED.format(stopwatch, style));
+    }
+
+    /**
+     * Returns a string containing a formatted summary from the given stopwatch.
+     *
+     * @param stopwatch to stopwatch to be used
+     * @return string containing a formatted summary from the given stopwatch
+     *
+     * @since 2.2.4
+     */
+    public static String summaryToString(Stopwatch stopwatch)
+    {
+        return summaryToString(stopwatch, null);
+    }
+
+    /**
+     * Returns a string containing a formatted summary from the given stopwatch, with a custom
+     * {@link PrintStyle}.
+     *
+     * @param stopwatch  to stopwatch to be used
+     * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
+     *                   PrintStyle will be applied
+     * @return string containing a formatted summary from the given stopwatch
+     *
+     * @since 2.2.4
+     */
+    public static String summaryToString(Stopwatch stopwatch, PrintStyle printStyle)
+    {
+        PrintStyle style = printStyle != null ? printStyle
+                : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
+        return PrintFormat.SUMMARIZED.format(stopwatch, style);
     }
 
 }

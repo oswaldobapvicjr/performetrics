@@ -312,6 +312,70 @@ public class Stopwatch
     }
 
     /**
+     * Checks whether this stopwatch maintains exactly one counter type.
+     *
+     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @since 2.2.4
+     */
+    private void checkSingleCounter()
+    {
+        if (types.size() != 1)
+        {
+            throw new IllegalStateException("This stopwatch maintains more than one counter type");
+        }
+    }
+
+    /**
+     * Returns the total elapsed time for a single counter available in this stopwatch,
+     * provided that this stopwatch maintains a single type.
+     *
+     * @return the elapsed time for the single counter available in this stopwatch
+     *
+     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @since 2.2.4
+     */
+    public Duration elapsedTime()
+    {
+        checkSingleCounter();
+        return elapsedTime(types.get(0));
+    }
+
+    /**
+     * Returns the total elapsed time for a single counter available in the specified time
+     * unit, provided that this stopwatch maintains a single type.
+     *
+     * @param timeUnit the time unit to which the elapsed time will be converted
+     * @return the elapsed time for the single counter available in this stopwatch, converted
+     *         to the given time unit with the default conversion mode
+     *
+     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @since 2.2.4
+     */
+    public double elapsedTime(TimeUnit timeUnit)
+    {
+        checkSingleCounter();
+        return elapsedTime(types.get(0), timeUnit);
+    }
+
+    /**
+     * Returns the total elapsed time for a single counter available in the specified time
+     * unit, provided that this stopwatch maintains single type.
+     *
+     * @param timeUnit       the time unit to which the elapsed time will be converted
+     * @param conversionMode the {@link ConversionMode} to be applied
+     * @return the elapsed time for the single counter available in this stopwatch, converted
+     *         to the given time unit with the given conversion mode
+     *
+     * @throws IllegalStateException if the stopwatch maintains more than one counter type
+     * @since 2.2.4
+     */
+    public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
+    {
+        checkSingleCounter();
+        return elapsedTime(types.get(0), timeUnit, conversionMode);
+    }
+
+    /**
      * Returns the total elapsed time for a specific counter.
      *
      * @param type the counter type to be fetched
@@ -323,8 +387,7 @@ public class Stopwatch
      */
     public Duration elapsedTime(Type type)
     {
-        return getCountersAsStream(type).map(Counter::elapsedTime)
-                .reduce(Duration.ZERO, Duration::sum);
+        return getCountersAsStream(type).map(Counter::elapsedTime).reduce(Duration.ZERO, Duration::sum);
     }
 
     /**
@@ -333,7 +396,7 @@ public class Stopwatch
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
-     *         using the default conversion mode.
+     *         with the default conversion mode.
      *
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  stopwatch during instantiation
@@ -353,7 +416,7 @@ public class Stopwatch
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
      * @return the elapsed time for the specified counter, converted to the given time unit
-     *         using the given conversion mode.
+     *         with the given conversion mode.
      *
      * @throws IllegalArgumentException if the specified type was not assigned to the
      *                                  stopwatch during instantiation
@@ -476,4 +539,15 @@ public class Stopwatch
         return sessions;
     }
 
+    /**
+     * Returns a string containing stopwatch summary.
+     *
+     * @return a string containing stopwatch summary
+     * @since 2.2.4
+     */
+    @Override
+    public String toString()
+    {
+        return PrintUtils.summaryToString(this);
+    }
 }

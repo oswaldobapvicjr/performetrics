@@ -1,5 +1,6 @@
 ![Performetrics logo](resources/performetrics_logo.svg)
 
+[![Known Vulnerabilities](https://snyk.io/test/github/oswaldobapvicjr/performetrics/badge.svg)](https://snyk.io/test/github/oswaldobapvicjr/performetrics)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oswaldobapvicjr/performetrics/Java%20CI%20with%20Maven)](https://github.com/oswaldobapvicjr/performetrics/actions/workflows/maven.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/oswaldobapvicjr/performetrics)](https://codecov.io/gh/oswaldobapvicjr/performetrics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics)

@@ -49,6 +49,9 @@ public class PrintStyleBuilder
     private boolean printHeader;
     private String headerFormat;
 
+    private boolean printTrailer;
+    private String trailerFormat;
+
     private String rowFormat;
     private String sectionHeaderFormat;
 
@@ -89,6 +92,9 @@ public class PrintStyleBuilder
 
         printHeader = source.isPrintHeader();
         headerFormat = source.getHeaderFormat();
+
+        printTrailer = source.isPrintTrailer();
+        trailerFormat = source.getTrailerFormat();
 
         rowFormat = source.getRowFormat();
         sectionHeaderFormat = source.getSectionHeaderFormat();
@@ -227,6 +233,80 @@ public class PrintStyleBuilder
     public PrintStyleBuilder withoutHeader()
     {
         printHeader = false;
+        return this;
+    }
+
+    /**
+     * Enables the trailer row, to be formatted using the same row pattern as the header line.
+     * <p>
+     * To specify a different format for the trailer row, use {@link #withTrailer(String)}.
+     *
+     * @return a reference to this builder object for chained calls
+     * @since 2.3.0
+     */
+    public PrintStyleBuilder withTrailer()
+    {
+        printTrailer = true;
+        return this;
+    }
+
+    /**
+     * Enables the trailer row and defines a specific format string in printf-style to be
+     * applied.
+     * <p>
+     * The number and sequence of string positions must be defined according to the target
+     * stopwatch formatter:
+     * </p>
+     *
+     * <ul>
+     * <li>
+     * <p>
+     * <b>SUMMARIZED</b>
+     * </p>
+     * <ol>
+     * <li>Counter type</li>
+     * <li>Elapsed time</li>
+     * </ol>
+     * </li>
+     *
+     * <li>
+     * <p>
+     * <b>DETAILED</b>
+     * </p>
+     * <ol>
+     * <li>Sequential timing session identifier</li>
+     * <li>Elapsed time</li>
+     * <li>Elapsed time (accumulated)</li>
+     * <li>(Optional) Counter type</li>
+     * </ol>
+     * </li>
+     * </ul>
+     *
+     * <p>
+     * To enable the trailer without specifying a custom format, use the zero-argument option
+     * {@link #withTrailer()}.
+     *
+     * @param format the format string to be applied for the trailer row
+     * @return a reference to this builder object for chained calls
+     *
+     * @see java.util.Formatter
+     * @see PrintStyle
+     */
+    public PrintStyleBuilder withTrailer(String format)
+    {
+        printTrailer = true;
+        trailerFormat = format;
+        return this;
+    }
+
+    /**
+     * Explicitly disables the trailer row.
+     *
+     * @return a reference to this builder object for chained calls
+     */
+    public PrintStyleBuilder withoutTrailer()
+    {
+        printTrailer = false;
         return this;
     }
 
@@ -371,6 +451,11 @@ public class PrintStyleBuilder
             // If the header line is not specified, let the general row format be used
             headerFormat = rowFormat;
         }
+        if (printTrailer && isEmpty(trailerFormat))
+        {
+            // If the trailer line is not specified, let the same header row format be used
+            trailerFormat = headerFormat;
+        }
         if (isEmpty(alternativeLine) && !isEmpty(simpleLine))
         {
             // If the alternative line is not specified let the simple line be used
@@ -416,6 +501,14 @@ public class PrintStyleBuilder
     }
 
     /**
+     * @return a flag indicating whether or not the trailer shall be printed
+     */
+    protected boolean isPrintTrailer()
+    {
+        return printTrailer;
+    }
+
+    /**
      * @return a flag indicating whether or not a summary shall be printed for each section
      */
     protected boolean isPrintSectionSummary()
@@ -429,6 +522,14 @@ public class PrintStyleBuilder
     protected String getHeaderFormat()
     {
         return headerFormat;
+    }
+
+    /**
+     * @return the string format to be applied to the table trailer
+     */
+    protected String getTrailerFormat()
+    {
+        return trailerFormat;
     }
 
     /**

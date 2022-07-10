@@ -166,6 +166,54 @@ public class PrintStyle
             .build();
 
     /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * in XML format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">0:00:01.352886500</counter>}
+     * {@code   <counter type="CPU time">0:00:00.062500000</counter>}
+     * {@code   <counter type="User time">0:00:00.031250000</counter>}
+     * {@code   <counter type="System time">0:00:00.031250000</counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_XML = PrintStyle.builder(PrintFormat.SUMMARIZED)
+            .withHeader("<counters>")
+            .withRowFormat("  <counter type=\"%s\">%s</counter>")
+            .withTrailer("</counters>")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends().build();
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as XML with elapsed times expressed using the ISO-8601 duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">PT1.3528865S</counter>}
+     * {@code   <counter type="CPU time">PT0.0625S</counter>}
+     * {@code   <counter type="User time">PT0.03125S</counter>}
+     * {@code   <counter type="System time">PT0.03125S</counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     *
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_XML_ISO_8601 = PrintStyle.builder(SUMMARIZED_XML)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
      * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
      * separating each row, and total elapsed time for each counter.
      * <p>
@@ -308,6 +356,9 @@ public class PrintStyle
     private final boolean printHeader;
     private final String headerFormat;
 
+    private final boolean printTrailer;
+    private final String trailerFormat;
+
     private final String rowFormat;
     private final String sectionHeaderFormat;
 
@@ -359,6 +410,8 @@ public class PrintStyle
         printFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
         headerFormat = builder.getHeaderFormat();
+        printTrailer = builder.isPrintTrailer();
+        trailerFormat = builder.getTrailerFormat();
         rowFormat = builder.getRowFormat();
         sectionHeaderFormat = builder.getSectionHeaderFormat();
         printSectionSummary = builder.isPrintSectionSummary();
@@ -411,6 +464,16 @@ public class PrintStyle
     }
 
     /**
+     * Returns a flag indicating whether or not the trailer shall be printed.
+     *
+     * @return a flag indicating whether or not the trailer shall be printed
+     */
+    public boolean isPrintTrailer()
+    {
+        return printTrailer;
+    }
+
+    /**
      * Returns a flag indicating whether or not a summary line shall be printed for each
      * section in the output.
      *
@@ -429,6 +492,16 @@ public class PrintStyle
     public String getHeaderFormat()
     {
         return headerFormat;
+    }
+
+    /**
+     * Returns the format to be applied to the trailer string of the output.
+     *
+     * @return the string format to be applied to the trailer
+     */
+    public String getTrailerFormat()
+    {
+        return trailerFormat;
     }
 
     /**

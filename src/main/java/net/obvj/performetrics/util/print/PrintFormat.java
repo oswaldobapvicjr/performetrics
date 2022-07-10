@@ -67,6 +67,11 @@ public enum PrintFormat
                 appendLine(builder, style.getSimpleLine());
             }
             stopwatch.getTypes().forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
+            if (style.isPrintTrailer())
+            {
+                appendLine(builder, style.getSimpleLine());
+                appendLine(builder, style.getTrailerFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
+            }
             appendLine(builder, style.getAlternativeLine());
             return builder.toString();
         }

@@ -127,7 +127,8 @@ public enum PrintFormat
             if (style.isPrintHeader())
             {
                 appendLine(builder, style.getAlternativeLine());
-                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME, HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
+                appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME,
+                        HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
             }
             Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
@@ -150,7 +151,17 @@ public enum PrintFormat
                     appendLine(builder, style.getSimpleLine());
                     appendLine(builder, toTotalRowFormat(elapsedTimeAcc, style));
                 }
+                if (style.isPrintSectionTrailer())
+                {
+                    appendLine(builder, style.getSimpleLine());
+                    appendLine(builder, style.getSectionTrailerFormat(), type.toString());
+                }
             });
+            if (style.isPrintTrailer())
+            {
+                appendLine(builder, style.getTrailerFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME,
+                        HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
+            }
             appendLine(builder, style.getAlternativeLine());
             return builder.toString();
         }

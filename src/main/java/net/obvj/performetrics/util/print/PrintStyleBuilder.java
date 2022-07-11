@@ -243,20 +243,6 @@ public class PrintStyleBuilder
     }
 
     /**
-     * Enables the trailer row, to be formatted using the same row pattern as the header line.
-     * <p>
-     * To specify a different format for the trailer row, use {@link #withTrailer(String)}.
-     *
-     * @return a reference to this builder object for chained calls
-     * @since 2.3.0
-     */
-    public PrintStyleBuilder withTrailer()
-    {
-        printTrailer = true;
-        return this;
-    }
-
-    /**
      * Enables the trailer row and defines a specific format string in printf-style to be
      * applied.
      * <p>
@@ -287,10 +273,6 @@ public class PrintStyleBuilder
      * </ol>
      * </li>
      * </ul>
-     *
-     * <p>
-     * To enable the trailer without specifying a custom format, use the zero-argument option
-     * {@link #withTrailer()}.
      *
      * @param format the format string to be applied for the trailer row
      * @return a reference to this builder object for chained calls
@@ -484,11 +466,6 @@ public class PrintStyleBuilder
         {
             // If the header line is not specified, let the general row format be used
             headerFormat = rowFormat;
-        }
-        if (printTrailer && isEmpty(trailerFormat))
-        {
-            // If the trailer line is not specified, let the same header row format be used
-            trailerFormat = headerFormat;
         }
         if (isEmpty(alternativeLine) && !isEmpty(simpleLine))
         {

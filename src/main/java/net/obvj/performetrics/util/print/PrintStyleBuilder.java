@@ -322,7 +322,7 @@ public class PrintStyleBuilder
      * @param format the format string to be applied for each section header row
      * @return a reference to this builder object for chained calls
      */
-    public PrintStyleBuilder withSectionHeaderFormat(String format)
+    public PrintStyleBuilder withSectionHeader(String format)
     {
         sectionHeaderFormat = format;
         return this;
@@ -377,7 +377,7 @@ public class PrintStyleBuilder
      * @param format the format string to be applied for the section trailer row
      * @return a reference to this builder object for chained calls
      */
-    public PrintStyleBuilder withSectionTrailerFormat(String format)
+    public PrintStyleBuilder withSectionTrailer(String format)
     {
         printSectionTrailer = true;
         sectionTrailerFormat = format;

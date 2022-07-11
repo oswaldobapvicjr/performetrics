@@ -248,7 +248,7 @@ public class PrintStyle
     public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
-            .withSectionHeaderFormat("%s")
+            .withSectionHeader("%s")
             .withSectionSummary("TOTAL %41s")
             .withDurationFormat(DurationFormat.FULL)
             .withoutLegends()
@@ -377,10 +377,10 @@ public class PrintStyle
      */
     public static final PrintStyle DETAILED_XML = PrintStyle.builder(PrintFormat.DETAILED)
             .withHeader("<counters>")
-            .withSectionHeaderFormat("  <counter type=\"%s\">")
+            .withSectionHeader("  <counter type=\"%s\">")
             .withRowFormat("    <session sequence=\"%1$s\">%2$s</session>")
             .withSectionSummary("    <total>%s</total>")
-            .withSectionTrailerFormat("  </counter>")
+            .withSectionTrailer("  </counter>")
             .withTrailer("</counters>")
             .withDurationFormat(DurationFormat.FULL)
             .withoutLegends().build();

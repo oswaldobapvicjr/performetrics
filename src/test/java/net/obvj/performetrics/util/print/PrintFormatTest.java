@@ -25,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -206,21 +205,32 @@ class PrintFormatTest
     }
 
     @Test
+    void format_summarizedXml_properFormating()
+    {
+        String expected = "<counters>\n"
+                        + "  <counter type=\"Wall clock time\">"+ STR_DURATION_SUM_C1 +"</counter>\n"
+                        + "  <counter type=\"CPU time\">" + STR_DURATION_SUM_C2 + "</counter>\n"
+                        + "</counters>";
+
+        String result = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_XML);
+        assertEachLine(expected, result);
+    }
+
+    @Test
     void format_detailedXml_properFormating()
     {
-        String expected
-                = "<counters>\n"
-                + "  <counter type=\"Wall clock time\">\n"
-                + "    <session sequence=\"1\">0:00:01.000000000</session>\n"
-                + "    <session sequence=\"2\">0:00:00.750000000</session>\n"
-                + "    <total>0:00:01.750000000</total>\n"
-                + "  </counter>\n"
-                + "  <counter type=\"CPU time\">\n"
-                + "    <session sequence=\"1\">0:00:00.050000000</session>\n"
-                + "    <session sequence=\"2\">0:00:00.500000000</session>\n"
-                + "    <total>0:00:00.550000000</total>\n"
-                + "  </counter>\n"
-                + "</counters>";
+        String expected = "<counters>\n"
+                        + "  <counter type=\"Wall clock time\">\n"
+                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C1 + "</session>\n"
+                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C1 + "</session>\n"
+                        + "    <total>"+ STR_DURATION_SUM_C1 +"</total>\n"
+                        + "  </counter>\n"
+                        + "  <counter type=\"CPU time\">\n"
+                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C2 + "</session>\n"
+                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C2 + "</session>\n"
+                        + "    <total>" + STR_DURATION_SUM_C2 + "</total>\n"
+                        + "  </counter>\n"
+                        + "</counters>";
 
         String result = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_XML);
         assertEachLine(expected, result);

@@ -536,6 +536,7 @@ public class PrintStyle
      * Returns a flag indicating whether or not the trailer shall be printed.
      *
      * @return a flag indicating whether or not the trailer shall be printed
+     * @since 2.3.0
      */
     public boolean isPrintTrailer()
     {
@@ -558,6 +559,7 @@ public class PrintStyle
      * section in the output.
      *
      * @return a flag indicating whether or not the section trailer shall be printed
+     * @since 2.3.0
      */
     public boolean isPrintSectionTrailer()
     {
@@ -578,6 +580,7 @@ public class PrintStyle
      * Returns the format to be applied to the trailer string of the output.
      *
      * @return the string format to be applied to the trailer
+     * @since 2.3.0
      */
     public String getTrailerFormat()
     {
@@ -618,6 +621,7 @@ public class PrintStyle
      * Returns the format to be applied to the trailer row for each section.
      *
      * @return the format to be applied to the section trailer row(s)
+     * @since 2.3.0
      */
     public String getSectionTrailerFormat()
     {

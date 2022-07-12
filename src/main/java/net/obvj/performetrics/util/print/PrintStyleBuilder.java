@@ -280,6 +280,7 @@ public class PrintStyleBuilder
      *
      * @see java.util.Formatter
      * @see PrintStyle
+     * @since 2.3.0
      */
     public PrintStyleBuilder withTrailer(String format)
     {
@@ -292,6 +293,7 @@ public class PrintStyleBuilder
      * Explicitly disables the trailer row.
      *
      * @return a reference to this builder object for chained calls
+     * @since 2.3.0
      */
     public PrintStyleBuilder withoutTrailer()
     {
@@ -344,6 +346,7 @@ public class PrintStyleBuilder
      * Explicitly disables the section trailer row.
      *
      * @return a reference to this builder object for chained calls
+     * @since 2.3.0
      */
     public PrintStyleBuilder withoutSectionTrailer()
     {
@@ -361,6 +364,7 @@ public class PrintStyleBuilder
      *
      * @param format the format string to be applied for the section trailer row
      * @return a reference to this builder object for chained calls
+     * @since 2.3.0
      */
     public PrintStyleBuilder withSectionTrailer(String format)
     {
@@ -516,6 +520,7 @@ public class PrintStyleBuilder
 
     /**
      * @return a flag indicating whether or not the trailer shall be printed
+     * @since 2.3.0
      */
     protected boolean isPrintTrailer()
     {
@@ -533,6 +538,7 @@ public class PrintStyleBuilder
     /**
      * @return a flag indicating whether or not a the trailer row shall be printed for
      *         each section
+     * @since 2.3.0
      */
     protected boolean isPrintSectionTrailer()
     {
@@ -549,6 +555,7 @@ public class PrintStyleBuilder
 
     /**
      * @return the string format to be applied to the table trailer
+     * @since 2.3.0
      */
     protected String getTrailerFormat()
     {
@@ -581,6 +588,7 @@ public class PrintStyleBuilder
 
     /**
      * @return the string format for the each section trailer
+     * @since 2.3.0
      */
     protected String getSectionTrailerFormat()
     {

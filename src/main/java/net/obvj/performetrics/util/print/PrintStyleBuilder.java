@@ -239,6 +239,7 @@ public class PrintStyleBuilder
     public PrintStyleBuilder withoutHeader()
     {
         printHeader = false;
+        headerFormat = null;
         return this;
     }
 
@@ -295,6 +296,7 @@ public class PrintStyleBuilder
     public PrintStyleBuilder withoutTrailer()
     {
         printTrailer = false;
+        trailerFormat = null;
         return this;
     }
 
@@ -346,6 +348,7 @@ public class PrintStyleBuilder
     public PrintStyleBuilder withoutSectionTrailer()
     {
         printSectionTrailer = false;
+        sectionTrailerFormat = null;
         return this;
     }
 

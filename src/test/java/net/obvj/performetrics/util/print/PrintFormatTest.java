@@ -56,14 +56,14 @@ class PrintFormatTest
     static final PrintStyle DETAILED_TEST_STYLE_WITHOUT_TOTALS = PrintStyle.builder(PrintFormat.DETAILED)
             .withoutHeader()
             .withRowFormat("%s %s %s")
-            .withSectionHeaderFormat("%s")
+            .withSectionHeader("%s")
             .withoutSectionSummary()
             .withDurationFormat(DurationFormat.FULL).build();
 
     static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS = PrintStyle.builder(PrintFormat.DETAILED)
             .withoutHeader()
             .withRowFormat("%s %s %s")
-            .withSectionHeaderFormat("%s")
+            .withSectionHeader("%s")
             .withSectionSummary("%s")
             .withDurationFormat(DurationFormat.FULL).build();
 
@@ -192,6 +192,48 @@ class PrintFormatTest
     {
         assertThrows(IllegalArgumentException.class,
                 () -> PrintFormat.DETAILED.checkCompatibility(SUMMARIZED_TEST_STYLE));
+    }
+
+    private void assertEachLine(String expected, String actual)
+    {
+        String[] expectedLines = expected.split("\n");
+        String[] actualLine = actual.split("\n");
+        for (int i = 0; i < expectedLines.length; i++)
+        {
+            assertThat(actualLine[i].trim(), equalTo(expectedLines[i].trim()));
+        }
+    }
+
+    @Test
+    void format_summarizedXml_properFormating()
+    {
+        String expected = "<counters>\n"
+                        + "  <counter type=\"Wall clock time\">"+ STR_DURATION_SUM_C1 +"</counter>\n"
+                        + "  <counter type=\"CPU time\">" + STR_DURATION_SUM_C2 + "</counter>\n"
+                        + "</counters>";
+
+        String result = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_XML);
+        assertEachLine(expected, result);
+    }
+
+    @Test
+    void format_detailedXml_properFormating()
+    {
+        String expected = "<counters>\n"
+                        + "  <counter type=\"Wall clock time\">\n"
+                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C1 + "</session>\n"
+                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C1 + "</session>\n"
+                        + "    <total>"+ STR_DURATION_SUM_C1 +"</total>\n"
+                        + "  </counter>\n"
+                        + "  <counter type=\"CPU time\">\n"
+                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C2 + "</session>\n"
+                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C2 + "</session>\n"
+                        + "    <total>" + STR_DURATION_SUM_C2 + "</total>\n"
+                        + "  </counter>\n"
+                        + "</counters>";
+
+        String result = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_XML);
+        assertEachLine(expected, result);
     }
 
 }

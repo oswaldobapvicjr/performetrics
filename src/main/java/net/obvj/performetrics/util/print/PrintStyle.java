@@ -166,6 +166,54 @@ public class PrintStyle
             .build();
 
     /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * in XML format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">0:00:01.352886500</counter>}
+     * {@code   <counter type="CPU time">0:00:00.062500000</counter>}
+     * {@code   <counter type="User time">0:00:00.031250000</counter>}
+     * {@code   <counter type="System time">0:00:00.031250000</counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_XML = PrintStyle.builder(PrintFormat.SUMMARIZED)
+            .withHeader("<counters>")
+            .withRowFormat("  <counter type=\"%s\">%s</counter>")
+            .withTrailer("</counters>")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends().build();
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as XML with elapsed times expressed using the ISO-8601 duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">PT1.3528865S</counter>}
+     * {@code   <counter type="CPU time">PT0.0625S</counter>}
+     * {@code   <counter type="User time">PT0.03125S</counter>}
+     * {@code   <counter type="System time">PT0.03125S</counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_XML_ISO_8601 = PrintStyle.builder(SUMMARIZED_XML)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
      * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
      * separating each row, and total elapsed time for each counter.
      * <p>
@@ -200,7 +248,7 @@ public class PrintStyle
     public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("%5s  %19s  %19s")
             .withHeader()
-            .withSectionHeaderFormat("%s")
+            .withSectionHeader("%s")
             .withSectionSummary("TOTAL %41s")
             .withDurationFormat(DurationFormat.FULL)
             .withoutLegends()
@@ -302,17 +350,86 @@ public class PrintStyle
             .withoutHeader()
             .build();
 
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
+     * XML format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">}
+     * {@code     <session sequence="1">0:00:01.371288100</session>}
+     * {@code     <session sequence="2">0:00:01.103620000</session>}
+     * {@code     <total>0:00:02.474908100</total>}
+     * {@code   </counter>}
+     * {@code   <counter type="CPU time">}
+     * {@code     <session sequence="1">0:00:00.031250000</session>}
+     * {@code     <session sequence="2">0:00:00.015625000</session>}
+     * {@code     <total>0:00:00.046875000</total>}
+     * {@code   </counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_XML = PrintStyle.builder(PrintFormat.DETAILED)
+            .withHeader("<counters>")
+            .withSectionHeader("  <counter type=\"%s\">")
+            .withRowFormat("    <session sequence=\"%1$s\">%2$s</session>")
+            .withSectionSummary("    <total>%s</total>")
+            .withSectionTrailer("  </counter>")
+            .withTrailer("</counters>")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends().build();
+
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * XML with elapsed times expressed using the ISO-8601 duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code <counters>}
+     * {@code   <counter type="Wall clock time">}
+     * {@code     <session sequence="1">PT1.357239099S</session>}
+     * {@code     <session sequence="2">PT1.1036874</session>}
+     * {@code     <total>PT2.460926499S</total>}
+     * {@code   </counter>}
+     * {@code   <counter type="CPU time">}
+     * {@code     <session sequence="1">PT0.1875S</session>}
+     * {@code     <session sequence="2">PT0.015625S</session>}
+     * {@code     <total>PT0.203125S</total>}
+     * {@code   </counter>}
+     * {@code </counters>}
+     * </pre>
+     *
+     * @since 2.3.0
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_XML_ISO_8601 = PrintStyle.builder(PrintStyle.DETAILED_XML)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
 
     private final PrintFormat printFormat;
 
     private final boolean printHeader;
     private final String headerFormat;
 
+    private final boolean printTrailer;
+    private final String trailerFormat;
+
     private final String rowFormat;
     private final String sectionHeaderFormat;
 
     private final boolean printSectionSummary;
     private final String sectionSummaryRowFormat;
+
+    private final boolean printSectionTrailer;
+    private final String sectionTrailerFormat;
 
     private final DurationFormat durationFormat;
     private final boolean printLegend;
@@ -359,10 +476,14 @@ public class PrintStyle
         printFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
         headerFormat = builder.getHeaderFormat();
+        printTrailer = builder.isPrintTrailer();
+        trailerFormat = builder.getTrailerFormat();
         rowFormat = builder.getRowFormat();
         sectionHeaderFormat = builder.getSectionHeaderFormat();
         printSectionSummary = builder.isPrintSectionSummary();
         sectionSummaryRowFormat = builder.getSectionSummaryRowFormat();
+        printSectionTrailer = builder.isPrintSectionTrailer();
+        sectionTrailerFormat = builder.getSectionTrailerFormat();
         durationFormat = builder.getDurationFormat();
         printLegend = builder.isPrintLegend();
         simpleLine = builder.getSimpleLine();
@@ -411,6 +532,17 @@ public class PrintStyle
     }
 
     /**
+     * Returns a flag indicating whether or not the trailer shall be printed.
+     *
+     * @return a flag indicating whether or not the trailer shall be printed
+     * @since 2.3.0
+     */
+    public boolean isPrintTrailer()
+    {
+        return printTrailer;
+    }
+
+    /**
      * Returns a flag indicating whether or not a summary line shall be printed for each
      * section in the output.
      *
@@ -422,6 +554,18 @@ public class PrintStyle
     }
 
     /**
+     * Returns a flag indicating whether or not a trailer line shall be printed for each
+     * section in the output.
+     *
+     * @return a flag indicating whether or not the section trailer shall be printed
+     * @since 2.3.0
+     */
+    public boolean isPrintSectionTrailer()
+    {
+        return printSectionTrailer;
+    }
+
+    /**
      * Returns the format to be applied to the header string of the output.
      *
      * @return the string format to be applied to the header
@@ -429,6 +573,17 @@ public class PrintStyle
     public String getHeaderFormat()
     {
         return headerFormat;
+    }
+
+    /**
+     * Returns the format to be applied to the trailer string of the output.
+     *
+     * @return the string format to be applied to the trailer
+     * @since 2.3.0
+     */
+    public String getTrailerFormat()
+    {
+        return trailerFormat;
     }
 
     /**
@@ -459,6 +614,17 @@ public class PrintStyle
     public String getSectionSummaryRowFormat()
     {
         return sectionSummaryRowFormat;
+    }
+
+    /**
+     * Returns the format to be applied to the trailer row for each section.
+     *
+     * @return the format to be applied to the section trailer row(s)
+     * @since 2.3.0
+     */
+    public String getSectionTrailerFormat()
+    {
+        return sectionTrailerFormat;
     }
 
     /**

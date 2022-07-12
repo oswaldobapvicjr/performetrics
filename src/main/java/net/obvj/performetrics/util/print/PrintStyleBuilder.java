@@ -49,11 +49,17 @@ public class PrintStyleBuilder
     private boolean printHeader;
     private String headerFormat;
 
+    private boolean printTrailer;
+    private String trailerFormat;
+
     private String rowFormat;
     private String sectionHeaderFormat;
 
     private boolean printSectionSummary;
     private String sectionSummaryRowFormat;
+
+    private boolean printSectionTrailer;
+    private String sectionTrailerFormat;
 
     private DurationFormat durationFormat;
     private boolean printLegend;
@@ -90,11 +96,17 @@ public class PrintStyleBuilder
         printHeader = source.isPrintHeader();
         headerFormat = source.getHeaderFormat();
 
+        printTrailer = source.isPrintTrailer();
+        trailerFormat = source.getTrailerFormat();
+
         rowFormat = source.getRowFormat();
         sectionHeaderFormat = source.getSectionHeaderFormat();
 
         printSectionSummary = source.isPrintSectionSummary();
         sectionSummaryRowFormat = source.getSectionSummaryRowFormat();
+
+        printSectionTrailer = source.isPrintSectionTrailer();
+        sectionTrailerFormat = source.getSectionTrailerFormat();
 
         durationFormat = source.getDurationFormat();
         printLegend = source.isPrintLegend();
@@ -227,6 +239,66 @@ public class PrintStyleBuilder
     public PrintStyleBuilder withoutHeader()
     {
         printHeader = false;
+        headerFormat = null;
+        return this;
+    }
+
+    /**
+     * Enables the trailer row and defines a specific format string in printf-style to be
+     * applied.
+     * <p>
+     * The number and sequence of string positions must be defined according to the target
+     * stopwatch formatter:
+     * </p>
+     *
+     * <ul>
+     * <li>
+     * <p>
+     * <b>SUMMARIZED</b>
+     * </p>
+     * <ol>
+     * <li>Counter type</li>
+     * <li>Elapsed time</li>
+     * </ol>
+     * </li>
+     *
+     * <li>
+     * <p>
+     * <b>DETAILED</b>
+     * </p>
+     * <ol>
+     * <li>Sequential timing session identifier</li>
+     * <li>Elapsed time</li>
+     * <li>Elapsed time (accumulated)</li>
+     * <li>(Optional) Counter type</li>
+     * </ol>
+     * </li>
+     * </ul>
+     *
+     * @param format the format string to be applied for the trailer row
+     * @return a reference to this builder object for chained calls
+     *
+     * @see java.util.Formatter
+     * @see PrintStyle
+     * @since 2.3.0
+     */
+    public PrintStyleBuilder withTrailer(String format)
+    {
+        printTrailer = true;
+        trailerFormat = format;
+        return this;
+    }
+
+    /**
+     * Explicitly disables the trailer row.
+     *
+     * @return a reference to this builder object for chained calls
+     * @since 2.3.0
+     */
+    public PrintStyleBuilder withoutTrailer()
+    {
+        printTrailer = false;
+        trailerFormat = null;
         return this;
     }
 
@@ -236,7 +308,7 @@ public class PrintStyleBuilder
      * @param format the format string to be applied for each section header row
      * @return a reference to this builder object for chained calls
      */
-    public PrintStyleBuilder withSectionHeaderFormat(String format)
+    public PrintStyleBuilder withSectionHeader(String format)
     {
         sectionHeaderFormat = format;
         return this;
@@ -267,6 +339,37 @@ public class PrintStyleBuilder
     {
         printSectionSummary = true;
         sectionSummaryRowFormat = format;
+        return this;
+    }
+
+    /**
+     * Explicitly disables the section trailer row.
+     *
+     * @return a reference to this builder object for chained calls
+     * @since 2.3.0
+     */
+    public PrintStyleBuilder withoutSectionTrailer()
+    {
+        printSectionTrailer = false;
+        sectionTrailerFormat = null;
+        return this;
+    }
+
+    /**
+     * Enables the section trailer row and defines the format string in printf-style to be
+     * applied.
+     * <p>
+     * <b>Note:</b> The property modified by this method is only applicable for the
+     * <b>detailed</b> stopwatch formatter.
+     *
+     * @param format the format string to be applied for the section trailer row
+     * @return a reference to this builder object for chained calls
+     * @since 2.3.0
+     */
+    public PrintStyleBuilder withSectionTrailer(String format)
+    {
+        printSectionTrailer = true;
+        sectionTrailerFormat = format;
         return this;
     }
 
@@ -416,6 +519,15 @@ public class PrintStyleBuilder
     }
 
     /**
+     * @return a flag indicating whether or not the trailer shall be printed
+     * @since 2.3.0
+     */
+    protected boolean isPrintTrailer()
+    {
+        return printTrailer;
+    }
+
+    /**
      * @return a flag indicating whether or not a summary shall be printed for each section
      */
     protected boolean isPrintSectionSummary()
@@ -424,11 +536,30 @@ public class PrintStyleBuilder
     }
 
     /**
+     * @return a flag indicating whether or not a the trailer row shall be printed for
+     *         each section
+     * @since 2.3.0
+     */
+    protected boolean isPrintSectionTrailer()
+    {
+        return printSectionTrailer;
+    }
+
+    /**
      * @return the string format to be applied to the table header
      */
     protected String getHeaderFormat()
     {
         return headerFormat;
+    }
+
+    /**
+     * @return the string format to be applied to the table trailer
+     * @since 2.3.0
+     */
+    protected String getTrailerFormat()
+    {
+        return trailerFormat;
     }
 
     /**
@@ -453,6 +584,15 @@ public class PrintStyleBuilder
     protected String getSectionSummaryRowFormat()
     {
         return sectionSummaryRowFormat;
+    }
+
+    /**
+     * @return the string format for the each section trailer
+     * @since 2.3.0
+     */
+    protected String getSectionTrailerFormat()
+    {
+        return sectionTrailerFormat;
     }
 
     /**

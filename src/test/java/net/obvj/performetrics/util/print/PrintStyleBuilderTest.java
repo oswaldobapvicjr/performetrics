@@ -20,6 +20,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -179,6 +181,34 @@ class PrintStyleBuilderTest
         assertThat(newStyle.getSectionHeaderFormat(), is(equalTo(newStyle.getSectionHeaderFormat())));
         assertThat(newStyle.getSectionSummaryRowFormat(), is(equalTo(newStyle.getSectionSummaryRowFormat())));
         assertThat(newStyle.getSimpleLine(), is(equalTo(newStyle.getSimpleLine())));
+    }
+
+    @Test
+    void withoutTrailer_basePrintStyleWithTrailer_false()
+    {
+        PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.SUMMARIZED).withTrailer("trailer1").build();
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).withoutTrailer().build();
+        assertFalse(newStyle.isPrintTrailer());
+        assertNull(newStyle.getTrailerFormat());
+    }
+
+    @Test
+    void withoutSectionTrailer_basePrintStyleWithSectionTrailer_false()
+    {
+        PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED).withSectionTrailer("trailer1").build();
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).withoutSectionTrailer().build();
+        assertFalse(newStyle.isPrintSectionTrailer());
+        assertNull(newStyle.getSectionTrailerFormat());
+    }
+
+    @Test
+    void withoutHeader_basePrintStyleWithHeader_false()
+    {
+        String rowFormat = "rowFormat";
+		PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED).withRowFormat(rowFormat).withHeader("header1").build();
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).withoutHeader().build();
+        assertFalse(newStyle.isPrintHeader());
+        assertNull(newStyle.getHeaderFormat());
     }
 
 }

@@ -55,7 +55,7 @@ class ConfigurationHolderTest
     }
 
     @Test
-    void setConfiguration_ValidConfiguration_suceeds()
+    void setConfiguration_validConfiguration_suceeds()
     {
         Configuration newConfiguration = new Configuration();
         newConfiguration.setConversionMode(ConversionMode.FAST);

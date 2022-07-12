@@ -372,7 +372,6 @@ public class PrintStyle
      * </pre>
      *
      * @since 2.3.0
-     * @see DurationFormat#ISO_8601
      * @see PrintFormat#DETAILED
      */
     public static final PrintStyle DETAILED_XML = PrintStyle.builder(PrintFormat.DETAILED)

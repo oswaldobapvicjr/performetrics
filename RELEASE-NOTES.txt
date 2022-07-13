@@ -1,6 +1,30 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.3.0
+                                   2022-07
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+New feature/enhancement:
+
+ > issue/0057: New Print Styles for XML
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.2.4
                                    2021-08
                                  

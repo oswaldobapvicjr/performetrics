@@ -214,6 +214,61 @@ public class PrintStyle
             .build();
 
     /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * in YAML format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code counters:}
+     * {@code - type: Wall clock time}
+     * {@code   value: '0:00:01.352886500'}
+     * {@code - type: CPU time}
+     * {@code   value: '0:00:00.062500000'}
+     * {@code - type: User time}
+     * {@code   value: '0:00:00.031250000'}
+     * {@code - type: System time}
+     * {@code   value: '0:00:00.031250000'}
+     * </pre>
+     *
+     * @since 2.4.0
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_YAML = PrintStyle.builder(PrintFormat.SUMMARIZED)
+            .withHeader("counters:")
+            .withRowFormat("- type: %s%n  value: '%s'")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .build();
+
+    /**
+     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
+     * as YAML with elapsed times expressed using the ISO-8601 duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code counters:}
+     * {@code - type: Wall clock time}
+     * {@code   value: PT1.3528865S}
+     * {@code - type: CPU time}
+     * {@code   value: PT0.0625S}
+     * {@code - type: User time}
+     * {@code   value: PT0.03125S}
+     * {@code - type: System time}
+     * {@code   value: PT0.03125S}
+     * </pre>
+     *
+     * @since 2.4.0
+     * @see DurationFormat#ISO_8601
+     * @see PrintFormat#SUMMARIZED
+     */
+    public static final PrintStyle SUMMARIZED_YAML_ISO_8601 = PrintStyle.builder(SUMMARIZED_YAML)
+            .withRowFormat("- type: %s%n  value: %s")
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
      * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
      * separating each row, and total elapsed time for each counter.
      * <p>

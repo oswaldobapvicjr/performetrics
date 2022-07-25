@@ -437,7 +437,8 @@ public class PrintStyle
             .withSectionTrailer("  </counter>")
             .withTrailer("</counters>")
             .withDurationFormat(DurationFormat.FULL)
-            .withoutLegends().build();
+            .withoutLegends()
+            .build();
 
     /**
      * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
@@ -465,6 +466,68 @@ public class PrintStyle
      * @see PrintFormat#DETAILED
      */
     public static final PrintStyle DETAILED_XML_ISO_8601 = PrintStyle.builder(PrintStyle.DETAILED_XML)
+            .withDurationFormat(DurationFormat.ISO_8601)
+            .build();
+
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
+     * YAML format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code counters:}
+     * {@code - type: Wall clock time}
+     * {@code   sessions:}
+     * {@code   - '0:00:01.371288100'}
+     * {@code   - '0:00:01.103620000'}
+     * {@code   total: '0:00:02.474908100'}
+     * {@code - type="CPU time">}
+     * {@code   sessions:}
+     * {@code   - '0:00:00.031250000'}
+     * {@code   - '0:00:00.015625000'}
+     * {@code   total: 0:00:00.046875000}
+     * </pre>
+     *
+     * @since 2.4.0
+     * @see PrintFormat#DETAILED
+     */
+    public static final PrintStyle DETAILED_YAML = PrintStyle.builder(PrintFormat.DETAILED)
+            .withHeader("counters:")
+            .withSectionHeader("- type: %s%n  sessions:")
+            .withRowFormat("  - '%2$s'")
+            .withSectionSummary("  total: '%s'")
+            .withDurationFormat(DurationFormat.FULL)
+            .withoutLegends()
+            .build();
+
+    /**
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * YAML with elapsed times expressed using the ISO-8601 duration format.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * {@code counters:}
+     * {@code - type: Wall clock time}
+     * {@code   sessions:}
+     * {@code   - '0:00:01.371288100'}
+     * {@code   - '0:00:01.103620000'}
+     * {@code   total: '0:00:02.474908100'}
+     * {@code - type="CPU time">}
+     * {@code   sessions:}
+     * {@code   - '0:00:00.031250000'}
+     * {@code   - '0:00:00.015625000'}
+     * {@code   total: 0:00:00.046875000}
+     * </pre>
+     *
+     * @since 2.4.0
+     * @see PrintFormat#DETAILED
+     * @see DurationFormat#ISO_8601
+     */
+    public static final PrintStyle DETAILED_YAML_ISO_8601 = PrintStyle.builder(PrintStyle.DETAILED_YAML)
+            .withRowFormat("  - %2$s")
+            .withSectionSummary("  total: %s")
             .withDurationFormat(DurationFormat.ISO_8601)
             .build();
 

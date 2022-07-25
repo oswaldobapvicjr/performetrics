@@ -26,13 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
@@ -205,7 +203,7 @@ class PrintFormatTest
     }
 
     @Test
-    void format_summarizedXml_properFormating()
+    void format_summarizedXml_properFormatting()
     {
         String expected = "<counters>\n"
                         + "  <counter type=\"Wall clock time\">"+ STR_DURATION_SUM_C1 +"</counter>\n"
@@ -217,7 +215,7 @@ class PrintFormatTest
     }
 
     @Test
-    void format_detailedXml_properFormating()
+    void format_detailedXml_properFormatting()
     {
         String expected = "<counters>\n"
                         + "  <counter type=\"Wall clock time\">\n"
@@ -234,6 +232,61 @@ class PrintFormatTest
 
         String result = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_XML);
         assertEachLine(expected, result);
+    }
+
+    /*
+     * Classes for tests using the PrintStyle.SUMMARIZED_YAML
+     */
+    static class CountersSummaryYaml
+    {
+        public List<CounterSummaryYaml> counters;
+    }
+
+    static class CounterSummaryYaml
+    {
+        public String type;
+        public String value;
+    }
+
+    @Test
+    void format_summarizedYaml_properFormatting()
+    {
+        String result = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_YAML);
+        CountersSummaryYaml yaml = new Yaml().loadAs(result, CountersSummaryYaml.class);
+        assertThat(yaml.counters.get(0).type, equalTo(WALL_CLOCK_TIME.toString()));
+        assertThat(yaml.counters.get(0).value, equalTo(STR_DURATION_SUM_C1));
+        assertThat(yaml.counters.get(1).type, equalTo(CPU_TIME.toString()));
+        assertThat(yaml.counters.get(1).value, equalTo(STR_DURATION_SUM_C2));
+    }
+
+    /*
+     * Classes for tests using the PrintStyle.DETAILED_YAML
+     */
+    static class CountersDetailsYaml
+    {
+        public List<CounterDetailsYaml> counters;
+    }
+
+    static class CounterDetailsYaml
+    {
+        public String type;
+        public List<String> sessions;
+        public String total;
+    }
+
+    @Test
+    void format_detailedYaml_properFormatting()
+    {
+        String result = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_YAML);
+        CountersDetailsYaml yaml = new Yaml().loadAs(result, CountersDetailsYaml.class);
+        assertThat(yaml.counters.get(0).type, equalTo(WALL_CLOCK_TIME.toString()));
+        assertThat(yaml.counters.get(0).sessions.get(0), equalTo(STR_DURATION_TS1_C1));
+        assertThat(yaml.counters.get(0).sessions.get(1), equalTo(STR_DURATION_TS2_C1));
+        assertThat(yaml.counters.get(0).total, equalTo(STR_DURATION_SUM_C1));
+        assertThat(yaml.counters.get(1).type, equalTo(CPU_TIME.toString()));
+        assertThat(yaml.counters.get(1).sessions.get(0), equalTo(STR_DURATION_TS1_C2));
+        assertThat(yaml.counters.get(1).sessions.get(1), equalTo(STR_DURATION_TS2_C2));
+        assertThat(yaml.counters.get(1).total, equalTo(STR_DURATION_SUM_C2));
     }
 
 }

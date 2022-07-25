@@ -17,11 +17,12 @@
 package net.obvj.performetrics.util.print;
 
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Defines a set of attributes used by a {@link PrintFormat} to generate a String output
- * out of a {@link Stopwatch} object.
+ * out of a {@link Stopwatch} or {@link MonitoredOperation}.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
@@ -33,6 +34,8 @@ public class PrintStyle
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * in tabular format without header.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -43,6 +46,7 @@ public class PrintStyle
      * </pre>
      *
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_TABLE_NO_HEADER = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withRowFormat("%-15s  %19s")
@@ -55,6 +59,8 @@ public class PrintStyle
     /**
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * in tabular format, with horizontal lines separating each row.
+     * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
      * Sample output:
      *
@@ -70,6 +76,7 @@ public class PrintStyle
      * </pre>
      *
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_TABLE_FULL = PrintStyle.builder(SUMMARIZED_TABLE_NO_HEADER)
             .withHeader()
@@ -82,6 +89,8 @@ public class PrintStyle
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * as CSV (comma-separated values).
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -93,6 +102,7 @@ public class PrintStyle
      * </pre>
      *
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_CSV = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withHeader()
@@ -105,6 +115,8 @@ public class PrintStyle
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * as CSV (comma-separated values), <b>without</b> header.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -115,6 +127,7 @@ public class PrintStyle
      * </pre>
      *
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_CSV_NO_HEADER = PrintStyle.builder(SUMMARIZED_CSV)
             .withoutHeader()
@@ -169,6 +182,8 @@ public class PrintStyle
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * in XML format.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -182,6 +197,7 @@ public class PrintStyle
      *
      * @since 2.3.0
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_XML = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withHeader("<counters>")
@@ -217,6 +233,8 @@ public class PrintStyle
      * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
      * in YAML format.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -233,6 +251,7 @@ public class PrintStyle
      *
      * @since 2.4.0
      * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle SUMMARIZED_YAML = PrintStyle.builder(PrintFormat.SUMMARIZED)
             .withHeader("counters:")
@@ -272,6 +291,8 @@ public class PrintStyle
      * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
      * separating each row, and total elapsed time for each counter.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -299,6 +320,7 @@ public class PrintStyle
      * </pre>
      *
      * @see PrintFormat#DETAILED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle DETAILED_TABLE_FULL = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("%5s  %19s  %19s")
@@ -312,8 +334,10 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values).
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * CSV (comma-separated values).
+     * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
      * Sample output:
      *
@@ -329,6 +353,7 @@ public class PrintStyle
      *
      * @since 2.2.2
      * @see PrintFormat#DETAILED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle DETAILED_CSV = PrintStyle.builder(PrintFormat.DETAILED)
             .withRowFormat("\"%4$s\",%1$s,\"%2$s\",\"%3$s\"")
@@ -339,8 +364,10 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values), <b>without</b> header.
+     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
+     * CSV (comma-separated values), <b>without</b> header.
+     * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
      * Sample output:
      *
@@ -355,6 +382,7 @@ public class PrintStyle
      *
      * @since 2.2.2
      * @see PrintFormat#DETAILED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle DETAILED_CSV_NO_HEADER = PrintStyle.builder(DETAILED_CSV)
             .withoutHeader()
@@ -409,6 +437,8 @@ public class PrintStyle
      * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
      * XML format.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -428,6 +458,7 @@ public class PrintStyle
      *
      * @since 2.3.0
      * @see PrintFormat#DETAILED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle DETAILED_XML = PrintStyle.builder(PrintFormat.DETAILED)
             .withHeader("<counters>")
@@ -473,6 +504,8 @@ public class PrintStyle
      * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
      * YAML format.
      * <p>
+     * Elapsed times are expressed in the format {@code H:M:S.ns}.
+     * <p>
      * Sample output:
      *
      * <pre>
@@ -491,6 +524,7 @@ public class PrintStyle
      *
      * @since 2.4.0
      * @see PrintFormat#DETAILED
+     * @see DurationFormat#FULL
      */
     public static final PrintStyle DETAILED_YAML = PrintStyle.builder(PrintFormat.DETAILED)
             .withHeader("counters:")

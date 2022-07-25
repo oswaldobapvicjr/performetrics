@@ -34,7 +34,7 @@ package net.obvj.performetrics.util;
 public enum DurationFormat
 {
     /**
-     * Formats a time duration in the following format: {@code H:M:s:ns}. For example:
+     * Formats a time duration in the following format: {@code H:M:S.ns}. For example:
      * {@code 1:59:59.987654321}
      */
     FULL
@@ -48,8 +48,8 @@ public enum DurationFormat
     },
 
     /**
-     * Formats a time duration in any of the following formats: {@code H:M:s:ns},
-     * {@code M:S:ns}, or {@code S.ns}, always choosing the shortest possible format.
+     * Formats a time duration in any of the following formats: {@code H:M:S.ns},
+     * {@code M:S.ns}, or {@code S.ns}, always choosing the shortest possible format.
      * <p>
      * Examples:
      * <ul>
@@ -79,8 +79,8 @@ public enum DurationFormat
     },
 
     /**
-     * Formats a time duration in any of the following formats: {@code H:M:s:ns},
-     * {@code M:S:ns}, or {@code S.ns}, always choosing the shortest possible format and
+     * Formats a time duration in any of the following formats: {@code H:M:S.ns},
+     * {@code M:S.ns}, or {@code S.ns}, always choosing the shortest possible format and
      * suppressing trailing zeros from the nanoseconds part.
      * <p>
      * Examples:

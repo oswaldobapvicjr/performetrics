@@ -96,6 +96,21 @@ public class Duration implements Comparable<Duration>
         return new Duration(internalDuration);
     }
 
+    /**
+     * Obtains a {@code Duration} from a string in a specific {@link DurationFormat}.
+     * <p>
+     * This will parse a textual representation of a duration, including the string produced
+     * by {@link #toString(DurationFormat)}.
+     *
+     * @param string the string to parse, not null
+     * @param format the {@link DurationFormat} in which the string is represented, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws NullPointerException     if either the specified string or the
+     *                                  {@link DurationFormat} is null
+     * @throws IllegalArgumentException if the string cannot be parsed as a duration using the
+     *                                  specified {@link DurationFormat}
+     * @since 2.4.0
+     */
     public static Duration parse(String string, DurationFormat format)
     {
         Objects.requireNonNull(format, MSG_FORMAT_MUST_NOT_BE_NULL);
@@ -203,8 +218,8 @@ public class Duration implements Comparable<Duration>
     /**
      * Returns a string representation of this {@code Duration} with a specific format.
      * <p>
-     * <b>Note:</b> This is equivalent to calling:
-     * {@code DurationFormatter.format(duration, format)}
+     * <b>Note:</b> This is equivalent to calling
+     * {@code DurationFormatter.format(duration, true)}
      *
      * @param format the {@link DurationFormat} to be applied
      * @return a string representation of this object in the specified format

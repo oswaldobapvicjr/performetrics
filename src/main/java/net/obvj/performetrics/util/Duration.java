@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Duration implements Comparable<Duration>
 {
+
     /**
      * Constant for a duration of zero.
      */
@@ -51,6 +52,7 @@ public class Duration implements Comparable<Duration>
     private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The duration to add must not be null";
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
+    private static final String MSG_FORMAT_MUST_NOT_BE_NULL = "The format must not be null";
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
@@ -62,9 +64,9 @@ public class Duration implements Comparable<Duration>
      *
      * @param internalDuration the internal {@link java.time.Duration}; must not be null
      */
-    private Duration(java.time.Duration internalDuration)
+    Duration(java.time.Duration internalDuration)
     {
-        this.internalDuration = internalDuration;
+        this.internalDuration = Objects.requireNonNull(internalDuration);
     }
 
     /**
@@ -92,6 +94,12 @@ public class Duration implements Comparable<Duration>
         ChronoUnit chronoUnit = TimeUnitConverter.toChronoUnit(timeUnit);
         java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
         return new Duration(internalDuration);
+    }
+
+    public static Duration parse(String string, DurationFormat format)
+    {
+        Objects.requireNonNull(format, MSG_FORMAT_MUST_NOT_BE_NULL);
+        return format.parse(string);
     }
 
     /**
@@ -380,7 +388,7 @@ public class Duration implements Comparable<Duration>
      * @return the internal {@code java.time.Duration} object
      * @since 2.2.0
      */
-    protected java.time.Duration getInternalDuration()
+    java.time.Duration getInternalDuration()
     {
         return internalDuration;
     }

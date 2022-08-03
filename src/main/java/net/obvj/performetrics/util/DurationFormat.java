@@ -18,6 +18,7 @@ package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
 
+import java.time.format.DateTimeParseException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -177,7 +178,15 @@ public enum DurationFormat
         @Override
         public Duration parse(final String string)
         {
-            return new Duration(java.time.Duration.parse(string));
+            try
+            {
+                return new Duration(java.time.Duration.parse(string));
+            }
+            catch (DateTimeParseException exception)
+            {
+                throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string),
+                        exception);
+            }
         }
 
     };
@@ -185,12 +194,14 @@ public enum DurationFormat
     /**
      * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
      */
-    static final Pattern HMS_PATTERN = Pattern.compile(
+    private static final Pattern HMS_PATTERN = Pattern.compile(
             "^(((?<hours>[0-9]*)[:])?"
             + "((?<minutes>[0-9]*)[:]))?"
             + "(?<seconds>[0-9]+)"
             + "([.,](?<nanoseconds>[0-9]+))?"
             + "(.)*"); // legend
+
+    private static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
 
     /**
      * Formats a given duration.
@@ -293,7 +304,7 @@ public enum DurationFormat
                     .plus(parseDuration(matcher.group("seconds"), SECONDS))
                     .plus(parseNanoseconds(matcher.group("nanoseconds")));
         }
-        throw new IllegalArgumentException(String.format("Unrecognized duration: %s", string));
+        throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
     }
 
     /**

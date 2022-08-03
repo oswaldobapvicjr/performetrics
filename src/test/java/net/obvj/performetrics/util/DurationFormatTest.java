@@ -17,10 +17,13 @@
 package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
 import static net.obvj.performetrics.util.DurationFormat.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 
@@ -188,11 +191,12 @@ class DurationFormatTest
     void parse_fullAndValidString_success()
     {
         assertThat(FULL.parse("00:00:00.000000000"), equalTo(Duration.ZERO));
-        assertThat(FULL.parse("00:00:00.100000000"), equalTo(Duration.of( 100, MILLISECONDS)));
-        assertThat(FULL.parse("00:00:01.000000000"), equalTo(Duration.of(   1, SECONDS)));
-        assertThat(FULL.parse("00:01:01.000000000"), equalTo(Duration.of(  61, SECONDS)));
-        assertThat(FULL.parse("01:01:00.000000000"), equalTo(Duration.of(  61, MINUTES)));
-        assertThat(FULL.parse("01:01:01.000000000"), equalTo(Duration.of(3661, SECONDS)));
+        assertThat(FULL.parse("00:00:00.100000000"), equalTo(Duration.of(    100, MILLISECONDS)));
+        assertThat(FULL.parse("00:00:01.000000000"), equalTo(Duration.of(      1, SECONDS)));
+        assertThat(FULL.parse("00:01:01.000000000"), equalTo(Duration.of(     61, SECONDS)));
+        assertThat(FULL.parse("01:01:00.000000000"), equalTo(Duration.of(     61, MINUTES)));
+        assertThat(FULL.parse("01:01:01.000000000"), equalTo(Duration.of(   3661, SECONDS)));
+        assertThat(FULL.parse("01:01:01.100000000"), equalTo(Duration.of(3661100, MILLISECONDS)));
 
         // Field overflow is OK
         assertThat(FULL.parse("00:01:70.000000000"), equalTo(Duration.of( 130, SECONDS)));
@@ -228,5 +232,20 @@ class DurationFormatTest
         assertThat(SHORTER.parse(    "2.2"), equalTo(Duration.of(2200, MILLISECONDS)));
         assertThat(SHORTER.parse(   "1:45"), equalTo(Duration.of( 105, SECONDS)));
         assertThat(SHORTER.parse("1:45:00"), equalTo(Duration.of( 105, MINUTES)));
+    }
+
+    @Test
+    void parse_fullAndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> FULL.parse("invalid"), throwsException(IllegalArgumentException.class)
+                .withMessage("Unrecognized duration: invalid"));
+    }
+
+    @Test
+    void parse_iso8601AndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> ISO_8601.parse("invalid"), throwsException(IllegalArgumentException.class)
+                .withMessage("Unrecognized duration: invalid")
+                .withCause(DateTimeParseException.class));
     }
 }

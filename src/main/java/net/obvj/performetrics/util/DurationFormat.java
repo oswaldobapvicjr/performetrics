@@ -42,7 +42,7 @@ public enum DurationFormat
 
     /**
      * Formats a time duration in the following format: {@code H:M:S.ns}. For example:
-     * {@code 1:59:59.987654321}
+     * {@code 1:59:59.987654321}.
      */
     FULL
     {
@@ -55,17 +55,9 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(String string)
+        public Duration parse(final String string)
         {
-            Matcher matcher = HMS_PATTERN.matcher(string);
-            if (matcher.matches())
-            {
-                return parseDuration(matcher.group("hours"), HOURS)
-                        .plus(parseDuration(matcher.group("minutes"), MINUTES))
-                        .plus(parseDuration(matcher.group("seconds"), SECONDS))
-                        .plus(parseNanoseconds(matcher.group("nanoseconds")));
-            }
-            throw new IllegalArgumentException(String.format("Unrecognized duration: %s", string));
+            return parseDurationHMS(string);
         }
 
     },
@@ -101,10 +93,9 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(String string)
+        public Duration parse(final String string)
         {
-            // TODO
-            throw new UnsupportedOperationException("Not yet implemented");
+            return parseDurationHMS(string);
         }
 
     },
@@ -144,10 +135,9 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(String string)
+        public Duration parse(final String string)
         {
-            // TODO
-            throw new UnsupportedOperationException("Not yet implemented");
+            return parseDurationHMS(string);
         }
 
     },
@@ -185,7 +175,7 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(String string)
+        public Duration parse(final String string)
         {
             return new Duration(java.time.Duration.parse(string));
         }
@@ -199,7 +189,8 @@ public enum DurationFormat
             "^(((?<hours>[0-9]*)[:])?"
             + "((?<minutes>[0-9]*)[:]))?"
             + "(?<seconds>[0-9]+)"
-            + "([.,](?<nanoseconds>[0-9]+))?");
+            + "([.,](?<nanoseconds>[0-9]+))?"
+            + "(.)*"); // legend
 
     /**
      * Formats a given duration.
@@ -213,6 +204,14 @@ public enum DurationFormat
      */
     public abstract String format(final Duration duration, boolean printLegend);
 
+    /**
+     * Parses a textual representation of a {@link Duration}.
+     *
+     * @param string the string to parse, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws IllegalArgumentException if the string cannot be parsed as {@link Duration}
+     * @since 2.4.0
+     */
     public abstract Duration parse(final String string);
 
     /**
@@ -274,6 +273,27 @@ public enum DurationFormat
         builder.append(string);
         builder.setLength(size);
         return builder.toString().replace('\u0000', '0');
+    }
+
+    /**
+     * Parses a {@link Duration} in the format {@code [H:][M:]S[.ns]}.
+     *
+     * @param string the string to parse, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws IllegalArgumentException if the string cannot be parsed as {@link Duration}
+     * @since 2.4.0
+     */
+    private static Duration parseDurationHMS(String string)
+    {
+        Matcher matcher = HMS_PATTERN.matcher(string);
+        if (matcher.matches())
+        {
+            return parseDuration(matcher.group("hours"), HOURS)
+                    .plus(parseDuration(matcher.group("minutes"), MINUTES))
+                    .plus(parseDuration(matcher.group("seconds"), SECONDS))
+                    .plus(parseNanoseconds(matcher.group("nanoseconds")));
+        }
+        throw new IllegalArgumentException(String.format("Unrecognized duration: %s", string));
     }
 
     /**

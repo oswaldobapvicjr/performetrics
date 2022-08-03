@@ -199,4 +199,34 @@ class DurationFormatTest
         assertThat(FULL.parse("01:60:00.000000000"), equalTo(Duration.of(   2, HOURS)));
     }
 
-}
+    @Test
+    void parse_shortAndValidString_success()
+    {
+        assertThat(SHORT.parse(       "0.000000000 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORT.parse(       "0.100000000 second(s)"), equalTo(Duration.of( 100, MILLISECONDS)));
+        assertThat(SHORT.parse(       "1.000000000 second(s)"), equalTo(Duration.of(   1, SECONDS)));
+        assertThat(SHORT.parse(   "01:01.000000000 minute(s)"), equalTo(Duration.of(  61, SECONDS)));
+        assertThat(SHORT.parse("01:01:00.000000000 hour(s)"  ), equalTo(Duration.of(  61, MINUTES)));
+        assertThat(SHORT.parse("01:01:01.000000000 hour(s)"  ), equalTo(Duration.of(3661, SECONDS)));
+        // Without legend
+        assertThat(SHORT.parse(      "1.100000000"), equalTo(Duration.of(1100, MILLISECONDS)));
+        assertThat(SHORT.parse(   "1:30.000000000"), equalTo(Duration.of(  90, SECONDS)));
+        assertThat(SHORT.parse("1:30:00.000000000"), equalTo(Duration.of(  90, MINUTES)));    }
+
+    @Test
+    void parse_shorterAndValidString_success()
+    {
+        assertThat(SHORTER.parse(       "0 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORTER.parse(     "0.2 second(s)"), equalTo(Duration.of( 200, MILLISECONDS)));
+        assertThat(SHORTER.parse(       "2 second(s)"), equalTo(Duration.of(   2, SECONDS)));
+        assertThat(SHORTER.parse(   "01:02 minute(s)"), equalTo(Duration.of(  62, SECONDS)));
+        assertThat(SHORTER.parse("01:02:00 hour(s)"  ), equalTo(Duration.of(  62, MINUTES)));
+        assertThat(SHORTER.parse("01:01:02 hour(s)"  ), equalTo(Duration.of(3662, SECONDS)));
+
+        // Without legend
+        assertThat(SHORTER.parse(      "2"), equalTo(Duration.of(   2, SECONDS)));
+        assertThat(SHORTER.parse(    "2.2"), equalTo(Duration.of(2200, MILLISECONDS)));
+        assertThat(SHORTER.parse(   "1:45"), equalTo(Duration.of( 105, SECONDS)));
+        assertThat(SHORTER.parse("1:45:00"), equalTo(Duration.of( 105, MINUTES)));
+    }
+}

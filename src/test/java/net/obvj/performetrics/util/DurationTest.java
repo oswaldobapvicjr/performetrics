@@ -255,6 +255,21 @@ class DurationTest
     }
 
     @Test
+    void parse_stringsGeneratedByToString_success()
+    {
+        assertParseFromToString(Duration.of(123, NANOSECONDS));
+        assertParseFromToString(Duration.of(123, MILLISECONDS));
+        assertParseFromToString(Duration.of(123, SECONDS));
+        assertParseFromToString(Duration.of(123, MINUTES));
+
+    }
+
+    private void assertParseFromToString(Duration duration)
+    {
+        assertThat(Duration.parse(duration.toString()), equalTo(duration));
+    }
+
+    @Test
     void parse_iso8601AndValidStrings_success()
     {
         assertThat(Duration.parse("PT0.123456789S", ISO_8601), equalTo(Duration.of(123456789, NANOSECONDS)));

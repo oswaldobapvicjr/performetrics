@@ -240,8 +240,7 @@ public class Duration implements Comparable<Duration>
     /**
      * Returns a string representation of this {@code Duration} with a specific format.
      * <p>
-     * <b>Note:</b> This is equivalent to calling
-     * {@code DurationFormatter.format(duration, true)}
+     * <b>Note:</b> This is equivalent to calling {@code toString(format, true)}
      *
      * @param format the {@link DurationFormat} to be applied
      * @return a string representation of this object in the specified format

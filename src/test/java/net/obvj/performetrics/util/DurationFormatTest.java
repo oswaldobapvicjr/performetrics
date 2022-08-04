@@ -235,6 +235,12 @@ class DurationFormatTest
     }
 
     @Test
+    void parse_fullAndNull_nullPointerException()
+    {
+        assertThat(() -> FULL.parse(null), throwsException(NullPointerException.class));
+    }
+
+    @Test
     void parse_fullAndInvalidString_illegalArgumentException()
     {
         assertThat(() -> FULL.parse("invalid"),

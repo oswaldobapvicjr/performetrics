@@ -261,7 +261,6 @@ class DurationTest
         assertParseFromToString(Duration.of(123, MILLISECONDS));
         assertParseFromToString(Duration.of(123, SECONDS));
         assertParseFromToString(Duration.of(123, MINUTES));
-
     }
 
     private void assertParseFromToString(Duration duration)

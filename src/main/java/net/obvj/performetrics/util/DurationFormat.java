@@ -57,7 +57,7 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(final String string)
+        public Duration doParse(final String string)
         {
             return parseDurationHMS(string);
         }
@@ -95,7 +95,7 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(final String string)
+        public Duration doParse(final String string)
         {
             return parseDurationHMS(string);
         }
@@ -137,7 +137,7 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(final String string)
+        public Duration doParse(final String string)
         {
             return parseDurationHMS(string);
         }
@@ -177,7 +177,7 @@ public enum DurationFormat
         }
 
         @Override
-        public Duration parse(final String string)
+        public Duration doParse(final String string)
         {
             try
             {
@@ -228,10 +228,17 @@ public enum DurationFormat
      *
      * @param string the string to parse, not null
      * @return the parsed {@code Duration}, not null
+     * @throws NullPointerException     if the specified string is null
      * @throws IllegalArgumentException if the string cannot be parsed as {@link Duration}
      * @since 2.4.0
      */
-    public abstract Duration parse(final String string);
+    public Duration parse(final String string)
+    {
+        Objects.requireNonNull(string);
+        return doParse(string);
+    }
+
+    abstract Duration doParse(final String string);
 
     /**
      * Returns the {@code legend}, prepended with a white-space, if the

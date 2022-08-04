@@ -42,15 +42,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class Duration implements Comparable<Duration>
 {
+
     /**
      * Constant for a duration of zero.
      */
     public static final Duration ZERO = new Duration(java.time.Duration.ZERO);
 
+    /**
+     * The default {@link DurationFormat} to be applied by {@link #toString()} and
+     * {@link #parse(String)} operations, if no format is specified.
+     */
+    public static final DurationFormat DEFAULT_FORMAT = DurationFormat.SHORTER;
+
     private static final String MSG_DURATION_MUST_NOT_BE_NULL = "The other duration must not be null";
     private static final String MSG_DURATION_TO_ADD_MUST_NOT_BE_NULL = "The duration to add must not be null";
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
+    private static final String MSG_FORMAT_MUST_NOT_BE_NULL = "The format must not be null";
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
@@ -62,9 +70,9 @@ public class Duration implements Comparable<Duration>
      *
      * @param internalDuration the internal {@link java.time.Duration}; must not be null
      */
-    private Duration(java.time.Duration internalDuration)
+    Duration(java.time.Duration internalDuration)
     {
-        this.internalDuration = internalDuration;
+        this.internalDuration = Objects.requireNonNull(internalDuration);
     }
 
     /**
@@ -92,6 +100,43 @@ public class Duration implements Comparable<Duration>
         ChronoUnit chronoUnit = TimeUnitConverter.toChronoUnit(timeUnit);
         java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
         return new Duration(internalDuration);
+    }
+
+    /**
+     * Obtains a {@code Duration} from a string in default format.
+     * <p>
+     * This will parse a textual representation of a duration produced by {@link #toString()}.
+     *
+     * @param string the string to parse, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws NullPointerException     if the specified string is null
+     * @throws IllegalArgumentException if the string cannot be parsed using default format
+     * @since 2.4.0
+     */
+    public static Duration parse(String string)
+    {
+        return parse(string, DEFAULT_FORMAT);
+    }
+
+    /**
+     * Obtains a {@code Duration} from a string in a specific {@link DurationFormat}.
+     * <p>
+     * This will parse a textual representation of a duration, including the string produced
+     * by {@link #toString(DurationFormat)}.
+     *
+     * @param string the string to parse, not null
+     * @param format the {@link DurationFormat} in which the string is represented, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws NullPointerException     if either the specified string or the
+     *                                  {@link DurationFormat} is null
+     * @throws IllegalArgumentException if the string cannot be parsed as a duration using the
+     *                                  specified {@link DurationFormat}
+     * @since 2.4.0
+     */
+    public static Duration parse(String string, DurationFormat format)
+    {
+        Objects.requireNonNull(format, MSG_FORMAT_MUST_NOT_BE_NULL);
+        return format.parse(string);
     }
 
     /**
@@ -189,14 +234,13 @@ public class Duration implements Comparable<Duration>
     @Override
     public String toString()
     {
-        return DurationFormatter.format(this);
+        return toString(DEFAULT_FORMAT);
     }
 
     /**
      * Returns a string representation of this {@code Duration} with a specific format.
      * <p>
-     * <b>Note:</b> This is equivalent to calling:
-     * {@code DurationFormatter.format(duration, format)}
+     * <b>Note:</b> This is equivalent to calling {@code toString(format, true)}
      *
      * @param format the {@link DurationFormat} to be applied
      * @return a string representation of this object in the specified format
@@ -213,10 +257,12 @@ public class Duration implements Comparable<Duration>
      * @param printLegend a flag indicating whether or not to include a legend in the
      *                    generated string
      * @return a string representation of this object in the specified format
+     * @throws NullPointerException if the specified {@link DurationFormat} is null
      */
     public String toString(DurationFormat format, boolean printLegend)
     {
-        return DurationFormatter.format(this, format, printLegend);
+        Objects.requireNonNull(format, MSG_FORMAT_MUST_NOT_BE_NULL);
+        return format.format(this, printLegend);
     }
 
     /**
@@ -380,7 +426,7 @@ public class Duration implements Comparable<Duration>
      * @return the internal {@code java.time.Duration} object
      * @since 2.2.0
      */
-    protected java.time.Duration getInternalDuration()
+    java.time.Duration getInternalDuration()
     {
         return internalDuration;
     }

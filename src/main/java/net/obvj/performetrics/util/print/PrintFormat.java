@@ -79,7 +79,8 @@ public enum PrintFormat
         private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
         {
             return String.format(style.getRowFormat(), type,
-                    style.getDurationFormat().format(stopwatch.elapsedTime(type), style.isPrintLegend()));
+                    style.getDurationFormat().format(stopwatch.elapsedTime(type),
+                            style.isPrintLegend()));
         }
     },
 
@@ -170,7 +171,8 @@ public enum PrintFormat
         {
             DurationFormat durationFormat = style.getDurationFormat();
             boolean printLegend = style.isPrintLegend();
-            return String.format(style.getRowFormat(), sequence, durationFormat.format(elapsedTime, printLegend),
+            return String.format(style.getRowFormat(), sequence,
+                    durationFormat.format(elapsedTime, printLegend),
                     durationFormat.format(elapsedTimeAcc, printLegend), type);
         }
 
@@ -181,7 +183,7 @@ public enum PrintFormat
         }
     };
 
-    protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final String HEADER_SESSION = "#";
     private static final String HEADER_COUNTER = "Counter";

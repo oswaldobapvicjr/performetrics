@@ -17,9 +17,13 @@
 package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
+import static net.obvj.performetrics.util.DurationFormat.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 
@@ -35,131 +39,131 @@ class DurationFormatTest
     @Test
     void toString_full_displaysAllUnits()
     {
-        assertThat(DurationFormat.FULL.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000001")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(  "0:00:00.001000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          SECONDS     ), false), is(equalTo(  "0:00:01.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          MINUTES     ), false), is(equalTo(  "0:01:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          HOURS       ), false), is(equalTo(  "1:00:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1,          DAYS        ), false), is(equalTo( "24:00:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo(  "0:00:00.000000789")));
-        assertThat(DurationFormat.FULL.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo(  "0:00:00.123456789")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(  "0:00:01.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(  "0:00:01.001000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(  "0:00:01.601000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(  "0:00:03.601000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(70,         SECONDS     ), false), is(equalTo(  "0:01:10.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(601,        SECONDS     ), false), is(equalTo(  "0:10:01.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(959,        SECONDS     ), false), is(equalTo(  "0:15:59.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(960,        SECONDS     ), false), is(equalTo(  "0:16:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(970,        SECONDS     ), false), is(equalTo(  "0:16:10.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(3601,       MINUTES     ), false), is(equalTo( "60:01:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
-        assertThat(DurationFormat.FULL.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000001")));
+        assertThat(FULL.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(  "0:00:00.001000000")));
+        assertThat(FULL.format(Duration.of(1,          SECONDS     ), false), is(equalTo(  "0:00:01.000000000")));
+        assertThat(FULL.format(Duration.of(1,          MINUTES     ), false), is(equalTo(  "0:01:00.000000000")));
+        assertThat(FULL.format(Duration.of(1,          HOURS       ), false), is(equalTo(  "1:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(1,          DAYS        ), false), is(equalTo( "24:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo(  "0:00:00.000000789")));
+        assertThat(FULL.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo(  "0:00:00.123456789")));
+        assertThat(FULL.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(  "0:00:01.000000000")));
+        assertThat(FULL.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(  "0:00:01.001000000")));
+        assertThat(FULL.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(  "0:00:01.601000000")));
+        assertThat(FULL.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(  "0:00:03.601000000")));
+        assertThat(FULL.format(Duration.of(70,         SECONDS     ), false), is(equalTo(  "0:01:10.000000000")));
+        assertThat(FULL.format(Duration.of(601,        SECONDS     ), false), is(equalTo(  "0:10:01.000000000")));
+        assertThat(FULL.format(Duration.of(959,        SECONDS     ), false), is(equalTo(  "0:15:59.000000000")));
+        assertThat(FULL.format(Duration.of(960,        SECONDS     ), false), is(equalTo(  "0:16:00.000000000")));
+        assertThat(FULL.format(Duration.of(970,        SECONDS     ), false), is(equalTo(  "0:16:10.000000000")));
+        assertThat(FULL.format(Duration.of(3601,       MINUTES     ), false), is(equalTo( "60:01:00.000000000")));
+        assertThat(FULL.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
     }
 
     @Test
     void toString_short_abbreviatesIfPossible()
     {
-        assertThat(DurationFormat.SHORT.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(        "0.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(        "0.000000001")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(        "0.001000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          SECONDS     ), false), is(equalTo(        "1.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          MINUTES     ), false), is(equalTo(     "1:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          HOURS       ), false), is(equalTo(  "1:00:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1,          DAYS        ), false), is(equalTo( "24:00:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo(        "0.000000789")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo(        "0.123456789")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(        "1.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(        "1.001000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(        "1.601000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(        "3.601000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(70,         SECONDS     ), false), is(equalTo(     "1:10.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(601,        SECONDS     ), false), is(equalTo(    "10:01.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(959,        SECONDS     ), false), is(equalTo(    "15:59.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(960,        SECONDS     ), false), is(equalTo(    "16:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(970,        SECONDS     ), false), is(equalTo(    "16:10.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(3601,       MINUTES     ), false), is(equalTo( "60:01:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
-        assertThat(DurationFormat.SHORT.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(        "0.000000000")));
+        assertThat(SHORT.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(        "0.000000001")));
+        assertThat(SHORT.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(        "0.001000000")));
+        assertThat(SHORT.format(Duration.of(1,          SECONDS     ), false), is(equalTo(        "1.000000000")));
+        assertThat(SHORT.format(Duration.of(1,          MINUTES     ), false), is(equalTo(     "1:00.000000000")));
+        assertThat(SHORT.format(Duration.of(1,          HOURS       ), false), is(equalTo(  "1:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(1,          DAYS        ), false), is(equalTo( "24:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo(        "0.000000789")));
+        assertThat(SHORT.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo(        "0.123456789")));
+        assertThat(SHORT.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(        "1.000000000")));
+        assertThat(SHORT.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(        "1.001000000")));
+        assertThat(SHORT.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(        "1.601000000")));
+        assertThat(SHORT.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(        "3.601000000")));
+        assertThat(SHORT.format(Duration.of(70,         SECONDS     ), false), is(equalTo(     "1:10.000000000")));
+        assertThat(SHORT.format(Duration.of(601,        SECONDS     ), false), is(equalTo(    "10:01.000000000")));
+        assertThat(SHORT.format(Duration.of(959,        SECONDS     ), false), is(equalTo(    "15:59.000000000")));
+        assertThat(SHORT.format(Duration.of(960,        SECONDS     ), false), is(equalTo(    "16:00.000000000")));
+        assertThat(SHORT.format(Duration.of(970,        SECONDS     ), false), is(equalTo(    "16:10.000000000")));
+        assertThat(SHORT.format(Duration.of(3601,       MINUTES     ), false), is(equalTo( "60:01:00.000000000")));
+        assertThat(SHORT.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
     }
 
     @Test
     void toString_shorterWithLegend_supressesTrailingZeros()
     {
-        assertThat(DurationFormat.SHORTER.format(Duration.of(0,          NANOSECONDS ), true), is(equalTo(          "0 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          NANOSECONDS ), true), is(equalTo("0.000000001 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          MILLISECONDS), true), is(equalTo(      "0.001 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          SECONDS     ), true), is(equalTo(          "1 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          MINUTES     ), true), is(equalTo(       "1:00 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          HOURS       ), true), is(equalTo(      "1:00:00 hour(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          DAYS        ), true), is(equalTo(     "24:00:00 hour(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(789,        NANOSECONDS ), true), is(equalTo("0.000000789 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(123456789,  NANOSECONDS ), true), is(equalTo("0.123456789 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1000000000, NANOSECONDS ), true), is(equalTo(          "1 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1001,       MILLISECONDS), true), is(equalTo(      "1.001 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1601,       MILLISECONDS), true), is(equalTo(      "1.601 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(3601,       MILLISECONDS), true), is(equalTo(      "3.601 second(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(70,         SECONDS     ), true), is(equalTo(       "1:10 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(601,        SECONDS     ), true), is(equalTo(      "10:01 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(959,        SECONDS     ), true), is(equalTo(      "15:59 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(960,        SECONDS     ), true), is(equalTo(      "16:00 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(970,        SECONDS     ), true), is(equalTo(      "16:10 minute(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(3601,       MINUTES     ), true), is(equalTo(     "60:01:00 hour(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(2,          HOURS       ), true), is(equalTo(      "2:00:00 hour(s)")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(100,        HOURS       ), true), is(equalTo(    "100:00:00 hour(s)")));
+        assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), true), is(equalTo(          "0 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          NANOSECONDS ), true), is(equalTo("0.000000001 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          MILLISECONDS), true), is(equalTo(      "0.001 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          SECONDS     ), true), is(equalTo(          "1 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          MINUTES     ), true), is(equalTo(       "1:00 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          HOURS       ), true), is(equalTo(      "1:00:00 hour(s)")));
+        assertThat(SHORTER.format(Duration.of(1,          DAYS        ), true), is(equalTo(     "24:00:00 hour(s)")));
+        assertThat(SHORTER.format(Duration.of(789,        NANOSECONDS ), true), is(equalTo("0.000000789 second(s)")));
+        assertThat(SHORTER.format(Duration.of(123456789,  NANOSECONDS ), true), is(equalTo("0.123456789 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1000000000, NANOSECONDS ), true), is(equalTo(          "1 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1001,       MILLISECONDS), true), is(equalTo(      "1.001 second(s)")));
+        assertThat(SHORTER.format(Duration.of(1601,       MILLISECONDS), true), is(equalTo(      "1.601 second(s)")));
+        assertThat(SHORTER.format(Duration.of(3601,       MILLISECONDS), true), is(equalTo(      "3.601 second(s)")));
+        assertThat(SHORTER.format(Duration.of(70,         SECONDS     ), true), is(equalTo(       "1:10 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(601,        SECONDS     ), true), is(equalTo(      "10:01 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(959,        SECONDS     ), true), is(equalTo(      "15:59 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(960,        SECONDS     ), true), is(equalTo(      "16:00 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(970,        SECONDS     ), true), is(equalTo(      "16:10 minute(s)")));
+        assertThat(SHORTER.format(Duration.of(3601,       MINUTES     ), true), is(equalTo(     "60:01:00 hour(s)")));
+        assertThat(SHORTER.format(Duration.of(2,          HOURS       ), true), is(equalTo(      "2:00:00 hour(s)")));
+        assertThat(SHORTER.format(Duration.of(100,        HOURS       ), true), is(equalTo(    "100:00:00 hour(s)")));
     }
 
     @Test
     void toString_shorterWithoutLegend_supressesTrailingZeros()
     {
-        assertThat(DurationFormat.SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0.000000001")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(      "0.001")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          SECONDS     ), false), is(equalTo(          "1")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          MINUTES     ), false), is(equalTo(       "1:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          HOURS       ), false), is(equalTo(    "1:00:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1,          DAYS        ), false), is(equalTo(   "24:00:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo("0.000000789")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo("0.123456789")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(          "1")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(      "1.001")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(      "1.601")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(      "3.601")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(70,         SECONDS     ), false), is(equalTo(       "1:10")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(601,        SECONDS     ), false), is(equalTo(      "10:01")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(959,        SECONDS     ), false), is(equalTo(      "15:59")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(960,        SECONDS     ), false), is(equalTo(      "16:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(970,        SECONDS     ), false), is(equalTo(      "16:10")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(3601,       MINUTES     ), false), is(equalTo(   "60:01:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(2,          HOURS       ), false), is(equalTo(    "2:00:00")));
-        assertThat(DurationFormat.SHORTER.format(Duration.of(100,        HOURS       ), false), is(equalTo(  "100:00:00")));
+        assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0")));
+        assertThat(SHORTER.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0.000000001")));
+        assertThat(SHORTER.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(      "0.001")));
+        assertThat(SHORTER.format(Duration.of(1,          SECONDS     ), false), is(equalTo(          "1")));
+        assertThat(SHORTER.format(Duration.of(1,          MINUTES     ), false), is(equalTo(       "1:00")));
+        assertThat(SHORTER.format(Duration.of(1,          HOURS       ), false), is(equalTo(    "1:00:00")));
+        assertThat(SHORTER.format(Duration.of(1,          DAYS        ), false), is(equalTo(   "24:00:00")));
+        assertThat(SHORTER.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo("0.000000789")));
+        assertThat(SHORTER.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo("0.123456789")));
+        assertThat(SHORTER.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo(          "1")));
+        assertThat(SHORTER.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo(      "1.001")));
+        assertThat(SHORTER.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo(      "1.601")));
+        assertThat(SHORTER.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo(      "3.601")));
+        assertThat(SHORTER.format(Duration.of(70,         SECONDS     ), false), is(equalTo(       "1:10")));
+        assertThat(SHORTER.format(Duration.of(601,        SECONDS     ), false), is(equalTo(      "10:01")));
+        assertThat(SHORTER.format(Duration.of(959,        SECONDS     ), false), is(equalTo(      "15:59")));
+        assertThat(SHORTER.format(Duration.of(960,        SECONDS     ), false), is(equalTo(      "16:00")));
+        assertThat(SHORTER.format(Duration.of(970,        SECONDS     ), false), is(equalTo(      "16:10")));
+        assertThat(SHORTER.format(Duration.of(3601,       MINUTES     ), false), is(equalTo(   "60:01:00")));
+        assertThat(SHORTER.format(Duration.of(2,          HOURS       ), false), is(equalTo(    "2:00:00")));
+        assertThat(SHORTER.format(Duration.of(100,        HOURS       ), false), is(equalTo(  "100:00:00")));
     }
 
     @Test
     void toString_iso8601()
     {
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("PT0S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("PT0.000000001S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          MILLISECONDS), false), is(equalTo("PT0.001S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          SECONDS     ), false), is(equalTo("PT1S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          MINUTES     ), false), is(equalTo("PT1M")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          HOURS       ), false), is(equalTo("PT1H")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1,          DAYS        ), false), is(equalTo("PT24H")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo("PT0.000000789S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo("PT0.123456789S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo("PT1S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo("PT1.001S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo("PT1.601S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo("PT3.601S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(70,         SECONDS     ), false), is(equalTo("PT1M10S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(601,        SECONDS     ), false), is(equalTo("PT10M1S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(959,        SECONDS     ), false), is(equalTo("PT15M59S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(960,        SECONDS     ), false), is(equalTo("PT16M")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(970,        SECONDS     ), false), is(equalTo("PT16M10S")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(3601,       MINUTES     ), false), is(equalTo("PT60H1M")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(2,          HOURS       ), false), is(equalTo("PT2H")));
-        assertThat(DurationFormat.ISO_8601.format(Duration.of(100,        HOURS       ), false), is(equalTo("PT100H")));
+        assertThat(ISO_8601.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("PT0S")));
+        assertThat(ISO_8601.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("PT0.000000001S")));
+        assertThat(ISO_8601.format(Duration.of(1,          MILLISECONDS), false), is(equalTo("PT0.001S")));
+        assertThat(ISO_8601.format(Duration.of(1,          SECONDS     ), false), is(equalTo("PT1S")));
+        assertThat(ISO_8601.format(Duration.of(1,          MINUTES     ), false), is(equalTo("PT1M")));
+        assertThat(ISO_8601.format(Duration.of(1,          HOURS       ), false), is(equalTo("PT1H")));
+        assertThat(ISO_8601.format(Duration.of(1,          DAYS        ), false), is(equalTo("PT24H")));
+        assertThat(ISO_8601.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo("PT0.000000789S")));
+        assertThat(ISO_8601.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo("PT0.123456789S")));
+        assertThat(ISO_8601.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo("PT1S")));
+        assertThat(ISO_8601.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo("PT1.001S")));
+        assertThat(ISO_8601.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo("PT1.601S")));
+        assertThat(ISO_8601.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo("PT3.601S")));
+        assertThat(ISO_8601.format(Duration.of(70,         SECONDS     ), false), is(equalTo("PT1M10S")));
+        assertThat(ISO_8601.format(Duration.of(601,        SECONDS     ), false), is(equalTo("PT10M1S")));
+        assertThat(ISO_8601.format(Duration.of(959,        SECONDS     ), false), is(equalTo("PT15M59S")));
+        assertThat(ISO_8601.format(Duration.of(960,        SECONDS     ), false), is(equalTo("PT16M")));
+        assertThat(ISO_8601.format(Duration.of(970,        SECONDS     ), false), is(equalTo("PT16M10S")));
+        assertThat(ISO_8601.format(Duration.of(3601,       MINUTES     ), false), is(equalTo("PT60H1M")));
+        assertThat(ISO_8601.format(Duration.of(2,          HOURS       ), false), is(equalTo("PT2H")));
+        assertThat(ISO_8601.format(Duration.of(100,        HOURS       ), false), is(equalTo("PT100H")));
     }
 
     @Test
@@ -171,16 +175,85 @@ class DurationFormatTest
     @Test
     void toString_full_appliesFullStyleWithLegend()
     {
-        assertThat(Duration.of(3601, MILLISECONDS).toString(DurationFormat.FULL),
+        assertThat(Duration.of(3601, MILLISECONDS).toString(FULL),
                 is(equalTo("0:00:03.601000000 hour(s)")));
     }
 
     @Test
     void removeTrailingZeros_validStrings_success()
     {
-        assertThat(DurationFormat.removeTrailingZeros("9.009000000"), is(equalTo("9.009")));
-        assertThat(DurationFormat.removeTrailingZeros("9.000000009"), is(equalTo("9.000000009")));
-        assertThat(DurationFormat.removeTrailingZeros("9.000000000"), is(equalTo("9")));
+        assertThat(removeTrailingZeros("9.009000000"), is(equalTo("9.009")));
+        assertThat(removeTrailingZeros("9.000000009"), is(equalTo("9.000000009")));
+        assertThat(removeTrailingZeros("9.000000000"), is(equalTo("9")));
     }
 
-}
+    @Test
+    void parse_fullAndValidString_success()
+    {
+        assertThat(FULL.parse("00:00:00.000000000"), equalTo(Duration.ZERO));
+        assertThat(FULL.parse("00:00:00.100000000"), equalTo(Duration.of(    100, MILLISECONDS)));
+        assertThat(FULL.parse("00:00:01.000000000"), equalTo(Duration.of(      1, SECONDS)));
+        assertThat(FULL.parse("00:01:01.000000000"), equalTo(Duration.of(     61, SECONDS)));
+        assertThat(FULL.parse("01:01:00.000000000"), equalTo(Duration.of(     61, MINUTES)));
+        assertThat(FULL.parse("01:01:01.000000000"), equalTo(Duration.of(   3661, SECONDS)));
+        assertThat(FULL.parse("01:01:01.100000000"), equalTo(Duration.of(3661100, MILLISECONDS)));
+
+        // Field overflow is OK
+        assertThat(FULL.parse("00:01:70.000000000"), equalTo(Duration.of( 130, SECONDS)));
+        assertThat(FULL.parse("01:60:00.000000000"), equalTo(Duration.of(   2, HOURS)));
+    }
+
+    @Test
+    void parse_shortAndValidString_success()
+    {
+        assertThat(SHORT.parse(       "0.000000000 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORT.parse(       "0.100000000 second(s)"), equalTo(Duration.of( 100, MILLISECONDS)));
+        assertThat(SHORT.parse(       "1.000000000 second(s)"), equalTo(Duration.of(   1, SECONDS)));
+        assertThat(SHORT.parse(   "01:01.000000000 minute(s)"), equalTo(Duration.of(  61, SECONDS)));
+        assertThat(SHORT.parse("01:01:00.000000000 hour(s)"  ), equalTo(Duration.of(  61, MINUTES)));
+        assertThat(SHORT.parse("01:01:01.000000000 hour(s)"  ), equalTo(Duration.of(3661, SECONDS)));
+        // Without legend
+        assertThat(SHORT.parse(      "1.100000000"), equalTo(Duration.of(1100, MILLISECONDS)));
+        assertThat(SHORT.parse(   "1:30.000000000"), equalTo(Duration.of(  90, SECONDS)));
+        assertThat(SHORT.parse("1:30:00.000000000"), equalTo(Duration.of(  90, MINUTES)));    }
+
+    @Test
+    void parse_shorterAndValidString_success()
+    {
+        assertThat(SHORTER.parse(       "0 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORTER.parse(     "0.2 second(s)"), equalTo(Duration.of( 200, MILLISECONDS)));
+        assertThat(SHORTER.parse(       "2 second(s)"), equalTo(Duration.of(   2, SECONDS)));
+        assertThat(SHORTER.parse(   "01:02 minute(s)"), equalTo(Duration.of(  62, SECONDS)));
+        assertThat(SHORTER.parse("01:02:00 hour(s)"  ), equalTo(Duration.of(  62, MINUTES)));
+        assertThat(SHORTER.parse("01:01:02 hour(s)"  ), equalTo(Duration.of(3662, SECONDS)));
+
+        // Without legend
+        assertThat(SHORTER.parse(      "2"), equalTo(Duration.of(   2, SECONDS)));
+        assertThat(SHORTER.parse(    "2.2"), equalTo(Duration.of(2200, MILLISECONDS)));
+        assertThat(SHORTER.parse(   "1:45"), equalTo(Duration.of( 105, SECONDS)));
+        assertThat(SHORTER.parse("1:45:00"), equalTo(Duration.of( 105, MINUTES)));
+    }
+
+    @Test
+    void parse_fullAndNull_nullPointerException()
+    {
+        assertThat(() -> FULL.parse(null), throwsException(NullPointerException.class));
+    }
+
+    @Test
+    void parse_fullAndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> FULL.parse("invalid"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid"));
+    }
+
+    @Test
+    void parse_iso8601AndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> ISO_8601.parse("invalid2"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid2")
+                .withCause(DateTimeParseException.class));
+    }
+}

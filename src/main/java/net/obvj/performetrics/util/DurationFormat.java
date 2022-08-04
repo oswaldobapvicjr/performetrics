@@ -16,6 +16,14 @@
 
 package net.obvj.performetrics.util;
 
+import static java.util.concurrent.TimeUnit.*;
+
+import java.time.format.DateTimeParseException;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Enumerates different duration format styles, each one with particular characteristics.
  * <p>
@@ -33,18 +41,27 @@ package net.obvj.performetrics.util;
  */
 public enum DurationFormat
 {
+
     /**
      * Formats a time duration in the following format: {@code H:M:S.ns}. For example:
-     * {@code 1:59:59.987654321}
+     * {@code 1:59:59.987654321}.
      */
     FULL
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
-            return String.format(TimeUnit.HOURS.format, duration.getHours(), duration.getMinutes(),
-                    duration.getSeconds(), duration.getNanoseconds()) + legend(printLegend, TimeUnit.HOURS.legend);
+            return String.format(MyTimeUnit.HOURS.format, duration.getHours(),
+                    duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds())
+                    + legend(printLegend, MyTimeUnit.HOURS.legend);
         }
+
+        @Override
+        public Duration doParse(final String string)
+        {
+            return parseDurationHMS(string);
+        }
+
     },
 
     /**
@@ -61,19 +78,26 @@ public enum DurationFormat
     SHORT
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
             if (duration.getHours() > 0)
             {
-                return DurationFormat.FULL.format(duration, printLegend);
+                return DurationFormat.FULL.doFormat(duration, printLegend);
             }
             if (duration.getMinutes() > 0)
             {
-                return String.format(TimeUnit.MINUTES.format, duration.getMinutes(), duration.getSeconds(),
-                        duration.getNanoseconds()) + legend(printLegend, TimeUnit.MINUTES.legend);
+                return String.format(MyTimeUnit.MINUTES.format, duration.getMinutes(),
+                        duration.getSeconds(), duration.getNanoseconds())
+                        + legend(printLegend, MyTimeUnit.MINUTES.legend);
             }
-            return String.format(TimeUnit.SECONDS.format, duration.getSeconds(), duration.getNanoseconds())
-                    + legend(printLegend, TimeUnit.SECONDS.legend);
+            return String.format(MyTimeUnit.SECONDS.format, duration.getSeconds(),
+                    duration.getNanoseconds()) + legend(printLegend, MyTimeUnit.SECONDS.legend);
+        }
+
+        @Override
+        public Duration doParse(final String string)
+        {
+            return parseDurationHMS(string);
         }
 
     },
@@ -93,9 +117,9 @@ public enum DurationFormat
     SHORTER
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
-            String format = removeTrailingZeros(SHORT.format(duration, false));
+            String format = removeTrailingZeros(SHORT.doFormat(duration, false));
 
             if (!printLegend)
             {
@@ -103,13 +127,19 @@ public enum DurationFormat
             }
             if (duration.getHours() > 0)
             {
-                return format + legend(true, TimeUnit.HOURS.legend);
+                return format + legend(true, MyTimeUnit.HOURS.legend);
             }
             if (duration.getMinutes() > 0)
             {
-                return format + legend(true, TimeUnit.MINUTES.legend);
+                return format + legend(true, MyTimeUnit.MINUTES.legend);
             }
-            return format + legend(true, TimeUnit.SECONDS.legend);
+            return format + legend(true, MyTimeUnit.SECONDS.legend);
+        }
+
+        @Override
+        public Duration doParse(final String string)
+        {
+            return parseDurationHMS(string);
         }
 
     },
@@ -141,12 +171,39 @@ public enum DurationFormat
     ISO_8601
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
             return duration.getInternalDuration().toString();
         }
 
+        @Override
+        public Duration doParse(final String string)
+        {
+            try
+            {
+                return new Duration(java.time.Duration.parse(string));
+            }
+            catch (DateTimeParseException exception)
+            {
+                throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string),
+                        exception);
+            }
+        }
+
     };
+
+    /**
+     * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
+     */
+    private static final Pattern HMS_PATTERN = Pattern.compile(
+            "^(((?<hours>[0-9]*)[:])?"
+            + "((?<minutes>[0-9]*)[:]))?"
+            + "(?<seconds>[0-9]+)"
+            + "([.,](?<nanoseconds>[0-9]+))?"
+            + "(.)*"); // legend
+
+    static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";
+    static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
 
     /**
      * Formats a given duration.
@@ -156,9 +213,32 @@ public enum DurationFormat
      *                    generated string
      * @return a string representing the specified duration, formatted
      *
-     * @throws NullPointerException if the specified Duration is null
+     * @throws NullPointerException if the specified duration is null
      */
-    public abstract String format(final Duration duration, boolean printLegend);
+    public String format(final Duration duration, boolean printLegend)
+    {
+        Objects.requireNonNull(duration, MSG_DURATION_MUST_NOT_BE_NULL);
+        return doFormat(duration, printLegend);
+    }
+
+    abstract String doFormat(final Duration duration, boolean printLegend);
+
+    /**
+     * Parses a textual representation of a {@link Duration}.
+     *
+     * @param string the string to parse, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws NullPointerException     if the specified string is null
+     * @throws IllegalArgumentException if the string cannot be parsed as {@link Duration}
+     * @since 2.4.0
+     */
+    public Duration parse(final String string)
+    {
+        Objects.requireNonNull(string);
+        return doParse(string);
+    }
+
+    abstract Duration doParse(final String string);
 
     /**
      * Returns the {@code legend}, prepended with a white-space, if the
@@ -200,12 +280,94 @@ public enum DurationFormat
     }
 
     /**
+     * Right-pads a string with zeros.
+     *
+     * @param string the string to pad out; not null
+     * @param size   the size to pad to
+     *
+     * @return a right-padded string or the original string if no padding is necessary
+     * @throws NullPointerException if the string is null
+     * @since 2.4.0
+     */
+    static String rightPadZeros(String string, int size)
+    {
+        if (string.length() >= size)
+        {
+            return string;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(string);
+        builder.setLength(size);
+        return builder.toString().replace('\u0000', '0');
+    }
+
+    /**
+     * Parses a {@link Duration} in the format {@code [H:][M:]S[.ns]}.
+     *
+     * @param string the string to parse, not null
+     * @return the parsed {@code Duration}, not null
+     * @throws IllegalArgumentException if the string cannot be parsed as {@link Duration}
+     * @since 2.4.0
+     */
+    private static Duration parseDurationHMS(String string)
+    {
+        Matcher matcher = HMS_PATTERN.matcher(string);
+        if (matcher.matches())
+        {
+            return parseDuration(matcher.group("hours"), HOURS)
+                    .plus(parseDuration(matcher.group("minutes"), MINUTES))
+                    .plus(parseDuration(matcher.group("seconds"), SECONDS))
+                    .plus(parseNanoseconds(matcher.group("nanoseconds")));
+        }
+        throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
+    }
+
+    /**
+     * Obtains a {@link Duration} representing an amount in the specified time unit.
+     *
+     * @param string   a string representing the amount of the duration; may be null
+     * @param timeUnit the unit that the amount argument is measured in; not null
+     * @return the parsed {@link Duration} or {@link Duration#ZERO} if the string is null
+     * @since 2.4.0
+     */
+    private static Duration parseDuration(String string, TimeUnit timeUnit)
+    {
+        if (string != null)
+        {
+            long value = Long.parseLong(string);
+            return Duration.of(value, timeUnit);
+        }
+        return Duration.ZERO;
+    }
+
+    /**
+     * Obtains a {@link Duration} from the decimal part of a second-based duration, in
+     * nanoseconds.
+     * <p>
+     * Since trailing zeros from the decimal part may have been removed during formatting,
+     * they will be reintroduced to the right of the string.
+     *
+     * @param string a string representing the decimal part of a duration; may be null
+     * @return the parsed {@link Duration} or {@link Duration#ZERO} if the string is null
+     * @since 2.4.0
+     */
+    private static Duration parseNanoseconds(String string)
+    {
+        if (string != null)
+        {
+            String nanoseconds = rightPadZeros(string, 9);
+            return parseDuration(nanoseconds, NANOSECONDS);
+        }
+        return Duration.ZERO;
+    }
+
+    /**
      * Enumerates the time units and associated formatting objects.
      *
      * @author oswaldo.bavic.jr
      * @since 2.2.4
      */
-    private enum TimeUnit
+    private enum MyTimeUnit
     {
         HOURS("hour(s)", "%d:%02d:%02d.%09d"),
 
@@ -216,7 +378,7 @@ public enum DurationFormat
         private final String legend;
         private final String format;
 
-        private TimeUnit(String legend, String format)
+        private MyTimeUnit(String legend, String format)
         {
             this.legend = legend;
             this.format = format;

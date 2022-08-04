@@ -19,6 +19,7 @@ package net.obvj.performetrics.util;
 import static java.util.concurrent.TimeUnit.*;
 
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +49,7 @@ public enum DurationFormat
     FULL
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
             return String.format(MyTimeUnit.HOURS.format, duration.getHours(),
                     duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds())
@@ -77,11 +78,11 @@ public enum DurationFormat
     SHORT
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
             if (duration.getHours() > 0)
             {
-                return DurationFormat.FULL.format(duration, printLegend);
+                return DurationFormat.FULL.doFormat(duration, printLegend);
             }
             if (duration.getMinutes() > 0)
             {
@@ -116,9 +117,9 @@ public enum DurationFormat
     SHORTER
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
-            String format = removeTrailingZeros(SHORT.format(duration, false));
+            String format = removeTrailingZeros(SHORT.doFormat(duration, false));
 
             if (!printLegend)
             {
@@ -170,7 +171,7 @@ public enum DurationFormat
     ISO_8601
     {
         @Override
-        public String format(final Duration duration, boolean printLegend)
+        public String doFormat(final Duration duration, boolean printLegend)
         {
             return duration.getInternalDuration().toString();
         }
@@ -201,7 +202,8 @@ public enum DurationFormat
             + "([.,](?<nanoseconds>[0-9]+))?"
             + "(.)*"); // legend
 
-    private static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
+    static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";
+    static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
 
     /**
      * Formats a given duration.
@@ -211,9 +213,15 @@ public enum DurationFormat
      *                    generated string
      * @return a string representing the specified duration, formatted
      *
-     * @throws NullPointerException if the specified Duration is null
+     * @throws NullPointerException if the specified duration is null
      */
-    public abstract String format(final Duration duration, boolean printLegend);
+    public String format(final Duration duration, boolean printLegend)
+    {
+        Objects.requireNonNull(duration, MSG_DURATION_MUST_NOT_BE_NULL);
+        return doFormat(duration, printLegend);
+    }
+
+    abstract String doFormat(final Duration duration, boolean printLegend);
 
     /**
      * Parses a textual representation of a {@link Duration}.

@@ -237,15 +237,17 @@ class DurationFormatTest
     @Test
     void parse_fullAndInvalidString_illegalArgumentException()
     {
-        assertThat(() -> FULL.parse("invalid"), throwsException(IllegalArgumentException.class)
-                .withMessage("Unrecognized duration: invalid"));
+        assertThat(() -> FULL.parse("invalid"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid"));
     }
 
     @Test
     void parse_iso8601AndInvalidString_illegalArgumentException()
     {
-        assertThat(() -> ISO_8601.parse("invalid"), throwsException(IllegalArgumentException.class)
-                .withMessage("Unrecognized duration: invalid")
+        assertThat(() -> ISO_8601.parse("invalid2"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid2")
                 .withCause(DateTimeParseException.class));
     }
 }

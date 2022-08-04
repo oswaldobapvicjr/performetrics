@@ -18,8 +18,8 @@ package net.obvj.performetrics.util.print;
 
 import java.util.Objects;
 
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
-import net.obvj.performetrics.util.DurationFormatter;
 
 /**
  * A builder for creating {@link PrintStyle} objects. Example:
@@ -481,7 +481,7 @@ public class PrintStyleBuilder
         }
         if (durationFormat == null)
         {
-            durationFormat = DurationFormatter.DEFAULT_FORMAT;
+            durationFormat = Duration.DEFAULT_FORMAT;
         }
         return new PrintStyle(this);
     }

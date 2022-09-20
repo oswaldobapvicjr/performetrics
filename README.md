@@ -108,22 +108,22 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     >  ===============================================
     >  Wall clock time
     >  -----------------------------------------------
-    >      1    0:00:01.062960500    0:00:01.062960500
-    >      2    0:00:00.935263400    0:00:01.998223900
+    >      0    0:00:01.062960500    0:00:01.062960500
+    >      1    0:00:00.935263400    0:00:01.998223900
     >  -----------------------------------------------
     >  TOTAL                         0:00:01.998223900
     >  ===============================================
     >  CPU time
     >  -----------------------------------------------
-    >      1    0:00:00.109375000    0:00:00.109375000
-    >      2    0:00:00.140625000    0:00:00.250000000
+    >      0    0:00:00.109375000    0:00:00.109375000
+    >      1    0:00:00.140625000    0:00:00.250000000
     >  -----------------------------------------------
     >  TOTAL                         0:00:00.250000000
     >  ===============================================
     >  User time
     >  -----------------------------------------------
-    >      1    0:00:00.046875000    0:00:00.046875000
-    >      2    0:00:00.062500000    0:00:00.109375000
+    >      0    0:00:00.046875000    0:00:00.046875000
+    >      1    0:00:00.062500000    0:00:00.109375000
     >  -----------------------------------------------
     >  TOTAL                         0:00:00.109375000
     >  ===============================================
@@ -196,7 +196,7 @@ Performetrics provides two different conversion modes that can be applied depend
 
   To set this mode, call `Performetrics.setDefaultConversionMode(ConversionMode.FAST)`.  
 
-* **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularities. For example, converting 999 milliseconds to seconds results in 0.999
+* **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularity. For example, converting 999 milliseconds to seconds results in 0.999
 
   A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
 

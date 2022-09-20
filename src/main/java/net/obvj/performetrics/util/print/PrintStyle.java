@@ -301,19 +301,19 @@ public class PrintStyle
      * ===============================================
      * Wall clock time
      * -----------------------------------------------
-     *     1    0:00:01.055824100    0:00:01.055824100
-     *     2    0:00:00.836569500    0:00:01.892393600
-     *     3    0:00:00.836091100    0:00:02.728484700
-     *     4    0:00:00.837092700    0:00:03.565577400
+     *     0    0:00:01.055824100    0:00:01.055824100
+     *     1    0:00:00.836569500    0:00:01.892393600
+     *     2    0:00:00.836091100    0:00:02.728484700
+     *     3    0:00:00.837092700    0:00:03.565577400
      * -----------------------------------------------
      * TOTAL                         0:00:03.565577400
      * ===============================================
      * CPU time
      * -----------------------------------------------
-     *     1    0:00:00.109375000    0:00:00.109375000
+     *     0    0:00:00.109375000    0:00:00.109375000
+     *     1    0:00:00.000000000    0:00:00.109375000
      *     2    0:00:00.000000000    0:00:00.109375000
-     *     3    0:00:00.000000000    0:00:00.109375000
-     *     4    0:00:00.015625000    0:00:00.125000000
+     *     3    0:00:00.015625000    0:00:00.125000000
      * -----------------------------------------------
      * TOTAL                         0:00:00.125000000
      * ===============================================
@@ -343,12 +343,12 @@ public class PrintStyle
      *
      * <pre>
      * "Counter","Session","Elapsed time","Elapsed time (+)"
-     * "Wall clock time",1,"0:00:00.032319200","0:00:00.032319200"
-     * "Wall clock time",2,"0:00:00.016766500","0:00:00.049085700"
-     * "Wall clock time",3,"0:00:00.014459500","0:00:00.063545200"
-     * "CPU time",1,"0:00:00.031250000","0:00:00.031250000"
-     * "CPU time",2,"0:00:00.015625000","0:00:00.046875000"
-     * "CPU time",3,"0:00:00.015625000","0:00:00.062500000"
+     * "Wall clock time",0,"0:00:00.032319200","0:00:00.032319200"
+     * "Wall clock time",1,"0:00:00.016766500","0:00:00.049085700"
+     * "Wall clock time",2,"0:00:00.014459500","0:00:00.063545200"
+     * "CPU time",0,"0:00:00.031250000","0:00:00.031250000"
+     * "CPU time",1,"0:00:00.015625000","0:00:00.046875000"
+     * "CPU time",2,"0:00:00.015625000","0:00:00.062500000"
      * </pre>
      *
      * @since 2.2.2
@@ -372,12 +372,12 @@ public class PrintStyle
      * Sample output:
      *
      * <pre>
-     * "Wall clock time",1,"0:00:00.032319200","0:00:00.032319200"
-     * "Wall clock time",2,"0:00:00.016766500","0:00:00.049085700"
-     * "Wall clock time",3,"0:00:00.014459500","0:00:00.063545200"
-     * "CPU time",1,"0:00:00.031250000","0:00:00.031250000"
-     * "CPU time",2,"0:00:00.015625000","0:00:00.046875000"
-     * "CPU time",3,"0:00:00.015625000","0:00:00.062500000"
+     * "Wall clock time",0,"0:00:00.032319200","0:00:00.032319200"
+     * "Wall clock time",1,"0:00:00.016766500","0:00:00.049085700"
+     * "Wall clock time",2,"0:00:00.014459500","0:00:00.063545200"
+     * "CPU time",0,"0:00:00.031250000","0:00:00.031250000"
+     * "CPU time",1,"0:00:00.015625000","0:00:00.046875000"
+     * "CPU time",2,"0:00:00.015625000","0:00:00.062500000"
      * </pre>
      *
      * @since 2.2.2
@@ -397,10 +397,10 @@ public class PrintStyle
      *
      * <pre>
      * "Counter","Session","Elapsed time","Elapsed time (+)"
-     * "Wall clock time",1,"PT0.0323192S","PT0.0323192S"
-     * "Wall clock time",2,"PT0.0167665S","PT0.0490857S"
-     * "CPU time",1,"PT0.03125S","PT0.03125S"
-     * "CPU time",2,"PT0.015625S","PT0.046875S"
+     * "Wall clock time",0,"PT0.0323192S","PT0.0323192S"
+     * "Wall clock time",1,"PT0.0167665S","PT0.0490857S"
+     * "CPU time",0,"PT0.03125S","PT0.03125S"
+     * "CPU time",1,"PT0.015625S","PT0.046875S"
      * </pre>
      *
      * @since 2.2.4
@@ -419,10 +419,10 @@ public class PrintStyle
      * Sample output:
      *
      * <pre>
-     * "Wall clock time",1,"PT0.0323192S","PT0.0323192S"
-     * "Wall clock time",2,"PT0.0167665S","PT0.0490857S"
-     * "CPU time",1,"PT0.03125S","PT0.03125S"
-     * "CPU time",2,"PT0.015625S","PT0.046875S"
+     * "Wall clock time",0,"PT0.0323192S","PT0.0323192S"
+     * "Wall clock time",1,"PT0.0167665S","PT0.0490857S"
+     * "CPU time",0,"PT0.03125S","PT0.03125S"
+     * "CPU time",1,"PT0.015625S","PT0.046875S"
      * </pre>
      *
      * @since 2.2.4
@@ -444,13 +444,13 @@ public class PrintStyle
      * <pre>
      * {@code <counters>}
      * {@code   <counter type="Wall clock time">}
-     * {@code     <session sequence="1">0:00:01.371288100</session>}
-     * {@code     <session sequence="2">0:00:01.103620000</session>}
+     * {@code     <session index="0">0:00:01.371288100</session>}
+     * {@code     <session index="1">0:00:01.103620000</session>}
      * {@code     <total>0:00:02.474908100</total>}
      * {@code   </counter>}
      * {@code   <counter type="CPU time">}
-     * {@code     <session sequence="1">0:00:00.031250000</session>}
-     * {@code     <session sequence="2">0:00:00.015625000</session>}
+     * {@code     <session index="0">0:00:00.031250000</session>}
+     * {@code     <session index="1">0:00:00.015625000</session>}
      * {@code     <total>0:00:00.046875000</total>}
      * {@code   </counter>}
      * {@code </counters>}
@@ -463,7 +463,7 @@ public class PrintStyle
     public static final PrintStyle DETAILED_XML = PrintStyle.builder(PrintFormat.DETAILED)
             .withHeader("<counters>")
             .withSectionHeader("  <counter type=\"%s\">")
-            .withRowFormat("    <session sequence=\"%1$s\">%2$s</session>")
+            .withRowFormat("    <session index=\"%1$s\">%2$s</session>")
             .withSectionSummary("    <total>%s</total>")
             .withSectionTrailer("  </counter>")
             .withTrailer("</counters>")
@@ -480,13 +480,13 @@ public class PrintStyle
      * <pre>
      * {@code <counters>}
      * {@code   <counter type="Wall clock time">}
-     * {@code     <session sequence="1">PT1.357239099S</session>}
-     * {@code     <session sequence="2">PT1.1036874</session>}
+     * {@code     <session index="0">PT1.357239099S</session>}
+     * {@code     <session index="1">PT1.1036874</session>}
      * {@code     <total>PT2.460926499S</total>}
      * {@code   </counter>}
      * {@code   <counter type="CPU time">}
-     * {@code     <session sequence="1">PT0.1875S</session>}
-     * {@code     <session sequence="2">PT0.015625S</session>}
+     * {@code     <session index="0">PT0.1875S</session>}
+     * {@code     <session index="1">PT0.015625S</session>}
      * {@code     <total>PT0.203125S</total>}
      * {@code   </counter>}
      * {@code </counters>}

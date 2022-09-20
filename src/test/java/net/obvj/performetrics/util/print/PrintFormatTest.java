@@ -134,12 +134,12 @@ class PrintFormatTest
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME.toString())));
-        assertThat(lines[1], is(equalTo(1 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
-        assertThat(lines[2], is(equalTo(2 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
+        assertThat(lines[1], is(equalTo(0 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
+        assertThat(lines[2], is(equalTo(1 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
 
         assertThat(lines[3], is(equalTo(CPU_TIME.toString())));
-        assertThat(lines[4], is(equalTo(1 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
-        assertThat(lines[5], is(equalTo(2 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
+        assertThat(lines[4], is(equalTo(0 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
+        assertThat(lines[5], is(equalTo(1 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
     }
 
     @Test
@@ -149,13 +149,13 @@ class PrintFormatTest
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME.toString())));
-        assertThat(lines[1], is(equalTo(1 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
-        assertThat(lines[2], is(equalTo(2 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
+        assertThat(lines[1], is(equalTo(0 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
+        assertThat(lines[2], is(equalTo(1 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
         assertThat(lines[3], is(equalTo(STR_DURATION_SUM_C1)));
 
         assertThat(lines[4], is(equalTo(CPU_TIME.toString())));
-        assertThat(lines[5], is(equalTo(1 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
-        assertThat(lines[6], is(equalTo(2 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
+        assertThat(lines[5], is(equalTo(0 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
+        assertThat(lines[6], is(equalTo(1 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
         assertThat(lines[7], is(equalTo(STR_DURATION_SUM_C2)));
     }
 
@@ -219,13 +219,13 @@ class PrintFormatTest
     {
         String expected = "<counters>\n"
                         + "  <counter type=\"Wall clock time\">\n"
-                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C1 + "</session>\n"
-                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C1 + "</session>\n"
+                        + "    <session index=\"0\">" + STR_DURATION_TS1_C1 + "</session>\n"
+                        + "    <session index=\"1\">" + STR_DURATION_TS2_C1 + "</session>\n"
                         + "    <total>"+ STR_DURATION_SUM_C1 +"</total>\n"
                         + "  </counter>\n"
                         + "  <counter type=\"CPU time\">\n"
-                        + "    <session sequence=\"1\">" + STR_DURATION_TS1_C2 + "</session>\n"
-                        + "    <session sequence=\"2\">" + STR_DURATION_TS2_C2 + "</session>\n"
+                        + "    <session index=\"0\">" + STR_DURATION_TS1_C2 + "</session>\n"
+                        + "    <session index=\"1\">" + STR_DURATION_TS2_C2 + "</session>\n"
                         + "    <total>" + STR_DURATION_SUM_C2 + "</total>\n"
                         + "  </counter>\n"
                         + "</counters>";

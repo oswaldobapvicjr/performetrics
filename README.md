@@ -1,7 +1,7 @@
 ![Performetrics logo](resources/performetrics_logo.svg)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/oswaldobapvicjr/performetrics/badge.svg)](https://snyk.io/test/github/oswaldobapvicjr/performetrics)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oswaldobapvicjr/performetrics/Java%20CI%20with%20Maven)](https://github.com/oswaldobapvicjr/performetrics/actions/workflows/maven.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/oswaldobapvicjr/performetrics/maven.yml?branch=master)](https://github.com/oswaldobapvicjr/performetrics/actions/workflows/maven.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/oswaldobapvicjr/performetrics)](https://codecov.io/gh/oswaldobapvicjr/performetrics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.obvj/performetrics)
 [![Javadoc](https://javadoc.io/badge2/net.obvj/performetrics/javadoc.svg)](https://javadoc.io/doc/net.obvj/performetrics)
@@ -200,7 +200,7 @@ Performetrics provides two different conversion modes that can be applied depend
 
   A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
 
-> **Note:** Check the Javadoc to find out how to specify a different conversion mode for a single operation.
+> **Note:** Check the  **[Javadoc](https://javadoc.io/doc/net.obvj/performetrics)** to find out how to specify a different conversion mode for a single operation.
 
 ---
 

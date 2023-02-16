@@ -174,6 +174,7 @@ class CounterTest
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS, FAST);
         assertThat(counter.getTimeUnit(), is(SECONDS));
+        counter.setUnitsBefore(0);
         counter.setUnitsAfter(59); // 59 seconds after
         assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.0)));
     }
@@ -183,6 +184,7 @@ class CounterTest
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
         assertThat(counter.getTimeUnit(), is(SECONDS));
+        counter.setUnitsBefore(0);
         counter.setUnitsAfter(59); // 59 seconds after
         assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.983333333)));
     }
@@ -192,6 +194,7 @@ class CounterTest
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS, FAST);
         assertThat(counter.getTimeUnit(), is(SECONDS));
+        counter.setUnitsBefore(0);
         counter.setUnitsAfter(2); // 2 seconds
         assertThat(counter.elapsedTime(MILLISECONDS), is(equalTo(2000.0)));
     }
@@ -201,6 +204,7 @@ class CounterTest
     {
         Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
         assertThat(counter.getTimeUnit(), is(SECONDS));
+        counter.setUnitsBefore(0);
         counter.setUnitsAfter(2); // 2 seconds
         assertThat(counter.elapsedTime(MILLISECONDS), is(equalTo(2000.0)));
     }

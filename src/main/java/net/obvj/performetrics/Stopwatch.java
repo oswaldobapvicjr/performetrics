@@ -148,14 +148,14 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                stopwatch.stopCurrentTimingSession();
-                stopwatch.startNewTimingSession();
+                stopwatch.stopCurrentSession();
+                stopwatch.startNewSession();
             }
 
             @Override
             void stop(Stopwatch stopwatch)
             {
-                stopwatch.stopCurrentTimingSession();
+                stopwatch.stopCurrentSession();
             }
         },
 
@@ -164,7 +164,7 @@ public class Stopwatch
             @Override
             void start(Stopwatch stopwatch)
             {
-                stopwatch.startNewTimingSession();
+                stopwatch.startNewSession();
             }
 
             @Override
@@ -310,7 +310,7 @@ public class Stopwatch
      *
      * @return all counters available in this stopwatch instance
      */
-    protected List<Counter> getCounters()
+    List<Counter> getCounters()
     {
         return sessions.stream().map(TimingSession::getCounters).flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -537,7 +537,7 @@ public class Stopwatch
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or
      * not this action is allowed.
      */
-    private void startNewTimingSession()
+    private void startNewSession()
     {
         TimingSession session = new TimingSession(types.toArray(new Type[types.size()]));
         sessions.add(session);
@@ -551,9 +551,9 @@ public class Stopwatch
      * <b>Note:</b> This method is internal as the current {@link State} defines whether or
      * not this action is allowed.
      */
-    private void stopCurrentTimingSession()
+    private void stopCurrentSession()
     {
-        getCurrentTimingSession().ifPresent(TimingSession::stop);
+        getLastSession().ifPresent(TimingSession::stop);
         state = State.STOPPED;
     }
 
@@ -564,9 +564,22 @@ public class Stopwatch
      * @return an {@link Optional} possibly containing the current/last timing session
      *         available in this stopwatch instance
      */
-    protected Optional<TimingSession> getCurrentTimingSession()
+    Optional<TimingSession> getLastSession()
     {
         return sessions.isEmpty() ? Optional.empty() : Optional.of(sessions.get(sessions.size() - 1));
+    }
+
+    /**
+     * Returns the current/last timing session available in this stopwatch, or
+     * {@code TimingSession.EMPTY()} if no timing session available yet.
+     *
+     * @return an {@link Optional} possibly containing the current/last timing session
+     *         available in this stopwatch instance
+     */
+    public TimingSession lastSession()
+    {
+        return new UnmodifiableTimingSession(getLastSession()
+                .orElse(new TimingSession(types.toArray(new Type[types.size()]))));
     }
 
     /**
@@ -575,7 +588,7 @@ public class Stopwatch
      * @return a list of timing sessions
      * @since 2.2.0
      */
-    protected List<TimingSession> getTimingSessions()
+    List<TimingSession> getAllSessions()
     {
         return sessions;
     }

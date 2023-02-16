@@ -40,6 +40,7 @@ import static org.mockito.Mockito.times;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -151,7 +152,7 @@ class StopwatchTest
      */
     private void assertTimingSessionsClear(Stopwatch stopwatch)
     {
-        assertThat(stopwatch.getTimingSessions().size(), is(equalTo(0)));
+        assertThat(stopwatch.getAllSessions().size(), is(equalTo(0)));
     }
 
     /**
@@ -412,7 +413,7 @@ class StopwatchTest
             setupExpectsBefore(systemUtils);
             sw = Stopwatch.createStarted(SYSTEM_TIME);
         }
-        List<TimingSession> sessions = sw.getTimingSessions();
+        List<TimingSession> sessions = sw.getAllSessions();
         assertThat(sessions.size(), is(equalTo(1)));
         List<Type> sessionTypes = Arrays.asList(sessions.get(0).getTypes());
         assertThat(sessionTypes.size(), is(equalTo(1)));
@@ -428,12 +429,12 @@ class StopwatchTest
         {
             setupExpectsBefore(systemUtils);
             sw = Stopwatch.createStarted(WALL_CLOCK_TIME);
-            assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
+            assertThat(sw.getAllSessions().size(), is(equalTo(1)));
             assertTrue(sw.isStarted());
             setupExpectsAfter(systemUtils);
             sw.start();
         }
-        assertThat(sw.getTimingSessions().size(), is(equalTo(2)));
+        assertThat(sw.getAllSessions().size(), is(equalTo(2)));
         assertTrue(sw.isStarted());
     }
 
@@ -445,10 +446,10 @@ class StopwatchTest
         {
             sw = Stopwatch.createStarted();
         }
-        assertThat(sw.getTimingSessions().size(), is(equalTo(1)));
+        assertThat(sw.getAllSessions().size(), is(equalTo(1)));
         sw.stop();
         sw.start();
-        assertThat(sw.getTimingSessions().size(), is(equalTo(2)));
+        assertThat(sw.getAllSessions().size(), is(equalTo(2)));
     }
 
     @Test
@@ -711,7 +712,7 @@ class StopwatchTest
     void getCurrentTimingSession_unstarted_empty()
     {
         Stopwatch sw = new Stopwatch();
-        assertThat(sw.getCurrentTimingSession().isPresent(), is(equalTo(false)));
+        assertThat(sw.getLastSession().isPresent(), is(equalTo(false)));
     }
 
     @Test
@@ -723,7 +724,7 @@ class StopwatchTest
             setupExpectsBefore(systemUtils);
             sw.start();
         }
-        assertThat(sw.getCurrentTimingSession().get(), is(notNullValue()));
+        assertThat(sw.getLastSession().get(), is(notNullValue()));
     }
 
     @Test
@@ -735,6 +736,62 @@ class StopwatchTest
             sw.toString();
             printUtils.verify(() -> PrintUtils.summaryToString(sw), times(1));
         }
+    }
+
+    @Test
+    void lastSession_unstartedStopwatch_unmodifiableTimingSessionWithZeroElapsedTimes()
+    {
+        TimingSession session = new Stopwatch().lastSession();
+        assertThat(session.isStarted(), equalTo(false));
+
+        // Zero elapsed time returned
+        assertElapsedTime(session, WALL_CLOCK_TIME, 0, NANOSECONDS);
+        assertElapsedTime(session, CPU_TIME, 0, NANOSECONDS);
+        assertElapsedTime(session, USER_TIME, 0, NANOSECONDS);
+        assertElapsedTime(session, SYSTEM_TIME, 0, NANOSECONDS);
+
+        // Modifications outside stopwatch operations now allowed
+        assertThat(() -> session.reset(), throwsException(UnsupportedOperationException.class));
+        assertThat(() -> session.start(), throwsException(UnsupportedOperationException.class));
+        assertThat(() -> session.stop(),  throwsException(UnsupportedOperationException.class));
+    }
+
+    @Test
+    void lastSession_startededStopwatch_unmodifiableTimingSession()
+    {
+        TimingSession session;
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            Stopwatch sw = new Stopwatch();
+            setupExpectsBefore(systemUtils);
+            sw.start();
+            setupExpectsAfter(systemUtils);
+            sw.stop();
+            session = sw.lastSession();
+        }
+
+        assertThat(session.isStarted(), equalTo(false));
+
+        // Proper elapsed times returned
+        assertElapsedTime(session, WALL_CLOCK_TIME, WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS);
+        assertElapsedTime(session, CPU_TIME, CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS);
+        assertElapsedTime(session, USER_TIME, USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS);
+        assertElapsedTime(session, SYSTEM_TIME, SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS);
+
+        // Modifications outside stopwatch operations now allowed
+        assertThat(() -> session.reset(), throwsException(UnsupportedOperationException.class));
+        assertThat(() -> session.start(), throwsException(UnsupportedOperationException.class));
+        assertThat(() -> session.stop(),  throwsException(UnsupportedOperationException.class));
+    }
+
+    private void assertElapsedTime(TimingSession session, Counter.Type type, long amount, TimeUnit timeUnit)
+    {
+        assertThat(session.elapsedTime(type), is(equalTo(Duration.of(amount, timeUnit))));
+
+        double amountAsDouble = Long.valueOf(amount).doubleValue();
+        assertThat(session.elapsedTime(type, timeUnit), is(equalTo(amountAsDouble)));
+        assertThat(session.elapsedTime(type, timeUnit, FAST), is(equalTo(amountAsDouble)));
+        assertThat(session.elapsedTime(type, timeUnit, DOUBLE_PRECISION), is(equalTo(amountAsDouble)));
     }
 
 }

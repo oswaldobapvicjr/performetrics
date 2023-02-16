@@ -85,7 +85,6 @@ public class TimingSession
     private static final String MSG_ALREADY_FINISHED = "A finished timing session cannot be restarted";
     private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this timing session. Available type(s): {1}";
 
-
     private static final Type[] DEFAULT_TYPES = Type.values();
 
     /**
@@ -175,13 +174,18 @@ public class TimingSession
     public TimingSession(Type... types)
     {
         this.types = types;
-        reset();
+        doReset();
     }
 
     /**
      * Resets all counters associated with this timing session.
      */
     public void reset()
+    {
+        doReset();
+    }
+
+    private void doReset()
     {
         counters = new EnumMap<>(Type.class);
         for (Type type : types)
@@ -281,7 +285,7 @@ public class TimingSession
      *
      * @return all counter types specified for this timing session
      */
-    protected Type[] getTypes()
+    Type[] getTypes()
     {
         return types;
     }
@@ -291,7 +295,7 @@ public class TimingSession
      *
      * @return all counters associated with this timing session
      */
-    public Collection<Counter> getCounters()
+    Collection<Counter> getCounters()
     {
         return counters.values();
     }
@@ -303,7 +307,7 @@ public class TimingSession
      * @return the counter instance associated with the given type in this timing session
      * @throws IllegalArgumentException if the type was not specified in this timing session
      */
-    public Counter getCounter(Type type)
+    Counter getCounter(Type type)
     {
         if (!counters.containsKey(type))
         {

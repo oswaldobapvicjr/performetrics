@@ -148,7 +148,8 @@ public class Counter
     private long unitsBefore = 0;
     private long unitsAfter = 0;
 
-    private boolean unitsAfterFlag = false;
+    private boolean unitsBeforeSet = false;
+    private boolean unitsAfterSet = false;
 
     /**
      * Builds a Counter with a given type and default time unit.
@@ -220,6 +221,7 @@ public class Counter
     public void setUnitsBefore(long unitsBefore)
     {
         this.unitsBefore = unitsBefore;
+        unitsBeforeSet = true;
     }
 
     /**
@@ -240,7 +242,7 @@ public class Counter
     public void setUnitsAfter(long unitsAfter)
     {
         this.unitsAfter = unitsAfter;
-        unitsAfterFlag = true;
+        unitsAfterSet = true;
     }
 
     /**
@@ -278,7 +280,7 @@ public class Counter
      * Populates the {@code unitsBefore} field with the value retrieved by the time source
      * defined by this counter's type.
      */
-    public void setUnitsBefore()
+    void setUnitsBefore()
     {
         setUnitsBefore(type.getTime(timeUnit));
     }
@@ -287,7 +289,7 @@ public class Counter
      * Populates the {@code unitsAfter} field with the value retrieved by the time source
      * defined by this counter's type.
      */
-    public void setUnitsAfter()
+    void setUnitsAfter()
     {
         setUnitsAfter(type.getTime(timeUnit));
     }
@@ -299,9 +301,10 @@ public class Counter
      *         units are set; or the difference between {@code unitsBefore} and the current
      *         value retrieved by the counter's time source, if {@code unitsAfter} is not set
      */
-    protected long elapsedTimeInternal()
+    long elapsedTimeInternal()
     {
-        long tempUnitsAfter = unitsAfterFlag ? unitsAfter : type.getTime(timeUnit);
+        if (!unitsBeforeSet) return 0;
+        long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime(timeUnit);
         return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;
     }
 

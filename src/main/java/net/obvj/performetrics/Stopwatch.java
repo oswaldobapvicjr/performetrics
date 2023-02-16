@@ -133,7 +133,7 @@ public class Stopwatch
     static final String MSG_NOT_RUNNING = "The stopwatch is not running";
     static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
     static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
-    static final String MSG_NO_SESSION_FOUND = "No session found";
+    static final String MSG_NO_SESSION_RECORDED = "No session recorded";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -571,20 +571,19 @@ public class Stopwatch
     }
 
     /**
-     * Returns the current/last timing session available in this stopwatch.
+     * Returns the current/last timing session recorded in this stopwatch.
      *
-     * @return an {@link Optional} possibly containing the current/last timing session
-     *         available in this stopwatch instance
-     * @throws IllegalStateException if this stopwatch does not yet contain any session
+     * @return the current/last timing session recorded in this stopwatch
+     * @throws IllegalStateException if the stopwatch does not contain any recorded session
      */
     public TimingSession lastSession()
     {
         return new UnmodifiableTimingSession(getLastSession()
-                .orElseThrow(() -> new IllegalStateException(MSG_NO_SESSION_FOUND)));
+                .orElseThrow(() -> new IllegalStateException(MSG_NO_SESSION_RECORDED)));
     }
 
     /**
-     * Returns all timing sessions available in this stopwatch.
+     * Returns all timing sessions recorded in this stopwatch.
      *
      * @return a list of timing sessions
      * @since 2.2.0

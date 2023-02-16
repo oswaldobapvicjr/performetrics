@@ -739,10 +739,11 @@ class StopwatchTest
     }
 
     @Test
-    void lastSession_unstartedStopwatch_exception()
+    void lastSession_unstartedStopwatch_illegalStateException()
     {
         Stopwatch sw = new Stopwatch();
-        assertThat(() -> sw.lastSession(), throwsException(IllegalStateException.class));
+        assertThat(() -> sw.lastSession(), throwsException(IllegalStateException.class)
+                .withMessage(Stopwatch.MSG_NO_SESSION_RECORDED));
     }
 
     @Test

@@ -69,7 +69,6 @@ public class PerformetricsTestDrive
     private static void test(Stopwatch sw) throws InterruptedException, IOException
     {
         // Enforcing some wall-clock time...
-
         int sleepTimeMillis = new Random(9999).nextInt(3000);
         Thread.sleep(sleepTimeMillis);
 
@@ -83,13 +82,19 @@ public class PerformetricsTestDrive
         sw.stop();
 
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanosecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanosecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " millisecods");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanoseconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanoseconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " milliseconds");
+        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " milliseconds");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
+
         sw.printDetails(System.out);
+
+        System.out.println("\nSESSION CHECK:");
+        System.out.println(" - Last elapsed time (WALL_CLOCK_TIME): " + sw.lastSession().elapsedTime(Type.WALL_CLOCK_TIME));
+        System.out.println(" - Last elapsed time (CPU_TIME): "        + sw.lastSession().elapsedTime(Type.CPU_TIME));
+        System.out.println();
     }
 
     private static void testCallableWithLambda() throws Exception

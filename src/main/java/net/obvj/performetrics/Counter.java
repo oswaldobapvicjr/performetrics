@@ -148,7 +148,6 @@ public class Counter
     private long unitsBefore = 0;
     private long unitsAfter = 0;
 
-    private boolean unitsBeforeSet = false;
     private boolean unitsAfterSet = false;
 
     /**
@@ -221,7 +220,6 @@ public class Counter
     public void setUnitsBefore(long unitsBefore)
     {
         this.unitsBefore = unitsBefore;
-        unitsBeforeSet = true;
     }
 
     /**
@@ -303,7 +301,6 @@ public class Counter
      */
     long elapsedTimeInternal()
     {
-        if (!unitsBeforeSet) return 0;
         long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime(timeUnit);
         return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;
     }

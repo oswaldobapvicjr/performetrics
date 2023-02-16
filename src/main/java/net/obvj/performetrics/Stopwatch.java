@@ -130,9 +130,10 @@ import net.obvj.performetrics.util.print.PrintUtils;
  */
 public class Stopwatch
 {
-    protected static final String MSG_NOT_RUNNING = "The stopwatch is not running";
-    protected static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
-    protected static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
+    static final String MSG_NOT_RUNNING = "The stopwatch is not running";
+    static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
+    static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
+    static final String MSG_NO_SESSION_FOUND = "No session found";
 
     private static final Type[] DEFAULT_TYPES = Type.values();
 
@@ -570,16 +571,16 @@ public class Stopwatch
     }
 
     /**
-     * Returns the current/last timing session available in this stopwatch, or
-     * {@code TimingSession.EMPTY()} if no timing session available yet.
+     * Returns the current/last timing session available in this stopwatch.
      *
      * @return an {@link Optional} possibly containing the current/last timing session
      *         available in this stopwatch instance
+     * @throws IllegalStateException if this stopwatch does not yet contain any session
      */
     public TimingSession lastSession()
     {
         return new UnmodifiableTimingSession(getLastSession()
-                .orElse(new TimingSession(types.toArray(new Type[types.size()]))));
+                .orElseThrow(() -> new IllegalStateException(MSG_NO_SESSION_FOUND)));
     }
 
     /**

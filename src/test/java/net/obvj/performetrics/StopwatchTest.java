@@ -739,27 +739,15 @@ class StopwatchTest
     }
 
     @Test
-    void lastSession_unstartedStopwatch_unmodifiableTimingSessionWithZeroElapsedTimes()
+    void lastSession_unstartedStopwatch_exception()
     {
-        TimingSession session = new Stopwatch().lastSession();
-        assertThat(session.isStarted(), equalTo(false));
-
-        // Zero elapsed time returned
-        assertElapsedTime(session, WALL_CLOCK_TIME, 0, NANOSECONDS);
-        assertElapsedTime(session, CPU_TIME, 0, NANOSECONDS);
-        assertElapsedTime(session, USER_TIME, 0, NANOSECONDS);
-        assertElapsedTime(session, SYSTEM_TIME, 0, NANOSECONDS);
-
-        // Modifications outside stopwatch operations now allowed
-        assertThat(() -> session.reset(), throwsException(UnsupportedOperationException.class));
-        assertThat(() -> session.start(), throwsException(UnsupportedOperationException.class));
-        assertThat(() -> session.stop(),  throwsException(UnsupportedOperationException.class));
+        Stopwatch sw = new Stopwatch();
+        assertThat(() -> sw.lastSession(), throwsException(IllegalStateException.class));
     }
 
     @Test
-    void lastSession_startededStopwatch_unmodifiableTimingSession()
+    void lastSession_startedAndStoppedStopwatch_unmodifiableTimingSession()
     {
-        TimingSession session;
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             Stopwatch sw = new Stopwatch();
@@ -767,21 +755,21 @@ class StopwatchTest
             sw.start();
             setupExpectsAfter(systemUtils);
             sw.stop();
-            session = sw.lastSession();
+
+            TimingSession session = sw.lastSession();
+            assertThat(session.isStarted(), equalTo(false));
+
+            // Proper elapsed times returned
+            assertElapsedTime(session, WALL_CLOCK_TIME, WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS);
+            assertElapsedTime(session, CPU_TIME, CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS);
+            assertElapsedTime(session, USER_TIME, USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS);
+            assertElapsedTime(session, SYSTEM_TIME, SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS);
+
+            // Modifications outside stopwatch operations now allowed
+            assertThat(() -> session.reset(), throwsException(UnsupportedOperationException.class));
+            assertThat(() -> session.start(), throwsException(UnsupportedOperationException.class));
+            assertThat(() -> session.stop(),  throwsException(UnsupportedOperationException.class));
         }
-
-        assertThat(session.isStarted(), equalTo(false));
-
-        // Proper elapsed times returned
-        assertElapsedTime(session, WALL_CLOCK_TIME, WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS);
-        assertElapsedTime(session, CPU_TIME, CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS);
-        assertElapsedTime(session, USER_TIME, USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS);
-        assertElapsedTime(session, SYSTEM_TIME, SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS);
-
-        // Modifications outside stopwatch operations now allowed
-        assertThat(() -> session.reset(), throwsException(UnsupportedOperationException.class));
-        assertThat(() -> session.start(), throwsException(UnsupportedOperationException.class));
-        assertThat(() -> session.stop(),  throwsException(UnsupportedOperationException.class));
     }
 
     private void assertElapsedTime(TimingSession session, Counter.Type type, long amount, TimeUnit timeUnit)

@@ -575,6 +575,7 @@ public class Stopwatch
      *
      * @return the current/last timing session recorded in this stopwatch
      * @throws IllegalStateException if the stopwatch does not contain any recorded session
+     * @since 2.4.0
      */
     public TimingSession lastSession()
     {

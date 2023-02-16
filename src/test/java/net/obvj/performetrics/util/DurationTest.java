@@ -17,8 +17,7 @@
 package net.obvj.performetrics.util;
 
 import static java.util.concurrent.TimeUnit.*;
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.isNegative;
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.isPositive;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,6 +55,14 @@ class DurationTest
         assertThat(td1.getMinutes(),     is(equalTo(30)));
         assertThat(td1.getSeconds(),     is(equalTo(10)));
         assertThat(td1.getNanoseconds(), is(equalTo(0)));
+    }
+
+    @Test
+    void of_negativeAmount_illegalArgumentException()
+    {
+        assertThat(() -> Duration.of(-1, NANOSECONDS),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("The duration amount must be a positive value"));
     }
 
     @Test

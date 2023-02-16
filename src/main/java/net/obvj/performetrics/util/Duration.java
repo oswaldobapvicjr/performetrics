@@ -59,6 +59,7 @@ public class Duration implements Comparable<Duration>
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
     private static final String MSG_FORMAT_MUST_NOT_BE_NULL = "The format must not be null";
+    private static final String MSG_AMOUNT_MUST_BE_POSITIVE = "The duration amount must be a positive value";
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
@@ -88,14 +89,20 @@ public class Duration implements Comparable<Duration>
      * duration.getNanoseconds() //returns: 0
      * </pre>
      *
-     * @param amount   the amount of the duration, measured in terms of the time unit argument
+     * @param amount   the amount of the duration, measured in terms of the time unit
+     *                 argument, not negative
      * @param timeUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *
-     * @throws NullPointerException if the specified time unit is null
+     * @throws NullPointerException     if the specified time unit is null
+     * @throws IllegalArgumentException if the specified duration amount is negative
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
+        if (amount < 0)
+        {
+            throw new IllegalArgumentException(MSG_AMOUNT_MUST_BE_POSITIVE);
+        }
         Objects.requireNonNull(timeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL);
         ChronoUnit chronoUnit = TimeUnitConverter.toChronoUnit(timeUnit);
         java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);

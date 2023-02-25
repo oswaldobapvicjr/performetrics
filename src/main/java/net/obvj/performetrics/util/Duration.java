@@ -64,7 +64,7 @@ public class Duration implements Comparable<Duration>
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
 
-    private java.time.Duration internalDuration;
+    private final java.time.Duration internalDuration;
 
     /**
      * Constructs an instance of {@code Duration} from the given {@link java.time.Duration}.
@@ -433,7 +433,7 @@ public class Duration implements Comparable<Duration>
      * @return the internal {@code java.time.Duration} object
      * @since 2.2.0
      */
-    java.time.Duration getInternalDuration()
+    java.time.Duration internal()
     {
         return internalDuration;
     }

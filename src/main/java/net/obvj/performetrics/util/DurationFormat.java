@@ -173,7 +173,7 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            return duration.getInternalDuration().toString();
+            return duration.internal().toString();
         }
 
         @Override
@@ -190,16 +190,63 @@ public enum DurationFormat
             }
         }
 
+    },
+
+    /**
+     * Formats a time duration in Linux style, applying the form {@code M'm':S.ms's'}.
+     * <p>
+     * Examples:
+     * <ul>
+     * <li>{@code 0m0.125s}</li>
+     * <li>{@code 0m4.999s}</li>
+     * <li>{@code 3m12.038s}</li>
+     * </ul>
+     * <p>
+     * <b>Note:</b> The {@code printLegend} flag has no effect in this format style.
+     *
+     * @since 2.4.0
+     */
+    LINUX
+    {
+        private static final String LINUX_FORMAT = "%dm%d.%03ds";
+
+        private final Pattern linuxPattern = Pattern.compile(
+                "^(?<minutes>\\d+)m"
+                + "(?<seconds>\\d+)."
+                + "(?<milliseconds>\\d+)s");
+
+        @Override
+        public String doFormat(final Duration duration, boolean printLegend)
+        {
+            return String.format(LINUX_FORMAT,
+                    SECONDS.toMinutes(duration.internal().getSeconds()),
+                    duration.getSeconds(), // the seconds within the minute
+                    NANOSECONDS.toMillis(duration.getNanoseconds()));
+        }
+
+        @Override
+        public Duration doParse(final String string)
+        {
+            Matcher matcher = linuxPattern.matcher(string);
+            if (matcher.matches())
+            {
+                return parseDuration(matcher.group("minutes"), MINUTES)
+                        .plus(parseDuration(matcher.group("seconds"), SECONDS))
+                        .plus(parseDuration(matcher.group("milliseconds"), MILLISECONDS));
+            }
+            throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
+        }
     };
+
 
     /**
      * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
      */
     private static final Pattern HMS_PATTERN = Pattern.compile(
-            "^(((?<hours>[0-9]*)[:])?"
-            + "((?<minutes>[0-9]*)[:]))?"
-            + "(?<seconds>[0-9]+)"
-            + "([.,](?<nanoseconds>[0-9]+))?"
+            "^(((?<hours>\\d*):)?"
+            + "((?<minutes>\\d*):))?"
+            + "(?<seconds>\\d+)"
+            + "([.,](?<nanoseconds>\\d+))?"
             + "(.)*"); // legend
 
     static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";

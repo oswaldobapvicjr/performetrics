@@ -16,6 +16,9 @@
 
 package net.obvj.performetrics.util.print;
 
+import static java.util.Arrays.*;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -25,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+
+import net.obvj.performetrics.Counter.Type;
 
 /**
  * Unit tests for the {@link PrintStyleBuilder}.
@@ -67,6 +72,8 @@ class PrintStyleBuilderTest
         assertThat(printStyle.isPrintLegend(), is(false));
         assertThat(printStyle.getSimpleLine(), is(nullValue()));
         assertThat(printStyle.getAlternativeLine(), is(nullValue()));
+        assertThat(printStyle.getExcludedTypes(), equalTo(emptySet()));
+        assertThat(printStyle.getCustomCounterNames(), equalTo(emptyMap()));
     }
 
     @Test
@@ -171,16 +178,38 @@ class PrintStyleBuilderTest
         PrintStyle baseStyle = PrintStyle.DETAILED_TABLE_FULL;
         PrintStyle newStyle = new PrintStyleBuilder(baseStyle).build();
 
-        assertThat(newStyle.getAlternativeLine(), is(equalTo(newStyle.getAlternativeLine())));
-        assertThat(newStyle.getDurationFormat(), is(equalTo(newStyle.getDurationFormat())));
-        assertThat(newStyle.getHeaderFormat(), is(equalTo(newStyle.getHeaderFormat())));
-        assertThat(newStyle.isPrintHeader(), is(equalTo(newStyle.isPrintHeader())));
-        assertThat(newStyle.isPrintLegend(), is(equalTo(newStyle.isPrintLegend())));
-        assertThat(newStyle.isPrintSectionSummary(), is(equalTo(newStyle.isPrintSectionSummary())));
-        assertThat(newStyle.getRowFormat(), is(equalTo(newStyle.getRowFormat())));
-        assertThat(newStyle.getSectionHeaderFormat(), is(equalTo(newStyle.getSectionHeaderFormat())));
-        assertThat(newStyle.getSectionSummaryRowFormat(), is(equalTo(newStyle.getSectionSummaryRowFormat())));
-        assertThat(newStyle.getSimpleLine(), is(equalTo(newStyle.getSimpleLine())));
+        assertThat(newStyle.getAlternativeLine(), is(equalTo(baseStyle.getAlternativeLine())));
+        assertThat(newStyle.getDurationFormat(), is(equalTo(baseStyle.getDurationFormat())));
+        assertThat(newStyle.getHeaderFormat(), is(equalTo(baseStyle.getHeaderFormat())));
+        assertThat(newStyle.isPrintHeader(), is(equalTo(baseStyle.isPrintHeader())));
+        assertThat(newStyle.isPrintLegend(), is(equalTo(baseStyle.isPrintLegend())));
+        assertThat(newStyle.isPrintSectionSummary(), is(equalTo(baseStyle.isPrintSectionSummary())));
+        assertThat(newStyle.getRowFormat(), is(equalTo(baseStyle.getRowFormat())));
+        assertThat(newStyle.getSectionHeaderFormat(), is(equalTo(baseStyle.getSectionHeaderFormat())));
+        assertThat(newStyle.getSectionSummaryRowFormat(), is(equalTo(baseStyle.getSectionSummaryRowFormat())));
+        assertThat(newStyle.getSimpleLine(), is(equalTo(baseStyle.getSimpleLine())));
+        assertThat(newStyle.getExcludedTypes(), is(equalTo(baseStyle.getExcludedTypes())));
+        assertThat(newStyle.getCustomCounterNames(), is(equalTo(baseStyle.getCustomCounterNames())));
+    }
+
+    @Test
+    void build_validBasePrintStyleAlt_copiesValuesFromBasePrintStyle()
+    {
+        PrintStyle baseStyle = PrintStyle.LINUX;
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).build();
+
+        assertThat(newStyle.getAlternativeLine(), is(equalTo(baseStyle.getAlternativeLine())));
+        assertThat(newStyle.getDurationFormat(), is(equalTo(baseStyle.getDurationFormat())));
+        assertThat(newStyle.getHeaderFormat(), is(equalTo(baseStyle.getHeaderFormat())));
+        assertThat(newStyle.isPrintHeader(), is(equalTo(baseStyle.isPrintHeader())));
+        assertThat(newStyle.isPrintLegend(), is(equalTo(baseStyle.isPrintLegend())));
+        assertThat(newStyle.isPrintSectionSummary(), is(equalTo(baseStyle.isPrintSectionSummary())));
+        assertThat(newStyle.getRowFormat(), is(equalTo(baseStyle.getRowFormat())));
+        assertThat(newStyle.getSectionHeaderFormat(), is(equalTo(baseStyle.getSectionHeaderFormat())));
+        assertThat(newStyle.getSectionSummaryRowFormat(), is(equalTo(baseStyle.getSectionSummaryRowFormat())));
+        assertThat(newStyle.getSimpleLine(), is(equalTo(baseStyle.getSimpleLine())));
+        assertThat(newStyle.getExcludedTypes(), is(equalTo(baseStyle.getExcludedTypes())));
+        assertThat(newStyle.getCustomCounterNames(), is(equalTo(baseStyle.getCustomCounterNames())));
     }
 
     @Test
@@ -204,11 +233,33 @@ class PrintStyleBuilderTest
     @Test
     void withoutHeader_basePrintStyleWithHeader_false()
     {
-        String rowFormat = "rowFormat";
-		PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED).withRowFormat(rowFormat).withHeader("header1").build();
+ 		PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED).withRowFormat("rowFormat1").withHeader("header1").build();
         PrintStyle newStyle = new PrintStyleBuilder(baseStyle).withoutHeader().build();
         assertFalse(newStyle.isPrintHeader());
         assertNull(newStyle.getHeaderFormat());
+    }
+
+    @Test
+    void withAllTypes_basePrintStyleWithTypesExcluded_noExclusions()
+    {
+        PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED).withoutTypes(Type.SYSTEM_TIME, Type.USER_TIME).build();
+        assertThat(baseStyle.getExcludedTypes().containsAll(asList(Type.SYSTEM_TIME, Type.USER_TIME)), is(true));
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).withAllTypes().build();
+        assertThat(newStyle.getExcludedTypes(), equalTo(emptySet()));
+    }
+
+    @Test
+    void resetCustomCounterNames_basePrintStyleWithCustomNames_emptyMap()
+    {
+        PrintStyle baseStyle = new PrintStyleBuilder(PrintFormat.DETAILED)
+                .withCustomCounterName(Type.SYSTEM_TIME, "custom1")
+                .withCustomCounterName(Type.USER_TIME, "custom2")
+                .build();
+        assertThat(baseStyle.getCustomCounterNames().get(Type.SYSTEM_TIME), equalTo("custom1"));
+        assertThat(baseStyle.getCustomCounterNames().get(Type.USER_TIME), equalTo("custom2"));
+
+        PrintStyle newStyle = new PrintStyleBuilder(baseStyle).resetCustomCounterNames().build();
+        assertThat(newStyle.getCustomCounterNames(), equalTo(emptyMap()));
     }
 
 }

@@ -295,4 +295,12 @@ class DurationFormatTest
                         .withMessage("Unrecognized duration: invalid2")
                 .withCause(DateTimeParseException.class));
     }
+
+    @Test
+    void parse_linuxAndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> LINUX.parse("invalid3"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid3"));
+    }
 }

@@ -227,7 +227,7 @@ class DurationTest
     }
 
     @Test
-    void getInternalDuration_success()
+    void internal_success()
     {
         assertThat(Duration.of(90, SECONDS).internal(), is(equalTo(java.time.Duration.ofSeconds(90))));
     }

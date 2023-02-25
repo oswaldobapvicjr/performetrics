@@ -570,7 +570,7 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style which prints stopwatch data based on Linux {@code time} command.
+     * A string-based style which prints stopwatch data in Linux style.
      * <p>
      * Sample output:
      *

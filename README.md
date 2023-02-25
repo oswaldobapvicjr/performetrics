@@ -36,7 +36,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
@@ -145,14 +145,28 @@ In this example, we are using `Performetrics.monitorOperation(...)` to run a pro
 
     ```java
     System.out.println(operation.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
-    System.out.println(operation.elapsedTime(Counter.Type.CPU_TIME));
+    System.out.println(operation.elapsedTime(Counter.Type.USER_TIME));
     ```
     > **Sample output:**
     >
     > ````
-    > 0.250739 second(s)
-    > 0.000001 second(s)
+    > 1.4208931 second(s)
+    > 0.0156250 second(s)
     > ````
+
+3. Print the summary in Linux style:
+
+    ```java
+    operation.printSummary(System.out, PrintSyle.LINUX));
+    ```
+    > **Sample output:**
+    >
+    > ````
+    > real    0m1.420s
+    > user    0m0.015s
+    > sys     0m0.000s
+    > ````
+
 
 ---
 

@@ -37,7 +37,7 @@ class DurationFormatTest
 {
 
     @Test
-    void toString_full_displaysAllUnits()
+    void format_full_displaysAllUnits()
     {
         assertThat(FULL.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000000")));
         assertThat(FULL.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(  "0:00:00.000000001")));
@@ -63,7 +63,7 @@ class DurationFormatTest
     }
 
     @Test
-    void toString_short_abbreviatesIfPossible()
+    void format_short_abbreviatesIfPossible()
     {
         assertThat(SHORT.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(        "0.000000000")));
         assertThat(SHORT.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo(        "0.000000001")));
@@ -89,7 +89,7 @@ class DurationFormatTest
     }
 
     @Test
-    void toString_shorterWithLegend_supressesTrailingZeros()
+    void format_shorterWithLegend_supressesTrailingZeros()
     {
         assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), true), is(equalTo(          "0 second(s)")));
         assertThat(SHORTER.format(Duration.of(1,          NANOSECONDS ), true), is(equalTo("0.000000001 second(s)")));
@@ -115,7 +115,7 @@ class DurationFormatTest
     }
 
     @Test
-    void toString_shorterWithoutLegend_supressesTrailingZeros()
+    void format_shorterWithoutLegend_supressesTrailingZeros()
     {
         assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0")));
         assertThat(SHORTER.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0.000000001")));
@@ -141,7 +141,7 @@ class DurationFormatTest
     }
 
     @Test
-    void toString_iso8601()
+    void format_iso8601()
     {
         assertThat(ISO_8601.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("PT0S")));
         assertThat(ISO_8601.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("PT0.000000001S")));
@@ -164,6 +164,32 @@ class DurationFormatTest
         assertThat(ISO_8601.format(Duration.of(3601,       MINUTES     ), false), is(equalTo("PT60H1M")));
         assertThat(ISO_8601.format(Duration.of(2,          HOURS       ), false), is(equalTo("PT2H")));
         assertThat(ISO_8601.format(Duration.of(100,        HOURS       ), false), is(equalTo("PT100H")));
+    }
+
+    @Test
+    void format_linux()
+    {
+        assertThat(LINUX.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0m0.000s")));
+        assertThat(LINUX.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0m0.000s")));
+        assertThat(LINUX.format(Duration.of(1,          MILLISECONDS), false), is(equalTo("0m0.001s")));
+        assertThat(LINUX.format(Duration.of(1,          SECONDS     ), false), is(equalTo("0m1.000s")));
+        assertThat(LINUX.format(Duration.of(1,          MINUTES     ), false), is(equalTo("1m0.000s")));
+        assertThat(LINUX.format(Duration.of(1,          HOURS       ), false), is(equalTo("60m0.000s")));
+        assertThat(LINUX.format(Duration.of(1,          DAYS        ), false), is(equalTo("1440m0.000s")));
+        assertThat(LINUX.format(Duration.of(789,        NANOSECONDS ), false), is(equalTo("0m0.000s")));
+        assertThat(LINUX.format(Duration.of(123456789,  NANOSECONDS ), false), is(equalTo("0m0.123s")));
+        assertThat(LINUX.format(Duration.of(1000000000, NANOSECONDS ), false), is(equalTo("0m1.000s")));
+        assertThat(LINUX.format(Duration.of(1001,       MILLISECONDS), false), is(equalTo("0m1.001s")));
+        assertThat(LINUX.format(Duration.of(1601,       MILLISECONDS), false), is(equalTo("0m1.601s")));
+        assertThat(LINUX.format(Duration.of(3601,       MILLISECONDS), false), is(equalTo("0m3.601s")));
+        assertThat(LINUX.format(Duration.of(70,         SECONDS     ), false), is(equalTo("1m10.000s")));
+        assertThat(LINUX.format(Duration.of(601,        SECONDS     ), false), is(equalTo("10m1.000s")));
+        assertThat(LINUX.format(Duration.of(959,        SECONDS     ), false), is(equalTo("15m59.000s")));
+        assertThat(LINUX.format(Duration.of(960,        SECONDS     ), false), is(equalTo("16m0.000s")));
+        assertThat(LINUX.format(Duration.of(970,        SECONDS     ), false), is(equalTo("16m10.000s")));
+        assertThat(LINUX.format(Duration.of(3601,       MINUTES     ), false), is(equalTo("3601m0.000s")));
+        assertThat(LINUX.format(Duration.of(2,          HOURS       ), false), is(equalTo("120m0.000s")));
+        assertThat(LINUX.format(Duration.of(100,        HOURS       ), false), is(equalTo("6000m0.000s")));
     }
 
     @Test
@@ -235,6 +261,19 @@ class DurationFormatTest
     }
 
     @Test
+    void parse_linux_success()
+    {
+        assertThat(LINUX.parse( "0m0.000s"), equalTo(Duration.ZERO));
+        assertThat(LINUX.parse( "0m0.100s"), equalTo(Duration.of(100, MILLISECONDS)));
+        assertThat(LINUX.parse( "0m1.000s"), equalTo(Duration.of(  1, SECONDS)));
+        assertThat(LINUX.parse( "1m1.000s"), equalTo(Duration.of( 61, SECONDS)));
+
+        // Field overflow is OK
+        assertThat(LINUX.parse("0m1.1000s"), equalTo(Duration.of(  2, SECONDS)));
+        assertThat(LINUX.parse("1m70.000s"), equalTo(Duration.of(130, SECONDS)));
+    }
+
+    @Test
     void parse_fullAndNull_nullPointerException()
     {
         assertThat(() -> FULL.parse(null), throwsException(NullPointerException.class));
@@ -256,4 +295,13 @@ class DurationFormatTest
                         .withMessage("Unrecognized duration: invalid2")
                 .withCause(DateTimeParseException.class));
     }
-}
+
+    @Test
+    void parse_linuxAndInvalidString_illegalArgumentException()
+    {
+        assertThat(() -> LINUX.parse("invalid3"),
+                throwsException(IllegalArgumentException.class)
+                        .withMessage("Unrecognized duration: invalid3"));
+    }
+
+}

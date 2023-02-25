@@ -16,6 +16,10 @@
 
 package net.obvj.performetrics.util.print;
 
+import java.util.Collection;
+import java.util.Map;
+
+import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.DurationFormat;
@@ -565,6 +569,31 @@ public class PrintStyle
             .withDurationFormat(DurationFormat.ISO_8601)
             .build();
 
+    /**
+     * A string-based style which prints stopwatch data in Linux style.
+     * <p>
+     * Sample output:
+     *
+     * <pre>
+     * real    0m4.995s
+     * user    0m0.031s
+     * sys     0m0.358s
+     * </pre>
+     *
+     * @since 2.4.0
+     * @see PrintFormat#SUMMARIZED
+     * @see DurationFormat#LINUX
+     */
+    public static final PrintStyle LINUX = PrintStyle.builder(PrintFormat.SUMMARIZED)
+            .withRowFormat("%-8s%s")
+            .withoutHeader()
+            .withDurationFormat(DurationFormat.LINUX)
+            .withoutLegends()
+            .withoutTypes(Type.CPU_TIME)
+            .withCustomCounterName(Type.WALL_CLOCK_TIME, "real")
+            .withCustomCounterName(Type.USER_TIME, "user")
+            .withCustomCounterName(Type.SYSTEM_TIME, "sys")
+            .build();
 
     private final PrintFormat printFormat;
 
@@ -588,6 +617,9 @@ public class PrintStyle
 
     private final String simpleLine;
     private final String alternativeLine;
+
+    private final Collection<Type> excludedTypes;
+    private final Map<Type, String> customCounterNames;
 
     /**
      * Returns an empty PrintStyle builder.
@@ -640,6 +672,8 @@ public class PrintStyle
         printLegend = builder.isPrintLegend();
         simpleLine = builder.getSimpleLine();
         alternativeLine = builder.getAlternativeLine();
+        excludedTypes = builder.getExcludedTypes();
+        customCounterNames = builder.getCustomCounterNames();
     }
 
     /**
@@ -797,6 +831,27 @@ public class PrintStyle
     public String getAlternativeLine()
     {
         return alternativeLine;
+    }
+
+    /**
+     * Returns a collection of types to be excluded from the output.
+     *
+     * @return a collection of types to be excluded
+     * @since 2.4.0
+     */
+    public Collection<Type> getExcludedTypes()
+    {
+        return excludedTypes;
+    }
+
+    /**
+     * @return a map of custom names associated with counter types
+     *
+     * @since 2.4.0
+     */
+    public Map<Type, String> getCustomCounterNames()
+    {
+        return customCounterNames;
     }
 
 }

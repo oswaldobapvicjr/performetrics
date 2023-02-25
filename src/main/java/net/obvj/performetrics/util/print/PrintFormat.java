@@ -51,6 +51,10 @@ public enum PrintFormat
      * ====================================
      * </pre>
      *
+     * <strong>Note:</strong> Since 2.4.0, some counter types may be excluded from the actual
+     * output if specified by the {@link PrintStyle} to be applied.
+     * <p>
+     *
      * @see PrintStyle
      */
     SUMMARIZED
@@ -66,7 +70,9 @@ public enum PrintFormat
                 appendLine(builder, style.getHeaderFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
                 appendLine(builder, style.getSimpleLine());
             }
-            stopwatch.getTypes().forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
+            stopwatch.getTypes().stream()
+                    .filter(type -> !style.getExcludedTypes().contains(type))
+                    .forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
             if (style.isPrintTrailer())
             {
                 appendLine(builder, style.getSimpleLine());
@@ -78,7 +84,8 @@ public enum PrintFormat
 
         private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
         {
-            return String.format(style.getRowFormat(), type,
+            return String.format(style.getRowFormat(),
+                    style.getCustomCounterNames().getOrDefault(type, type.toString()),
                     style.getDurationFormat().format(stopwatch.elapsedTime(type),
                             style.isPrintLegend()));
         }

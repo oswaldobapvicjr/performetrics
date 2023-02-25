@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.monitors.MonitoredCallable;
+import net.obvj.performetrics.util.DurationFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
 
 public class PerformetricsTestDrive
@@ -89,11 +90,14 @@ public class PerformetricsTestDrive
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
         System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
 
+        System.out.println();
+        sw.printSummary(System.out, PrintStyle.LINUX);
+        System.out.println();
         sw.printDetails(System.out);
 
         System.out.println("\nSESSION CHECK:");
-        System.out.println(" - Last elapsed time (WALL_CLOCK_TIME): " + sw.lastSession().elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(" - Last elapsed time (CPU_TIME): "        + sw.lastSession().elapsedTime(Type.CPU_TIME));
+        System.out.println(" - Last elapsed time (WALL_CLOCK_TIME): " + sw.lastSession().elapsedTime(Type.WALL_CLOCK_TIME).toString(DurationFormat.LINUX));
+        System.out.println(" - Last elapsed time (CPU_TIME): "        + sw.lastSession().elapsedTime(Type.CPU_TIME).toString(DurationFormat.LINUX));
         System.out.println();
     }
 

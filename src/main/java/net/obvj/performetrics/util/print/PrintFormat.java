@@ -85,7 +85,7 @@ public enum PrintFormat
         private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
         {
             return String.format(style.getRowFormat(),
-                    style.getCounterNames().getOrDefault(type, type.toString()),
+                    style.getCustomCounterNames().getOrDefault(type, type.toString()),
                     style.getDurationFormat().format(stopwatch.elapsedTime(type),
                             style.isPrintLegend()));
         }

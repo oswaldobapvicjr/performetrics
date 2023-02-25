@@ -72,7 +72,7 @@ public class PrintStyleBuilder
     private String alternativeLine;
 
     private Collection<Type> excludedTypes = Collections.emptySet();
-    private Map<Type, String> counterNames = new EnumMap<>(Type.class);
+    private Map<Type, String> customCounterNames = new EnumMap<>(Type.class);
 
     /**
      * Creates an empty PrintStyle builder.
@@ -122,7 +122,7 @@ public class PrintStyleBuilder
         alternativeLine = source.getAlternativeLine();
 
         excludedTypes = new HashSet<>(source.getExcludedTypes()); // copy for safety
-        counterNames = new EnumMap<>(source.getCounterNames()); // copy for safety
+        customCounterNames = new EnumMap<>(source.getCustomCounterNames()); // copy for safety
     }
 
     /**
@@ -513,7 +513,7 @@ public class PrintStyleBuilder
      */
     public PrintStyleBuilder withCustomCounterName(Type type, String name)
     {
-        this.counterNames.put(type, name);
+        this.customCounterNames.put(type, name);
         return this;
     }
 
@@ -525,7 +525,7 @@ public class PrintStyleBuilder
      */
     public PrintStyleBuilder resetCustomCounterNames()
     {
-        this.counterNames.clear();
+        this.customCounterNames.clear();
         return this;
     }
 
@@ -697,9 +697,9 @@ public class PrintStyleBuilder
      *
      * @since 2.4.0
      */
-    protected Map<Type, String> getCounterNames()
+    protected Map<Type, String> getCustomCounterNames()
     {
-        return counterNames;
+        return customCounterNames;
     }
 
     /**

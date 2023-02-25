@@ -51,6 +51,10 @@ class PrintFormatTest
             .withRowFormat("%s %s")
             .withDurationFormat(DurationFormat.FULL).build();
 
+    static final PrintStyle SUMMARIZED_TEST_STYLE_WITH_WALL_CLOCK_EXCLUDED = PrintStyle.builder(SUMMARIZED_TEST_STYLE)
+            .withoutTypes(Type.WALL_CLOCK_TIME)
+            .build();
+
     static final PrintStyle DETAILED_TEST_STYLE_WITHOUT_TOTALS = PrintStyle.builder(PrintFormat.DETAILED)
             .withoutHeader()
             .withRowFormat("%s %s %s")
@@ -123,8 +127,19 @@ class PrintFormatTest
         String result = PrintFormat.SUMMARIZED.format(stopwatch, SUMMARIZED_TEST_STYLE);
         String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
 
+        assertThat(lines.length, is(equalTo(2)));
         assertThat(lines[0], is(equalTo(WALL_CLOCK_TIME + " " + STR_DURATION_SUM_C1)));
         assertThat(lines[1], is(equalTo(CPU_TIME + " " + STR_DURATION_SUM_C2)));
+    }
+
+    @Test
+    void summarizedWithOneExclusion_printsTypesAndElapsedTimesOfNonExcluded()
+    {
+        String result = PrintFormat.SUMMARIZED.format(stopwatch, SUMMARIZED_TEST_STYLE_WITH_WALL_CLOCK_EXCLUDED);
+        String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
+
+        assertThat(lines.length, is(equalTo(1)));
+        assertThat(lines[0], is(equalTo(CPU_TIME + " " + STR_DURATION_SUM_C2)));
     }
 
     @Test

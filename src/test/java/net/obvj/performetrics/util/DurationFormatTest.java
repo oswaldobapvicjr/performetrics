@@ -303,4 +303,5 @@ class DurationFormatTest
                 throwsException(IllegalArgumentException.class)
                         .withMessage("Unrecognized duration: invalid3"));
     }
-}
+
+}

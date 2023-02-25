@@ -619,7 +619,7 @@ public class PrintStyle
     private final String alternativeLine;
 
     private final Collection<Type> excludedTypes;
-    private final Map<Type, String> counterNames;
+    private final Map<Type, String> customCounterNames;
 
     /**
      * Returns an empty PrintStyle builder.
@@ -673,7 +673,7 @@ public class PrintStyle
         simpleLine = builder.getSimpleLine();
         alternativeLine = builder.getAlternativeLine();
         excludedTypes = builder.getExcludedTypes();
-        counterNames = builder.getCounterNames();
+        customCounterNames = builder.getCustomCounterNames();
     }
 
     /**
@@ -849,9 +849,9 @@ public class PrintStyle
      *
      * @since 2.4.0
      */
-    public Map<Type, String> getCounterNames()
+    public Map<Type, String> getCustomCounterNames()
     {
-        return counterNames;
+        return customCounterNames;
     }
 
 }

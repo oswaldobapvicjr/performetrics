@@ -177,7 +177,7 @@ public class PrintUtils
      * @param stopwatch   the stopwatch to be printed; not null
      * @param printStream the print stream to which data will be sent; not null
      * @param printStyle  the {@link PrintStyle} to be applied; if {@code null}, the default
-     *                    {@cpde PrintStyle} for summarized view will be applied
+     *                    {@code PrintStyle} for summarized view will be applied
      *
      * @throws NullPointerException if a null stopwatch or print stream is received
      *

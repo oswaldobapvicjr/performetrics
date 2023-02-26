@@ -190,7 +190,7 @@ class PrintUtilsTest
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch,
                 ConfigurationHolder.getConfiguration().getPrintStyleForSummary());
-        String actualString = PrintUtils.summaryToString(stopwatch);
+        String actualString = PrintUtils.toString(stopwatch);
         assertThat(actualString, is(equalTo(expectedString)));
     }
 
@@ -198,7 +198,7 @@ class PrintUtilsTest
     void summaryToString_withStopwatchAndPrintStyle_validString()
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
-        String actualString = PrintUtils.summaryToString(stopwatch, PrintStyle.SUMMARIZED_CSV);
+        String actualString = PrintUtils.toString(stopwatch, PrintStyle.SUMMARIZED_CSV);
         assertThat(actualString, is(equalTo(expectedString)));
     }
 }

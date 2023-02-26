@@ -734,7 +734,7 @@ class StopwatchTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.toString();
-            printUtils.verify(() -> PrintUtils.summaryToString(sw), times(1));
+            printUtils.verify(() -> PrintUtils.toString(sw), times(1));
         }
     }
 

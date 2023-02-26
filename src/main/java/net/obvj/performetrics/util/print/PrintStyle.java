@@ -655,7 +655,7 @@ public class PrintStyle
      *
      * @param builder the {@link PrintStyleBuilder}
      */
-    protected PrintStyle(PrintStyleBuilder builder)
+    PrintStyle(PrintStyleBuilder builder)
     {
         printFormat = builder.getPrintFormat();
         printHeader = builder.isPrintHeader();
@@ -677,11 +677,24 @@ public class PrintStyle
     }
 
     /**
+     * Generates a string containing the formatted stopwatch output in this style.
+     *
+     * @param stopwatch the stopwatch to be printed; not null
+     * @return a string containing the formatted stopwatch output in this style
+     * @throws NullPointerException if the specified stopwatch is null
+     * @since 2.4.0
+     */
+    public String toString(Stopwatch stopwatch)
+    {
+        return printFormat.format(stopwatch, this);
+    }
+
+    /**
      * Returns the target {@code PrintFormat}.
      *
      * @return the target {@link PrintFormat}
      */
-    public PrintFormat getPrintFormat()
+    PrintFormat getPrintFormat()
     {
         return printFormat;
     }
@@ -691,7 +704,7 @@ public class PrintStyle
      *
      * @return the {@link DurationFormat} to be applied to all rows
      */
-    public DurationFormat getDurationFormat()
+    DurationFormat getDurationFormat()
     {
         return durationFormat;
     }
@@ -702,7 +715,7 @@ public class PrintStyle
      *
      * @return a flag indicating whether or not duration legends shall be printed
      */
-    public boolean isPrintLegend()
+    boolean isPrintLegend()
     {
         return printLegend;
     }
@@ -712,7 +725,7 @@ public class PrintStyle
      *
      * @return a flag indicating whether or not the header shall be printed
      */
-    public boolean isPrintHeader()
+    boolean isPrintHeader()
     {
         return printHeader;
     }
@@ -723,7 +736,7 @@ public class PrintStyle
      * @return a flag indicating whether or not the trailer shall be printed
      * @since 2.3.0
      */
-    public boolean isPrintTrailer()
+    boolean isPrintTrailer()
     {
         return printTrailer;
     }
@@ -734,7 +747,7 @@ public class PrintStyle
      *
      * @return a flag indicating whether or not the section summary shall be printed
      */
-    public boolean isPrintSectionSummary()
+    boolean isPrintSectionSummary()
     {
         return printSectionSummary;
     }
@@ -746,7 +759,7 @@ public class PrintStyle
      * @return a flag indicating whether or not the section trailer shall be printed
      * @since 2.3.0
      */
-    public boolean isPrintSectionTrailer()
+    boolean isPrintSectionTrailer()
     {
         return printSectionTrailer;
     }
@@ -756,7 +769,7 @@ public class PrintStyle
      *
      * @return the string format to be applied to the header
      */
-    public String getHeaderFormat()
+    String getHeaderFormat()
     {
         return headerFormat;
     }
@@ -767,7 +780,7 @@ public class PrintStyle
      * @return the string format to be applied to the trailer
      * @since 2.3.0
      */
-    public String getTrailerFormat()
+    String getTrailerFormat()
     {
         return trailerFormat;
     }
@@ -777,7 +790,7 @@ public class PrintStyle
      *
      * @return the format to be applied to all rows in general
      */
-    public String getRowFormat()
+    String getRowFormat()
     {
         return rowFormat;
     }
@@ -787,7 +800,7 @@ public class PrintStyle
      *
      * @return the format to be applied to each section header
      */
-    public String getSectionHeaderFormat()
+    String getSectionHeaderFormat()
     {
         return sectionHeaderFormat;
     }
@@ -797,7 +810,7 @@ public class PrintStyle
      *
      * @return the format to be applied to the total/summary row(s)
      */
-    public String getSectionSummaryRowFormat()
+    String getSectionSummaryRowFormat()
     {
         return sectionSummaryRowFormat;
     }
@@ -808,7 +821,7 @@ public class PrintStyle
      * @return the format to be applied to the section trailer row(s)
      * @since 2.3.0
      */
-    public String getSectionTrailerFormat()
+    String getSectionTrailerFormat()
     {
         return sectionTrailerFormat;
     }
@@ -818,7 +831,7 @@ public class PrintStyle
      *
      * @return a string to be used as simple split line
      */
-    public String getSimpleLine()
+    String getSimpleLine()
     {
         return simpleLine;
     }
@@ -828,7 +841,7 @@ public class PrintStyle
      *
      * @return a string to be used as alternative split line
      */
-    public String getAlternativeLine()
+    String getAlternativeLine()
     {
         return alternativeLine;
     }
@@ -839,7 +852,7 @@ public class PrintStyle
      * @return a collection of types to be excluded
      * @since 2.4.0
      */
-    public Collection<Type> getExcludedTypes()
+    Collection<Type> getExcludedTypes()
     {
         return excludedTypes;
     }
@@ -852,7 +865,7 @@ public class PrintStyle
      * @return a flag indicating whether the specified {@link Type} is to be printed
      * @since 2.4.0
      */
-    public boolean isPrintable(Type type)
+    boolean isPrintable(Type type)
     {
         return !excludedTypes.contains(type);
     }
@@ -862,7 +875,7 @@ public class PrintStyle
      *
      * @since 2.4.0
      */
-    public Map<Type, String> getCustomCounterNames()
+    Map<Type, String> getCustomCounterNames()
     {
         return customCounterNames;
     }
@@ -875,7 +888,7 @@ public class PrintStyle
      * @return the counter name to be printed
      * @since 2.4.0
      */
-    public String getPrintableCounterName(Type type)
+    String getPrintableCounterName(Type type)
     {
         return customCounterNames.getOrDefault(type, type.toString());
     }

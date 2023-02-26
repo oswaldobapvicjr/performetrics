@@ -71,7 +71,9 @@ public class PrintUtils
      */
     public static void printSummary(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
     {
-        printStream.print(summaryToString(stopwatch, printStyle));
+        PrintStyle style = printStyle != null ? printStyle
+                : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
+        printStream.print(PrintFormat.SUMMARIZED.format(stopwatch, style));
     }
 
     /**
@@ -121,7 +123,9 @@ public class PrintUtils
      * @return string containing a formatted summary from the given stopwatch
      *
      * @since 2.2.4
+     * @deprecated Use {@link PrintUtils#toString(Stopwatch)} instead.
      */
+    @Deprecated
     public static String summaryToString(Stopwatch stopwatch)
     {
         return summaryToString(stopwatch, null);
@@ -133,16 +137,90 @@ public class PrintUtils
      *
      * @param stopwatch  to stopwatch to be used
      * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
-     *                   PrintStyle will be applied
+     *                   {@code PrintStyle} will be applied
      * @return string containing a formatted summary from the given stopwatch
      *
      * @since 2.2.4
+     * @deprecated Use {@link PrintUtils#toString(Stopwatch, PrintStyle)} instead.
      */
+    @Deprecated
     public static String summaryToString(Stopwatch stopwatch, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
         return PrintFormat.SUMMARIZED.format(stopwatch, style);
+    }
+
+    /**
+     * Prints elapsed times from the given stopwatch in the specified print stream.
+     * <p>
+     * The default {@link PrintStyle} for summarized view will be applied.
+     *
+     * @param stopwatch   the stopwatch to be printed
+     * @param printStream the print stream to which data will be sent
+     *
+     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @since 2.4.0
+     */
+    public static void print(Stopwatch stopwatch, PrintStream printStream)
+    {
+        print(stopwatch, printStream, null);
+    }
+
+    /**
+     * Prints elapsed times from the given stopwatch in the specified print stream, with a
+     * custom {@link PrintStyle}.
+     * <p>
+     * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
+     * determined by the specified {@link PrintStyle}.
+     *
+     * @param stopwatch   the stopwatch to be printed; not null
+     * @param printStream the print stream to which data will be sent; not null
+     * @param printStyle  the {@link PrintStyle} to be applied; if {@code null}, the default
+     *                    {@cpde PrintStyle} for summarized view will be applied
+     *
+     * @throws NullPointerException if a null stopwatch or print stream is received
+     *
+     * @since 2.4.0
+     */
+    public static void print(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
+    {
+        printStream.print(toString(stopwatch, printStyle));
+    }
+
+    /**
+     * Returns a string containing a formatted summary from the given stopwatch in default
+     * style.
+     *
+     * @param stopwatch to stopwatch to be used; not null
+     * @return string containing a formatted summary from the given stopwatch
+     *
+     * @since 2.4.0
+     */
+    public static String toString(Stopwatch stopwatch)
+    {
+        return toString(stopwatch, null);
+    }
+
+    /**
+     * Returns a string containing a formatted output from the given stopwatch in a custom
+     * {@link PrintStyle}.
+     * <p>
+     * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
+     * determined by the specified {@link PrintStyle}.
+     *
+     * @param stopwatch  to stopwatch to be used
+     * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
+     *                   {@code PrintStyle} for summarized view will be applied
+     * @return string containing a formatted output from the given stopwatch
+     *
+     * @since 2.4.0
+     */
+    public static String toString(Stopwatch stopwatch, PrintStyle printStyle)
+    {
+        PrintStyle style = printStyle != null ? printStyle
+                : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
+        return style.toString(stopwatch);
     }
 
 }

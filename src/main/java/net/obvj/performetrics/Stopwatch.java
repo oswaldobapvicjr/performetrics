@@ -471,11 +471,40 @@ public class Stopwatch
     }
 
     /**
+     * Prints elapsed times in the specified print stream with default summary style.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @throws NullPointerException if the {@code PrintStream} is null
+     * @since 2.4.0
+     */
+    public void print(PrintStream printStream)
+    {
+        PrintUtils.print(this, printStream);
+    }
+
+    /**
+     * Prints elapsed times in the specified print stream with a custom {@link PrintStyle}.
+     * <p>
+     * The format (whether to generate a summarized or detailed view) will be determined by
+     * the specified {@link PrintStyle}.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @param printStyle  the {@link PrintStyle} to be applied
+     *
+     * @throws NullPointerException if the {@code PrintStream} is null
+     * @since 2.4.0
+     */
+    public void print(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.print(this, printStream, printStyle);
+    }
+
+    /**
      * Prints summarized elapsed times in the specified print stream.
      *
      * @param printStream the print stream to which data will be sent
      *
-     * @throws NullPointerException if the PrintStream is null
+     * @throws NullPointerException if the {@code PrintStream} is null
      *
      * @since 2.2.1
      */
@@ -491,9 +520,9 @@ public class Stopwatch
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
-     * @throws NullPointerException     if the PrintStream is null
-     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
-     *                                  {@link PrintFormat#SUMMARIZED}
+     * @throws NullPointerException     if the {@code PrintStream} is null
+     * @throws IllegalArgumentException if the specified {@code PrintStyle} is not compatible
+     *                                  with {@link PrintFormat#SUMMARIZED}
      * @since 2.2.1
      */
     public void printSummary(PrintStream printStream, PrintStyle printStyle)
@@ -506,7 +535,7 @@ public class Stopwatch
      *
      * @param printStream the print stream to which information will be sent
      *
-     * @throws NullPointerException if the PrintStream is null
+     * @throws NullPointerException if the {@code PrintStream} is null
      *
      * @since 2.2.1
      */
@@ -522,9 +551,9 @@ public class Stopwatch
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
-     * @throws NullPointerException     if the PrintStream is null
-     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
-     *                                  {@link PrintFormat#DETAILED}
+     * @throws NullPointerException     if the {@code PrintStream} is null
+     * @throws IllegalArgumentException if the specified {@code PrintStyle} is not compatible
+     *                                  with {@link PrintFormat#DETAILED}
      * @since 2.2.1
      */
     public void printDetails(PrintStream printStream, PrintStyle printStyle)
@@ -595,14 +624,28 @@ public class Stopwatch
     }
 
     /**
-     * Returns a string containing a formatted stopwatch summary.
+     * Returns a string containing a formatted stopwatch summary in default style.
      *
-     * @return a string containing stopwatch summary
+     * @return a string containing a stopwatch summary in default style
      * @since 2.2.4
      */
     @Override
     public String toString()
     {
-        return PrintUtils.summaryToString(this);
+        return PrintUtils.toString(this);
+    }
+
+    /**
+     * Returns a string containing a formatted stopwatch summary in a custom
+     * {@link PrintStyle}.
+     *
+     * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
+     *                   {@code PrintStyle} will be applied
+     * @return a string containing stopwatch summary in the specified {@link PrintStyle}
+     * @since 2.4.0
+     */
+    public String toString(PrintStyle printStyle)
+    {
+        return PrintUtils.toString(this, printStyle);
     }
 }

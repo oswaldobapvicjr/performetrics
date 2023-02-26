@@ -17,8 +17,7 @@
 package net.obvj.performetrics.util.print;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.obvj.performetrics.Counter.Type.CPU_TIME;
-import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
+import static net.obvj.performetrics.Counter.Type.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -72,6 +71,12 @@ class PrintFormatTest
             .withSectionHeader("%s")
             .withSectionSummary("%s")
             .withDurationFormat(DurationFormat.FULL).build();
+
+    static final PrintStyle DETAILED_TEST_STYLE_WITH_TOTALS_AND_TWO_TYPES_EXCLUDED_AND_CUSTOM_NAMES = PrintStyle
+            .builder(DETAILED_TEST_STYLE_WITH_TOTALS)
+            .withoutTypes(CPU_TIME)
+            .withCustomCounterName(WALL_CLOCK_TIME, "real")
+            .build();
 
     static final Duration DURATION_TS1_C1 = Duration.of(1000, MILLISECONDS);
     static final Duration DURATION_TS1_C2 = Duration.of(  50, MILLISECONDS);
@@ -187,6 +192,20 @@ class PrintFormatTest
         assertThat(lines[5], is(equalTo(0 + " " + STR_DURATION_TS1_C2 + " " + STR_DURATION_TS1_C2)));
         assertThat(lines[6], is(equalTo(1 + " " + STR_DURATION_TS2_C2 + " " + STR_DURATION_SUM_C2)));
         assertThat(lines[7], is(equalTo(STR_DURATION_SUM_C2)));
+        assertThat(lines.length, equalTo(8));
+    }
+
+    @Test
+    void detailed_withTwoExcludedTypesAndCustomNames_printsAccordingly()
+    {
+        String result = PrintFormat.DETAILED.format(stopwatch, DETAILED_TEST_STYLE_WITH_TOTALS_AND_TWO_TYPES_EXCLUDED_AND_CUSTOM_NAMES);
+        String[] lines = result.split(PrintFormat.LINE_SEPARATOR);
+
+        assertThat(lines[0], is(equalTo("real")));
+        assertThat(lines[1], is(equalTo(0 + " " + STR_DURATION_TS1_C1 + " " + STR_DURATION_TS1_C1)));
+        assertThat(lines[2], is(equalTo(1 + " " + STR_DURATION_TS2_C1 + " " + STR_DURATION_SUM_C1)));
+        assertThat(lines[3], is(equalTo(STR_DURATION_SUM_C1)));
+        assertThat(lines.length, equalTo(4));
     }
 
     @Test

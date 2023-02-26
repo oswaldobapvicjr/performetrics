@@ -845,6 +845,19 @@ public class PrintStyle
     }
 
     /**
+     * Returns {@code true} if the specified {@link Type} is to be printed (not excluded in
+     * this {@code PrintStyle}).
+     *
+     * @param type the type to be checked
+     * @return a flag indicating whether the specified {@link Type} is to be printed
+     * @since 2.4.0
+     */
+    public boolean isPrintable(Type type)
+    {
+        return !excludedTypes.contains(type);
+    }
+
+    /**
      * @return a map of custom names associated with counter types
      *
      * @since 2.4.0
@@ -852,6 +865,19 @@ public class PrintStyle
     public Map<Type, String> getCustomCounterNames()
     {
         return customCounterNames;
+    }
+
+    /**
+     * Return the custom name associated with the specified counter type, or the default
+     * counter name (determined by {@link Type#toString()}) if no custom name was specified.
+     *
+     * @param type the type to be checked
+     * @return the counter name to be printed
+     * @since 2.4.0
+     */
+    public String getPrintableCounterName(Type type)
+    {
+        return customCounterNames.getOrDefault(type, type.toString());
     }
 
 }

@@ -71,7 +71,7 @@ public enum PrintFormat
                 appendLine(builder, style.getSimpleLine());
             }
             stopwatch.getTypes().stream()
-                    .filter(type -> !style.getExcludedTypes().contains(type))
+                    .filter(style::isPrintable)
                     .forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
             if (style.isPrintTrailer())
             {
@@ -85,7 +85,7 @@ public enum PrintFormat
         private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
         {
             return String.format(style.getRowFormat(),
-                    style.getCustomCounterNames().getOrDefault(type, type.toString()),
+                    style.getPrintableCounterName(type),
                     style.getDurationFormat().format(stopwatch.elapsedTime(type),
                             style.isPrintLegend()));
         }
@@ -141,8 +141,12 @@ public enum PrintFormat
             Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
             {
+                if (!style.isPrintable(type))
+                {
+                    return;
+                }
                 appendLine(builder, style.getAlternativeLine());
-                appendLine(builder, style.getSectionHeaderFormat(), type.toString());
+                appendLine(builder, style.getSectionHeaderFormat(), style.getPrintableCounterName(type));
                 appendLine(builder, style.getSimpleLine());
 
                 Duration elapsedTimeAcc = Duration.ZERO;
@@ -162,7 +166,7 @@ public enum PrintFormat
                 if (style.isPrintSectionTrailer())
                 {
                     appendLine(builder, style.getSimpleLine());
-                    appendLine(builder, style.getSectionTrailerFormat(), type.toString());
+                    appendLine(builder, style.getSectionTrailerFormat(), style.getPrintableCounterName(type));
                 }
             });
             if (style.isPrintTrailer())
@@ -180,7 +184,8 @@ public enum PrintFormat
             boolean printLegend = style.isPrintLegend();
             return String.format(style.getRowFormat(), sequence,
                     durationFormat.format(elapsedTime, printLegend),
-                    durationFormat.format(elapsedTimeAcc, printLegend), type);
+                    durationFormat.format(elapsedTimeAcc, printLegend),
+                    style.getPrintableCounterName(type));
         }
 
         private String toTotalRowFormat(Duration elapsedTimeAcc, PrintStyle style)

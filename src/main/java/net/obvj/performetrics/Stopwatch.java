@@ -471,7 +471,12 @@ public class Stopwatch
     }
 
     /**
-     * Prints elapsed times in the specified print stream with default summary style.
+     * Prints elapsed times in the specified print stream.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
+     * For a custom {@code PrintStyle}, use {@link #print(PrintStream, PrintStyle)}.
      *
      * @param printStream the print stream to which data will be sent
      * @throws NullPointerException if the {@code PrintStream} is null
@@ -489,7 +494,10 @@ public class Stopwatch
      * the specified {@link PrintStyle}.
      *
      * @param printStream the print stream to which data will be sent
-     * @param printStyle  the {@link PrintStyle} to be applied
+     * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
+     *                    {@code PrintStyle} (defined by
+     *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                    applied
      *
      * @throws NullPointerException if the {@code PrintStream} is null
      * @since 2.4.0
@@ -624,9 +632,14 @@ public class Stopwatch
     }
 
     /**
-     * Returns a string containing a formatted stopwatch summary in default style.
+     * Returns a string containing a formatted output for this stopwatch in default style.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
+     * For a custom {@code PrintStyle}, use {@link #toString(PrintStyle)}.
      *
-     * @return a string containing a stopwatch summary in default style
+     * @return a string containing a formatted output for this stopwatch in default style
      * @since 2.2.4
      */
     @Override
@@ -636,12 +649,18 @@ public class Stopwatch
     }
 
     /**
-     * Returns a string containing a formatted stopwatch summary in a custom
+     * Returns a string containing a formatted output for this stopwatch in a custom
      * {@link PrintStyle}.
+     * <p>
+     * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
+     * determined by the specified {@link PrintStyle}.
      *
-     * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
-     *                   {@code PrintStyle} will be applied
-     * @return a string containing stopwatch summary in the specified {@link PrintStyle}
+     * @param printStyle the {@link PrintStyle}; if {@code null}, the default
+     *                   {@code PrintStyle} (defined by
+     *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                   applied
+     * @return a string containing a formatted output for this stopwatch in the specified
+     *         {@link PrintStyle}
      * @since 2.4.0
      */
     public String toString(PrintStyle printStyle)

@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Performetrics;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
@@ -181,7 +182,12 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Prints elapsed times in the specified print stream with default summary style.
+     * Prints elapsed times in the specified print stream.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
+     * For a custom {@code PrintStyle}, use {@link #print(PrintStream, PrintStyle)}.
      *
      * @param printStream the print stream to which data will be sent
      * @throws NullPointerException if the {@code PrintStream} is null
@@ -199,7 +205,10 @@ public abstract class MonitoredOperation
      * the specified {@link PrintStyle}.
      *
      * @param printStream the print stream to which data will be sent
-     * @param printStyle  the {@link PrintStyle} to be applied
+     * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
+     *                    {@code PrintStyle} (defined by
+     *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                    applied
      *
      * @throws NullPointerException if the {@code PrintStream} is null
      * @since 2.4.0
@@ -295,9 +304,13 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Returns a string containing a formatted monitor summary.
+     * Returns a string containing a formatted output for this operation.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
      *
-     * @return a string containing monitor summary
+     * @return a string containing formatted elapsed times for this opearation
      * @since 2.2.4
      */
     @Override

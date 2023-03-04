@@ -54,6 +54,7 @@ class PerformetricsTest
     private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
     private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration().getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
+    private static final PrintStyle INITIAL_PRINT_STYLE = ConfigurationHolder.getConfiguration().getPrintStyle();
     private static final PrintStyle INITIAL_PRINT_STYLE_FOR_SUMMARY = ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
     private static final PrintStyle INITIAL_PRINT_STYLE_FOR_DETAILS = ConfigurationHolder.getConfiguration().getPrintStyleForDetails();
 
@@ -77,6 +78,7 @@ class PerformetricsTest
         checkDefaultTimeUnit();
         checkDefaultConversionMode();
         checkDefaulScale();
+        checkDefaulPrintStyle();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
     }
@@ -94,6 +96,12 @@ class PerformetricsTest
     private void checkDefaulScale()
     {
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(equalTo(INITIAL_SCALE)));
+    }
+
+    private void checkDefaulPrintStyle()
+    {
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyle(),
+                is(equalTo(INITIAL_PRINT_STYLE)));
     }
 
     private void checkDefaulPrintStyleForSummary()
@@ -208,6 +216,32 @@ class PerformetricsTest
     }
 
     @Test
+    void setDefaultPrintStyle_valid_updatesConfiguration()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Performetrics.setDefaultPrintStyle(ps);
+        assertThat(ConfigurationHolder.getConfiguration().getPrintStyle(), is(equalTo(ps)));
+        checkDefaultConversionMode();
+        checkDefaultTimeUnit();
+        checkDefaulScale();
+        checkDefaulPrintStyleForSummary();
+        checkDefaulPrintStyleForDetails();
+    }
+
+    @Test
+    void setDefaultPrintStyle_null_doesNotUpdateConfiguration()
+    {
+        try
+        {
+            Performetrics.setDefaultPrintStyleForSummary(null);
+        }
+        catch (NullPointerException e)
+        {
+            checkAllDefaultValues();
+        }
+    }
+
+    @Test
     void setDefaultPrintStyleForSummary_valid_updatesConfiguration()
     {
         PrintStyle ps = mock(PrintStyle.class);
@@ -216,6 +250,7 @@ class PerformetricsTest
         checkDefaultConversionMode();
         checkDefaultTimeUnit();
         checkDefaulScale();
+        checkDefaulPrintStyle();
         checkDefaulPrintStyleForDetails();
     }
 
@@ -241,6 +276,7 @@ class PerformetricsTest
         checkDefaultConversionMode();
         checkDefaultTimeUnit();
         checkDefaulScale();
+        checkDefaulPrintStyle();
         checkDefaulPrintStyleForSummary();
     }
 

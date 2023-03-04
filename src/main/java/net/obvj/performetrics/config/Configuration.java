@@ -36,18 +36,25 @@ public class Configuration
     /**
      * The initial time unit to be maintained if no specific time unit informed.
      */
-    protected static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
+    static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
 
     /**
      * The initial conversion mode to be applied if no specific mode is set.
      */
-    protected static final ConversionMode INITIAL_CONVERSION_MODE = ConversionMode.DOUBLE_PRECISION;
+    static final ConversionMode INITIAL_CONVERSION_MODE = ConversionMode.DOUBLE_PRECISION;
 
     /**
      * The initial maximum number of decimal places applicable if double-precision conversion
      * mode is set.
      */
-    protected static final int INITIAL_SCALE = 9;
+    static final int INITIAL_SCALE = 9;
+
+    /**
+     * The initial {@link PrintStyle} to be applied by default.
+     *
+     * @since 2.4.0
+     */
+    static final PrintStyle INITIAL_PRINT_STYLE = PrintStyle.SUMMARIZED_TABLE_FULL;
 
     /**
      * The initial {@link PrintStyle} to be applied by default for the summarized
@@ -55,7 +62,7 @@ public class Configuration
      *
      * @since 2.2.1
      */
-    protected static final PrintStyle INITIAL_PRINT_STYLE_FOR_SUMMARY = PrintStyle.SUMMARIZED_TABLE_FULL;
+    static final PrintStyle INITIAL_PRINT_STYLE_FOR_SUMMARY = PrintStyle.SUMMARIZED_TABLE_FULL;
 
     /**
      * The initial {@link PrintStyle} to be applied by default for the detailed
@@ -63,13 +70,14 @@ public class Configuration
      *
      * @since 2.2.1
      */
-    protected static final PrintStyle INITIAL_PRINT_STYLE_FOR_DETAILS = PrintStyle.DETAILED_TABLE_FULL;
+    static final PrintStyle INITIAL_PRINT_STYLE_FOR_DETAILS = PrintStyle.DETAILED_TABLE_FULL;
 
     private static final String MSG_PRINT_STYLE_MUST_NOT_BE_NULL = "The default PrintStyle must not be null";
 
     private TimeUnit timeUnit = INITIAL_TIME_UNIT;
     private ConversionMode conversionMode = INITIAL_CONVERSION_MODE;
     private int scale = INITIAL_SCALE;
+    private PrintStyle printStyle = INITIAL_PRINT_STYLE;
     private PrintStyle printStyleForSummary = INITIAL_PRINT_STYLE_FOR_SUMMARY;
     private PrintStyle printStyleForDetails = INITIAL_PRINT_STYLE_FOR_DETAILS;
 
@@ -145,6 +153,39 @@ public class Configuration
     }
 
     /**
+     * Returns the default {@link PrintStyle} to be applied when no style is specified.
+     *
+     * @return the default {@link PrintStyle} to be applied when no style is specified
+     * @since 2.4.0
+     */
+    public PrintStyle getPrintStyle()
+    {
+        return printStyle;
+    }
+
+    /**
+     * Defines the default {@link PrintStyle} to be applied when no style is specified.
+     * <p>
+     * The object will be applied by the following operations:
+     * </p>
+     * <ul>
+     * <li>{@link Stopwatch#print(java.io.PrintStream)}</li>
+     * <li>{@link Stopwatch#toString()}</li>
+     * <li>{@link MonitoredOperation#print(java.io.PrintStream)}</li>
+     * <li>{@link MonitoredOperation#toString()}</li>
+     * </ul>
+     *
+     * @param printStyle the {@link PrintStyle} to be set; not null
+     * @throws NullPointerException if the specified {@code PrintStyle} is null
+     *
+     * @since 2.4.0
+     */
+    public void setPrintStyle(PrintStyle printStyle)
+    {
+        this.printStyle = Objects.requireNonNull(printStyle, MSG_PRINT_STYLE_MUST_NOT_BE_NULL);
+    }
+
+    /**
      * Returns the default {@link PrintStyle} for the summarized stopwatch formatter.
      *
      * @return the default {@link PrintStyle} for the summarized stopwatch formatter
@@ -166,7 +207,7 @@ public class Configuration
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
-     * @throws NullPointerException if the specified PrintStyle is null
+     * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
      * @since 2.2.1
      */
@@ -197,7 +238,7 @@ public class Configuration
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
-     * @throws NullPointerException if the specified PrintStyle is null
+     * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
      * @since 2.2.1
      */

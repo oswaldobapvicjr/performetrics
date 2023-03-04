@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Performetrics;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.Duration;
@@ -181,11 +182,48 @@ public abstract class MonitoredOperation
     }
 
     /**
+     * Prints elapsed times in the specified print stream.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
+     * For a custom {@code PrintStyle}, use {@link #print(PrintStream, PrintStyle)}.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @throws NullPointerException if the {@code PrintStream} is null
+     * @since 2.4.0
+     */
+    public void print(PrintStream printStream)
+    {
+        PrintUtils.print(stopwatch, printStream);
+    }
+
+    /**
+     * Prints elapsed times in the specified print stream with a custom {@link PrintStyle}.
+     * <p>
+     * The format (whether to generate a summarized or detailed view) will be determined by
+     * the specified {@link PrintStyle}.
+     *
+     * @param printStream the print stream to which data will be sent
+     * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
+     *                    {@code PrintStyle} (defined by
+     *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                    applied
+     *
+     * @throws NullPointerException if the {@code PrintStream} is null
+     * @since 2.4.0
+     */
+    public void print(PrintStream printStream, PrintStyle printStyle)
+    {
+        PrintUtils.print(stopwatch, printStream, printStyle);
+    }
+
+    /**
      * Prints summarized elapsed times in the specified print stream.
      *
      * @param printStream the print stream to which data will be sent
      *
-     * @throws NullPointerException if the PrintStream is null
+     * @throws NullPointerException if the {@code PrintStream} is null
      *
      * @since 2.2.1
      */
@@ -201,9 +239,9 @@ public abstract class MonitoredOperation
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
-     * @throws NullPointerException     if the PrintStream is null
-     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
-     *                                  {@link PrintFormat#SUMMARIZED}
+     * @throws NullPointerException     if the {@code PrintStream} is null
+     * @throws IllegalArgumentException if the specified {@code PrintStyle} is not compatible
+     *                                  with {@link PrintFormat#SUMMARIZED}
      * @since 2.2.1
      */
     public void printSummary(PrintStream printStream, PrintStyle printStyle)
@@ -232,9 +270,9 @@ public abstract class MonitoredOperation
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle} to be applied
      *
-     * @throws NullPointerException     if the PrintStream is null
-     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
-     *                                  {@link PrintFormat#DETAILED}
+     * @throws NullPointerException     if the {@code PrintStream} is null
+     * @throws IllegalArgumentException if the specified {@code PrintStyle} is not compatible
+     *                                  with {@link PrintFormat#DETAILED}
      * @since 2.2.1
      */
     public void printDetails(PrintStream printStream, PrintStyle printStyle)
@@ -266,14 +304,38 @@ public abstract class MonitoredOperation
     }
 
     /**
-     * Returns a string containing a formatted monitor summary.
+     * Returns a string containing a formatted output for this operation.
+     * <p>
+     * The default {@link PrintStyle} (defined by
+     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * <p>
      *
-     * @return a string containing monitor summary
+     * @return a string containing formatted elapsed times for this opearation
      * @since 2.2.4
      */
     @Override
     public String toString()
     {
         return stopwatch.toString();
+    }
+
+    /**
+     * Returns a string containing a formatted output for this operation in a custom
+     * {@link PrintStyle}.
+     * <p>
+     * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
+     * determined by the specified {@link PrintStyle}.
+     *
+     * @param printStyle the {@link PrintStyle}; if {@code null}, the default
+     *                   {@code PrintStyle} (defined by
+     *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                   applied
+     * @return a string containing formatted elapsed times for this operation in the specified
+     *         {@link PrintStyle}
+     * @since 2.4.0
+     */
+    public String toString(PrintStyle printStyle)
+    {
+        return stopwatch.toString(printStyle);
     }
 }

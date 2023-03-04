@@ -16,6 +16,9 @@
 
 package net.obvj.performetrics;
 
+import static java.util.concurrent.TimeUnit.*;
+import static net.obvj.performetrics.Counter.Type.*;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
@@ -26,10 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.util.DurationFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
@@ -82,22 +83,22 @@ public class PerformetricsTestDrive
 
         sw.stop();
 
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanoseconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanoseconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " milliseconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " milliseconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
-        System.out.println(sw.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME));
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS) + " nanoseconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(NANOSECONDS) + " nanoseconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME, MILLISECONDS) + " milliseconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(MILLISECONDS) + " milliseconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME, SECONDS) + " seconds");
+        System.out.println(sw.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(SECONDS) + " seconds");
 
         System.out.println();
-        sw.printSummary(System.out, PrintStyle.LINUX);
+        sw.print(System.out, PrintStyle.LINUX);
         System.out.println();
         sw.printDetails(System.out);
 
         System.out.println("\nSESSION CHECK:");
-        System.out.println(" - Last elapsed time (WALL_CLOCK_TIME): " + sw.lastSession().elapsedTime(Type.WALL_CLOCK_TIME).toString(DurationFormat.LINUX));
-        System.out.println(" - Last elapsed time (CPU_TIME): "        + sw.lastSession().elapsedTime(Type.CPU_TIME).toString(DurationFormat.LINUX));
+        System.out.println(" - Last elapsed time (WALL_CLOCK_TIME): " + sw.lastSession().elapsedTime(WALL_CLOCK_TIME).toString(DurationFormat.LINUX));
+        System.out.println(" - Last elapsed time (CPU_TIME): "        + sw.lastSession().elapsedTime(CPU_TIME).toString(DurationFormat.LINUX));
         System.out.println();
     }
 
@@ -121,16 +122,18 @@ public class PerformetricsTestDrive
     {
         System.out.println(operation.call());
 
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME));
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS) + " nanosecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.NANOSECONDS) + " nanosecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS) + " millisecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.MILLISECONDS) + " millisecods");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.SECONDS) + " seconds");
-        System.out.println(operation.elapsedTime(Type.WALL_CLOCK_TIME).toTimeUnit(TimeUnit.SECONDS) + " seconds");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME));
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS) + " nanosecods");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(NANOSECONDS) + " nanosecods");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME, MILLISECONDS) + " millisecods");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(MILLISECONDS) + " millisecods");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME, SECONDS) + " seconds");
+        System.out.println(operation.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(SECONDS) + " seconds");
 
-        operation.printSummary(System.out);
         System.out.println();
+        operation.print(System.out, PrintStyle.SUMMARIZED_XML);
+        System.out.println("*****");
+        operation.print(System.out, PrintStyle.DETAILED_XML);
 
         operation.printDetails(new PrintStream("stopwatch.csv"), PrintStyle.DETAILED_CSV);
         System.out.println();

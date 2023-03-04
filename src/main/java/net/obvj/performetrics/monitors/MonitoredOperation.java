@@ -318,4 +318,24 @@ public abstract class MonitoredOperation
     {
         return stopwatch.toString();
     }
+
+    /**
+     * Returns a string containing a formatted output for this operation in a custom
+     * {@link PrintStyle}.
+     * <p>
+     * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
+     * determined by the specified {@link PrintStyle}.
+     *
+     * @param printStyle the {@link PrintStyle}; if {@code null}, the default
+     *                   {@code PrintStyle} (defined by
+     *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
+     *                   applied
+     * @return a string containing formatted elapsed times for this operation in the specified
+     *         {@link PrintStyle}
+     * @since 2.4.0
+     */
+    public String toString(PrintStyle printStyle)
+    {
+        return stopwatch.toString(printStyle);
+    }
 }

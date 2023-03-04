@@ -301,6 +301,29 @@ class StopwatchTest
     }
 
     @Test
+    void print_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.print(System.out);
+            printUtils.verify(() -> PrintUtils.print(sw, System.out), times(1));
+        }
+    }
+
+    @Test
+    void print_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.print(System.out, ps);
+            printUtils.verify(() -> PrintUtils.print(sw, System.out, ps), times(1));
+        }
+    }
+
+    @Test
     void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         Stopwatch sw = new Stopwatch();
@@ -735,6 +758,18 @@ class StopwatchTest
         {
             sw.toString();
             printUtils.verify(() -> PrintUtils.toString(sw), times(1));
+        }
+    }
+
+    @Test
+    void toString_customPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        Stopwatch sw = new Stopwatch();
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            sw.toString(ps);
+            printUtils.verify(() -> PrintUtils.toString(sw, ps), times(1));
         }
     }
 

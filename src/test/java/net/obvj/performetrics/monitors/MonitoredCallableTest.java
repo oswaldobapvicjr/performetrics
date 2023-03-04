@@ -136,6 +136,17 @@ class MonitoredCallableTest
     }
 
     @Test
+    void print_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.print(System.out);
+            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out), times(1));
+        }
+    }
+
+    @Test
     void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(callable);

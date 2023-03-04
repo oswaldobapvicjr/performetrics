@@ -93,7 +93,7 @@ public class Performetrics
      */
     public static void setDefaultPrintStyle(PrintStyle printStyle)
     {
-        ConfigurationHolder.getConfiguration().setPrintStyleForSummary(printStyle);
+        ConfigurationHolder.getConfiguration().setPrintStyle(printStyle);
     }
 
     /**

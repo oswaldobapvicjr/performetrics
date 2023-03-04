@@ -154,6 +154,29 @@ class MonitoredRunnableTest
     }
 
     @Test
+    void print_withPrintWriterArgument_callsCorrectPrintUtilMethod()
+    {
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.print(System.out);
+            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out), times(1));
+        }
+    }
+
+    @Test
+    void print_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.print(System.out, ps);
+            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out, ps), times(1));
+        }
+    }
+
+    @Test
     void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
         MonitoredRunnable operation = new MonitoredRunnable(runnable);
@@ -281,8 +304,24 @@ class MonitoredRunnableTest
     @Test
     void toString_callsCorrectPrintUtilMethod()
     {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        assertThat(operation.toString(), equalTo(stopwatch.toString()));
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.toString();
+            printUtils.verify(() -> PrintUtils.toString(operation.stopwatch), times(1));
+        }
+    }
+
+    @Test
+    void toString_customPrintStyle_callsCorrectPrintUtilMethod()
+    {
+        PrintStyle ps = mock(PrintStyle.class);
+        MonitoredRunnable operation = new MonitoredRunnable(runnable);
+        try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
+        {
+            operation.toString(ps);
+            printUtils.verify(() -> PrintUtils.toString(operation.stopwatch, ps), times(1));
+        }
     }
 
 }

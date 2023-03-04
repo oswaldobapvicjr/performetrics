@@ -89,7 +89,7 @@ public class Performetrics
      * @param printStyle the {@link PrintStyle} to be set; not null
      * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
-     * @since 2.2.1
+     * @since 2.4.0
      */
     public static void setDefaultPrintStyle(PrintStyle printStyle)
     {

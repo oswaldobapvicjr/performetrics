@@ -131,7 +131,9 @@ public class PerformetricsTestDrive
         System.out.println(operation.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(SECONDS) + " seconds");
 
         System.out.println();
-        operation.print(System.out, PrintStyle.LINUX);
+        operation.print(System.out, PrintStyle.SUMMARIZED_XML);
+        System.out.println("*****");
+        operation.print(System.out, PrintStyle.DETAILED_XML);
 
         operation.printDetails(new PrintStream("stopwatch.csv"), PrintStyle.DETAILED_CSV);
         System.out.println();

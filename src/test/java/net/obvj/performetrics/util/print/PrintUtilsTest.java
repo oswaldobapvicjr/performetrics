@@ -155,7 +155,7 @@ class PrintUtilsTest
     }
 
     @Test
-    void print_withStopwatchAndPrintStreamAndPrintStyle_printsToTheStream()
+    void print_withStopwatchAndPrintStreamAndSummarizedPrintStyle_printsToTheStream()
             throws UnsupportedEncodingException
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
@@ -163,6 +163,20 @@ class PrintUtilsTest
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos, true, "UTF-8");
         PrintUtils.print(stopwatch, printStream, PrintStyle.SUMMARIZED_CSV);
+        String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(printedString, is(equalTo(expectedString)));
+    }
+
+    @Test
+    void print_withStopwatchAndPrintStreamAndDetailedPrintStyle_printsToTheStream()
+            throws UnsupportedEncodingException
+    {
+        String expectedString = PrintFormat.DETAILED.format(stopwatch, PrintStyle.DETAILED_CSV);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos, true, "UTF-8");
+        PrintUtils.print(stopwatch, printStream, PrintStyle.DETAILED_CSV);
         String printedString = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         assertThat(printedString, is(equalTo(expectedString)));

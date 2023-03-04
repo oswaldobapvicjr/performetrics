@@ -222,4 +222,4 @@ Performetrics provides two different conversion modes that can be applied depend
 
 The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.4-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.4-A.svg)
+[![High-level classes overview](resources/High-level%20overview%20-%20v2.4-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)

@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
  * <li><b>DurationFormat.SHORT:</b> {@code 3.200000000 second(s)}</li>
  * <li><b>DurationFormat.SHORTER:</b> {@code 3.2 second(s)}</li>
  * <li><b>DurationFormat.ISO_8601:</b> {@code PT3.2S}</li>
+ * <li><b>DurationFormat.LINUX:</b> {@code 0m3.200s}</li>
  * </ul>
  *
  * @author oswaldo.bapvic.jr
@@ -145,8 +146,9 @@ public enum DurationFormat
     },
 
     /**
-     * Formats a time duration using ISO-8601 seconds based representation, such as
-     * {@code PT8H6M12.345S}, where:
+     * Formats a time duration using ISO-8601 seconds-based representation.
+     * <p>
+     * For example: {@code PT8H6M12.345S}, where:
      * <ul>
      * <li>{@code P} is the duration designator (referred to as "period"), and is always
      * placed at the beginning of the duration</li>
@@ -159,7 +161,7 @@ public enum DurationFormat
      * seconds</li>
      * </ul>
      * <p>
-     * Examples:
+     * Additional examples:
      * <ul>
      * <li>{@code PT0.001S}</li>
      * <li>{@code PT3.2S}</li>

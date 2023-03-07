@@ -43,7 +43,7 @@
         <!-- Test dependencies versions -->
         <junit.version>5.9.2</junit.version>
         <junit-utils.version>1.4.0</junit-utils.version>
-        <mockito.version>5.1.1</mockito.version>
+        <mockito.version>4.11.0</mockito.version> <!-- Last version supporting JDK8 -->
         <snakeyaml.version>2.0</snakeyaml.version>
     </properties>
 

@@ -1,6 +1,36 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.4.0
+                                   2023-03
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+New features/enhancements:
+
+ > issue/0058: New Print Styles for YAML
+ > issue/0059: New methods to parse strings as Durations
+ > issue/0062: Print Styles standardization
+ > issue/0064: New methods to retrieve last session's elapsed times
+ > issue/0066: New Linux-based Duration Format and Print Styles
+ > issue/0068: New Print Style attributes for PrintFormat.DETAILED
+ > issue/0069: New print() methods for Stopwatch and Monitored Operations
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.3.0
                                    2022-07
                                  

@@ -19,6 +19,7 @@ package net.obvj.performetrics;
 import static java.util.concurrent.TimeUnit.*;
 import static net.obvj.performetrics.Counter.Type.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
@@ -106,7 +107,7 @@ public class PerformetricsTestDrive
     {
         MonitoredCallable<String> operation = new MonitoredCallable<>(() ->
         {
-            List<Path> paths = Files.list(Paths.get(System.getenv("TEMP"))).sorted().collect(Collectors.toList());
+            List<Path> paths = Files.list(Paths.get(".")).sorted().collect(Collectors.toList());
             return "File count = " + paths.size();
         });
 

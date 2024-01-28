@@ -18,6 +18,7 @@ package net.obvj.performetrics.util.print;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
@@ -891,6 +892,39 @@ public class PrintStyle
     String getPrintableCounterName(Type type)
     {
         return customCounterNames.getOrDefault(type, type.toString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(alternativeLine, customCounterNames, durationFormat, excludedTypes,
+                headerFormat, printFormat, printHeader, printLegend, printSectionSummary,
+                printSectionTrailer, printTrailer, rowFormat, sectionHeaderFormat,
+                sectionSummaryRowFormat, sectionTrailerFormat, simpleLine, trailerFormat);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        PrintStyle other = (PrintStyle) obj;
+        return Objects.equals(alternativeLine, other.alternativeLine)
+                && Objects.equals(customCounterNames, other.customCounterNames)
+                && durationFormat == other.durationFormat
+                && Objects.equals(excludedTypes, other.excludedTypes)
+                && Objects.equals(headerFormat, other.headerFormat)
+                && printFormat == other.printFormat && printHeader == other.printHeader
+                && printLegend == other.printLegend
+                && printSectionSummary == other.printSectionSummary
+                && printSectionTrailer == other.printSectionTrailer
+                && printTrailer == other.printTrailer && Objects.equals(rowFormat, other.rowFormat)
+                && Objects.equals(sectionHeaderFormat, other.sectionHeaderFormat)
+                && Objects.equals(sectionSummaryRowFormat, other.sectionSummaryRowFormat)
+                && Objects.equals(sectionTrailerFormat, other.sectionTrailerFormat)
+                && Objects.equals(simpleLine, other.simpleLine)
+                && Objects.equals(trailerFormat, other.trailerFormat);
     }
 
 }

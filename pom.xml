@@ -42,7 +42,7 @@
 
         <!-- Test dependencies versions -->
         <junit.version>5.10.1</junit.version>
-        <junit-utils.version>1.5.0</junit-utils.version>
+        <junit-utils.version>1.7.0</junit-utils.version>
         <mockito.version>5.10.0</mockito.version>
         <snakeyaml.version>2.0</snakeyaml.version>
     </properties>
@@ -167,7 +167,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>

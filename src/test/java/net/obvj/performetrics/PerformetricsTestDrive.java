@@ -19,7 +19,6 @@ package net.obvj.performetrics;
 import static java.util.concurrent.TimeUnit.*;
 import static net.obvj.performetrics.Counter.Type.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;

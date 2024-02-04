@@ -29,7 +29,7 @@ import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
 
@@ -127,10 +127,10 @@ class TimingSessionTest
     {
         TimingSession session = new TimingSession();
         assertThat(session.getCounters().size(), is(equalTo(Type.values().length)));
-        assertNotNull("Wall-clock-time counter should not be null", getCounter(session, WALL_CLOCK_TIME));
-        assertNotNull("CPU-time counter should not be null", getCounter(session, CPU_TIME));
-        assertNotNull("User-time counter should not be null", getCounter(session, USER_TIME));
-        assertNotNull("System-time counter should not be null", getCounter(session, SYSTEM_TIME));
+        assertNotNull(getCounter(session, WALL_CLOCK_TIME), "Wall-clock-time counter should not be null");
+        assertNotNull(getCounter(session, CPU_TIME), "CPU-time counter should not be null");
+        assertNotNull(getCounter(session, USER_TIME), "User-time counter should not be null");
+        assertNotNull(getCounter(session, SYSTEM_TIME), "System-time counter should not be null");
     }
 
     /**
@@ -141,7 +141,7 @@ class TimingSessionTest
     {
         TimingSession session = new TimingSession(SYSTEM_TIME);
         assertThat(session.getCounters().size(), is(equalTo(1)));
-        assertNotNull("System-time counter not set", getCounter(session, SYSTEM_TIME));
+        assertNotNull(getCounter(session, SYSTEM_TIME), "System-time counter not set");
     }
 
     /**
@@ -152,8 +152,8 @@ class TimingSessionTest
     {
         TimingSession session = new TimingSession(CPU_TIME, USER_TIME);
         assertThat(session.getCounters().size(), is(equalTo(2)));
-        assertNotNull("CPU-time counter not set", getCounter(session, CPU_TIME));
-        assertNotNull("User-time counter not set", getCounter(session, USER_TIME));
+        assertNotNull(getCounter(session, CPU_TIME), "CPU-time counter not set");
+        assertNotNull(getCounter(session, USER_TIME), "User-time counter not set");
     }
 
     /**

@@ -308,7 +308,6 @@ public abstract class MonitoredOperation
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
-     * <p>
      *
      * @return a string containing formatted elapsed times for this opearation
      * @since 2.2.4

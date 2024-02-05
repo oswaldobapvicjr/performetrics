@@ -181,6 +181,7 @@
                     <encoding>UTF-8</encoding>
                     <show>public</show>
                     <stylesheetfile>stylesheet.css</stylesheetfile>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>

@@ -180,7 +180,7 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <show>public</show>
-                    <stylesheetfile>src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <stylesheetfile>stylesheet.css</stylesheetfile>
                 </configuration>
                 <executions>
                     <execution>

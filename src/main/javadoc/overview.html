@@ -38,5 +38,25 @@
           application, such as context switching, resource allocation, etc.
        </li>
     </ul>
+    <br>
+    <h3>Examples</h3>
+    <h4>Using Stopwatch:</h4>
+    <blockquote>
+    <pre>
+Stopwatch stopwatch = Stopwatch.createStarted();
+// Do your task
+stopwatch.stop();
+double d1 = stopwatch.elapsedTime(Counter.Type.WALL_CLOCK_TIME, TimeUnit.NANOSECONDS);
+double d2 = stopwatch.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
+</pre>
+    </blockquote>
+    <h4>Using MonitoredOperation:</h4>
+    <blockquote>
+    <pre>
+MonitoredOperation operation = Performetrics.monitorOperation(() -&gt; myObject.doStuff());
+double d1 = operation.elapsedTime(Counter.Type.USER_TIME, TimeUnit.NANOSECONDS);
+double d1 = operation.elapsedTime(Counter.Type.SYSTEM_TIME, TimeUnit.NANOSECONDS);
+</pre>
+    </blockquote>
   </body>
 </html>

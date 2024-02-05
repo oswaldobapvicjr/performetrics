@@ -74,12 +74,25 @@ public class Configuration
 
     private static final String MSG_PRINT_STYLE_MUST_NOT_BE_NULL = "The default PrintStyle must not be null";
 
-    private TimeUnit timeUnit = INITIAL_TIME_UNIT;
-    private ConversionMode conversionMode = INITIAL_CONVERSION_MODE;
-    private int scale = INITIAL_SCALE;
-    private PrintStyle printStyle = INITIAL_PRINT_STYLE;
-    private PrintStyle printStyleForSummary = INITIAL_PRINT_STYLE_FOR_SUMMARY;
-    private PrintStyle printStyleForDetails = INITIAL_PRINT_STYLE_FOR_DETAILS;
+    private TimeUnit timeUnit;
+    private ConversionMode conversionMode;
+    private int scale;
+    private PrintStyle printStyle;
+    private PrintStyle printStyleForSummary;
+    private PrintStyle printStyleForDetails;
+
+    /**
+     * Builds a new {@code Configuration} with all initial values.
+     */
+    public Configuration()
+    {
+        timeUnit = INITIAL_TIME_UNIT;
+        conversionMode = INITIAL_CONVERSION_MODE;
+        scale = INITIAL_SCALE;
+        printStyle = INITIAL_PRINT_STYLE;
+        printStyleForSummary = INITIAL_PRINT_STYLE_FOR_SUMMARY;
+        printStyleForDetails = INITIAL_PRINT_STYLE_FOR_DETAILS;
+    }
 
     /**
      * Returns the time unit maintained by default if no specific time unit is specified.

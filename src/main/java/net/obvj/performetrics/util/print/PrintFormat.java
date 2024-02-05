@@ -51,9 +51,10 @@ public enum PrintFormat
      * ====================================
      * </pre>
      *
+     * <p>
      * <strong>Note:</strong> Since 2.4.0, some counter types may be excluded from the actual
      * output if specified by the {@link PrintStyle} to be applied.
-     * <p>
+     * </p>
      *
      * @see PrintStyle
      */

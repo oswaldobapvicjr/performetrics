@@ -17,7 +17,7 @@
 package net.obvj.performetrics.util;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @author oswaldo.bapvic.jr
  * @since 2.0.0
  */
-public class Duration implements Comparable<Duration>
+public final class Duration implements Comparable<Duration>
 {
 
     /**
@@ -99,13 +99,40 @@ public class Duration implements Comparable<Duration>
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
+        TemporalUnit temporalUnit = Objects
+                .requireNonNull(timeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL).toChronoUnit();
+        return Duration.of(amount, temporalUnit);
+    }
+
+    /**
+     * Obtains a {@code Duration} representing an amount in the specified unit.
+     * <p>
+     * For example, calling {@code Duration.of(65, SECONDS)} produces an object in which the
+     * getters behave according to the example below:
+     *
+     * <pre>
+     * duration.getHours()       //returns: 0
+     * duration.getMinutes()     //returns: 1
+     * duration.getSeconds()     //returns: 5
+     * duration.getNanoseconds() //returns: 0
+     * </pre>
+     *
+     * @param amount       the amount of the duration, measured in terms of the time unit
+     *                     argument, not negative
+     * @param temporalUnit the unit that the amount argument is measured in, not null
+     * @return a {@code Duration}, not null
+     *
+     * @throws NullPointerException     if the specified time unit is null
+     * @throws IllegalArgumentException if the specified duration amount is negative
+     * @since 2.5.0
+     */
+    public static Duration of(long amount, TemporalUnit temporalUnit)
+    {
         if (amount < 0)
         {
             throw new IllegalArgumentException(MSG_AMOUNT_MUST_BE_POSITIVE);
         }
-        Objects.requireNonNull(timeUnit, MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL);
-        ChronoUnit chronoUnit = TimeUnitConverter.toChronoUnit(timeUnit);
-        java.time.Duration internalDuration = java.time.Duration.of(amount, chronoUnit);
+        java.time.Duration internalDuration = java.time.Duration.of(amount, temporalUnit);
         return new Duration(internalDuration);
     }
 

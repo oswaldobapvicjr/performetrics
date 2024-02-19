@@ -52,10 +52,10 @@ double d2 = stopwatch.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
 </pre>
     </blockquote>
 
-    <p>2. Using <code>MonitoredOperation</code>:<p>
+    <p>2. Using <code>MonitoredRunnable</code>:<p>
     <blockquote>
     <pre>
-MonitoredOperation operation = Performetrics.monitorOperation(() -&gt; myObject.doStuff());
+MonitoredRunnable operation = Performetrics.monitorOperation(() -&gt; myObject.doStuff());
 double d1 = operation.elapsedTime(Counter.Type.USER_TIME, TimeUnit.NANOSECONDS);
 double d2 = operation.elapsedTime(Counter.Type.SYSTEM_TIME, TimeUnit.NANOSECONDS);
 </pre>

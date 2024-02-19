@@ -32,9 +32,8 @@ import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
 /**
- * A {@code TimingSessionContainer} is an object that maintains multiple timing sessions
- * for different counter types, and provides methods to retrieve elapsed times is
- * different formats.
+ * An object that maintains multiple timing sessions for different counter types, and
+ * provides methods to retrieve elapsed times is different formats.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.5.0

@@ -19,7 +19,6 @@ package net.obvj.performetrics;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
@@ -97,12 +96,6 @@ public final class UnmodifiableTimingSession extends TimingSession
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
         return timingSession.elapsedTime(type, timeUnit, conversionMode);
-    }
-
-    @Override
-    List<Type> getTypes()
-    {
-        return timingSession.getTypes();
     }
 
     @Override

@@ -108,7 +108,7 @@ public class MonitoredCallable<V> extends Stopwatch implements Callable<V>
      */
     public MonitoredCallable(Callable<V> callable, Type... types)
     {
-        this(callable, parseTypes(types));
+        this(callable, asList(types));
     }
 
     private MonitoredCallable(Callable<V> callable, List<Type> types)

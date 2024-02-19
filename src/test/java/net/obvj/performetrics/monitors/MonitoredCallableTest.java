@@ -16,6 +16,7 @@
 
 package net.obvj.performetrics.monitors;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
@@ -30,11 +31,13 @@ import static org.mockito.Mockito.times;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintUtils;
 
@@ -45,10 +48,16 @@ import net.obvj.performetrics.util.print.PrintUtils;
  */
 class MonitoredCallableTest
 {
-    private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
-    private static final long MOCKED_CPU_TIME = 1200000000l;
-    private static final long MOCKED_USER_TIME = 1200000001l;
-    private static final long MOCKED_SYSTEM_TIME = 1200000002l;
+    private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
+    private static final long CPU_TIME_BEFORE = 1200000000l;
+    private static final long USER_TIME_BEFORE = 1200000001l;
+    private static final long SYSTEM_TIME_BEFORE = 1200000002l;
+
+    private static final long WALL_CLOCK_TIME_AFTER = 3000000000l;
+    private static final long CPU_TIME_AFTER = 1200000300l;
+    private static final long USER_TIME_AFTER = 1200000201l;
+    private static final long SYSTEM_TIME_AFTER = 1200000102l;
+
     private static final String STRING_CALLABLE_RETURN = "test234";
 
     // Since JDK 17, Mockito cannot mock java.util.Callable
@@ -58,32 +67,14 @@ class MonitoredCallableTest
     };
 
     /**
-     * Setup the expects on {@link SystemUtils} mock with constant values
+     * Setup the expects with pairs of "_BEFORE" and "_AFTER" constant values
      */
-    private void setupExpects(MockedStatic<SystemUtils> systemUtils)
+    private static void setupExpectsBeforeAndAfter(MockedStatic<SystemUtils> systemUtils)
     {
-        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(MOCKED_WALL_CLOCK_TIME);
-        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(MOCKED_CPU_TIME);
-        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(MOCKED_USER_TIME);
-        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
-    }
-
-    private void assertAllUnitsBefore(MonitoredCallable<?> callable, int session)
-    {
-        assertThat(callable.getCounters(WALL_CLOCK_TIME).get(session).getUnitsBefore(),
-                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(callable.getCounters(CPU_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(callable.getCounters(USER_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(callable.getCounters(SYSTEM_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_SYSTEM_TIME)));
-    }
-
-    private void assertAllUnitsAfter(MonitoredCallable<?> callable, int session)
-    {
-        assertThat(callable.getCounters(WALL_CLOCK_TIME).get(session).getUnitsAfter(),
-                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(callable.getCounters(CPU_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(callable.getCounters(USER_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(callable.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_SYSTEM_TIME)));
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_BEFORE, WALL_CLOCK_TIME_AFTER);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_BEFORE, CPU_TIME_AFTER);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_BEFORE, USER_TIME_AFTER);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_BEFORE, SYSTEM_TIME_AFTER);
     }
 
     @Test
@@ -119,17 +110,49 @@ class MonitoredCallableTest
      *
      * @throws Exception in case of an exception inside the {@link Callable}
      */
+
     @Test
-    void call_givenAllTypes_updatesAllCounters() throws Exception
+    void run_defaultTypes_validElapsedTimes() throws Exception
     {
-        MonitoredCallable<String> operation = new MonitoredCallable<>(callable);
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(callable);
+
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
-            setupExpects(systemUtils);
-            assertThat(operation.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+            setupExpectsBeforeAndAfter(systemUtils);
+
+            assertThat(monitored.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+
+            assertThat(monitored.elapsedTime(WALL_CLOCK_TIME),
+                    is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(CPU_TIME),
+                    is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(USER_TIME),
+                    is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(SYSTEM_TIME),
+                    is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
         }
-        assertAllUnitsBefore(operation, 0);
-        assertAllUnitsAfter(operation, 0);
+    }
+
+    @Test
+    void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter() throws Exception
+    {
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(callable);
+
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBeforeAndAfter(systemUtils);
+
+            assertThat(monitored.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+
+            assertThat(monitored.elapsedTime(WALL_CLOCK_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(CPU_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(CPU_TIME_AFTER - CPU_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(USER_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(USER_TIME_AFTER - USER_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(SYSTEM_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE))));
+        }
     }
 
     @Test

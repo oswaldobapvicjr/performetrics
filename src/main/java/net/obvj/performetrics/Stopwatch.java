@@ -214,13 +214,14 @@ public class Stopwatch
      */
     public Stopwatch(Type... types)
     {
-        this(parseTypes(types));
+        this(asList(types));
     }
 
     /**
      * Creates a new stopwatch with specific counter types.
      *
      * @param types the types to be set
+     * @since 2.5.0
      */
     protected Stopwatch(List<Type> types)
     {
@@ -228,7 +229,13 @@ public class Stopwatch
         reset();
     }
 
-    protected static List<Type> parseTypes(Type... types)
+    /**
+     * @param types the types to be parsed
+     * @return a list containing either the types passed as var-args, or
+     *         {@link Performetrics#ALL_TYPES} if no type is specified
+     * @since 2.5.0
+     */
+    protected static List<Type> asList(Type... types)
     {
         return types.length > 0 ? Arrays.asList(types) : ALL_TYPES;
     }
@@ -263,6 +270,7 @@ public class Stopwatch
      *
      * @param types the types to be set
      * @return a new, started stopwatch
+     * @since 2.5.0
      */
     private static Stopwatch createStarted(List<Type> types)
     {

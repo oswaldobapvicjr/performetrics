@@ -106,7 +106,7 @@ public class MonitoredRunnable extends Stopwatch implements Runnable
      */
     public MonitoredRunnable(Runnable runnable, Type... types)
     {
-        this(runnable, parseTypes(types));
+        this(runnable, asList(types));
     }
 
     private MonitoredRunnable(Runnable runnable, List<Type> types)

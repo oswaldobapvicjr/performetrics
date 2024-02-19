@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 
 /**
  * <p>
@@ -80,7 +80,7 @@ import net.obvj.performetrics.Stopwatch;
  * @see Counter
  * @see Counter.Type
  */
-public class MonitoredRunnable extends Stopwatch implements Runnable
+public class MonitoredRunnable extends TimingSessionContainer implements Runnable
 {
     private final Runnable runnable;
 
@@ -119,14 +119,14 @@ public class MonitoredRunnable extends Stopwatch implements Runnable
     public void run()
     {
         Objects.requireNonNull(runnable, "The target Runnable must not be null");
-        super.start();
+        super.startNewSession();
         try
         {
             runnable.run();
         }
         finally
         {
-            super.stop();
+            super.stopCurrentSession();
         }
     }
 

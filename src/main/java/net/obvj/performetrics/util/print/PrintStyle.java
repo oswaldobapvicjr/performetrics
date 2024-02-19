@@ -21,6 +21,7 @@ import java.util.Map;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
@@ -683,7 +684,7 @@ public class PrintStyle
      * @throws NullPointerException if the specified stopwatch is null
      * @since 2.4.0
      */
-    public String toString(Stopwatch stopwatch)
+    public String toString(TimingSessionContainer stopwatch)
     {
         return printFormat.format(stopwatch, this);
     }

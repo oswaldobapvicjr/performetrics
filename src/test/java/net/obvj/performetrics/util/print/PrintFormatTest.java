@@ -34,6 +34,7 @@ import org.yaml.snakeyaml.Yaml;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 
@@ -97,7 +98,7 @@ class PrintFormatTest
     Counter s2Counter1 = mock(Counter.class);
     Counter s2Counter2 = mock(Counter.class);
 
-    Stopwatch stopwatch = mock(Stopwatch.class);
+    TimingSessionContainer stopwatch = mock(Stopwatch.class);
 
     @BeforeEach
     public void setupMocks()

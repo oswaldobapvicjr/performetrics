@@ -99,7 +99,8 @@ class StopwatchTest
     }
 
     /**
-     * Setup the expects on PerformetricUtils mock with "_AFTER" constant values
+     * Setup the expects on PerformetricUtils mock with "_AFTER2" constant values
+     * (applicable for scenarios involving two timing sessions).
      */
     private void setupExpectsAfter2(MockedStatic<SystemUtils> systemUtils)
     {
@@ -109,12 +110,12 @@ class StopwatchTest
         systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_AFTER_2);
     }
 
-    private Counter getFirstCounter(Stopwatch stopwatch, Type type)
+    private Counter getFirstCounter(TimingSessionContainer stopwatch, Type type)
     {
         return getCounter(stopwatch, type, 0);
     }
 
-    private Counter getCounter(Stopwatch stopwatch, Type type, int index)
+    private Counter getCounter(TimingSessionContainer stopwatch, Type type, int index)
     {
         return stopwatch.getCounters(type).get(index);
     }
@@ -124,7 +125,7 @@ class StopwatchTest
      *
      * @param stopwatch the stopwatch to be evaluated
      */
-    private void assertAllUnitsBefore(Stopwatch stopwatch)
+    private void assertAllUnitsBefore(TimingSessionContainer stopwatch)
     {
         assertThat(getFirstCounter(stopwatch, WALL_CLOCK_TIME).getUnitsBefore(), is(equalTo(WALL_CLOCK_TIME_BEFORE)));
         assertThat(getFirstCounter(stopwatch, CPU_TIME).getUnitsBefore(), is(equalTo(CPU_TIME_BEFORE)));
@@ -137,7 +138,7 @@ class StopwatchTest
      *
      * @param stopwatch the stopwatch to be evaluated
      */
-    private void assertAllUnitsAfter(Stopwatch stopwatch)
+    private void assertAllUnitsAfter(TimingSessionContainer stopwatch)
     {
         assertThat(getFirstCounter(stopwatch, WALL_CLOCK_TIME).getUnitsAfter(), is(equalTo(WALL_CLOCK_TIME_AFTER)));
         assertThat(getFirstCounter(stopwatch, CPU_TIME).getUnitsAfter(), is(equalTo(CPU_TIME_AFTER)));
@@ -150,7 +151,7 @@ class StopwatchTest
      *
      * @param the stopwatch to be evaluated
      */
-    private void assertTimingSessionsClear(Stopwatch stopwatch)
+    private void assertTimingSessionsClear(TimingSessionContainer stopwatch)
     {
         assertThat(stopwatch.getAllSessions().size(), is(equalTo(0)));
     }
@@ -161,7 +162,7 @@ class StopwatchTest
     @Test
     void constructor_noArguments_assignsAllAvailableTypes()
     {
-        Stopwatch stopwatch = new Stopwatch();
+        TimingSessionContainer stopwatch = new Stopwatch();
         List<Type> types = stopwatch.getTypes();
         assertThat(types.size(), is(equalTo(Type.values().length)));
         assertTrue(types.containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, SYSTEM_TIME, USER_TIME)));
@@ -173,7 +174,7 @@ class StopwatchTest
     @Test
     void constructor_oneArgument_assignsCorrectCounter()
     {
-        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        TimingSessionContainer sw = new Stopwatch(SYSTEM_TIME);
         List<Type> types = sw.getTypes();
         assertThat(types.size(), is(equalTo(1)));
         assertThat(types.get(0), is(equalTo(SYSTEM_TIME)));
@@ -185,7 +186,7 @@ class StopwatchTest
     @Test
     void constructor_twoArguments_assignsCorrectCounters()
     {
-        Stopwatch sw = new Stopwatch(CPU_TIME, USER_TIME);
+        TimingSessionContainer sw = new Stopwatch(CPU_TIME, USER_TIME);
         List<Type> types = sw.getTypes();
         assertThat(types.size(), is(equalTo(2)));
         assertTrue(types.containsAll(Arrays.asList(CPU_TIME, USER_TIME)));
@@ -303,7 +304,7 @@ class StopwatchTest
     @Test
     void print_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.print(System.out);
@@ -315,7 +316,7 @@ class StopwatchTest
     void print_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.print(System.out, ps);
@@ -326,7 +327,7 @@ class StopwatchTest
     @Test
     void printSummary_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printSummary(System.out);
@@ -338,7 +339,7 @@ class StopwatchTest
     void printSummary_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printSummary(System.out, ps);
@@ -349,7 +350,7 @@ class StopwatchTest
     @Test
     void printDetails_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printDetails(System.out);
@@ -361,7 +362,7 @@ class StopwatchTest
     void printDetails_withPrintWriterAndPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.printDetails(System.out, ps);
@@ -372,7 +373,7 @@ class StopwatchTest
     @Test
     void getCounters_noSession_emptyList()
     {
-        Stopwatch sw = new Stopwatch(CPU_TIME, SYSTEM_TIME);
+        TimingSessionContainer sw = new Stopwatch(CPU_TIME, SYSTEM_TIME);
         assertThat(sw.getCounters(CPU_TIME), is(equalTo(Collections.emptyList())));
     }
 
@@ -493,7 +494,7 @@ class StopwatchTest
     @Test
     void elapsedTime_invalidType_illegalArgumentException()
     {
-        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        TimingSessionContainer sw = new Stopwatch(SYSTEM_TIME);
         assertThat(() -> sw.elapsedTime(USER_TIME),
                 throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
@@ -501,7 +502,7 @@ class StopwatchTest
     @Test
     void elapsedTime_invalidTypeAndValidTimeUnit_ilegalArgumentException()
     {
-        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        TimingSessionContainer sw = new Stopwatch(SYSTEM_TIME);
         assertThat(() -> sw.elapsedTime(USER_TIME, HOURS),
                 throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
@@ -509,7 +510,7 @@ class StopwatchTest
     @Test
     void elapsedTime_invalidTypeAndValidTimeUnitAndConversionMode_zero()
     {
-        Stopwatch sw = new Stopwatch(SYSTEM_TIME);
+        TimingSessionContainer sw = new Stopwatch(SYSTEM_TIME);
         assertThat(() -> sw.elapsedTime(USER_TIME, HOURS, FAST),
                 throwsException(IllegalArgumentException.class).withMessageContaining(NOT_ASSIGNED));
     }
@@ -693,9 +694,9 @@ class StopwatchTest
     @Test
     void elapsedTime_noTypeOnStowatchWithMoreThanOneCounter_valid()
     {
-        Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME, SYSTEM_TIME);
+        TimingSessionContainer sw = Stopwatch.createStarted(WALL_CLOCK_TIME, SYSTEM_TIME);
         assertThat(() -> sw.elapsedTime(),
-                throwsException(IllegalStateException.class).withMessageContaining(Stopwatch.MSG_NOT_A_SINGLE_TYPE));
+                throwsException(IllegalStateException.class).withMessageContaining(TimingSessionContainer.MSG_NOT_A_SINGLE_TYPE));
     }
 
     @Test
@@ -734,7 +735,7 @@ class StopwatchTest
     @Test
     void getCurrentTimingSession_unstarted_empty()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         assertThat(sw.getLastSession().isPresent(), is(equalTo(false)));
     }
 
@@ -753,7 +754,7 @@ class StopwatchTest
     @Test
     void toString_callsCorrectPrintUtilMethod()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.toString();
@@ -765,7 +766,7 @@ class StopwatchTest
     void toString_customPrintStyle_callsCorrectPrintUtilMethod()
     {
         PrintStyle ps = mock(PrintStyle.class);
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             sw.toString(ps);
@@ -776,9 +777,9 @@ class StopwatchTest
     @Test
     void lastSession_unstartedStopwatch_illegalStateException()
     {
-        Stopwatch sw = new Stopwatch();
+        TimingSessionContainer sw = new Stopwatch();
         assertThat(() -> sw.lastSession(), throwsException(IllegalStateException.class)
-                .withMessage(Stopwatch.MSG_NO_SESSION_RECORDED));
+                .withMessage(TimingSessionContainer.MSG_NO_SESSION_RECORDED));
     }
 
     @Test

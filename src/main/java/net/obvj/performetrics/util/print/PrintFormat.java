@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 
@@ -61,7 +61,7 @@ public enum PrintFormat
     SUMMARIZED
     {
         @Override
-        public String format(Stopwatch stopwatch, PrintStyle style)
+        public String format(TimingSessionContainer stopwatch, PrintStyle style)
         {
             checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
@@ -83,7 +83,7 @@ public enum PrintFormat
             return builder.toString();
         }
 
-        private String toRowFormat(Stopwatch stopwatch, Type type, PrintStyle style)
+        private String toRowFormat(TimingSessionContainer stopwatch, Type type, PrintStyle style)
         {
             return String.format(style.getRowFormat(),
                     style.getPrintableCounterName(type),
@@ -128,7 +128,7 @@ public enum PrintFormat
     DETAILED
     {
         @Override
-        public String format(Stopwatch stopwatch, PrintStyle style)
+        public String format(TimingSessionContainer stopwatch, PrintStyle style)
         {
             checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
@@ -213,7 +213,7 @@ public enum PrintFormat
      * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
      *                                  this PrintFormat.
      */
-    public abstract String format(Stopwatch stopwatch, PrintStyle style);
+    public abstract String format(TimingSessionContainer stopwatch, PrintStyle style);
 
     /**
      * Appends the specified string followed by a line separator.

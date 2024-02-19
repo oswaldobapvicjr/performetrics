@@ -121,7 +121,6 @@ public class PerformetricsTestDrive
     private static void testMonitoredCallable(MonitoredCallable<String> operation) throws Exception
     {
         System.out.println(operation.call());
-
         System.out.println(operation.elapsedTime(WALL_CLOCK_TIME));
         System.out.println(operation.elapsedTime(WALL_CLOCK_TIME, NANOSECONDS) + " nanosecods");
         System.out.println(operation.elapsedTime(WALL_CLOCK_TIME).toTimeUnit(NANOSECONDS) + " nanosecods");

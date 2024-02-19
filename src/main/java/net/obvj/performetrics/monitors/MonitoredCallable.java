@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 
 /**
  * <p>
@@ -82,7 +82,7 @@ import net.obvj.performetrics.Stopwatch;
  * @see Counter
  * @see Counter.Type
  */
-public class MonitoredCallable<V> extends Stopwatch implements Callable<V>
+public class MonitoredCallable<V> extends TimingSessionContainer implements Callable<V>
 {
     private final Callable<V> callable;
 
@@ -121,14 +121,14 @@ public class MonitoredCallable<V> extends Stopwatch implements Callable<V>
     public V call() throws Exception
     {
         Objects.requireNonNull(callable, "The target Callable must not be null");
-        super.start();
+        super.startNewSession();
         try
         {
             return callable.call();
         }
         finally
         {
-            super.stop();
+            super.stopCurrentSession();
         }
     }
 

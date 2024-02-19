@@ -20,6 +20,7 @@ import java.io.PrintStream;
 
 import net.obvj.performetrics.Performetrics;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.config.ConfigurationHolder;
 
 /**
@@ -51,7 +52,7 @@ public class PrintUtils
      *
      * @since 2.2.1
      */
-    public static void printSummary(Stopwatch stopwatch, PrintStream printStream)
+    public static void printSummary(TimingSessionContainer stopwatch, PrintStream printStream)
     {
         printSummary(stopwatch, printStream, null);
     }
@@ -73,7 +74,7 @@ public class PrintUtils
      *
      * @since 2.2.1
      */
-    public static void printSummary(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void printSummary(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
@@ -94,7 +95,7 @@ public class PrintUtils
      *
      * @since 2.2.1
      */
-    public static void printDetails(Stopwatch stopwatch, PrintStream printStream)
+    public static void printDetails(TimingSessionContainer stopwatch, PrintStream printStream)
     {
         printDetails(stopwatch, printStream, null);
     }
@@ -116,7 +117,7 @@ public class PrintUtils
      *
      * @since 2.2.1
      */
-    public static void printDetails(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void printDetails(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForDetails();
@@ -133,7 +134,7 @@ public class PrintUtils
      * @deprecated Use {@link PrintUtils#toString(Stopwatch)} instead.
      */
     @Deprecated
-    public static String summaryToString(Stopwatch stopwatch)
+    public static String summaryToString(TimingSessionContainer stopwatch)
     {
         return summaryToString(stopwatch, null);
     }
@@ -151,7 +152,7 @@ public class PrintUtils
      * @deprecated Use {@link PrintUtils#toString(Stopwatch, PrintStyle)} instead.
      */
     @Deprecated
-    public static String summaryToString(Stopwatch stopwatch, PrintStyle printStyle)
+    public static String summaryToString(TimingSessionContainer stopwatch, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
@@ -170,7 +171,7 @@ public class PrintUtils
      * @throws NullPointerException if a null stopwatch or print stream is received
      * @since 2.4.0
      */
-    public static void print(Stopwatch stopwatch, PrintStream printStream)
+    public static void print(TimingSessionContainer stopwatch, PrintStream printStream)
     {
         print(stopwatch, printStream, null);
     }
@@ -192,7 +193,7 @@ public class PrintUtils
      * @throws NullPointerException if a null stopwatch or print stream is received
      * @since 2.4.0
      */
-    public static void print(Stopwatch stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void print(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
     {
         printStream.print(toString(stopwatch, printStyle));
     }
@@ -209,7 +210,7 @@ public class PrintUtils
      *
      * @since 2.4.0
      */
-    public static String toString(Stopwatch stopwatch)
+    public static String toString(TimingSessionContainer stopwatch)
     {
         return toString(stopwatch, null);
     }
@@ -230,7 +231,7 @@ public class PrintUtils
      *
      * @since 2.4.0
      */
-    public static String toString(Stopwatch stopwatch, PrintStyle printStyle)
+    public static String toString(TimingSessionContainer stopwatch, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyle();

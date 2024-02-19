@@ -99,7 +99,8 @@ class StopwatchTest
     }
 
     /**
-     * Setup the expects on PerformetricUtils mock with "_AFTER" constant values
+     * Setup the expects on PerformetricUtils mock with "_AFTER2" constant values
+     * (applicable for scenarios involving two timing sessions).
      */
     private void setupExpectsAfter2(MockedStatic<SystemUtils> systemUtils)
     {
@@ -438,7 +439,7 @@ class StopwatchTest
         }
         List<TimingSession> sessions = sw.getAllSessions();
         assertThat(sessions.size(), is(equalTo(1)));
-        List<Type> sessionTypes = Arrays.asList(sessions.get(0).getTypes());
+        List<Type> sessionTypes = sessions.get(0).getTypes();
         assertThat(sessionTypes.size(), is(equalTo(1)));
         assertTrue(sessionTypes.contains(SYSTEM_TIME));
         assertTrue(sw.isStarted());
@@ -695,7 +696,8 @@ class StopwatchTest
     {
         Stopwatch sw = Stopwatch.createStarted(WALL_CLOCK_TIME, SYSTEM_TIME);
         assertThat(() -> sw.elapsedTime(),
-                throwsException(IllegalStateException.class).withMessageContaining(Stopwatch.MSG_NOT_A_SINGLE_TYPE));
+                throwsException(IllegalStateException.class)
+                        .withMessageContaining(Stopwatch.MSG_NOT_A_SINGLE_TYPE));
     }
 
     @Test

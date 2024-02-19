@@ -240,23 +240,6 @@ class PrintUtilsTest
     }
 
     @Test
-    void summaryToString_withStopwatch_validString()
-    {
-        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch,
-                ConfigurationHolder.getConfiguration().getPrintStyleForSummary());
-        String actualString = PrintUtils.summaryToString(stopwatch);
-        assertThat(actualString, is(equalTo(expectedString)));
-    }
-
-    @Test
-    void summaryToString_withStopwatchAndPrintStyle_validString()
-    {
-        String expectedString = PrintFormat.SUMMARIZED.format(stopwatch, PrintStyle.SUMMARIZED_CSV);
-        String actualString = PrintUtils.summaryToString(stopwatch, PrintStyle.SUMMARIZED_CSV);
-        assertThat(actualString, is(equalTo(expectedString)));
-    }
-
-    @Test
     void toString_withStopwatch_validString()
     {
         String expectedString = PrintFormat.SUMMARIZED.format(stopwatch,

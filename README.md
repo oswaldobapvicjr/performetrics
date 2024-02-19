@@ -46,7 +46,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
 ## How to use it
 
-### Example 1: Using the Stopwatch class
+### Example 1: Using the `Stopwatch` class
 
 1. Create a stopwatch and start it:
 
@@ -131,14 +131,14 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
 ---
 
-### Example 2: Using a Monitored Operation
+### Example 2: Using the `MonitoredRunnable`
 
 In this example, we are using `Performetrics.monitorOperation(...)` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
 
-1. Create a monitored operation, with the the procedure to be executed attached:
+1. Create a monitored runnable, with the the procedure to be executed attached:
 
     ```java
-    MonitoredOperation operation = Performetrics.monitorOperation(() -> myObject.doStuff());
+    MonitoredRunnable operation = Performetrics.monitorOperation(() -> myObject.doStuff());
     ```
 
 2. Print the elapsed time for each counter:

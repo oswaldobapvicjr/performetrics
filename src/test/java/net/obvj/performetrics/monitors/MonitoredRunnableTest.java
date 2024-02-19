@@ -31,17 +31,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
@@ -53,56 +52,28 @@ import net.obvj.performetrics.util.print.PrintUtils;
  */
 class MonitoredRunnableTest
 {
-    private static final long MOCKED_WALL_CLOCK_TIME = 2000000000l;
-    private static final long MOCKED_CPU_TIME = 1200000000l;
-    private static final long MOCKED_USER_TIME = 1200000001l;
-    private static final long MOCKED_SYSTEM_TIME = 1200000002l;
+    private static final long WALL_CLOCK_TIME_BEFORE = 2000000000l;
+    private static final long CPU_TIME_BEFORE = 1200000000l;
+    private static final long USER_TIME_BEFORE = 1200000001l;
+    private static final long SYSTEM_TIME_BEFORE = 1200000002l;
+
+    private static final long WALL_CLOCK_TIME_AFTER = 3000000000l;
+    private static final long CPU_TIME_AFTER = 1200000300l;
+    private static final long USER_TIME_AFTER = 1200000201l;
+    private static final long SYSTEM_TIME_AFTER = 1200000102l;
 
     // Since JDK 17, Mockito cannot mock java.util.Runnable
     private Runnable runnable = () -> {};
 
-    Stopwatch stopwatch = mock(Stopwatch.class);
-
     /**
-     * Setup the expects on {@link SystemUtils} mock with constant values
+     * Setup the expects with pairs of "_BEFORE" and "_AFTER" constant values
      */
-    private void setupExpects(MockedStatic<SystemUtils> systemUtils)
+    private static void setupExpectsBeforeAndAfter(MockedStatic<SystemUtils> systemUtils)
     {
-        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(MOCKED_WALL_CLOCK_TIME);
-        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(MOCKED_CPU_TIME);
-        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(MOCKED_USER_TIME);
-        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
-    }
-
-    private void assertAllUnitsBefore(MonitoredOperation operation, int session)
-    {
-        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsBefore(),
-                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsBefore(),
-                is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsBefore(),
-                is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsBefore(),
-                is(equalTo(MOCKED_SYSTEM_TIME)));
-    }
-
-    private void assertAllUnitsAfter(MonitoredOperation operation, int session)
-    {
-        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsAfter(),
-                is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsAfter(),
-                is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsAfter(),
-                is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(),
-                is(equalTo(MOCKED_SYSTEM_TIME)));
-    }
-
-    private MonitoredRunnable newMonitoredRunnableWithMockedStopwatch()
-    {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable, WALL_CLOCK_TIME);
-        operation.stopwatch = this.stopwatch;
-        return operation;
+        systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(WALL_CLOCK_TIME_BEFORE, WALL_CLOCK_TIME_AFTER);
+        systemUtils.when(SystemUtils::getCpuTimeNanos).thenReturn(CPU_TIME_BEFORE, CPU_TIME_AFTER);
+        systemUtils.when(SystemUtils::getUserTimeNanos).thenReturn(USER_TIME_BEFORE, USER_TIME_AFTER);
+        systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(SYSTEM_TIME_BEFORE, SYSTEM_TIME_AFTER);
     }
 
     @Test
@@ -136,23 +107,6 @@ class MonitoredRunnableTest
         assertTrue(types.containsAll(Arrays.asList(WALL_CLOCK_TIME, CPU_TIME, USER_TIME, SYSTEM_TIME)));
     }
 
-    /**
-     * Tests the elapsed time for a dummy {@link Runnable} with no specific counter set (all
-     * counters)
-     */
-    @Test
-    void run_givenAllTypes_updatesAllCounters()
-    {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
-        {
-            setupExpects(systemUtils);
-            operation.run();
-        }
-        assertAllUnitsBefore(operation, 0);
-        assertAllUnitsAfter(operation, 0);
-    }
-
     @Test
     void print_withPrintWriterArgument_callsCorrectPrintUtilMethod()
     {
@@ -160,7 +114,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.print(System.out);
-            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out), times(1));
+            printUtils.verify(() -> PrintUtils.print(operation, System.out), times(1));
         }
     }
 
@@ -172,7 +126,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.print(System.out, ps);
-            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out, ps), times(1));
+            printUtils.verify(() -> PrintUtils.print(operation, System.out, ps), times(1));
         }
     }
 
@@ -183,7 +137,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out);
-            printUtils.verify(() -> PrintUtils.printSummary(operation.stopwatch, System.out, null), times(1));
+            printUtils.verify(() -> PrintUtils.printSummary(operation, System.out, null), times(1));
         }
     }
 
@@ -195,7 +149,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out, ps);
-            printUtils.verify(() -> PrintUtils.printSummary(operation.stopwatch, System.out, ps), times(1));
+            printUtils.verify(() -> PrintUtils.printSummary(operation, System.out, ps), times(1));
         }
     }
 
@@ -206,7 +160,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out);
-            printUtils.verify(() -> PrintUtils.printDetails(operation.stopwatch, System.out, null), times(1));
+            printUtils.verify(() -> PrintUtils.printDetails(operation, System.out, null), times(1));
         }
     }
 
@@ -218,7 +172,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out, ps);
-            printUtils.verify(() -> PrintUtils.printDetails(operation.stopwatch, System.out, ps), times(1));
+            printUtils.verify(() -> PrintUtils.printDetails(operation, System.out, ps), times(1));
         }
     }
 
@@ -244,61 +198,45 @@ class MonitoredRunnableTest
     }
 
     @Test
-    void elapsedTime_validType_callsCorrectElapsedTimeFromCounter()
+    void run_defaultTypes_validElapsedTimes()
     {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.elapsedTime(WALL_CLOCK_TIME);
-        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME);
+        MonitoredRunnable monitored = new MonitoredRunnable(this.runnable);
+
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBeforeAndAfter(systemUtils);
+            monitored.run();
+
+            assertThat(monitored.elapsedTime(WALL_CLOCK_TIME),
+                    is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(CPU_TIME),
+                    is(equalTo(Duration.of(CPU_TIME_AFTER - CPU_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(USER_TIME),
+                    is(equalTo(Duration.of(USER_TIME_AFTER - USER_TIME_BEFORE, NANOSECONDS))));
+            assertThat(monitored.elapsedTime(SYSTEM_TIME),
+                    is(equalTo(Duration.of(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE, NANOSECONDS))));
+        }
     }
 
     @Test
     void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounter()
     {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.elapsedTime(WALL_CLOCK_TIME, HOURS);
-        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS);
-    }
+        MonitoredRunnable monitored = new MonitoredRunnable(this.runnable);
 
-    @Test
-    void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounter()
-    {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
-        verify(stopwatch).elapsedTime(WALL_CLOCK_TIME, HOURS, ConversionMode.FAST);
-    }
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBeforeAndAfter(systemUtils);
+            monitored.run();
 
-    @Test
-    void elapsedTime_noTypeOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
-    {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.elapsedTime();
-        verify(stopwatch).elapsedTime();
-    }
-
-    @Test
-    void elapsedTime_timeUnitOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
-    {
-        MonitoredRunnable operation = new MonitoredRunnable(runnable);
-        operation.stopwatch = this.stopwatch;
-
-        operation.elapsedTime(NANOSECONDS);
-        verify(stopwatch).elapsedTime(NANOSECONDS);
-    }
-
-    @Test
-    void elapsedTime_timeUnitAndConversionModeOnSingleTypeMonitor_callsCorrectElapsedTimeFromCounter()
-    {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.elapsedTime(NANOSECONDS, FAST);
-        verify(stopwatch).elapsedTime(NANOSECONDS, FAST);
-    }
-
-    @Test
-    void reset_callsStopwatchReset()
-    {
-        MonitoredRunnable operation = newMonitoredRunnableWithMockedStopwatch();
-        operation.reset();
-        verify(stopwatch).reset();
+            assertThat(monitored.elapsedTime(WALL_CLOCK_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(CPU_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(CPU_TIME_AFTER - CPU_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(USER_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(USER_TIME_AFTER - USER_TIME_BEFORE))));
+            assertThat(monitored.elapsedTime(SYSTEM_TIME, TimeUnit.NANOSECONDS),
+                    is(equalTo(Double.valueOf(SYSTEM_TIME_AFTER - SYSTEM_TIME_BEFORE))));
+        }
     }
 
     @Test
@@ -308,7 +246,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.toString();
-            printUtils.verify(() -> PrintUtils.toString(operation.stopwatch), times(1));
+            printUtils.verify(() -> PrintUtils.toString(operation), times(1));
         }
     }
 
@@ -320,7 +258,7 @@ class MonitoredRunnableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.toString(ps);
-            printUtils.verify(() -> PrintUtils.toString(operation.stopwatch, ps), times(1));
+            printUtils.verify(() -> PrintUtils.toString(operation, ps), times(1));
         }
     }
 

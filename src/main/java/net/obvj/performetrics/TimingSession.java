@@ -19,6 +19,7 @@ package net.obvj.performetrics;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -84,8 +85,6 @@ public class TimingSession
     private static final String MSG_ALREADY_STARTED = "The timing session is already started";
     private static final String MSG_ALREADY_FINISHED = "A finished timing session cannot be restarted";
     private static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not specified in this timing session. Available type(s): {1}";
-
-    private static final Type[] DEFAULT_TYPES = Type.values();
 
     /**
      * Enumerates possible states of a timing session, with proper behaviors for each of them.
@@ -154,24 +153,16 @@ public class TimingSession
         abstract void stop(TimingSession session);
     }
 
-    private final Type[] types;
+    private final List<Type> types;
     private Map<Type, Counter> counters;
     private State state;
-
-    /**
-     * Creates a new timing session with default counter types.
-     */
-    public TimingSession()
-    {
-        this(DEFAULT_TYPES);
-    }
 
     /**
      * Creates a new timing session with custom counter types.
      *
      * @param types the counter types to set
      */
-    public TimingSession(Type... types)
+    public TimingSession(List<Type> types)
     {
         this.types = types;
         doReset();
@@ -285,7 +276,7 @@ public class TimingSession
      *
      * @return all counter types specified for this timing session
      */
-    Type[] getTypes()
+    List<Type> getTypes()
     {
         return types;
     }

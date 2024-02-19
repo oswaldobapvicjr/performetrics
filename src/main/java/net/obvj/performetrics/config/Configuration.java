@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.print.PrintFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
 
@@ -184,8 +183,6 @@ public class Configuration
      * <ul>
      * <li>{@link Stopwatch#print(java.io.PrintStream)}</li>
      * <li>{@link Stopwatch#toString()}</li>
-     * <li>{@link MonitoredOperation#print(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#toString()}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
@@ -212,11 +209,10 @@ public class Configuration
     /**
      * Defines the default {@link PrintStyle} for the summarized stopwatch formatter.
      * <p>
-     * The object will be used by the following operations:
+     * The object will be used by the following operation:
      * </p>
      * <ul>
      * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
@@ -247,7 +243,6 @@ public class Configuration
      * </p>
      * <ul>
      * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null

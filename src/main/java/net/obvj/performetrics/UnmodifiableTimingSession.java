@@ -16,6 +16,8 @@
 
 package net.obvj.performetrics;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -32,17 +34,19 @@ import net.obvj.performetrics.util.Duration;
  * @since 2.4.0
  * @see TimingSession
  */
-public class UnmodifiableTimingSession extends TimingSession
+public final class UnmodifiableTimingSession extends TimingSession
 {
     private final TimingSession timingSession;
 
     /**
      * Creates an unmodifiable object for a preset {@link TimingSession}.
      *
-     * @param timingSession the {@link TimingSession} to be wrapped
+     * @param timingSession the {@link TimingSession} to be wrapped; not null
+     * @throws NullPointerException if the {@link TimingSession} to be wrapped is null
      */
     public UnmodifiableTimingSession(TimingSession timingSession)
     {
+        super(requireNonNull(timingSession, "the TimingSession to be wrapped must not be null").getTypes());
         this.timingSession = timingSession;
     }
 
@@ -92,12 +96,6 @@ public class UnmodifiableTimingSession extends TimingSession
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
     {
         return timingSession.elapsedTime(type, timeUnit, conversionMode);
-    }
-
-    @Override
-    Type[] getTypes()
-    {
-        return timingSession.getTypes();
     }
 
     @Override

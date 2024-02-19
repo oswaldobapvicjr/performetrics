@@ -16,11 +16,11 @@
 
 package net.obvj.performetrics;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
-import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.print.PrintStyle;
 
@@ -33,6 +33,14 @@ import net.obvj.performetrics.util.print.PrintStyle;
  */
 public class Performetrics
 {
+
+    /**
+     * A list containing all the available counter types.
+     *
+     * @since 2.5.0
+     */
+    public static final List<Type> ALL_TYPES = List.of(Type.values());
+
     /**
      * This is a utility class, not meant to be instantiated.
      */
@@ -82,8 +90,6 @@ public class Performetrics
      * <ul>
      * <li>{@link Stopwatch#print(java.io.PrintStream)}</li>
      * <li>{@link Stopwatch#toString()}</li>
-     * <li>{@link MonitoredOperation#print(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#toString()}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
@@ -100,11 +106,10 @@ public class Performetrics
      * Defines the default {@link PrintStyle} to be applied by the summarized stopwatch
      * formatter.
      * <p>
-     * The object will be used by the following operations:
+     * The object will be used by the following operation:
      * </p>
      * <ul>
      * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printSummary(java.io.PrintStream)}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
@@ -125,7 +130,6 @@ public class Performetrics
      * </p>
      * <ul>
      * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
-     * <li>{@link MonitoredOperation#printDetails(java.io.PrintStream)}</li>
      * </ul>
      *
      * @param printStyle the {@link PrintStyle} to be set; not null
@@ -147,19 +151,19 @@ public class Performetrics
      * <blockquote>
      *
      * <pre>
-     * {@code MonitoredOperation operation =}
+     * {@code MonitoredRunnable runnable =}
      * {@code         Performetrics.monitorOperation(() -> myObj.exec());}
-     * {@code Duration elapsedTime = operation.elapsedTime(Type.WALL_CLOCK_TIME);}
+     * {@code Duration elapsedTime = runnable.elapsedTime(Type.WALL_CLOCK_TIME);}
      * </pre>
      *
      * </blockquote>
      *
      * @param runnable the {@link Runnable} to be run and monitored
-     * @return the resulting {@link MonitoredOperation}, which can be used to retrieve the
+     * @return the resulting {@link MonitoredRunnable}, which can be used to retrieve the
      *         collected results.
      * @since 2.2.0
      */
-    public static MonitoredOperation monitorOperation(Runnable runnable)
+    public static MonitoredRunnable monitorOperation(Runnable runnable)
     {
         return monitorOperation(runnable, new Type[0]);
     }
@@ -173,9 +177,9 @@ public class Performetrics
      * <blockquote>
      *
      * <pre>
-     * {@code MonitoredOperation operation = Performetrics}
+     * {@code MonitoredRunnable runnable = Performetrics}
      * {@code         .monitorOperation(() -> myObj.exec(), Type.CPU_TIME);}
-     * {@code Duration elapsedTime = operation.elapsedTime(Type.CPU_TIME);}
+     * {@code Duration elapsedTime = runnable.elapsedTime(Type.CPU_TIME);}
      * </pre>
      *
      * </blockquote>
@@ -186,11 +190,11 @@ public class Performetrics
      *
      * @param runnable the {@link Runnable} to be run and monitored
      * @param types    the counter types to be measured in the operation
-     * @return the resulting {@link MonitoredOperation}, which can be used to retrieve the
+     * @return the resulting {@link MonitoredRunnable}, which can be used to retrieve the
      *         collected results.
      * @since 2.2.0
      */
-    public static MonitoredOperation monitorOperation(Runnable runnable, Type... types)
+    public static MonitoredRunnable monitorOperation(Runnable runnable, Type... types)
     {
         MonitoredRunnable monitoredRunnable = new MonitoredRunnable(runnable, types);
         monitoredRunnable.run();

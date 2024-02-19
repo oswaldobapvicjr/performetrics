@@ -20,13 +20,12 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.monitors.MonitoredOperation;
+import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Defines a set of attributes used by a {@link PrintFormat} to generate a String output
- * out of a {@link Stopwatch} or {@link MonitoredOperation}.
+ * out of a timing-session container.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
@@ -35,8 +34,8 @@ public class PrintStyle
 {
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * in tabular format without header.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data in tabular format without header.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -61,8 +60,8 @@ public class PrintStyle
 
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * in tabular format, with horizontal lines separating each row.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data in tabular format, with horizontal lines separating each row.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -90,8 +89,8 @@ public class PrintStyle
 
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values).
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values).
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -116,8 +115,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values), <b>without</b> header.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), <b>without</b> header.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -138,9 +137,9 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values), with elapsed times expressed using the ISO-8601
-     * duration format.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), with elapsed times expressed using the
+     * ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -161,9 +160,9 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as CSV (comma-separated values), with elapsed times expressed using the ISO-8601
-     * duration format and <b>no</b> header.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), with elapsed times expressed using the
+     * ISO-8601 duration format and <b>no</b> header.
      * <p>
      * Sample output:
      *
@@ -183,8 +182,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * in XML format.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data in XML format.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -211,8 +210,8 @@ public class PrintStyle
             .withoutLegends().build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as XML with elapsed times expressed using the ISO-8601 duration format.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as XML with elapsed times expressed using the ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -234,8 +233,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * in YAML format.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data in YAML format.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -265,8 +264,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>summarized</b> stopwatch formatter, which prints data
-     * as YAML with elapsed times expressed using the ISO-8601 duration format.
+     * A string-based style for the <b>summarized</b> timing-session-container format, which
+     * prints data as YAML with elapsed times expressed using the ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -292,8 +291,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, with horizontal lines
-     * separating each row, and total elapsed time for each counter.
+     * A string-based style for the <b>detailed</b> timing-session-container format, with
+     * horizontal lines separating each row, and total elapsed time for each counter.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -338,8 +337,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * CSV (comma-separated values).
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values).
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -368,8 +367,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * CSV (comma-separated values), <b>without</b> header.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), <b>without</b> header.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -393,9 +392,9 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * CSV (comma-separated values), with elapsed times expressed using the ISO-8601 duration
-     * format.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), with elapsed times expressed using the
+     * ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -416,9 +415,9 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * CSV (comma-separated values), with elapsed times expressed using the ISO-8601 duration
-     * format and <b>no</b> header.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as CSV (comma-separated values), with elapsed times expressed using the
+     * ISO-8601 duration format and <b>no</b> header.
      * <p>
      * Sample output:
      *
@@ -438,8 +437,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
-     * XML format.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data in XML format.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -476,8 +475,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * XML with elapsed times expressed using the ISO-8601 duration format.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as XML with elapsed times expressed using the ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -505,8 +504,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data in
-     * YAML format.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data in YAML format.
      * <p>
      * Elapsed times are expressed in the format {@code H:M:S.ns}.
      * <p>
@@ -540,8 +539,8 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style for the <b>detailed</b> stopwatch formatter, which prints data as
-     * YAML with elapsed times expressed using the ISO-8601 duration format.
+     * A string-based style for the <b>detailed</b> timing-session-container format, which
+     * prints data as YAML with elapsed times expressed using the ISO-8601 duration format.
      * <p>
      * Sample output:
      *
@@ -570,7 +569,7 @@ public class PrintStyle
             .build();
 
     /**
-     * A string-based style which prints stopwatch data in Linux style.
+     * A string-based style which prints data from a timing-session-container in Linux style.
      * <p>
      * Sample output:
      *
@@ -677,16 +676,17 @@ public class PrintStyle
     }
 
     /**
-     * Generates a string containing the formatted stopwatch output in this style.
+     * Generates a string containing the formatted timing-session-container output in this
+     * style.
      *
-     * @param stopwatch the stopwatch to be printed; not null
-     * @return a string containing the formatted stopwatch output in this style
-     * @throws NullPointerException if the specified stopwatch is null
+     * @param container the timing-session container to be printed; not null
+     * @return a string containing the formatted output in this style
+     * @throws NullPointerException if the specified timing-session-container is null
      * @since 2.4.0
      */
-    public String toString(Stopwatch stopwatch)
+    public String toString(TimingSessionContainer container)
     {
-        return printFormat.format(stopwatch, this);
+        return printFormat.format(container, this);
     }
 
     /**

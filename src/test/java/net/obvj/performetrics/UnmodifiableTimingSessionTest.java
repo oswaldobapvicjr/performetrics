@@ -32,6 +32,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
+import static java.util.Arrays.*;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -88,7 +89,7 @@ class UnmodifiableTimingSessionTest
     @Test
     void getAllCounters_allCounters_sameValueAsOriginalObject()
     {
-        TimingSession original = new TimingSession();
+        TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
         TimingSession unmodifiable = new UnmodifiableTimingSession(original);
         assertThat(unmodifiable.getTypes(), equalTo(original.getTypes()));
         assertThat(unmodifiable.getCounters(), equalTo(original.getCounters()));
@@ -97,7 +98,7 @@ class UnmodifiableTimingSessionTest
     @Test
     void getAllCounters_customCounters_sameValueAsOriginalObject()
     {
-        TimingSession original = new TimingSession(USER_TIME);
+        TimingSession original = new TimingSession(asList(USER_TIME));
         TimingSession unmodifiable = new UnmodifiableTimingSession(original);
         assertThat(unmodifiable.getTypes(), equalTo(original.getTypes()));
         assertThat(unmodifiable.getCounters(), equalTo(original.getCounters()));
@@ -106,7 +107,8 @@ class UnmodifiableTimingSessionTest
     @Test
     void start_unsupportedOperation()
     {
-        TimingSession unmodifiable = new UnmodifiableTimingSession(new TimingSession(USER_TIME));
+        TimingSession unmodifiable = new UnmodifiableTimingSession(
+                new TimingSession(asList(USER_TIME)));
         assertThat(() -> unmodifiable.start(),
                 throwsException(UnsupportedOperationException.class));
     }
@@ -114,7 +116,8 @@ class UnmodifiableTimingSessionTest
     @Test
     void stop_unsupportedOperation()
     {
-        TimingSession unmodifiable = new UnmodifiableTimingSession(new TimingSession(USER_TIME));
+        TimingSession unmodifiable = new UnmodifiableTimingSession(
+                new TimingSession(asList(USER_TIME)));
         assertThat(() -> unmodifiable.stop(),
                 throwsException(UnsupportedOperationException.class));
     }
@@ -122,7 +125,8 @@ class UnmodifiableTimingSessionTest
     @Test
     void reset_unsupportedOperation()
     {
-        TimingSession unmodifiable = new UnmodifiableTimingSession(new TimingSession(USER_TIME));
+        TimingSession unmodifiable = new UnmodifiableTimingSession(
+                new TimingSession(asList(USER_TIME)));
         assertThat(() -> unmodifiable.reset(),
                 throwsException(UnsupportedOperationException.class));
     }
@@ -130,14 +134,14 @@ class UnmodifiableTimingSessionTest
     @Test
     void getCounter_invalidType_throwsException()
     {
-        TimingSession session = new TimingSession(CPU_TIME, SYSTEM_TIME);
+        TimingSession session = new TimingSession(asList(CPU_TIME, SYSTEM_TIME));
         assertThrows(IllegalArgumentException.class, () -> getCounter(session, USER_TIME));
     }
 
     @Test()
     void elapsedTime_validType_returnsValidDurations()
     {
-        TimingSession original = new TimingSession();
+        TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             setupExpectsBefore(systemUtils);
@@ -159,7 +163,7 @@ class UnmodifiableTimingSessionTest
     @Test()
     void elapsedTime_validTypeAndTimeUnit_callsCorrectElapsedTimeFromCounters()
     {
-        TimingSession original = new TimingSession();
+        TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             setupExpectsBefore(systemUtils);
@@ -181,7 +185,7 @@ class UnmodifiableTimingSessionTest
     @Test()
     void elapsedTime_validTypeAndTimeUnitAndConversionMode_callsCorrectElapsedTimeFromCounters()
     {
-        TimingSession original = new TimingSession();
+        TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             setupExpectsBefore(systemUtils);

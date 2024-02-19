@@ -17,7 +17,8 @@
 package net.obvj.performetrics.util.print;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.obvj.performetrics.Counter.Type.*;
+import static net.obvj.performetrics.Counter.Type.CPU_TIME;
+import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +38,6 @@ import org.yaml.snakeyaml.Yaml;
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 
@@ -98,7 +101,7 @@ class PrintFormatTest
     Counter s2Counter1 = mock(Counter.class);
     Counter s2Counter2 = mock(Counter.class);
 
-    TimingSessionContainer stopwatch = mock(Stopwatch.class);
+    Stopwatch stopwatch = mock(Stopwatch.class);
 
     @BeforeEach
     public void setupMocks()

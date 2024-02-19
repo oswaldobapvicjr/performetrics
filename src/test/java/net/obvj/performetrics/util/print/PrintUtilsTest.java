@@ -45,7 +45,6 @@ import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Performetrics;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.util.DurationFormat;
 
@@ -70,7 +69,7 @@ class PrintUtilsTest
         Performetrics.setDefaultPrintStyle(DEFAULT_PRINT_STYLE);
     }
 
-    TimingSessionContainer stopwatch = mock(Stopwatch.class);
+    Stopwatch stopwatch = mock(Stopwatch.class);
     PrintStyle printStyle = mock(PrintStyle.class);
 
     @BeforeEach

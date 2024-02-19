@@ -27,7 +27,8 @@ import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
- * Provides different formatters for printing stopwatch data as strings in tabular layout.
+ * Provides different formatters for printing data from a timing-session container as
+ * strings in tabular layout.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1
@@ -36,7 +37,7 @@ public enum PrintFormat
 {
     /**
      * Generates a summarized view which represents the total elapsed time for each counter
-     * type available in the stopwatch, one row for each type.
+     * type available in the timing-session container, one row for each type.
      * <p>
      * Sample output (applying {@code PrintStyle.SUMMARIZED_TABLE_FULL}):
      *
@@ -61,7 +62,7 @@ public enum PrintFormat
     SUMMARIZED
     {
         @Override
-        public String format(TimingSessionContainer stopwatch, PrintStyle style)
+        public String format(TimingSessionContainer container, PrintStyle style)
         {
             checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
@@ -71,9 +72,9 @@ public enum PrintFormat
                 appendLine(builder, style.getHeaderFormat(), HEADER_COUNTER, HEADER_ELAPSED_TIME);
                 appendLine(builder, style.getSimpleLine());
             }
-            stopwatch.getTypes().stream()
+            container.getTypes().stream()
                     .filter(style::isPrintable)
-                    .forEach(type -> appendLine(builder, toRowFormat(stopwatch, type, style)));
+                    .forEach(type -> appendLine(builder, toRowFormat(container, type, style)));
             if (style.isPrintTrailer())
             {
                 appendLine(builder, style.getSimpleLine());
@@ -94,8 +95,8 @@ public enum PrintFormat
 
     /**
      * Generates a detailed view of each counter type and timing session available in the
-     * stopwatch, one row for each timing session, and the total elapsed time for each type,
-     * as well.
+     * timing-session container, one row for each timing session, and the total elapsed time
+     * for each type, as well.
      * <p>
      * Sample output (applying {@code PrintStyle.DETAILED_TABLE_FULL}):
      *
@@ -128,7 +129,7 @@ public enum PrintFormat
     DETAILED
     {
         @Override
-        public String format(TimingSessionContainer stopwatch, PrintStyle style)
+        public String format(TimingSessionContainer container, PrintStyle style)
         {
             checkCompatibility(style);
             StringBuilder builder = new StringBuilder();
@@ -139,7 +140,7 @@ public enum PrintFormat
                 appendLine(builder, style.getHeaderFormat(), HEADER_SESSION, HEADER_ELAPSED_TIME,
                         HEADER_ELAPSED_TIME_ACC, HEADER_COUNTER);
             }
-            Map<Type, List<Counter>> countersByType = stopwatch.getAllCountersByType();
+            Map<Type, List<Counter>> countersByType = container.getAllCountersByType();
             countersByType.forEach((Type type, List<Counter> counters) ->
             {
                 if (!style.isPrintable(type))
@@ -204,16 +205,17 @@ public enum PrintFormat
     private static final String HEADER_ELAPSED_TIME_ACC = "Elapsed time (+)";
 
     /**
-     * Generates a string with formatted stopwatch data and custom style.
+     * Generates a formatted string containing data from the specified timing-session
+     * container, in a custom style.
      *
-     * @param stopwatch the stopwatch to be printed
+     * @param container the timing-session container to be printed
      * @param style     the {@link PrintStyle} to be applied
-     * @return a string with formatted stopwatch data
+     * @return a string with formatted data from the container
      *
      * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
      *                                  this PrintFormat.
      */
-    public abstract String format(TimingSessionContainer stopwatch, PrintStyle style);
+    public abstract String format(TimingSessionContainer container, PrintStyle style);
 
     /**
      * Appends the specified string followed by a line separator.

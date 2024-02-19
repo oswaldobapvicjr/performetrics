@@ -19,7 +19,6 @@ package net.obvj.performetrics.util.print;
 import java.io.PrintStream;
 
 import net.obvj.performetrics.Performetrics;
-import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.TimingSessionContainer;
 import net.obvj.performetrics.config.ConfigurationHolder;
 
@@ -40,202 +39,178 @@ public class PrintUtils
     }
 
     /**
-     * Prints summarized elapsed times from the given stopwatch in the specified print stream.
+     * Prints summarized elapsed times from the given {@link TimingSessionContainer} into the
+     * specified print stream.
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyleForSummary(PrintStyle)}) will be applied.
      *
-     * @param stopwatch   the stopwatch to be printed
+     * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException if a null {@link TimingSessionContainer} or print stream
+     *                              is received
      *
      * @since 2.2.1
      */
-    public static void printSummary(TimingSessionContainer stopwatch, PrintStream printStream)
+    public static void printSummary(TimingSessionContainer container, PrintStream printStream)
     {
-        printSummary(stopwatch, printStream, null);
+        printSummary(container, printStream, null);
     }
 
     /**
-     * Prints summarized elapsed times from the given stopwatch in the specified print stream,
-     * with a custom {@link PrintStyle}.
+     * Prints summarized elapsed times from the given {@link TimingSessionContainer} into the
+     * specified print stream, with a custom {@link PrintStyle}.
      *
-     * @param stopwatch   the stopwatch to be printed
+     * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
      *                    {@code PrintStyle} (defined by
      *                    {@link Performetrics#setDefaultPrintStyleForSummary(PrintStyle)})
      *                    will be applied
      *
-     * @throws NullPointerException     if a null stopwatch or print stream is received
+     * @throws NullPointerException     if a null {@link TimingSessionContainer} or print
+     *                                  stream is received
      * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
      *                                  {@link PrintFormat#SUMMARIZED}
      *
      * @since 2.2.1
      */
-    public static void printSummary(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void printSummary(TimingSessionContainer container, PrintStream printStream, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
-        printStream.print(PrintFormat.SUMMARIZED.format(stopwatch, style));
+        printStream.print(PrintFormat.SUMMARIZED.format(container, style));
     }
 
     /**
-     * Prints detailed information about timing sessions from the given stopwatch in the
-     * specified print stream.
+     * Prints detailed information about timing sessions from the given
+     * {@link TimingSessionContainer} into the specified print stream.
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyleForDetails(PrintStyle)}) will be applied.
      *
-     * @param stopwatch   the stopwatch to be printed
+     * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which information will be sent
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException if a null {@link TimingSessionContainer} or print stream
+     *                              is received
      *
      * @since 2.2.1
      */
-    public static void printDetails(TimingSessionContainer stopwatch, PrintStream printStream)
+    public static void printDetails(TimingSessionContainer container, PrintStream printStream)
     {
-        printDetails(stopwatch, printStream, null);
+        printDetails(container, printStream, null);
     }
 
     /**
-     * Prints detailed information about timing sessions from the given stopwatch in the
-     * specified print stream, with a custom {@link PrintStyle}.
+     * Prints detailed information about timing sessions from the given
+     * {@link TimingSessionContainer} into the specified print stream, with a custom
+     * {@link PrintStyle}.
      *
-     * @param stopwatch   the stopwatch to be printed
+     * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
      *                    {@code PrintStyle} (defined by
      *                    {@link Performetrics#setDefaultPrintStyleForDetails(PrintStyle)})
      *                    will be applied
      *
-     * @throws NullPointerException     if a null stopwatch or print stream is received
-     * @throws IllegalArgumentException if the specified PrintStyle is not compatible with
-     *                                  {@link PrintFormat#DETAILED}
+     * @throws NullPointerException     if a null {@link TimingSessionContainer} or print
+     *                                  stream is received
+     * @throws IllegalArgumentException if the specified {@link PrintStyle} is not compatible
+     *                                  with {@link PrintFormat#DETAILED}
      *
      * @since 2.2.1
      */
-    public static void printDetails(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void printDetails(TimingSessionContainer container, PrintStream printStream, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyleForDetails();
-        printStream.print(PrintFormat.DETAILED.format(stopwatch, style));
+        printStream.print(PrintFormat.DETAILED.format(container, style));
     }
 
     /**
-     * Returns a string containing a formatted summary from the given stopwatch.
-     *
-     * @param stopwatch to stopwatch to be used
-     * @return string containing a formatted summary from the given stopwatch
-     *
-     * @since 2.2.4
-     * @deprecated Use {@link PrintUtils#toString(Stopwatch)} instead.
-     */
-    @Deprecated
-    public static String summaryToString(TimingSessionContainer stopwatch)
-    {
-        return summaryToString(stopwatch, null);
-    }
-
-    /**
-     * Returns a string containing a formatted summary from the given stopwatch, with a custom
-     * {@link PrintStyle}.
-     *
-     * @param stopwatch  to stopwatch to be used
-     * @param printStyle the {@link PrintStyle} to be applied; if {@code null}, the default
-     *                   {@code PrintStyle} will be applied
-     * @return string containing a formatted summary from the given stopwatch
-     *
-     * @since 2.2.4
-     * @deprecated Use {@link PrintUtils#toString(Stopwatch, PrintStyle)} instead.
-     */
-    @Deprecated
-    public static String summaryToString(TimingSessionContainer stopwatch, PrintStyle printStyle)
-    {
-        PrintStyle style = printStyle != null ? printStyle
-                : ConfigurationHolder.getConfiguration().getPrintStyleForSummary();
-        return PrintFormat.SUMMARIZED.format(stopwatch, style);
-    }
-
-    /**
-     * Prints elapsed times from the given stopwatch in the specified print stream.
+     * Prints elapsed times from the given {@link TimingSessionContainer} into the specified
+     * print stream.
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
      *
-     * @param stopwatch   the stopwatch to be printed
+     * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException if a null {@link TimingSessionContainer} or print stream
+     *                              is received
      * @since 2.4.0
      */
-    public static void print(TimingSessionContainer stopwatch, PrintStream printStream)
+    public static void print(TimingSessionContainer container, PrintStream printStream)
     {
-        print(stopwatch, printStream, null);
+        print(container, printStream, null);
     }
 
     /**
-     * Prints elapsed times from the given stopwatch in the specified print stream, with a
-     * custom {@link PrintStyle}.
+     * Prints elapsed times from the given {@link TimingSessionContainer} into the specified
+     * print stream, with a custom {@link PrintStyle}.
      * <p>
      * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
      * determined by the specified {@link PrintStyle}.
      *
-     * @param stopwatch   the stopwatch to be printed; not null
+     * @param container   the {@link TimingSessionContainer} to be printed; not null
      * @param printStream the print stream to which data will be sent; not null
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
      *                    {@code PrintStyle} (defined by
      *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
      *                    applied
      *
-     * @throws NullPointerException if a null stopwatch or print stream is received
+     * @throws NullPointerException if a null {@link TimingSessionContainer} or print stream
+     *                              is received
      * @since 2.4.0
      */
-    public static void print(TimingSessionContainer stopwatch, PrintStream printStream, PrintStyle printStyle)
+    public static void print(TimingSessionContainer container, PrintStream printStream, PrintStyle printStyle)
     {
-        printStream.print(toString(stopwatch, printStyle));
+        printStream.print(toString(container, printStyle));
     }
 
     /**
-     * Returns a string containing a formatted summary from the given stopwatch in default
-     * style.
+     * Returns a string containing a formatted summary from the given
+     * {@link TimingSessionContainer} in default style.
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
      *
-     * @param stopwatch to stopwatch to be used; not null
-     * @return string containing a formatted output from the given stopwatch
+     * @param container to {@link TimingSessionContainer} to be used; not null
+     * @return string containing a formatted output from the given
+     *         {@link TimingSessionContainer}
      *
      * @since 2.4.0
      */
-    public static String toString(TimingSessionContainer stopwatch)
+    public static String toString(TimingSessionContainer container)
     {
-        return toString(stopwatch, null);
+        return toString(container, null);
     }
 
     /**
-     * Returns a string containing a formatted output from the given stopwatch in a custom
-     * {@link PrintStyle}.
+     * Returns a string containing a formatted output from the given
+     * {@link TimingSessionContainer} in a custom {@link PrintStyle}.
      * <p>
      * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
      * determined by the specified {@link PrintStyle}.
      *
-     * @param stopwatch  to stopwatch to be used
+     * @param container  to {@link TimingSessionContainer} to be used
      * @param printStyle the {@link PrintStyle}; if {@code null}, the default
      *                   {@code PrintStyle} (defined by
      *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
      *                   applied
-     * @return string containing a formatted output from the given stopwatch
+     * @return string containing a formatted output from the given
+     *         {@link TimingSessionContainer}
      *
      * @since 2.4.0
      */
-    public static String toString(TimingSessionContainer stopwatch, PrintStyle printStyle)
+    public static String toString(TimingSessionContainer container, PrintStyle printStyle)
     {
         PrintStyle style = printStyle != null ? printStyle
                 : ConfigurationHolder.getConfiguration().getPrintStyle();
-        return style.toString(stopwatch);
+        return style.toString(container);
     }
 
 }

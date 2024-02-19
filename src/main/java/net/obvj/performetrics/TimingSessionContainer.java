@@ -10,15 +10,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch.State;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.print.PrintFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
 import net.obvj.performetrics.util.print.PrintUtils;
 
-public class TimingSessionContainer
+/**
+ * A {@code TimingSessionContainer} is an object that maintains multiple timing sessions
+ * for different counter types, and provides methods to retrieve elapsed times is
+ * different formats.
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 2.5.0
+ *
+ * @see TimingSession
+ */
+public abstract class TimingSessionContainer
 {
-
     static final String MSG_TYPE_NOT_SPECIFIED = "\"{0}\" was not assigned during instantiation. Available type(s): {1}";
     static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
     static final String MSG_NO_SESSION_RECORDED = "No session recorded";
@@ -26,7 +34,7 @@ public class TimingSessionContainer
     private final List<Type> types;
     private List<TimingSession> sessions;
 
-    public TimingSessionContainer(List<Type> types)
+    protected TimingSessionContainer(List<Type> types)
     {
         this.types = types;
         reset();
@@ -43,7 +51,7 @@ public class TimingSessionContainer
     }
 
     /**
-     * Cleans all timing sessions in this stopwatch.
+     * Cleans all timing sessions in this object.
      */
     public void reset()
     {
@@ -51,9 +59,10 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns the counter types associated with this stopwatch instance.
+     * Returns the counter types associated with this object.
      *
-     * @return all counter types associated with this stopwatch instance
+     * @return a list of counter types associated with this object
+     * @see Type
      */
     public List<Type> getTypes()
     {
@@ -61,12 +70,12 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a map of populated counters grouped by type, where each entry in the counters
-     * list represents a timing session.
+     * Returns a map of counters grouped by type, where each entry in the counters list
+     * represents a timing session.
      *
      * @return a map of populated counters grouped by type
-     *
      * @since 2.2.1
+     * @see Counter
      */
     public Map<Type, List<Counter>> getAllCountersByType()
     {
@@ -76,11 +85,12 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a list of counters populated by this stopwatch.
+     * Returns a list of counters available in this object.
      * <p>
-     * New counters are created every time the {@code start()} method is called.
+     * New counters are created every time a new session is started
      *
-     * @return all counters available in this stopwatch instance
+     * @return all counters available in this object
+     * @see Counter
      */
     protected List<Counter> getCounters()
     {
@@ -89,16 +99,17 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a list of populated counters for a specific type in this stopwatch, or an empty
-     * list if no counter is found (for example, if the stopwatch was not yet started, or
-     * after reset).
+     * Returns a list of available counters for a specific type in this object, or an empty
+     * list if no counter is found -- for example, if no timing session was started, or after
+     * calling {@code reset()}.
      *
      * @param type the counter type to be fetched
      * @return a list of counters associated with the given type, or an empty list
      *
-     * @throws IllegalArgumentException if the specified type was not assigned to the
-     *                                  stopwatch during instantiation
+     * @throws IllegalArgumentException if the specified type was not assigned to this object
+     *                                  during instantiation
      * @since 2.2.0
+     * @see Counter
      */
     public List<Counter> getCounters(Type type)
     {
@@ -106,14 +117,15 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a stream of populated counters for a specific type in this stopwatch.
+     * Returns a stream of available counters for a specific type in this object.
      *
      * @param type the counter type to be fetched
      * @return a stream of counters associated with the given type, not null
      *
-     * @throws IllegalArgumentException if the specified type was not assigned to the
-     *                                  stopwatch during instantiation
+     * @throws IllegalArgumentException if the specified type was not assigned to this object
+     *                                  during instantiation
      * @since 2.2.0
+     * @see Counter
      */
     private Stream<Counter> getCountersAsStream(Type type)
     {
@@ -125,9 +137,9 @@ public class TimingSessionContainer
     }
 
     /**
-     * Checks whether this stopwatch maintains exactly one counter type.
+     * Checks whether this object maintains exactly one counter type.
      *
-     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
+     * @throws IllegalStateException if the object is keeping more than one counter type
      * @since 2.2.4
      */
     private void checkSingleCounter()
@@ -139,12 +151,12 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns the total elapsed time for a single counter type, provided that this stopwatch
-     * is keeping a single type.
+     * Returns the total elapsed time for a single counter type, provided that this object is
+     * keeping a single type.
      *
-     * @return the elapsed time for a single counter type in this stopwatch
+     * @return the elapsed time for a single counter type in this object
      *
-     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
+     * @throws IllegalStateException if the object is keeping more than one counter type
      * @since 2.2.4
      */
     public Duration elapsedTime()
@@ -155,13 +167,13 @@ public class TimingSessionContainer
 
     /**
      * Returns the total elapsed time in the specified time unit for a single counter type,
-     * provided that this stopwatch is keeping a single type.
+     * provided that this object is keeping a single type.
      *
      * @param timeUnit the time unit to which the elapsed time will be converted
-     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     * @return the elapsed time for a single counter type in this object, converted to the
      *         given time unit with the default conversion mode
      *
-     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
+     * @throws IllegalStateException if the object is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit)
@@ -172,14 +184,14 @@ public class TimingSessionContainer
 
     /**
      * Returns the total elapsed time in the specified time unit for a single counter type,
-     * provided that this stopwatch is keeping a single type.
+     * provided that this object is keeping a single type.
      *
      * @param timeUnit       the time unit to which the elapsed time will be converted
      * @param conversionMode the {@link ConversionMode} to be applied
-     * @return the elapsed time for a single counter type in this stopwatch, converted to the
+     * @return the elapsed time for a single counter type in this object, converted to the
      *         given time unit with the given conversion mode
      *
-     * @throws IllegalStateException if the stopwatch is keeping more than one counter type
+     * @throws IllegalStateException if the object is keeping more than one counter type
      * @since 2.2.4
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
@@ -189,30 +201,31 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns the total elapsed time for a specific counter.
+     * Returns the total elapsed time for a specific counter type.
      *
      * @param type the counter type to be fetched
      * @return the elapsed time for the specified counter
      *
-     * @throws IllegalArgumentException if the specified type was not assigned to the
-     *                                  stopwatch during instantiation
+     * @throws IllegalArgumentException if the specified type was not assigned to this object
+     *                                  during instantiation
      * @since 2.1.0
      */
     public Duration elapsedTime(Type type)
     {
-        return getCountersAsStream(type).map(Counter::elapsedTime).reduce(Duration.ZERO, Duration::sum);
+        return getCountersAsStream(type).map(Counter::elapsedTime)
+                .reduce(Duration.ZERO, Duration::sum);
     }
 
     /**
-     * Returns the total elapsed time for a specific counter, in the specified time unit.
+     * Returns the total elapsed time for a specific counter type, in the specified time unit.
      *
      * @param type     the counter type to be fetched
      * @param timeUnit the time unit to which the elapsed time will be converted
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         with the default conversion mode.
      *
-     * @throws IllegalArgumentException if the specified type was not assigned to the
-     *                                  stopwatch during instantiation
+     * @throws IllegalArgumentException if the specified type was not assigned to this object
+     *                                  during instantiation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit)
@@ -222,8 +235,8 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns the total elapsed time for a specific counter, in the specified time unit, with
-     * a custom {@link ConversionMode} applied.
+     * Returns the total elapsed time for a specific counter type, in the specified time unit,
+     * with a custom {@link ConversionMode} applied.
      *
      * @param type           the counter type to be fetched
      * @param timeUnit       the time unit to which the elapsed time will be converted
@@ -231,8 +244,8 @@ public class TimingSessionContainer
      * @return the elapsed time for the specified counter, converted to the given time unit
      *         with the given conversion mode.
      *
-     * @throws IllegalArgumentException if the specified type was not assigned to the
-     *                                  stopwatch during instantiation
+     * @throws IllegalArgumentException if the specified type was not assigned to this object
+     *                                  during instantiation
      * @since 2.1.0
      */
     public double elapsedTime(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
@@ -342,9 +355,6 @@ public class TimingSessionContainer
 
     /**
      * Creates and starts a new timing session.
-     * <p>
-     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
-     * not this action is allowed.
      */
     protected void startNewSession()
     {
@@ -355,9 +365,6 @@ public class TimingSessionContainer
 
     /**
      * Stops the current timing session.
-     * <p>
-     * <b>Note:</b> This method is internal as the current {@link State} defines whether or
-     * not this action is allowed.
      */
     protected void stopCurrentSession()
     {
@@ -365,22 +372,25 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns the current/last timing session available in this stopwatch, or
+     * Returns the current/last timing session available in this object, or
      * {@code Optional.empty()} if no timing session available yet.
+     * <p>
+     * <b>Note:</b> This method is only for internal use only since it does not create a
+     * defensive copy of the timing session.
      *
      * @return an {@link Optional} possibly containing the current/last timing session
-     *         available in this stopwatch instance
+     *         available in this object instance
      */
-    protected Optional<TimingSession> getLastSession()
+    Optional<TimingSession> getLastSession()
     {
         return sessions.isEmpty() ? Optional.empty() : Optional.of(sessions.get(sessions.size() - 1));
     }
 
     /**
-     * Returns the current/last timing session recorded in this stopwatch.
+     * Returns the current/last timing session recorded in this object.
      *
-     * @return the current/last timing session recorded in this stopwatch
-     * @throws IllegalStateException if the stopwatch does not contain any recorded session
+     * @return the current/last timing session available in this object
+     * @throws IllegalStateException if the object does not contain any recorded session
      * @since 2.4.0
      */
     public TimingSession lastSession()
@@ -390,7 +400,7 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns all timing sessions recorded in this stopwatch.
+     * Returns all timing sessions recorded in this object.
      *
      * @return a list of timing sessions
      * @since 2.2.0
@@ -401,14 +411,16 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a string containing a formatted output for this stopwatch in default style.
+     * Returns a string containing a formatted output for this timing-session container in
+     * default style.
      * <p>
      * The default {@link PrintStyle} (defined by
      * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
      * <p>
      * For a custom {@code PrintStyle}, use {@link #toString(PrintStyle)}.
      *
-     * @return a string containing a formatted output for this stopwatch in default style
+     * @return a string containing a formatted output for this timing-session container in
+     *         default style
      * @since 2.2.4
      */
     @Override
@@ -418,8 +430,8 @@ public class TimingSessionContainer
     }
 
     /**
-     * Returns a string containing a formatted output for this stopwatch in a custom
-     * {@link PrintStyle}.
+     * Returns a string containing a formatted output for this timing-session container in a
+     * custom {@link PrintStyle}.
      * <p>
      * The {@link PrintFormat} (whether to generate a summarized or detailed view) will be
      * determined by the specified {@link PrintStyle}.
@@ -428,8 +440,8 @@ public class TimingSessionContainer
      *                   {@code PrintStyle} (defined by
      *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
      *                   applied
-     * @return a string containing a formatted output for this stopwatch in the specified
-     *         {@link PrintStyle}
+     * @return a string containing a formatted output for this timing-session container in the
+     *         specified {@link PrintStyle}
      * @since 2.4.0
      */
     public String toString(PrintStyle printStyle)

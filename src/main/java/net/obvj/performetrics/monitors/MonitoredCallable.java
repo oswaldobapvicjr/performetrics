@@ -16,11 +16,15 @@
 
 package net.obvj.performetrics.monitors;
 
+import static net.obvj.performetrics.Performetrics.ALL_TYPES;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.Stopwatch;
 
 /**
  * <p>
@@ -78,9 +82,9 @@ import net.obvj.performetrics.Counter.Type;
  * @see Counter
  * @see Counter.Type
  */
-public class MonitoredCallable<V> extends MonitoredOperation implements Callable<V>
+public class MonitoredCallable<V> extends Stopwatch implements Callable<V>
 {
-    private Callable<V> callable;
+    private final Callable<V> callable;
 
     /**
      * Builds this monitored operation with a given {@link Callable}. All available counter
@@ -90,7 +94,7 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
      */
     public MonitoredCallable(Callable<V> callable)
     {
-        this(callable, NO_SPECIFIC_TYPE);
+        this(callable, ALL_TYPES);
     }
 
     /**
@@ -104,6 +108,11 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
      */
     public MonitoredCallable(Callable<V> callable, Type... types)
     {
+        this(callable, parseTypes(types));
+    }
+
+    private MonitoredCallable(Callable<V> callable, List<Type> types)
+    {
         super(types);
         this.callable = callable;
     }
@@ -112,14 +121,14 @@ public class MonitoredCallable<V> extends MonitoredOperation implements Callable
     public V call() throws Exception
     {
         Objects.requireNonNull(callable, "The target Callable must not be null");
-        stopwatch.start();
+        super.start();
         try
         {
             return callable.call();
         }
         finally
         {
-            stopwatch.stop();
+            super.stop();
         }
     }
 

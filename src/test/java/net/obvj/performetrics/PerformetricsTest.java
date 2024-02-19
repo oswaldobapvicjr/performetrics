@@ -38,7 +38,7 @@ import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
-import net.obvj.performetrics.monitors.MonitoredOperation;
+import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintStyle;
 
@@ -187,9 +187,9 @@ class PerformetricsTest
     {
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
-            MonitoredOperation operation = Performetrics.monitorOperation(runnable);
+            MonitoredRunnable monitored = Performetrics.monitorOperation(runnable);
             assertThat(runFlag, is(equalTo(true)));
-            assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
 
             systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
             systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
@@ -203,10 +203,10 @@ class PerformetricsTest
     {
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
-            MonitoredOperation operation = Performetrics.monitorOperation(runnable, WALL_CLOCK_TIME, CPU_TIME);
+            MonitoredRunnable monitored = Performetrics.monitorOperation(this.runnable, WALL_CLOCK_TIME, CPU_TIME);
 
             assertThat(runFlag, is(equalTo(true)));
-            assertThat(operation.getAllCountersByType().keySet().size(), is(equalTo(2)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
             systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
             systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));

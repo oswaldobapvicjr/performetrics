@@ -16,10 +16,13 @@
 
 package net.obvj.performetrics;
 
+import static net.obvj.performetrics.Performetrics.ALL_TYPES;
+
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -135,8 +138,6 @@ public class Stopwatch
     static final String MSG_NOT_A_SINGLE_TYPE = "This stopwatch is keeping more than one type. Please inform a specific type for this operation.";
     static final String MSG_NO_SESSION_RECORDED = "No session recorded";
 
-    private static final Type[] DEFAULT_TYPES = Type.values();
-
     /**
      * Enumerates possible stopwatch states, with proper behaviors for each of them.
      *
@@ -201,7 +202,7 @@ public class Stopwatch
      */
     public Stopwatch()
     {
-        this(DEFAULT_TYPES);
+        this(ALL_TYPES);
     }
 
     /**
@@ -213,8 +214,23 @@ public class Stopwatch
      */
     public Stopwatch(Type... types)
     {
-        this.types = Arrays.asList(types);
+        this(parseTypes(types));
+    }
+
+    /**
+     * Creates a new stopwatch with specific counter types.
+     *
+     * @param types the types to be set
+     */
+    protected Stopwatch(List<Type> types)
+    {
+        this.types = types;
         reset();
+    }
+
+    protected static List<Type> parseTypes(Type... types)
+    {
+        return types.length > 0 ? Arrays.asList(types) : ALL_TYPES;
     }
 
     /**
@@ -224,7 +240,7 @@ public class Stopwatch
      */
     public static Stopwatch createStarted()
     {
-        return createStarted(DEFAULT_TYPES);
+        return createStarted(ALL_TYPES);
     }
 
     /**
@@ -237,7 +253,25 @@ public class Stopwatch
      */
     public static Stopwatch createStarted(Type... types)
     {
-        Stopwatch stopwatch = new Stopwatch(types);
+        return createStarted(() -> new Stopwatch(types));
+    }
+
+    /**
+     * Provides a started stopwatch with specific counter types, for convenience.
+     * <p>
+     * If no type is specified, then all of the available types will be maintained.
+     *
+     * @param types the types to be set
+     * @return a new, started stopwatch
+     */
+    private static Stopwatch createStarted(List<Type> types)
+    {
+        return createStarted(() -> new Stopwatch(types));
+    }
+
+    private static Stopwatch createStarted(Supplier<Stopwatch> supplier)
+    {
+        Stopwatch stopwatch = supplier.get();
         stopwatch.start();
         return stopwatch;
     }
@@ -577,7 +611,7 @@ public class Stopwatch
      */
     private void startNewSession()
     {
-        TimingSession session = new TimingSession(types.toArray(new Type[types.size()]));
+        TimingSession session = new TimingSession(types);
         sessions.add(session);
         session.start();
         state = State.RUNNING;

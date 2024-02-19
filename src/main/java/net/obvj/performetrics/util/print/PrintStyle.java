@@ -21,12 +21,11 @@ import java.util.Map;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.Stopwatch;
-import net.obvj.performetrics.monitors.MonitoredOperation;
 import net.obvj.performetrics.util.DurationFormat;
 
 /**
  * Defines a set of attributes used by a {@link PrintFormat} to generate a String output
- * out of a {@link Stopwatch} or {@link MonitoredOperation}.
+ * out of a {@link Stopwatch}.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.2.1

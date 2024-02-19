@@ -16,10 +16,14 @@
 
 package net.obvj.performetrics.monitors;
 
+import static net.obvj.performetrics.Performetrics.ALL_TYPES;
+
+import java.util.List;
 import java.util.Objects;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.Stopwatch;
 
 /**
  * <p>
@@ -76,9 +80,9 @@ import net.obvj.performetrics.Counter.Type;
  * @see Counter
  * @see Counter.Type
  */
-public class MonitoredRunnable extends MonitoredOperation implements Runnable
+public class MonitoredRunnable extends Stopwatch implements Runnable
 {
-    private Runnable runnable;
+    private final Runnable runnable;
 
     /**
      * Builds this monitored operation with a given {@link Runnable}. All available counter
@@ -88,7 +92,7 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
      */
     public MonitoredRunnable(Runnable runnable)
     {
-        this(runnable, NO_SPECIFIC_TYPE);
+        this(runnable, ALL_TYPES);
     }
 
     /**
@@ -102,6 +106,11 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
      */
     public MonitoredRunnable(Runnable runnable, Type... types)
     {
+        this(runnable, parseTypes(types));
+    }
+
+    private MonitoredRunnable(Runnable runnable, List<Type> types)
+    {
         super(types);
         this.runnable = runnable;
     }
@@ -110,14 +119,14 @@ public class MonitoredRunnable extends MonitoredOperation implements Runnable
     public void run()
     {
         Objects.requireNonNull(runnable, "The target Runnable must not be null");
-        stopwatch.start();
+        super.start();
         try
         {
             runnable.run();
         }
         finally
         {
-            stopwatch.stop();
+            super.stop();
         }
     }
 

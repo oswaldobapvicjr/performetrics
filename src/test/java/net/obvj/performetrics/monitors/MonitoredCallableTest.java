@@ -24,10 +24,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
-import net.obvj.performetrics.Stopwatch;
 import net.obvj.performetrics.util.SystemUtils;
 import net.obvj.performetrics.util.print.PrintUtils;
 
@@ -71,22 +68,22 @@ class MonitoredCallableTest
         systemUtils.when(SystemUtils::getSystemTimeNanos).thenReturn(MOCKED_SYSTEM_TIME);
     }
 
-    private void assertAllUnitsBefore(MonitoredOperation operation, int session)
+    private void assertAllUnitsBefore(MonitoredCallable<?> callable, int session)
     {
-        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsBefore(),
+        assertThat(callable.getCounters(WALL_CLOCK_TIME).get(session).getUnitsBefore(),
                 is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_SYSTEM_TIME)));
+        assertThat(callable.getCounters(CPU_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(callable.getCounters(USER_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_USER_TIME)));
+        assertThat(callable.getCounters(SYSTEM_TIME).get(session).getUnitsBefore(), is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
-    private void assertAllUnitsAfter(MonitoredOperation operation, int session)
+    private void assertAllUnitsAfter(MonitoredCallable<?> callable, int session)
     {
-        assertThat(operation.getCounters(WALL_CLOCK_TIME).get(session).getUnitsAfter(),
+        assertThat(callable.getCounters(WALL_CLOCK_TIME).get(session).getUnitsAfter(),
                 is(equalTo(MOCKED_WALL_CLOCK_TIME)));
-        assertThat(operation.getCounters(CPU_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_CPU_TIME)));
-        assertThat(operation.getCounters(USER_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_USER_TIME)));
-        assertThat(operation.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_SYSTEM_TIME)));
+        assertThat(callable.getCounters(CPU_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_CPU_TIME)));
+        assertThat(callable.getCounters(USER_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_USER_TIME)));
+        assertThat(callable.getCounters(SYSTEM_TIME).get(session).getUnitsAfter(), is(equalTo(MOCKED_SYSTEM_TIME)));
     }
 
     @Test
@@ -142,7 +139,7 @@ class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.print(System.out);
-            printUtils.verify(() -> PrintUtils.print(operation.stopwatch, System.out), times(1));
+            printUtils.verify(() -> PrintUtils.print(operation, System.out), times(1));
         }
     }
 
@@ -153,7 +150,7 @@ class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printSummary(System.out);
-            printUtils.verify(() -> PrintUtils.printSummary(operation.stopwatch, System.out, null), times(1));
+            printUtils.verify(() -> PrintUtils.printSummary(operation, System.out, null), times(1));
         }
     }
 
@@ -164,18 +161,8 @@ class MonitoredCallableTest
         try (MockedStatic<PrintUtils> printUtils = mockStatic(PrintUtils.class))
         {
             operation.printDetails(System.out);
-            printUtils.verify(() -> PrintUtils.printDetails(operation.stopwatch, System.out, null), times(1));
+            printUtils.verify(() -> PrintUtils.printDetails(operation, System.out, null), times(1));
         }
-    }
-
-    @Test()
-    void reset_callsStopwatchReset() throws Exception
-    {
-        Stopwatch stopwatch = mock(Stopwatch.class);
-        MonitoredCallable<String> operation = new MonitoredCallable<>(callable, WALL_CLOCK_TIME);
-        operation.stopwatch = stopwatch;
-        operation.reset();
-        verify(stopwatch).reset();
     }
 
 }

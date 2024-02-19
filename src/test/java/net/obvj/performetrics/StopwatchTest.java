@@ -438,7 +438,7 @@ class StopwatchTest
         }
         List<TimingSession> sessions = sw.getAllSessions();
         assertThat(sessions.size(), is(equalTo(1)));
-        List<Type> sessionTypes = Arrays.asList(sessions.get(0).getTypes());
+        List<Type> sessionTypes = sessions.get(0).getTypes();
         assertThat(sessionTypes.size(), is(equalTo(1)));
         assertTrue(sessionTypes.contains(SYSTEM_TIME));
         assertTrue(sw.isStarted());

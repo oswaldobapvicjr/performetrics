@@ -17,6 +17,7 @@
 package net.obvj.performetrics;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -101,13 +102,15 @@ public final class UnmodifiableTimingSession extends TimingSession
     @Override
     Collection<Counter> getCounters()
     {
-        return timingSession.getCounters();
+        return timingSession.getCounters().stream()
+                .map(UnmodifiableCounter::new)
+                .collect(toList());
     }
 
     @Override
     Counter getCounter(Type type)
     {
-        return timingSession.getCounter(type);
+        return new UnmodifiableCounter(timingSession.getCounter(type));
     }
 
 }

@@ -1,6 +1,32 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.5.0
+                                   2024-02
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+New features/enhancements:
+
+ > issue/0074: Update the minimum JDK version to 11 and add support to JDK 21
+ > issue/0075: Use TemporalUnit from Java 9
+ > issue/0076: Optimization pack
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.4.0
                                    2023-03
                                  

@@ -35,10 +35,10 @@ public final class UnmodifiableCounter extends Counter
     private final Counter counter;
 
     /**
-     * Builds a Counter with a given type and default time unit.
+     * Creates an unmodifiable {@link Counter}.
      *
-     * @param type the type to set; cannot be null
-     * @throws NullPointerException if the specified type is null
+     * @param counter the {@link Counter} to be wrapped; not null
+     * @throws NullPointerException if the specified counter is null
      */
     public UnmodifiableCounter(Counter counter)
     {

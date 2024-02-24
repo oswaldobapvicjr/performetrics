@@ -299,7 +299,7 @@ public class Counter
      *         units are set; or the difference between {@code unitsBefore} and the current
      *         value retrieved by the counter's time source, if {@code unitsAfter} is not set
      */
-    long elapsedTimeInternal()
+    private long elapsedTimeInternal()
     {
         long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime(timeUnit);
         return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;

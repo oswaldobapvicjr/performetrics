@@ -27,11 +27,14 @@ import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
 import static net.obvj.performetrics.Counter.Type.USER_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
+
+import java.util.Collection;
+
 import static java.util.Arrays.*;
 
 import org.junit.jupiter.api.Test;
@@ -87,21 +90,52 @@ class UnmodifiableTimingSessionTest
     }
 
     @Test
-    void getAllCounters_allCounters_sameValueAsOriginalObject()
+    void getAllCounters_allCounters_unmodifiableWithSameValueAsOriginalObject()
     {
         TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
         TimingSession unmodifiable = new UnmodifiableTimingSession(original);
         assertThat(unmodifiable.getTypes(), equalTo(original.getTypes()));
-        assertThat(unmodifiable.getCounters(), equalTo(original.getCounters()));
+        assertThat(unmodifiable.getCounters().toString(),
+                equalTo(original.getCounters().toString()));
+
+        // Modification on counters is not allowed too
+        assertModificationNotAllowed(unmodifiable.getCounters());
     }
 
     @Test
-    void getAllCounters_customCounters_sameValueAsOriginalObject()
+    void getAllCounters_customCounters_unmodifiableWithSameValueAsOriginalObject()
     {
         TimingSession original = new TimingSession(asList(USER_TIME));
         TimingSession unmodifiable = new UnmodifiableTimingSession(original);
         assertThat(unmodifiable.getTypes(), equalTo(original.getTypes()));
-        assertThat(unmodifiable.getCounters(), equalTo(original.getCounters()));
+        assertThat(unmodifiable.getCounters().toString(),
+                equalTo(original.getCounters().toString()));
+
+        // Modification on counters is not allowed too
+        assertModificationNotAllowed(unmodifiable.getCounters());
+    }
+
+    @Test
+    void getCounter_unmodifiableWitSameValueAsOriginalObject()
+    {
+        TimingSession original = new TimingSession(Performetrics.ALL_TYPES);
+        TimingSession unmodifiable = new UnmodifiableTimingSession(original);
+        assertThat(unmodifiable.getCounter(Type.WALL_CLOCK_TIME).toString(),
+                equalTo(original.getCounter(Type.WALL_CLOCK_TIME).toString()));
+
+        // Modification on counters is not allowed too
+        assertModificationNotAllowed(unmodifiable.getCounter(Type.WALL_CLOCK_TIME));
+    }
+
+    private void assertModificationNotAllowed(Collection<Counter> counters)
+    {
+        counters.forEach(this::assertModificationNotAllowed);
+    }
+
+    private void assertModificationNotAllowed(Counter counter)
+    {
+        assertThat(() -> counter.setUnitsBefore(CPU_TIME_AFTER),
+                throwsException(UnsupportedOperationException.class));
     }
 
     @Test
@@ -134,7 +168,8 @@ class UnmodifiableTimingSessionTest
     @Test
     void getCounter_invalidType_throwsException()
     {
-        TimingSession session = new TimingSession(asList(CPU_TIME, SYSTEM_TIME));
+        TimingSession session = new UnmodifiableTimingSession(
+                new TimingSession(asList(CPU_TIME, SYSTEM_TIME)));
         assertThrows(IllegalArgumentException.class, () -> getCounter(session, USER_TIME));
     }
 

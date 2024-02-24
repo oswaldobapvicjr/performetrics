@@ -17,6 +17,7 @@
 package net.obvj.performetrics;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -39,12 +40,12 @@ public final class UnmodifiableTimingSession extends TimingSession
     private final TimingSession timingSession;
 
     /**
-     * Creates an unmodifiable object for a preset {@link TimingSession}.
+     * Creates an unmodifiable object for a pre-existing {@link TimingSession}.
      *
      * @param timingSession the {@link TimingSession} to be wrapped; not null
      * @throws NullPointerException if the {@link TimingSession} to be wrapped is null
      */
-    public UnmodifiableTimingSession(TimingSession timingSession)
+    public UnmodifiableTimingSession(final TimingSession timingSession)
     {
         super(requireNonNull(timingSession, "the TimingSession to be wrapped must not be null").getTypes());
         this.timingSession = timingSession;
@@ -53,7 +54,7 @@ public final class UnmodifiableTimingSession extends TimingSession
     private static UnsupportedOperationException unsupportedOperation(String methodName)
     {
         return new UnsupportedOperationException(String
-                .format("%s operation received on an unmodifiable TimingSession", methodName));
+                .format("\"%s\" not allowed (unmodifiable TimingSession)", methodName));
     }
 
     @Override
@@ -101,13 +102,15 @@ public final class UnmodifiableTimingSession extends TimingSession
     @Override
     Collection<Counter> getCounters()
     {
-        return timingSession.getCounters();
+        return timingSession.getCounters().stream()
+                .map(UnmodifiableCounter::new)
+                .collect(toList());
     }
 
     @Override
     Counter getCounter(Type type)
     {
-        return timingSession.getCounter(type);
+        return new UnmodifiableCounter(timingSession.getCounter(type));
     }
 
 }

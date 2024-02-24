@@ -76,8 +76,13 @@ public class SystemUtils
      **/
     public static long getCpuTimeNanos()
     {
-        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
-                ? THREAD_MX_BEAN.getCurrentThreadCpuTime()
+        return getCpuTimeNanos(THREAD_MX_BEAN);
+    }
+
+    static long getCpuTimeNanos(ThreadMXBean threadMXBean)
+    {
+        return threadMXBean.isCurrentThreadCpuTimeSupported()
+                ? threadMXBean.getCurrentThreadCpuTime()
                 : -1L;
     }
 
@@ -90,8 +95,13 @@ public class SystemUtils
      **/
     public static long getUserTimeNanos()
     {
-        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
-                ? THREAD_MX_BEAN.getCurrentThreadUserTime()
+        return getUserTimeNanos(THREAD_MX_BEAN);
+    }
+
+    public static long getUserTimeNanos(ThreadMXBean threadMXBean)
+    {
+        return threadMXBean.isCurrentThreadCpuTimeSupported()
+                ? threadMXBean.getCurrentThreadUserTime()
                 : -1L;
     }
 
@@ -105,9 +115,13 @@ public class SystemUtils
      */
     public static long getSystemTimeNanos()
     {
-        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
-                ? (THREAD_MX_BEAN.getCurrentThreadCpuTime()
-                        - THREAD_MX_BEAN.getCurrentThreadUserTime())
+        return getSystemTimeNanos(THREAD_MX_BEAN);
+    }
+
+    public static long getSystemTimeNanos(ThreadMXBean threadMXBean)
+    {
+        return threadMXBean.isCurrentThreadCpuTimeSupported()
+                ? (threadMXBean.getCurrentThreadCpuTime() - threadMXBean.getCurrentThreadUserTime())
                 : -1L;
     }
 }

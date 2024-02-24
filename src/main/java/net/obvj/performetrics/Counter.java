@@ -27,7 +27,8 @@ import net.obvj.performetrics.util.SystemUtils;
 
 /**
  * <p>
- * An object that stores time units (in nanoseconds) for elapsed time evaluation.
+ * An object that stores time units for a particular counter type (in nanoseconds) for
+ * elapsed time evaluation.
  * </p>
  * <p>
  * The associated counter type defines the time fetch strategy applied by the methods

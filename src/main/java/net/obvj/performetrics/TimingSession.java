@@ -300,11 +300,13 @@ public class TimingSession
      */
     Counter getCounter(Type type)
     {
-        if (!counters.containsKey(type))
+        Counter counter = counters.get(type);
+        if (counter == null)
         {
-            throw new IllegalArgumentException(MessageFormat.format(MSG_TYPE_NOT_SPECIFIED, type, counters.keySet()));
+            throw new IllegalArgumentException(
+                    MessageFormat.format(MSG_TYPE_NOT_SPECIFIED, type, counters.keySet()));
         }
-        return counters.get(type);
+        return counter;
     }
 
     /**

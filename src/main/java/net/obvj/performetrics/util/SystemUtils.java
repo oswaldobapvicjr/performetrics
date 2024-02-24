@@ -27,6 +27,8 @@ import java.lang.management.ThreadMXBean;
 public class SystemUtils
 {
 
+    private static final ThreadMXBean THREAD_MX_BEAN = ManagementFactory.getThreadMXBean();
+
     /**
      * This is a utility class, not meant to be instantiated.
      */
@@ -49,6 +51,14 @@ public class SystemUtils
     /**
      * Returns the current value of the current Java Virtual Machine's high-resolution time
      * source in nanoseconds.
+     * <p>
+     * This is a convenience method and is equivalent to calling:
+     * <blockquote>
+     * {@code System.nanoTime();}
+     * </blockquote>
+     * <p>
+     * <b>Note:</b> This method provides nanosecond precision, but not necessarily nanosecond
+     * resolution.
      *
      * @return the difference, measured in nanoseconds between current time and some arbitrary
      *         origin time for the current JVM, that can be used for measuring elapsed times.
@@ -66,8 +76,9 @@ public class SystemUtils
      **/
     public static long getCpuTimeNanos()
     {
-        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : -1L;
+        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
+                ? THREAD_MX_BEAN.getCurrentThreadCpuTime()
+                : -1L;
     }
 
     /**
@@ -79,8 +90,9 @@ public class SystemUtils
      **/
     public static long getUserTimeNanos()
     {
-        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadUserTime() : -1L;
+        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
+                ? THREAD_MX_BEAN.getCurrentThreadUserTime()
+                : -1L;
     }
 
     /**
@@ -93,9 +105,9 @@ public class SystemUtils
      */
     public static long getSystemTimeNanos()
     {
-        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported()
-                ? (bean.getCurrentThreadCpuTime() - bean.getCurrentThreadUserTime())
+        return THREAD_MX_BEAN.isCurrentThreadCpuTimeSupported()
+                ? (THREAD_MX_BEAN.getCurrentThreadCpuTime()
+                        - THREAD_MX_BEAN.getCurrentThreadUserTime())
                 : -1L;
     }
 }

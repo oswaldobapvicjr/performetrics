@@ -17,8 +17,6 @@
 package net.obvj.performetrics.util.print;
 
 import static java.util.Collections.singletonList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
@@ -36,7 +34,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,8 +52,8 @@ import net.obvj.performetrics.util.DurationFormat;
  */
 class PrintUtilsTest
 {
-    private static final Counter C1 = newCounter(WALL_CLOCK_TIME, MILLISECONDS, 5000, 6000);
-    private static final Counter C2 = newCounter(CPU_TIME, NANOSECONDS, 700000000000l, 900000000000l);
+    private static final Counter C1 = newCounter(WALL_CLOCK_TIME, 5_000, 6_000);
+    private static final Counter C2 = newCounter(CPU_TIME, 700_000_000_000L, 900_000_000_000L);
     private static final Map<Type, List<Counter>> ALL_COUNTERS = new EnumMap<>(Type.class);
     private static final List<Type> ALL_TYPES = Arrays.asList(WALL_CLOCK_TIME, CPU_TIME);
 
@@ -81,9 +78,9 @@ class PrintUtilsTest
         when(stopwatch.elapsedTime(CPU_TIME)).thenReturn(C2.elapsedTime());
     }
 
-    private static Counter newCounter(Type type, TimeUnit timeUnit, long unitsBefore, long unitsAfter)
+    private static Counter newCounter(Type type, long unitsBefore, long unitsAfter)
     {
-        Counter counter = new Counter(type, timeUnit);
+        Counter counter = new Counter(type);
         counter.setUnitsBefore(unitsBefore);
         counter.setUnitsAfter(unitsAfter);
         return counter;

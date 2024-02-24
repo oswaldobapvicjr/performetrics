@@ -25,11 +25,9 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.util.DurationFormat;
@@ -52,7 +50,11 @@ public class PerformetricsTestDrive
         Performetrics.setDefaultConversionMode(ConversionMode.DOUBLE_PRECISION);
         Performetrics.setScale(2);
 
+        System.out.println("\n\n****************************************************\n");
         testCallableWithLambda();
+
+        System.out.println("\n\n****************************************************\n");
+        testOnADifferentThread();
     }
 
     private static void testStopwatch1() throws InterruptedException, IOException
@@ -148,6 +150,30 @@ public class PerformetricsTestDrive
         }
 
         return BigInteger.valueOf(x).multiply(factorial(x - 1));
+    }
+
+    private static void testOnADifferentThread()
+    {
+        System.out.println("[main] Starting test on a different thread");
+        new Thread(() -> {
+            Performetrics.monitorOperation(() ->
+            {
+                String logFormat = "[%s] %s";
+                String threadName = Thread.currentThread().getName();
+                System.out.println(String.format(logFormat, threadName, "Running..."));
+
+                int size = 5_000_000;
+                IntStream.range(0, size)
+                        .mapToObj(i -> UUID.randomUUID())
+                        .map(UUID::toString)
+                        .sorted()
+                        .collect(Collectors.toSet());
+
+                System.out.println(String.format(logFormat, threadName, size + " UUIDs generated and sorted"));
+                System.out.println();
+            }).printSummary(System.out, PrintStyle.SUMMARIZED_YAML);
+        }).start();;
+        System.out.println("[main] New thread started");
     }
 
 }

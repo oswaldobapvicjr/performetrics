@@ -21,8 +21,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.Test;
 
 import net.obvj.performetrics.ConversionMode;
@@ -42,18 +40,10 @@ class ConfigurationTest
     @Test
     void constructor_default_defaultValues()
     {
-        assertThat(configuration.getTimeUnit(), is(equalTo(Configuration.INITIAL_TIME_UNIT)));
         assertThat(configuration.getConversionMode(), is(equalTo(Configuration.INITIAL_CONVERSION_MODE)));
         assertThat(configuration.getScale(), is(equalTo(Configuration.INITIAL_SCALE)));
         assertThat(configuration.getPrintStyleForSummary(), is(equalTo(Configuration.INITIAL_PRINT_STYLE_FOR_SUMMARY)));
         assertThat(configuration.getPrintStyleForDetails(), is(equalTo(Configuration.INITIAL_PRINT_STYLE_FOR_DETAILS)));
-    }
-
-    @Test
-    void setTimeUnit_validTimeUnit_suceeds()
-    {
-        configuration.setTimeUnit(TimeUnit.SECONDS);
-        assertThat(configuration.getTimeUnit(), is(equalTo(TimeUnit.SECONDS)));
     }
 
     @Test

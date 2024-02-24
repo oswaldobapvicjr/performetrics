@@ -42,7 +42,7 @@ public final class UnmodifiableCounter extends Counter
      */
     public UnmodifiableCounter(final Counter counter)
     {
-        super(counter.getType(), counter.getTimeUnit(), counter.getConversionMode());
+        super(counter.getType(), counter.getConversionMode());
         this.counter = counter;
     }
 

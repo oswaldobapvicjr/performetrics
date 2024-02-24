@@ -17,7 +17,6 @@
 package net.obvj.performetrics;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
@@ -47,16 +46,6 @@ public class Performetrics
     private Performetrics()
     {
         throw new IllegalStateException("Instantiation not allowed");
-    }
-
-    /**
-     * Sets a time unit to be maintained by default if no specific time unit is specified.
-     *
-     * @param timeUnit the {@link TimeUnit} to set
-     */
-    public static void setDefaultTimeUnit(TimeUnit timeUnit)
-    {
-        ConfigurationHolder.getConfiguration().setTimeUnit(timeUnit);
     }
 
     /**

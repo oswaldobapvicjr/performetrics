@@ -27,7 +27,7 @@ import net.obvj.performetrics.util.SystemUtils;
 
 /**
  * <p>
- * An object that stores time units of a particular type for elapsed time evaluation.
+ * An object that stores time units (in nanoseconds) for elapsed time evaluation.
  * </p>
  * <p>
  * The associated counter type defines the time fetch strategy applied by the methods
@@ -57,7 +57,7 @@ public class Counter
     /**
      * The string format applied on {@code toString()} calls.
      */
-    protected static final String STRING_FORMAT = "Counter [type=%s, timeUnit=%s, unitsBefore=%s, unitsAfter=%s]";
+    protected static final String STRING_FORMAT = "Counter [type=%s, unitsBefore=%s, unitsAfter=%s]";
 
     /**
      * Enumerates all supported counter types, defining a particular time fetch strategy for
@@ -71,9 +71,9 @@ public class Counter
         WALL_CLOCK_TIME("Wall clock time")
         {
             @Override
-            public long getTime(TimeUnit targetTimeUnit)
+            public long getTime()
             {
-                return targetTimeUnit.convert(SystemUtils.getWallClockTimeNanos(), NANOSECONDS);
+                return SystemUtils.getWallClockTimeNanos();
             }
         },
 
@@ -83,9 +83,9 @@ public class Counter
         CPU_TIME("CPU time")
         {
             @Override
-            public long getTime(TimeUnit targetTimeUnit)
+            public long getTime()
             {
-                return targetTimeUnit.convert(SystemUtils.getCpuTimeNanos(), NANOSECONDS);
+                return SystemUtils.getCpuTimeNanos();
             }
         },
 
@@ -96,9 +96,9 @@ public class Counter
         USER_TIME("User time")
         {
             @Override
-            public long getTime(TimeUnit targetTimeUnit)
+            public long getTime()
             {
-                return targetTimeUnit.convert(SystemUtils.getUserTimeNanos(), NANOSECONDS);
+                return SystemUtils.getUserTimeNanos();
             }
         },
 
@@ -109,9 +109,9 @@ public class Counter
         SYSTEM_TIME("System time")
         {
             @Override
-            public long getTime(TimeUnit targetTimeUnit)
+            public long getTime()
             {
-                return targetTimeUnit.convert(SystemUtils.getSystemTimeNanos(), NANOSECONDS);
+                return SystemUtils.getSystemTimeNanos();
             }
         };
 
@@ -134,16 +134,13 @@ public class Counter
         /**
          * Executes a particular time fetching mode that varies for each counter type.
          *
-         * @param timeUnit the time unit in which the time will be returned
-         * @return the amount of time at the current instant, in the specified time unit.
+         * @return the amount of time at the current instant, in nanoseconds.
          */
-        public abstract long getTime(TimeUnit timeUnit);
+        public abstract long getTime();
     }
 
     private final Type type;
-    private final TimeUnit timeUnit;
-
-    private ConversionMode conversionMode;
+    private final ConversionMode conversionMode;
 
     private long unitsBefore = 0;
     private long unitsAfter = 0;
@@ -162,30 +159,16 @@ public class Counter
     }
 
     /**
-     * Builds a Counter with the given type and time unit.
-     *
-     * @param type     the type to set; cannot be null
-     * @param timeUnit the time unit to set
-     * @throws NullPointerException if the specified type is null
-     */
-    public Counter(Type type, TimeUnit timeUnit)
-    {
-        this(type, timeUnit, null);
-    }
-
-    /**
      * Builds a Counter with the given type, time unit, and conversion mode.
      *
      * @param type           the type to set; cannot be null
-     * @param timeUnit       the time unit to set
      * @param conversionMode the {@link ConversionMode} to be applied
      * @throws NullPointerException if the specified type is null
      * @since 2.0.0
      */
-    public Counter(Type type, TimeUnit timeUnit, ConversionMode conversionMode)
+    public Counter(Type type, ConversionMode conversionMode)
     {
         this.type = Objects.requireNonNull(type, "the type must not be null");
-        this.timeUnit = defaultIfNull(timeUnit, getConfiguration().getTimeUnit());
         this.conversionMode = defaultIfNull(conversionMode, getConfiguration().getConversionMode());
     }
 
@@ -254,16 +237,6 @@ public class Counter
     }
 
     /**
-     * Returns the time unit associated with this counter.
-     *
-     * @return the time unit associated with this counter
-     */
-    public TimeUnit getTimeUnit()
-    {
-        return timeUnit;
-    }
-
-    /**
      * Returns the {@link ConversionMode} associated with this counter.
      *
      * @return the {@link ConversionMode} associated with this counter
@@ -280,7 +253,7 @@ public class Counter
      */
     void setUnitsBefore()
     {
-        setUnitsBefore(type.getTime(timeUnit));
+        setUnitsBefore(type.getTime());
     }
 
     /**
@@ -289,19 +262,19 @@ public class Counter
      */
     void setUnitsAfter()
     {
-        setUnitsAfter(type.getTime(timeUnit));
+        setUnitsAfter(type.getTime());
     }
 
     /**
-     * Returns the elapsed time, in the internal time unit.
+     * Returns the elapsed time in nanoseconds.
      *
      * @return the difference between {@code unitsBefore} and {@code unitsAfter}, if both
      *         units are set; or the difference between {@code unitsBefore} and the current
      *         value retrieved by the counter's time source, if {@code unitsAfter} is not set
      */
-    private long elapsedTimeInternal()
+    private long elapsedTimeNanos()
     {
-        long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime(timeUnit);
+        long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime();
         return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;
     }
 
@@ -314,7 +287,7 @@ public class Counter
      */
     public Duration elapsedTime()
     {
-        return Duration.of(elapsedTimeInternal(), timeUnit);
+        return Duration.of(elapsedTimeNanos(), NANOSECONDS);
     }
 
     /**
@@ -347,7 +320,9 @@ public class Counter
      */
     public double elapsedTime(TimeUnit timeUnit, ConversionMode conversionMode)
     {
-        return conversionMode.convert(elapsedTimeInternal(), this.timeUnit, timeUnit);
+        long elapsedTimeNanos = elapsedTimeNanos();
+        return timeUnit == NANOSECONDS ? elapsedTimeNanos
+                : conversionMode.convert(elapsedTimeNanos, NANOSECONDS, timeUnit);
     }
 
     /**
@@ -358,7 +333,7 @@ public class Counter
     @Override
     public String toString()
     {
-        return String.format(STRING_FORMAT, type, timeUnit, unitsBefore, unitsAfter);
+        return String.format(STRING_FORMAT, type, unitsBefore, unitsAfter);
     }
 
 }

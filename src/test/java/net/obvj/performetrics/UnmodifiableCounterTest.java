@@ -16,7 +16,6 @@
 
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.throwsException;
@@ -48,13 +47,12 @@ class UnmodifiableCounterTest
     @Test
     void getters_succeed()
     {
-        Counter counter = new Counter(CPU_TIME, MILLISECONDS);
+        Counter counter = new Counter(CPU_TIME);
         counter.setUnitsBefore(5);
         counter.setUnitsAfter(10);
 
         Counter unmodifiable = new UnmodifiableCounter(counter);
         assertThat(unmodifiable.getType(), is(equalTo(CPU_TIME)));
-        assertThat(unmodifiable.getTimeUnit(), is(equalTo(MILLISECONDS)));
         assertThat(unmodifiable.getUnitsBefore(), is(equalTo(5L)));
         assertThat(unmodifiable.getUnitsAfter(), is(equalTo(10L)));
     }
@@ -62,45 +60,31 @@ class UnmodifiableCounterTest
     @Test
     void toString_withAllFieldsSet_suceeds()
     {
-        Counter counter = new Counter(WALL_CLOCK_TIME, MILLISECONDS);
+        Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(500);
-        counter.setUnitsAfter(1000);
+        counter.setUnitsAfter(1_000);
 
         Counter unmodifiable = new UnmodifiableCounter(counter);
         assertThat(unmodifiable.toString(), is(equalTo(counter.toString())));
     }
 
     @Test
-    void elapsedTime_withTimeUnitEqualToTheOriginal_returnsDifferenceInOriginalTimeUnit()
+    void elapsedTime_withTimeUnitNanoseconds_returnsDifferenceConverted()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
+        Counter counter = new Counter(SYSTEM_TIME);
         counter.setUnitsBefore(2);
         counter.setUnitsAfter(3);
 
         Counter unmodifiable = new UnmodifiableCounter(counter);
-        assertThat(unmodifiable.elapsedTime(SECONDS), is(equalTo(1.0)));
-    }
-
-    @Test
-    void elapsedTime_withTimeUnitLowerThanOriginal_returnsDifferenceConverted()
-    {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsBefore(2);
-        counter.setUnitsAfter(3);
-
-        Counter unmodifiable = new UnmodifiableCounter(counter);
-        assertThat(unmodifiable.elapsedTime(MILLISECONDS), is(equalTo(1000.0)));
+        assertThat(unmodifiable.elapsedTime(NANOSECONDS), is(equalTo(1.0)));
     }
 
     @Test
     void elapsedTime_withTimeUnitHigherThanOriginal_returnsDifferenceConverted()
     {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
-        counter.setUnitsBefore(2000);
-        counter.setUnitsAfter(3500); // 1.5 second after
+        Counter counter = new Counter(SYSTEM_TIME);
+        counter.setUnitsBefore(2_000_000_000L);
+        counter.setUnitsAfter(3_500_000_000L);
 
         Counter unmodifiable = new UnmodifiableCounter(counter);
         assertThat(unmodifiable.elapsedTime(SECONDS), is(equalTo(1.5)));
@@ -109,35 +93,34 @@ class UnmodifiableCounterTest
     @Test
     void elapsedTime_withoutParams_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
     {
-        Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
-        counter.setUnitsBefore(2000);
+        Counter counter = new Counter(WALL_CLOCK_TIME);
+        counter.setUnitsBefore(2_000);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
-            systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(9000L);
+            systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(9_000L);
             Counter unmodifiable = new UnmodifiableCounter(counter);
-            assertThat(unmodifiable.elapsedTime(), is(equalTo(Duration.of(7000L, NANOSECONDS))));
+            assertThat(unmodifiable.elapsedTime(), is(equalTo(Duration.of(7_000L, NANOSECONDS))));
         }
     }
 
     @Test
     void elapsedTime_withFinerTimeUnitAndDoublePrecisionConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsAfter(2); // 2 seconds
+        Counter counter = new Counter(SYSTEM_TIME, DOUBLE_PRECISION);
+        assertThat(counter.getConversionMode(), is(DOUBLE_PRECISION));
+        counter.setUnitsAfter(2_000_000_001);
         Counter unmodifiable = new UnmodifiableCounter(counter);
-        assertThat(unmodifiable.elapsedTime(MILLISECONDS), is(equalTo(2000.0)));
+        assertThat(unmodifiable.elapsedTime(SECONDS), is(equalTo(2.000000001)));
     }
 
     @Test
-    void elapsedTime_withTimeUnitAndCustomConversionMode_appliesCustomConversion()
+    void elapsedTime_withFinerTimeUnitAndFastConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
-        counter.setUnitsBefore(2000);
-        counter.setUnitsAfter(3500); // 1.5 second after
+        Counter counter = new Counter(SYSTEM_TIME, FAST);
+        assertThat(counter.getConversionMode(), is(FAST));
+        counter.setUnitsAfter(2_000_000_001);
         Counter unmodifiable = new UnmodifiableCounter(counter);
-        assertThat(unmodifiable.elapsedTime(SECONDS, FAST), is(equalTo(1.0)));
+        assertThat(unmodifiable.elapsedTime(SECONDS), is(equalTo(2.0)));
     }
 
     @Test

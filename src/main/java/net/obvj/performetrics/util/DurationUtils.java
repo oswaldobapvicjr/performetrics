@@ -40,7 +40,7 @@ public class DurationUtils
      */
     public static Duration average(Collection<Duration> durations)
     {
-        if (durations == null || durations.isEmpty())
+        if (isEmpty(durations))
         {
             return Duration.ZERO;
         }
@@ -67,7 +67,7 @@ public class DurationUtils
      */
     public static Duration min(Collection<Duration> durations)
     {
-        if (durations == null || durations.isEmpty())
+        if (isEmpty(durations))
         {
             return Duration.ZERO;
         }
@@ -84,12 +84,17 @@ public class DurationUtils
      */
     public static Duration max(Collection<Duration> durations)
     {
-        if (durations == null || durations.isEmpty())
+        if (isEmpty(durations))
         {
             return Duration.ZERO;
         }
         // We compare the seconds with the fractional nanoseconds after the decimal point
         return durations.stream().max(Comparable::compareTo).orElse(Duration.ZERO);
+    }
+
+    private static boolean isEmpty(Collection<?> collection)
+    {
+        return collection == null || collection.isEmpty();
     }
 
 }

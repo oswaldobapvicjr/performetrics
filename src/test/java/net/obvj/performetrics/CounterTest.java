@@ -89,36 +89,6 @@ class CounterTest
         assertThat(counter.toString(), is(equalTo(expectedString)));
     }
 
-    // @Test
-    // void elapsedTimeInternal_withUnitsSet_returnsDifferenceInSeconds()
-    // {
-    // Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-    // assertThat(counter.getTimeUnit(), is(equalTo(SECONDS)));
-    // counter.setUnitsBefore(2);
-    // counter.setUnitsAfter(3); // 1 second after
-    // assertThat(counter.elapsedTimeInternal(), is(equalTo(1L)));
-    // }
-    //
-    // @Test
-    // void elapsedTimeInternal_withUnitsSet_returnsDifferenceInMilliseconds()
-    // {
-    // Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-    // assertThat(counter.getTimeUnit(), is(equalTo(MILLISECONDS)));
-    // counter.setUnitsBefore(1000);
-    // counter.setUnitsAfter(1500); // 500 milliseconds after
-    // assertThat(counter.elapsedTimeInternal(), is(500L));
-    // }
-    //
-    // @Test
-    // void elapsedTimeInternal_withUnitsSet_returnsDifferenceInNanoseconds()
-    // {
-    // Counter counter = new Counter(SYSTEM_TIME, NANOSECONDS);
-    // assertThat(counter.getTimeUnit(), is(NANOSECONDS));
-    // counter.setUnitsBefore(1000000000L);
-    // counter.setUnitsAfter(6000000000L); // 5 seconds after
-    // assertThat(counter.elapsedTimeInternal(), is(equalTo(5000000000L)));
-    // }
-
     @Test
     void elapsedTime_withTimeUnitEqualToTheOriginal_returnsDifferenceInOriginalTimeUnit()
     {

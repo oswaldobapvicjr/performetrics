@@ -93,4 +93,10 @@ class TimeUnitConverterTest
         assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(equalTo(0.999)));
     }
 
+    @Test
+    void convert_sameTimeUnit_success()
+    {
+        assertThat(TimeUnitConverter.convert(999, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS), equalTo(999.0));
+    }
+
 }

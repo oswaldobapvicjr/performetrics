@@ -17,7 +17,6 @@
 package net.obvj.performetrics.config;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import net.obvj.performetrics.ConversionMode;
 import net.obvj.performetrics.Stopwatch;
@@ -32,10 +31,6 @@ import net.obvj.performetrics.util.print.PrintStyle;
  */
 public class Configuration
 {
-    /**
-     * The initial time unit to be maintained if no specific time unit informed.
-     */
-    static final TimeUnit INITIAL_TIME_UNIT = TimeUnit.NANOSECONDS;
 
     /**
      * The initial conversion mode to be applied if no specific mode is set.
@@ -73,7 +68,6 @@ public class Configuration
 
     private static final String MSG_PRINT_STYLE_MUST_NOT_BE_NULL = "The default PrintStyle must not be null";
 
-    private TimeUnit timeUnit;
     private ConversionMode conversionMode;
     private int scale;
     private PrintStyle printStyle;
@@ -85,34 +79,11 @@ public class Configuration
      */
     public Configuration()
     {
-        timeUnit = INITIAL_TIME_UNIT;
         conversionMode = INITIAL_CONVERSION_MODE;
         scale = INITIAL_SCALE;
         printStyle = INITIAL_PRINT_STYLE;
         printStyleForSummary = INITIAL_PRINT_STYLE_FOR_SUMMARY;
         printStyleForDetails = INITIAL_PRINT_STYLE_FOR_DETAILS;
-    }
-
-    /**
-     * Returns the time unit maintained by default if no specific time unit is specified.
-     *
-     * @return the time unit maintained by default
-     */
-    public TimeUnit getTimeUnit()
-    {
-        return timeUnit;
-    }
-
-    /**
-     * Defines the time unit to be maintained by default if no specific time unit is
-     * specified.
-     *
-     * @param timeUnit the {@link TimeUnit} to set
-     * @throws NullPointerException if the specified time unit is null
-     */
-    public void setTimeUnit(TimeUnit timeUnit)
-    {
-        this.timeUnit = Objects.requireNonNull(timeUnit, "the default time unit must not be null");
     }
 
     /**

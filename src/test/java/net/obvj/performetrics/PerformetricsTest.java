@@ -16,7 +16,6 @@
 
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
@@ -29,8 +28,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +48,6 @@ import net.obvj.performetrics.util.print.PrintStyle;
 class PerformetricsTest
 {
     // Default values
-    private static final TimeUnit INITIAL_TIME_UNIT = ConfigurationHolder.getConfiguration().getTimeUnit();
     private static final ConversionMode INITIAL_CONVERSION_MODE = ConfigurationHolder.getConfiguration().getConversionMode();
     private static final int INITIAL_SCALE = ConfigurationHolder.getConfiguration().getScale();
     private static final PrintStyle INITIAL_PRINT_STYLE = ConfigurationHolder.getConfiguration().getPrintStyle();
@@ -75,17 +71,11 @@ class PerformetricsTest
 
     private void checkAllDefaultValues()
     {
-        checkDefaultTimeUnit();
         checkDefaultConversionMode();
         checkDefaulScale();
         checkDefaulPrintStyle();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
-    }
-
-    private void checkDefaultTimeUnit()
-    {
-        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(equalTo(INITIAL_TIME_UNIT)));
     }
 
     private void checkDefaultConversionMode()
@@ -127,22 +117,9 @@ class PerformetricsTest
     {
         Performetrics.setDefaultConversionMode(FAST);
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(FAST)));
-        checkDefaultTimeUnit();
         checkDefaulScale();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
-    }
-
-    @Test
-    void setDefaultTimeUnit_seconds_updatesConfiguration()
-    {
-        Performetrics.setDefaultTimeUnit(MILLISECONDS);
-        assertThat(ConfigurationHolder.getConfiguration().getTimeUnit(), is(equalTo(MILLISECONDS)));
-        checkDefaultConversionMode();
-        checkDefaulScale();
-        checkDefaulPrintStyleForSummary();
-        checkDefaulPrintStyleForDetails();
-
     }
 
     @Test
@@ -150,11 +127,9 @@ class PerformetricsTest
     {
         Performetrics.setDefaultConversionMode(DOUBLE_PRECISION);
         assertThat(ConfigurationHolder.getConfiguration().getConversionMode(), is(equalTo(DOUBLE_PRECISION)));
-        checkDefaultTimeUnit();
         checkDefaulScale();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
-
     }
 
     @Test
@@ -162,7 +137,6 @@ class PerformetricsTest
     {
         Performetrics.setScale(16);
         assertThat(ConfigurationHolder.getConfiguration().getScale(), is(equalTo(16)));
-        checkDefaultTimeUnit();
         checkDefaultConversionMode();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
@@ -222,7 +196,6 @@ class PerformetricsTest
         Performetrics.setDefaultPrintStyle(ps);
         assertThat(ConfigurationHolder.getConfiguration().getPrintStyle(), is(equalTo(ps)));
         checkDefaultConversionMode();
-        checkDefaultTimeUnit();
         checkDefaulScale();
         checkDefaulPrintStyleForSummary();
         checkDefaulPrintStyleForDetails();
@@ -248,7 +221,6 @@ class PerformetricsTest
         Performetrics.setDefaultPrintStyleForSummary(ps);
         assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForSummary(), is(equalTo(ps)));
         checkDefaultConversionMode();
-        checkDefaultTimeUnit();
         checkDefaulScale();
         checkDefaulPrintStyle();
         checkDefaulPrintStyleForDetails();
@@ -274,7 +246,6 @@ class PerformetricsTest
         Performetrics.setDefaultPrintStyleForDetails(ps);
         assertThat(ConfigurationHolder.getConfiguration().getPrintStyleForDetails(), is(equalTo(ps)));
         checkDefaultConversionMode();
-        checkDefaultTimeUnit();
         checkDefaulScale();
         checkDefaulPrintStyle();
         checkDefaulPrintStyleForSummary();

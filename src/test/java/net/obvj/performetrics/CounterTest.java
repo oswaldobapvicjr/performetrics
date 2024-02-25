@@ -16,10 +16,9 @@
 
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.throwsException;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
@@ -29,7 +28,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mockStatic;
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -46,35 +44,28 @@ class CounterTest
 {
 
     @Test
-    void constructor_withType_assignsDefaultTimeUnit()
+    void constructor_withType_assignsDefaultConversionMode()
     {
         Counter counter = new Counter(SYSTEM_TIME);
-        assertThat(counter.getTimeUnit(), is(equalTo(NANOSECONDS)));
-    }
-
-    @Test
-    void constructor_withTypeAndTimeUnit_assignsDefaultConversionMode()
-    {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
+        assertThat(counter.getType(), is(SYSTEM_TIME));
         assertThat(counter.getConversionMode(), is(equalTo(DOUBLE_PRECISION)));
     }
 
     @Test
-    void constructor_withTypeAndTimeUnitAndConversionMode_succeeds()
+    void constructor_withTypeAndConversionMode_succeeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS, FAST);
-        assertThat(counter.getTimeUnit(), is(equalTo(MILLISECONDS)));
+        Counter counter = new Counter(SYSTEM_TIME, FAST);
+        assertThat(counter.getType(), is(SYSTEM_TIME));
         assertThat(counter.getConversionMode(), is(equalTo(FAST)));
     }
 
     @Test
     void getters_succeed()
     {
-        Counter counter = new Counter(CPU_TIME, MILLISECONDS);
+        Counter counter = new Counter(CPU_TIME);
         counter.setUnitsBefore(5);
         counter.setUnitsAfter(10);
         assertThat(counter.getType(), is(equalTo(CPU_TIME)));
-        assertThat(counter.getTimeUnit(), is(equalTo(MILLISECONDS)));
         assertThat(counter.getUnitsBefore(), is(equalTo(5L)));
         assertThat(counter.getUnitsAfter(), is(equalTo(10L)));
     }
@@ -82,48 +73,36 @@ class CounterTest
     @Test
     void toString_withAllFieldsSet_suceeds()
     {
-        Counter counter = new Counter(WALL_CLOCK_TIME, MILLISECONDS);
+        Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(5);
         counter.setUnitsAfter(10);
-        String expectedString = String.format(Counter.STRING_FORMAT, WALL_CLOCK_TIME, MILLISECONDS, 5, 10);
+        String expectedString = String.format(Counter.STRING_FORMAT, WALL_CLOCK_TIME, 5, 10);
         assertThat(counter.toString(), is(equalTo(expectedString)));
     }
 
     @Test
     void elapsedTime_withTimeUnitEqualToTheOriginal_returnsDifferenceInOriginalTimeUnit()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
+        Counter counter = new Counter(SYSTEM_TIME);
         counter.setUnitsBefore(2);
-        counter.setUnitsAfter(3); // 1 second after
-        assertThat(counter.elapsedTime(SECONDS), is(equalTo(1.0)));
-    }
-
-    @Test
-    void elapsedTime_withTimeUnitLowerThanOriginal_returnsDifferenceConverted()
-    {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsBefore(2);
-        counter.setUnitsAfter(3); // 1 second after
-        assertThat(counter.elapsedTime(MILLISECONDS), is(equalTo(1000.0)));
+        counter.setUnitsAfter(3);
+        assertThat(counter.elapsedTime(NANOSECONDS), is(equalTo(1.0)));
     }
 
     @Test
     void elapsedTime_withTimeUnitHigherThanOriginal_returnsDifferenceConverted()
     {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
-        counter.setUnitsBefore(2000);
-        counter.setUnitsAfter(3500); // 1.5 second after
-        assertThat(counter.elapsedTime(SECONDS), is(equalTo(1.5)));
+        Counter counter = new Counter(SYSTEM_TIME);
+        counter.setUnitsBefore(999_999_999);
+        counter.setUnitsAfter(1_000_000_000);
+        assertThat(counter.elapsedTime(SECONDS), is(equalTo(0.000000001)));
     }
 
     @Test
     void elapsedTime_withUnitsBeforeSetOnly_returnsDifferenceBetweenUnitsBeforeAndCurrentTime()
     {
-        Counter counter = new Counter(WALL_CLOCK_TIME, NANOSECONDS);
-        counter.setUnitsBefore(2000);
+        Counter counter = new Counter(WALL_CLOCK_TIME);
+        counter.setUnitsBefore(2_000);
         try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
         {
             systemUtils.when(SystemUtils::getWallClockTimeNanos).thenReturn(9000L);
@@ -135,7 +114,7 @@ class CounterTest
     void elapsedTime_unitsAfterLowerThanUnitsBefore_negative1()
     {
         Counter counter = new Counter(WALL_CLOCK_TIME);
-        counter.setUnitsBefore(5000);
+        counter.setUnitsBefore(5_000);
         counter.setUnitsAfter(500);
         assertThat(() -> counter.elapsedTime(), throwsException(IllegalArgumentException.class)
                 .withMessage("The duration amount must be a positive value"));
@@ -144,57 +123,33 @@ class CounterTest
     @Test
     void elapsedTime_withCoarserTimeUnitAndFastConversion_differenceIsTruncated()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, FAST);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsAfter(59); // 59 seconds after
-        assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.0)));
+        Counter counter = new Counter(SYSTEM_TIME, FAST);
+        counter.setUnitsAfter(999_999_999);
+        assertThat(counter.elapsedTime(SECONDS), is(equalTo(0.0)));
     }
 
     @Test
     void elapsedTime_withCoarserTimeUnitAndDoublePrecisionConversion_differenceIsNotTruncated()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsAfter(59); // 59 seconds after
-        assertThat(counter.elapsedTime(MINUTES), is(equalTo(0.983333333)));
+        Counter counter = new Counter(SYSTEM_TIME, DOUBLE_PRECISION);
+        counter.setUnitsAfter(999_999_999);
+        assertThat(counter.elapsedTime(SECONDS), is(equalTo(0.999_999_999)));
     }
 
     @Test
-    void elapsedTime_withFinerTimeUnitAndFastConversion_conversionSuceeds()
+    void elapsedTime_sameTimeUnitAndFastConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, FAST);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsAfter(2); // 2 seconds
-        assertThat(counter.elapsedTime(MILLISECONDS), is(equalTo(2000.0)));
+        Counter counter = new Counter(SYSTEM_TIME, FAST);
+        counter.setUnitsAfter(2);
+        assertThat(counter.elapsedTime(NANOSECONDS), is(equalTo(2.0)));
     }
 
     @Test
-    void elapsedTime_withFinerTimeUnitAndDoublePrecisionConversion_conversionSuceeds()
+    void elapsedTime_sameTimeUnitAndDoublePrecisionConversion_conversionSuceeds()
     {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS, DOUBLE_PRECISION);
-        assertThat(counter.getTimeUnit(), is(SECONDS));
-        counter.setUnitsAfter(2); // 2 seconds
-        assertThat(counter.elapsedTime(MILLISECONDS), is(equalTo(2000.0)));
-    }
-
-    @Test
-    void elapsedTime_withTimeUnitAndCustomConversionMode_appliesCustomConversion()
-    {
-        Counter counter = new Counter(SYSTEM_TIME, MILLISECONDS);
-        assertThat(counter.getTimeUnit(), is(MILLISECONDS));
-        counter.setUnitsBefore(2000);
-        counter.setUnitsAfter(3500); // 1.5 second after
-        assertThat(counter.elapsedTime(SECONDS, FAST), is(equalTo(1.0)));
-    }
-
-    @Test
-    void elapsedTime_withoutParams_returnsDurationWithValidDifference()
-    {
-        Counter counter = new Counter(SYSTEM_TIME, SECONDS);
-        assertThat(counter.getTimeUnit(), is(equalTo(SECONDS)));
-        counter.setUnitsBefore(2);
-        counter.setUnitsAfter(3); // 1 second after
-        assertThat(counter.elapsedTime(), is(equalTo(Duration.of(1, SECONDS))));
+        Counter counter = new Counter(SYSTEM_TIME, DOUBLE_PRECISION);
+        counter.setUnitsAfter(2);
+        assertThat(counter.elapsedTime(NANOSECONDS), is(equalTo(2.0)));
     }
 
 }

@@ -1,6 +1,31 @@
 =============================================================================
 
                           P E R F O R M E T R I C S
+                                version 2.5.1
+                                   2024-03
+                                 
+                                RELEASE NOTES
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION:
+
+PERFORMETRICS is a simple yet powerful metric tool for Java applications,
+licensed under the Apache License Version 2.0.
+
+Minor enhancements:
+
+ > issue/0077: Introduce the new UnmodifiableCounter class
+ > issue/0078: Optimization pack 2
+
+
+For more information, or suggestions for improvement, visit:
+https://obvj.net/performetrics
+
+
+=============================================================================
+
+                          P E R F O R M E T R I C S
                                 version 2.5.0
                                    2024-02
                                  

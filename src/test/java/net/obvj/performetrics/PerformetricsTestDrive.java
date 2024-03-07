@@ -34,6 +34,7 @@ import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
+import net.obvj.performetrics.util.DurationUtils;
 import net.obvj.performetrics.util.print.PrintStyle;
 
 public class PerformetricsTestDrive
@@ -189,8 +190,12 @@ public class PerformetricsTestDrive
     private static void loadTest()
     {
         System.out.println("[main] Starting load test...");
+
+        int repeatTimes = 1_000_000;
         Map<Double, AtomicInteger> amounts = new HashMap<>();
-        for (int i = 0; i < 1_000_000; i++)
+        List<Duration> durations = new ArrayList<>(repeatTimes);
+
+        for (int i = 0; i < repeatTimes; i++)
         {
             MonitoredRunnable runnable = Performetrics.monitorOperation(() -> factorial(100L),
                     WALL_CLOCK_TIME, USER_TIME, SYSTEM_TIME);
@@ -198,10 +203,15 @@ public class PerformetricsTestDrive
             runnable.elapsedTime(USER_TIME);
             Duration st = runnable.elapsedTime(SYSTEM_TIME);
 
+            durations.add(st);
             amounts.computeIfAbsent(st.toSeconds(), k -> new AtomicInteger(0)).incrementAndGet();
         }
 
         System.out.println("[main] Load test finished");
+
+        System.out.print("[main] Computing average of elapsed SYSTEM_TIME... ");
+        System.out.println(DurationUtils.average(durations));
+
         System.out.println(amounts);
     }
 

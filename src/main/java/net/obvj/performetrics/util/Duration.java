@@ -115,8 +115,8 @@ public final class Duration implements Comparable<Duration>
      * duration.getNanoseconds() //returns: 0
      * </pre>
      *
-     * @param amount       the amount of the duration, measured in terms of the time unit
-     *                     argument (negative is allowed)
+     * @param amount       the amount of the duration (positive or negative), measured in
+     *                     terms of the time unit argument
      * @param temporalUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *

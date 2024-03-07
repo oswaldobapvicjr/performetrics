@@ -18,7 +18,6 @@ package net.obvj.performetrics;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.throwsException;
 import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
@@ -111,13 +110,12 @@ class CounterTest
     }
 
     @Test
-    void elapsedTime_unitsAfterLowerThanUnitsBefore_negative1()
+    void elapsedTime_unitsAfterLowerThanUnitsBefore_zero()
     {
         Counter counter = new Counter(WALL_CLOCK_TIME);
         counter.setUnitsBefore(5_000);
         counter.setUnitsAfter(500);
-        assertThat(() -> counter.elapsedTime(), throwsException(IllegalArgumentException.class)
-                .withMessage("The duration amount must be a positive value"));
+        assertThat(counter.elapsedTime(), is(equalTo(Duration.ZERO)));
     }
 
     @Test

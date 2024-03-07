@@ -59,7 +59,6 @@ public final class Duration implements Comparable<Duration>
     private static final String MSG_SOURCE_TIME_UNIT_MUST_NOT_BE_NULL = "The source TimeUnit must not be null";
     private static final String MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL = "The target TimeUnit must not be null";
     private static final String MSG_FORMAT_MUST_NOT_BE_NULL = "The format must not be null";
-    private static final String MSG_AMOUNT_MUST_BE_POSITIVE = "The duration amount must be a positive value";
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
@@ -89,13 +88,12 @@ public final class Duration implements Comparable<Duration>
      * duration.getNanoseconds() //returns: 0
      * </pre>
      *
-     * @param amount   the amount of the duration, measured in terms of the time unit
-     *                 argument, not negative
+     * @param amount   the amount of the duration (positive or negative), measured in terms of
+     *                 the time unit argument
      * @param timeUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *
-     * @throws NullPointerException     if the specified time unit is null
-     * @throws IllegalArgumentException if the specified duration amount is negative
+     * @throws NullPointerException if the specified time unit is null
      */
     public static Duration of(long amount, TimeUnit timeUnit)
     {
@@ -117,8 +115,8 @@ public final class Duration implements Comparable<Duration>
      * duration.getNanoseconds() //returns: 0
      * </pre>
      *
-     * @param amount       the amount of the duration, measured in terms of the time unit
-     *                     argument, not negative
+     * @param amount       the amount of the duration (positive or negative), measured in
+     *                     terms of the time unit argument
      * @param temporalUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *
@@ -128,10 +126,6 @@ public final class Duration implements Comparable<Duration>
      */
     public static Duration of(long amount, TemporalUnit temporalUnit)
     {
-        if (amount < 0)
-        {
-            throw new IllegalArgumentException(MSG_AMOUNT_MUST_BE_POSITIVE);
-        }
         java.time.Duration internalDuration = java.time.Duration.of(amount, temporalUnit);
         return new Duration(internalDuration);
     }
@@ -334,11 +328,11 @@ public final class Duration implements Comparable<Duration>
     {
         Objects.requireNonNull(timeUnit, MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL);
 
-        BigDecimal targetSeconds = internalDuration.getSeconds() > 0
+        BigDecimal targetSeconds = internalDuration.getSeconds() != 0
                 ? BigDecimal.valueOf(timeUnit.convert(internalDuration.getSeconds(), TimeUnit.SECONDS))
                 : BigDecimal.ZERO;
 
-        BigDecimal targetNanoseconds = internalDuration.getNano() > 0
+        BigDecimal targetNanoseconds = internalDuration.getNano() != 0
                 ? convertNanosecondsPart(timeUnit, scale)
                 : BigDecimal.ZERO;
 
@@ -389,7 +383,8 @@ public final class Duration implements Comparable<Duration>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount   the amount to add, measured in terms of the timeUnit argument
+     * @param amount   the amount to add (positive or negative), measured in terms of the
+     *                 timeUnit argument
      * @param timeUnit the unit that the amount to add is measured in, not null
      *
      * @return a {@code Duration} based on this duration with the specified duration added,

@@ -26,10 +26,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import net.obvj.performetrics.monitors.MonitoredCallable;
+import net.obvj.performetrics.monitors.MonitoredRunnable;
+import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 import net.obvj.performetrics.util.print.PrintStyle;
 
@@ -55,6 +58,9 @@ public class PerformetricsTestDrive
 
         System.out.println("\n\n****************************************************\n");
         testOnADifferentThread();
+
+        System.out.println("\n\n****************************************************\n");
+        loadTest();
     }
 
     private static void testStopwatch1() throws InterruptedException, IOException
@@ -152,10 +158,11 @@ public class PerformetricsTestDrive
         return BigInteger.valueOf(x).multiply(factorial(x - 1));
     }
 
-    private static void testOnADifferentThread()
+    private static void testOnADifferentThread() throws InterruptedException
     {
         System.out.println("[main] Starting test on a different thread");
-        new Thread(() -> {
+        Thread t1 = new Thread(() ->
+        {
             Performetrics.monitorOperation(() ->
             {
                 String logFormat = "[%s] %s";
@@ -172,8 +179,30 @@ public class PerformetricsTestDrive
                 System.out.println(String.format(logFormat, threadName, size + " UUIDs generated and sorted"));
                 System.out.println();
             }).printSummary(System.out, PrintStyle.SUMMARIZED_YAML);
-        }).start();;
+        });
+
+        t1.start();
         System.out.println("[main] New thread started");
+        t1.join();
+    }
+
+    private static void loadTest()
+    {
+        System.out.println("[main] Starting load test...");
+        Map<Double, AtomicInteger> amounts = new HashMap<>();
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            MonitoredRunnable runnable = Performetrics.monitorOperation(() -> factorial(100L),
+                    WALL_CLOCK_TIME, USER_TIME, SYSTEM_TIME);
+            runnable.elapsedTime(WALL_CLOCK_TIME);
+            runnable.elapsedTime(USER_TIME);
+            Duration st = runnable.elapsedTime(SYSTEM_TIME);
+
+            amounts.computeIfAbsent(st.toSeconds(), k -> new AtomicInteger(0)).incrementAndGet();
+        }
+
+        System.out.println("[main] Load test finished");
+        System.out.println(amounts);
     }
 
 }

@@ -81,11 +81,11 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            if (duration.getHours() > 0)
+            if (duration.getHours() != 0)
             {
                 return DurationFormat.FULL.doFormat(duration, printLegend);
             }
-            if (duration.getMinutes() > 0)
+            if (duration.getMinutes() != 0)
             {
                 return String.format(MyTimeUnit.MINUTES.format, duration.getMinutes(),
                         duration.getSeconds(), duration.getNanoseconds())
@@ -126,11 +126,11 @@ public enum DurationFormat
             {
                 return format;
             }
-            if (duration.getHours() > 0)
+            if (duration.getHours() != 0)
             {
                 return format + legend(true, MyTimeUnit.HOURS.legend);
             }
-            if (duration.getMinutes() > 0)
+            if (duration.getMinutes() != 0)
             {
                 return format + legend(true, MyTimeUnit.MINUTES.legend);
             }
@@ -245,10 +245,10 @@ public enum DurationFormat
      * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
      */
     private static final Pattern HMS_PATTERN = Pattern.compile(
-            "^(((?<hours>\\d*):)?"
-            + "((?<minutes>\\d*):))?"
-            + "(?<seconds>\\d+)"
-            + "([.,](?<nanoseconds>\\d+))?"
+            "^(((?<hours>-?\\d*):)?"
+            + "((?<minutes>-?\\d*):))?"
+            + "(?<seconds>-?\\d+)"
+            + "([.,](?<nanoseconds>-?\\d+))?"
             + "(.)*"); // legend
 
     static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";

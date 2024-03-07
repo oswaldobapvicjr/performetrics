@@ -60,9 +60,11 @@ class DurationTest
     @Test
     void of_negativeAmount_illegalArgumentException()
     {
-        assertThat(() -> Duration.of(-1, NANOSECONDS),
-                throwsException(IllegalArgumentException.class)
-                        .withMessage("The duration amount must be a positive value"));
+        Duration d1 = Duration.of(-1, SECONDS);
+        assertThat(d1.getHours(),       is(equalTo(0L)));
+        assertThat(d1.getMinutes(),     is(equalTo(0)));
+        assertThat(d1.getSeconds(),     is(equalTo(-1)));
+        assertThat(d1.getNanoseconds(), is(equalTo(0)));
     }
 
     @Test
@@ -89,6 +91,11 @@ class DurationTest
         assertThat(Duration.of(3601,       MINUTES     ).toSeconds(), is(equalTo(     216060D)));
         assertThat(Duration.of(2,          HOURS       ).toSeconds(), is(equalTo(       7200D)));
         assertThat(Duration.of(100,        HOURS       ).toSeconds(), is(equalTo(     360000D)));
+
+        // Tests with negative durations
+        assertThat(Duration.of(-1,          HOURS      ).toSeconds(), is(equalTo(       -3600D)));
+        assertThat(Duration.of(-1000000000, NANOSECONDS).toSeconds(), is(equalTo(          -1D)));
+        assertThat(Duration.of(-1000000001, NANOSECONDS).toSeconds(), is(equalTo(-1.000000001D)));
     }
 
     @Test
@@ -115,6 +122,11 @@ class DurationTest
         assertThat(Duration.of(3601,       MINUTES     ).toTimeUnit(MILLISECONDS), is(equalTo(  216060000D)));
         assertThat(Duration.of(2,          HOURS       ).toTimeUnit(MILLISECONDS), is(equalTo(    7200000D)));
         assertThat(Duration.of(100,        HOURS       ).toTimeUnit(MILLISECONDS), is(equalTo(  360000000D)));
+
+        // Tests with negative durations
+        assertThat(Duration.of(-1,          HOURS      ).toTimeUnit(MILLISECONDS), is(equalTo(    -3600000D)));
+        assertThat(Duration.of(-1000000000, NANOSECONDS).toTimeUnit(MILLISECONDS), is(equalTo(       -1000D)));
+        assertThat(Duration.of(-1000000001, NANOSECONDS).toTimeUnit(MILLISECONDS), is(equalTo(-1000.000001D)));
     }
 
     @Test
@@ -141,6 +153,11 @@ class DurationTest
         assertThat(Duration.of(3601,       MINUTES     ).toTimeUnit(MILLISECONDS, 3), is(equalTo(  216060000D)));
         assertThat(Duration.of(2,          HOURS       ).toTimeUnit(MILLISECONDS, 3), is(equalTo(    7200000D)));
         assertThat(Duration.of(100,        HOURS       ).toTimeUnit(MILLISECONDS, 3), is(equalTo(  360000000D)));
+
+        // Tests with negative durations
+        assertThat(Duration.of(-1,          HOURS      ).toTimeUnit(MILLISECONDS, 3), is(equalTo(-3600000D)));
+        assertThat(Duration.of(-1000000000, NANOSECONDS).toTimeUnit(MILLISECONDS, 3), is(equalTo(   -1000D)));
+        assertThat(Duration.of(-1000000001, NANOSECONDS).toTimeUnit(MILLISECONDS, 3), is(equalTo(   -1000D)));
     }
 
     @Test
@@ -207,6 +224,10 @@ class DurationTest
         assertThat(Duration.of(1800, SECONDS     ).plus(Duration.of(1800, SECONDS     )), is(equalTo(Duration.of(1, HOURS))));
         assertThat(Duration.of(3599, SECONDS     ).plus(Duration.of(3601, SECONDS     )), is(equalTo(Duration.of(2, HOURS))));
         assertThat(Duration.of( 500, MILLISECONDS).plus(Duration.of( 500, MILLISECONDS)), is(equalTo(Duration.of(1, SECONDS))));
+
+        // Tests with negative durations
+        assertThat(Duration.of( 500, MILLISECONDS).plus(Duration.of(-500, MILLISECONDS)), is(equalTo(Duration.of(0, NANOSECONDS))));
+        assertThat(Duration.of(2000, MILLISECONDS).plus(Duration.of(  -1, SECONDS     )), is(equalTo(Duration.of(1, SECONDS))));
     }
 
     @Test
@@ -216,14 +237,19 @@ class DurationTest
         assertThat(Duration.of(1800, SECONDS     ).plus(1800, SECONDS     ), is(equalTo(Duration.of(1, HOURS))));
         assertThat(Duration.of(3599, SECONDS     ).plus(3601, SECONDS     ), is(equalTo(Duration.of(2, HOURS))));
         assertThat(Duration.of( 500, MILLISECONDS).plus( 500, MILLISECONDS), is(equalTo(Duration.of(1, SECONDS))));
+
+        // Tests with negative durations
+        assertThat(Duration.of( 500, MILLISECONDS).plus(-500, MILLISECONDS), is(equalTo(Duration.of(0, NANOSECONDS))));
+        assertThat(Duration.of(2000, MILLISECONDS).plus(  -1, SECONDS     ), is(equalTo(Duration.of(1, SECONDS))));
     }
 
     @Test
     void dividedBy_positiveDivisor_success()
     {
-        assertThat(Duration.of(   2, HOURS       ).dividedBy(2), is(equalTo(Duration.of(  1, HOURS))));
-        assertThat(Duration.of(   3, HOURS       ).dividedBy(2), is(equalTo(Duration.of( 90, MINUTES))));
-        assertThat(Duration.of(1000, MILLISECONDS).dividedBy(5), is(equalTo(Duration.of(200, MILLISECONDS))));
+        assertThat(Duration.of(    2, HOURS       ).dividedBy(2), is(equalTo(Duration.of(   1, HOURS))));
+        assertThat(Duration.of(    3, HOURS       ).dividedBy(2), is(equalTo(Duration.of(  90, MINUTES))));
+        assertThat(Duration.of( 1000, MILLISECONDS).dividedBy(5), is(equalTo(Duration.of( 200, MILLISECONDS))));
+        assertThat(Duration.of(-1000, MILLISECONDS).dividedBy(5), is(equalTo(Duration.of(-200, MILLISECONDS))));
     }
 
     @Test
@@ -235,9 +261,10 @@ class DurationTest
     @Test
     void isZero_validDurations_success()
     {
-        assertThat(Duration.of(0, HOURS       ).isZero(), is(true));
-        assertThat(Duration.of(0, MILLISECONDS).isZero(), is(true));
-        assertThat(Duration.of(1, NANOSECONDS ).isZero(), is(false));
+        assertThat(Duration.of( 0, HOURS       ).isZero(), is(true));
+        assertThat(Duration.of( 0, MILLISECONDS).isZero(), is(true));
+        assertThat(Duration.of( 1, NANOSECONDS ).isZero(), is(false));
+        assertThat(Duration.of(-1, NANOSECONDS ).isZero(), is(false));
     }
 
     @Test
@@ -252,6 +279,7 @@ class DurationTest
     {
         assertThat(Duration.of(  1, SECONDS    ).compareTo(Duration.of(750, MILLISECONDS)), isPositive());
         assertThat(Duration.of(100, NANOSECONDS).compareTo(Duration.of( 20, NANOSECONDS )), isPositive());
+        assertThat(Duration.of(  0, NANOSECONDS).compareTo(Duration.of( -2, NANOSECONDS )), isPositive());
     }
 
     @Test
@@ -259,6 +287,7 @@ class DurationTest
     {
         assertThat(Duration.of( 1, MILLISECONDS).compareTo(Duration.of(2000000, NANOSECONDS)), isNegative());
         assertThat(Duration.of(40, MINUTES     ).compareTo(Duration.of(      1, HOURS      )), isNegative());
+        assertThat(Duration.of(-4, MINUTES     ).compareTo(Duration.of(     -3, MINUTES    )), isNegative());
     }
 
     @Test

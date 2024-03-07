@@ -275,8 +275,13 @@ public class Counter
      */
     private long elapsedTimeNanos()
     {
+        // Let the "units after" be the current time if the actual "units after" were not set
         long tempUnitsAfter = unitsAfterSet ? unitsAfter : type.getTime();
-        return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : -1;
+
+        // IMPORTANT: Although thread CPU time has nanoseconds precision, it is not 100# accurate,
+        // which means that sometimes the units before may be greater than the units after.
+        // In cases like this, it is better to return zero.
+        return tempUnitsAfter >= unitsBefore ? tempUnitsAfter - unitsBefore : 0;
     }
 
     /**

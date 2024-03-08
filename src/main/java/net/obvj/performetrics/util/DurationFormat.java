@@ -52,9 +52,21 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            return String.format(MyTimeUnit.HOURS.format, duration.getHours(),
-                    duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds())
-                    + legend(printLegend, MyTimeUnit.HOURS.legend);
+            StringBuilder buf = new StringBuilder(32);
+            if (duration.isNegative())
+            {
+                buf.append('-');
+            }
+
+            buf.append(String.format(MyTimeUnit.HOURS.format, duration.getHours(),
+                    duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds()));
+
+            if (printLegend)
+            {
+                buf.append(' ').append(MyTimeUnit.HOURS.legend);
+            }
+
+            return buf.toString();
         }
 
         @Override
@@ -297,6 +309,7 @@ public enum DurationFormat
      * @param legend      the string to be used as legend
      * @return the legend string
      */
+    @Deprecated
     private static String legend(boolean printLegend, final String legend)
     {
         return printLegend ? " " + legend : "";

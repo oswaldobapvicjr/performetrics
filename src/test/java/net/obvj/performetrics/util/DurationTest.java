@@ -55,16 +55,18 @@ class DurationTest
         assertThat(td1.getMinutes(),     is(equalTo(30)));
         assertThat(td1.getSeconds(),     is(equalTo(10)));
         assertThat(td1.getNanoseconds(), is(equalTo(0)));
+        assertThat(td1.isNegative(),     is(equalTo(false)));
     }
 
     @Test
-    void of_negativeAmount_illegalArgumentException()
+    void of_negativeAmount_populatesAccordingly()
     {
         Duration d1 = Duration.of(-1, SECONDS);
         assertThat(d1.getHours(),       is(equalTo(0L)));
         assertThat(d1.getMinutes(),     is(equalTo(0)));
-        assertThat(d1.getSeconds(),     is(equalTo(-1)));
+        assertThat(d1.getSeconds(),     is(equalTo(1)));
         assertThat(d1.getNanoseconds(), is(equalTo(0)));
+        assertThat(d1.isNegative(),     is(equalTo(true)));
     }
 
     @Test

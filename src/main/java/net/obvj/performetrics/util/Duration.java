@@ -62,8 +62,11 @@ public final class Duration implements Comparable<Duration>
 
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
+    private static final long NANOS_PER_SECOND = 1000_000_000L;
 
     private final java.time.Duration internalDuration;
+    private final long effectiveTotalSeconds;
+    private final int effectiveNanoseconds;
 
     /**
      * Constructs an instance of {@code Duration} from the given {@link java.time.Duration}.
@@ -73,6 +76,50 @@ public final class Duration implements Comparable<Duration>
     Duration(java.time.Duration internalDuration)
     {
         this.internalDuration = Objects.requireNonNull(internalDuration);
+        effectiveTotalSeconds = effectiveTotalSeconds(internalDuration);
+        effectiveNanoseconds = (int) effectiveNanoseconds(internalDuration);
+    }
+
+    /**
+     * Calculates and returns the effective total seconds from the given duration, i.e., a
+     * positive number that represents the total of seconds (without the nanoseconds) inside
+     * the duration, regardless if the duration length is positive or not.
+     *
+     * @param internalDuration the {@link java.time.Duration} to be checked
+     * @return the effective total seconds as {@code long}
+     * @since 2.5.3
+     */
+    private static long effectiveTotalSeconds(java.time.Duration internalDuration)
+    {
+        long effectiveTotalSeconds = internalDuration.getSeconds();
+        if (internalDuration.isNegative())
+        {
+            if (internalDuration.getNano() > 0)
+            {
+                effectiveTotalSeconds++;
+            }
+            return -effectiveTotalSeconds;
+        }
+        return effectiveTotalSeconds;
+    }
+
+    /**
+     * Calculates and returns the effective nanoseconds from the given duration, i.e., a
+     * positive number that represents the nanoseconds part (without the seconds) inside the
+     * duration, regardless if the duration length is positive or not.
+     *
+     * @param internalDuration the {@link java.time.Duration} to be checked
+     * @return the effective nanoseconds as {@code int}
+     * @since 2.5.3
+     */
+    private static long effectiveNanoseconds(java.time.Duration internalDuration)
+    {
+        int nanos = internalDuration.getNano();
+        if (nanos > 0 && internalDuration.isNegative())
+        {
+            return NANOS_PER_SECOND - nanos;
+        }
+        return nanos;
     }
 
     /**
@@ -177,7 +224,7 @@ public final class Duration implements Comparable<Duration>
      */
     public long getHours()
     {
-        return internalDuration.getSeconds() / SECONDS_PER_HOUR;
+        return effectiveTotalSeconds / SECONDS_PER_HOUR;
     }
 
     /**
@@ -190,7 +237,7 @@ public final class Duration implements Comparable<Duration>
      */
     public int getMinutes()
     {
-        return (int) ((internalDuration.getSeconds() % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+        return (int) ((effectiveTotalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
     }
 
     /**
@@ -204,7 +251,7 @@ public final class Duration implements Comparable<Duration>
      */
     public int getSeconds()
     {
-        return (int) (internalDuration.getSeconds() % SECONDS_PER_MINUTE);
+        return (int) (effectiveTotalSeconds % SECONDS_PER_MINUTE);
     }
 
     /**
@@ -219,7 +266,7 @@ public final class Duration implements Comparable<Duration>
      */
     public int getNanoseconds()
     {
-        return internalDuration.getNano();
+        return effectiveNanoseconds;
     }
 
     /**
@@ -231,6 +278,17 @@ public final class Duration implements Comparable<Duration>
     public boolean isZero()
     {
         return internalDuration.isZero();
+    }
+
+    /**
+     * Checks if this duration is negative, excluding zero.
+     *
+     * @return true if this duration has a total length less than zero
+     * @since 2.5.3
+     */
+    public boolean isNegative()
+    {
+        return internalDuration.isNegative();
     }
 
     @Override
@@ -328,23 +386,23 @@ public final class Duration implements Comparable<Duration>
     {
         Objects.requireNonNull(timeUnit, MSG_TARGET_TIME_UNIT_MUST_NOT_BE_NULL);
 
-        BigDecimal targetSeconds = internalDuration.getSeconds() != 0
-                ? BigDecimal.valueOf(timeUnit.convert(internalDuration.getSeconds(), TimeUnit.SECONDS))
+        BigDecimal targetSeconds = effectiveTotalSeconds != 0
+                ? BigDecimal.valueOf(timeUnit.convert(effectiveTotalSeconds, TimeUnit.SECONDS))
                 : BigDecimal.ZERO;
 
-        BigDecimal targetNanoseconds = internalDuration.getNano() != 0
+        BigDecimal targetNanoseconds = effectiveNanoseconds != 0
                 ? convertNanosecondsPart(timeUnit, scale)
                 : BigDecimal.ZERO;
 
-        return targetSeconds.add(targetNanoseconds).doubleValue();
+        double absoluteResult = targetSeconds.add(targetNanoseconds).doubleValue();
+        return isNegative() ? -absoluteResult : absoluteResult;
     }
 
     private BigDecimal convertNanosecondsPart(TimeUnit timeUnit, int scale)
     {
-        int nanoseconds = internalDuration.getNano();
         return scale >= 0
-                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit, scale))
-                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(nanoseconds, TimeUnit.NANOSECONDS, timeUnit));
+                ? BigDecimal.valueOf(TimeUnitConverter.convertAndRound(effectiveNanoseconds, TimeUnit.NANOSECONDS, timeUnit, scale))
+                : BigDecimal.valueOf(TimeUnitConverter.convertAndRound(effectiveNanoseconds, TimeUnit.NANOSECONDS, timeUnit));
     }
 
     /**

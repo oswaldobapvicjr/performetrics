@@ -61,6 +61,31 @@ class DurationFormatTest
         assertThat(FULL.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
         assertThat(FULL.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
     }
+    
+    @Test
+    void format_fullAndNegative_displaysAllUnits()
+    {
+        assertThat(FULL.format(Duration.of(-1,          NANOSECONDS ), false), is(equalTo(  "-0:00:00.000000001")));
+        assertThat(FULL.format(Duration.of(-1,          MILLISECONDS), false), is(equalTo(  "-0:00:00.001000000")));
+        assertThat(FULL.format(Duration.of(-1,          SECONDS     ), false), is(equalTo(  "-0:00:01.000000000")));
+        assertThat(FULL.format(Duration.of(-1,          MINUTES     ), false), is(equalTo(  "-0:01:00.000000000")));
+        assertThat(FULL.format(Duration.of(-1,          HOURS       ), false), is(equalTo(  "-1:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(-1,          DAYS        ), false), is(equalTo( "-24:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(-789,        NANOSECONDS ), false), is(equalTo(  "-0:00:00.000000789")));
+        assertThat(FULL.format(Duration.of(-123456789,  NANOSECONDS ), false), is(equalTo(  "-0:00:00.123456789")));
+        assertThat(FULL.format(Duration.of(-1000000000, NANOSECONDS ), false), is(equalTo(  "-0:00:01.000000000")));
+        assertThat(FULL.format(Duration.of(-1001,       MILLISECONDS), false), is(equalTo(  "-0:00:01.001000000")));
+        assertThat(FULL.format(Duration.of(-1601,       MILLISECONDS), false), is(equalTo(  "-0:00:01.601000000")));
+        assertThat(FULL.format(Duration.of(-3601,       MILLISECONDS), false), is(equalTo(  "-0:00:03.601000000")));
+        assertThat(FULL.format(Duration.of(-70,         SECONDS     ), false), is(equalTo(  "-0:01:10.000000000")));
+        assertThat(FULL.format(Duration.of(-601,        SECONDS     ), false), is(equalTo(  "-0:10:01.000000000")));
+        assertThat(FULL.format(Duration.of(-959,        SECONDS     ), false), is(equalTo(  "-0:15:59.000000000")));
+        assertThat(FULL.format(Duration.of(-960,        SECONDS     ), false), is(equalTo(  "-0:16:00.000000000")));
+        assertThat(FULL.format(Duration.of(-970,        SECONDS     ), false), is(equalTo(  "-0:16:10.000000000")));
+        assertThat(FULL.format(Duration.of(-3601,       MINUTES     ), false), is(equalTo( "-60:01:00.000000000")));
+        assertThat(FULL.format(Duration.of(-2,          HOURS       ), false), is(equalTo(  "-2:00:00.000000000")));
+        assertThat(FULL.format(Duration.of(-100,        HOURS       ), false), is(equalTo("-100:00:00.000000000")));
+    }
 
     @Test
     void format_short_abbreviatesIfPossible()

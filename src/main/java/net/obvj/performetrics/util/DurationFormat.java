@@ -52,21 +52,17 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            StringBuilder buf = new StringBuilder(32);
+            StringBuilder buffer = new StringBuilder(32);
             if (duration.isNegative())
             {
-                buf.append('-');
+                buffer.append('-');
             }
 
-            buf.append(String.format(MyTimeUnit.HOURS.format, duration.getHours(),
+            buffer.append(String.format(MyTimeUnit.HOURS.format, duration.getHours(),
                     duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds()));
 
-            if (printLegend)
-            {
-                buf.append(' ').append(MyTimeUnit.HOURS.legend);
-            }
-
-            return buf.toString();
+            appendlegend(buffer, printLegend, MyTimeUnit.HOURS);
+            return buffer.toString();
         }
 
         @Override
@@ -93,37 +89,31 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            if (duration.getHours() != 0)
+            final MyTimeUnit timeUnit = MyTimeUnit.from(duration);
+            if (timeUnit == MyTimeUnit.HOURS)
             {
                 return DurationFormat.FULL.doFormat(duration, printLegend);
             }
 
-            StringBuilder buf = new StringBuilder(32);
+            StringBuilder buffer = new StringBuilder(32);
             if (duration.isNegative())
             {
-                buf.append('-');
+                buffer.append('-');
             }
 
-            MyTimeUnit timeUnit;
-            if (duration.getMinutes() != 0)
+            if (timeUnit == MyTimeUnit.MINUTES)
             {
-                timeUnit = MyTimeUnit.MINUTES;
-                buf.append(String.format(timeUnit.format, duration.getMinutes(),
+                buffer.append(String.format(timeUnit.format, duration.getMinutes(),
                         duration.getSeconds(), duration.getNanoseconds()));
             }
             else
             {
-                timeUnit = MyTimeUnit.SECONDS;
-                buf.append(String.format(timeUnit.format,
+                buffer.append(String.format(timeUnit.format,
                         duration.getSeconds(), duration.getNanoseconds()));
             }
 
-            if (printLegend)
-            {
-                buf.append(' ').append(timeUnit.legend);
-            }
-
-            return buf.toString();
+            appendlegend(buffer, printLegend, timeUnit);
+            return buffer.toString();
         }
 
         @Override
@@ -152,20 +142,7 @@ public enum DurationFormat
         public String doFormat(final Duration duration, boolean printLegend)
         {
             String format = removeTrailingZeros(SHORT.doFormat(duration, false));
-
-            if (!printLegend)
-            {
-                return format;
-            }
-            if (duration.getHours() != 0)
-            {
-                return format + legend(true, MyTimeUnit.HOURS.legend);
-            }
-            if (duration.getMinutes() != 0)
-            {
-                return format + legend(true, MyTimeUnit.MINUTES.legend);
-            }
-            return format + legend(true, MyTimeUnit.SECONDS.legend);
+            return printLegend ? format + ' ' + MyTimeUnit.from(duration).legend : format;
         }
 
         @Override
@@ -322,17 +299,19 @@ public enum DurationFormat
     abstract Duration doParse(final String string);
 
     /**
-     * Returns the {@code legend}, prepended with a white-space, if the
-     * {@code printLegendFlag} argument is {@code true}; or an empty string, otherwise.
+     * Appends the {@code legend}, prepended with a white-space, if the {@code printLegend}
+     * flag is {@code true}
      *
+     * @param buffer      the buffer to append to (not null)
      * @param printLegend the flag to be evaluated
-     * @param legend      the string to be used as legend
-     * @return the legend string
+     * @param timeUnit    the time unit
      */
-    @Deprecated
-    private static String legend(boolean printLegend, final String legend)
+    private static void appendlegend(StringBuilder buffer, boolean printLegend, final MyTimeUnit timeUnit)
     {
-        return printLegend ? " " + legend : "";
+        if (printLegend)
+        {
+            buffer.append(' ').append(timeUnit.legend);
+        }
     }
 
     /**
@@ -469,6 +448,19 @@ public enum DurationFormat
         {
             this.legend = legend;
             this.format = format;
+        }
+
+        private static MyTimeUnit from(Duration duration)
+        {
+            if (duration.getHours() != 0)
+            {
+                return MyTimeUnit.HOURS;
+            }
+            if (duration.getMinutes() != 0)
+            {
+                return MyTimeUnit.MINUTES;
+            }
+            return MyTimeUnit.SECONDS;
         }
 
     }

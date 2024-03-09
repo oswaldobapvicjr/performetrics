@@ -167,8 +167,7 @@ public final class Duration implements Comparable<Duration>
      * @param temporalUnit the unit that the amount argument is measured in, not null
      * @return a {@code Duration}, not null
      *
-     * @throws NullPointerException     if the specified time unit is null
-     * @throws IllegalArgumentException if the specified duration amount is negative
+     * @throws NullPointerException if the specified time unit is null
      * @since 2.5.0
      */
     public static Duration of(long amount, TemporalUnit temporalUnit)
@@ -477,20 +476,53 @@ public final class Duration implements Comparable<Duration>
     }
 
     /**
+     * Returns a copy of this duration multiplied by the scalar.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param multiplicand the value to multiply the duration by, positive or negative
+     * @return a {@code Duration} based on this duration multiplied by the specified scalar,
+     *         not null
+     * @throws ArithmeticException if numeric overflow occurs
+     * @since 2.5.3
+     */
+    public Duration multipliedBy(long multiplicand)
+    {
+        return new Duration(internalDuration.multipliedBy(multiplicand));
+    }
+
+    /**
      * Returns a copy of this duration divided by the specified value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor the value to divide the duration by, positive or negative, not zero
-     * @return a Duration based on this duration divided by the specified divisor, not null
+     * @return a {@code Duration} based on this duration divided by the specified divisor, not
+     *         null
      *
      * @throws ArithmeticException if the divisor is zero or if numeric overflow occurs
-     *
      * @since 2.2.0
      */
     public Duration dividedBy(long divisor)
     {
         return new Duration(internalDuration.dividedBy(divisor));
+    }
+
+    /**
+     * Returns a copy of this duration with the length negated.
+     * <p>
+     * This method swaps the sign of the total length of this duration. For example,
+     * {@code 1.3 second(s)} will be returned as {@code -1.3 second(s)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a {@code Duration} based on this duration with the amount negated, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     * @since 2.5.3
+     */
+    public Duration negated()
+    {
+        return multipliedBy(-1);
     }
 
     /**

@@ -97,14 +97,33 @@ public enum DurationFormat
             {
                 return DurationFormat.FULL.doFormat(duration, printLegend);
             }
+
+            StringBuilder buf = new StringBuilder(32);
+            if (duration.isNegative())
+            {
+                buf.append('-');
+            }
+
+            MyTimeUnit timeUnit;
             if (duration.getMinutes() != 0)
             {
-                return String.format(MyTimeUnit.MINUTES.format, duration.getMinutes(),
-                        duration.getSeconds(), duration.getNanoseconds())
-                        + legend(printLegend, MyTimeUnit.MINUTES.legend);
+                timeUnit = MyTimeUnit.MINUTES;
+                buf.append(String.format(timeUnit.format, duration.getMinutes(),
+                        duration.getSeconds(), duration.getNanoseconds()));
             }
-            return String.format(MyTimeUnit.SECONDS.format, duration.getSeconds(),
-                    duration.getNanoseconds()) + legend(printLegend, MyTimeUnit.SECONDS.legend);
+            else
+            {
+                timeUnit = MyTimeUnit.SECONDS;
+                buf.append(String.format(timeUnit.format,
+                        duration.getSeconds(), duration.getNanoseconds()));
+            }
+
+            if (printLegend)
+            {
+                buf.append(' ').append(timeUnit.legend);
+            }
+
+            return buf.toString();
         }
 
         @Override
@@ -257,10 +276,11 @@ public enum DurationFormat
      * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
      */
     private static final Pattern HMS_PATTERN = Pattern.compile(
-            "^(((?<hours>-?\\d*):)?"
-            + "((?<minutes>-?\\d*):))?"
-            + "(?<seconds>-?\\d+)"
-            + "([.,](?<nanoseconds>-?\\d+))?"
+            "^(?<sign>-?)"
+            + "(((?<hours>\\d*):)?"
+            + "((?<minutes>\\d*):))?"
+            + "(?<seconds>\\d+)"
+            + "([.,](?<nanoseconds>\\d+))?"
             + "(.)*"); // legend
 
     static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";
@@ -376,10 +396,15 @@ public enum DurationFormat
         Matcher matcher = HMS_PATTERN.matcher(string);
         if (matcher.matches())
         {
-            return parseDuration(matcher.group("hours"), HOURS)
+            Duration duration = parseDuration(matcher.group("hours"), HOURS)
                     .plus(parseDuration(matcher.group("minutes"), MINUTES))
                     .plus(parseDuration(matcher.group("seconds"), SECONDS))
                     .plus(parseNanoseconds(matcher.group("nanoseconds")));
+            if (matcher.group("sign").equals("-"))
+            {
+                duration = duration.negated();
+            }
+            return duration;
         }
         throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
     }

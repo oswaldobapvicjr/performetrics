@@ -53,13 +53,15 @@ public enum DurationFormat
         public String doFormat(final Duration duration, boolean printLegend)
         {
             StringBuilder buffer = new StringBuilder(32);
-            if (duration.isNegative())
-            {
-                buffer.append('-');
-            }
+            appendSign(buffer, duration);
 
-            buffer.append(String.format(MyTimeUnit.HOURS.format, duration.getHours(),
-                    duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds()));
+            buffer.append(duration.getHours())
+                  .append(':')
+                  .append(formatTwoDigits(duration.getMinutes()))
+                  .append(':')
+                  .append(formatTwoDigits(duration.getSeconds()))
+                  .append('.')
+                  .append(formatNanoseconds(duration.getNanoseconds()));
 
             appendlegend(buffer, printLegend, MyTimeUnit.HOURS);
             return buffer.toString();
@@ -96,21 +98,21 @@ public enum DurationFormat
             }
 
             StringBuilder buffer = new StringBuilder(32);
-            if (duration.isNegative())
-            {
-                buffer.append('-');
-            }
+            appendSign(buffer, duration);
 
             if (timeUnit == MyTimeUnit.MINUTES)
             {
-                buffer.append(String.format(timeUnit.format, duration.getMinutes(),
-                        duration.getSeconds(), duration.getNanoseconds()));
+                buffer.append(duration.getMinutes())
+                      .append(':')
+                      .append(formatTwoDigits(duration.getSeconds()));
             }
             else
             {
-                buffer.append(String.format(timeUnit.format,
-                        duration.getSeconds(), duration.getNanoseconds()));
+                buffer.append(duration.getSeconds());
             }
+
+            buffer.append('.')
+                  .append(formatNanoseconds(duration.getNanoseconds()));
 
             appendlegend(buffer, printLegend, timeUnit);
             return buffer.toString();
@@ -218,8 +220,6 @@ public enum DurationFormat
      */
     LINUX
     {
-        private static final String MILLIS_FORMAT = "%03d";
-
         private final Pattern linuxPattern = Pattern.compile(
                 "^(?<sign>-?)"
                 + "(?<minutes>\\d+)m"
@@ -230,18 +230,13 @@ public enum DurationFormat
         public String doFormat(final Duration duration, boolean printLegend)
         {
             StringBuilder buffer = new StringBuilder(16);
-
-            if (duration.isNegative())
-            {
-                buffer.append('-');
-            }
+            appendSign(buffer, duration);
 
             buffer.append(SECONDS.toMinutes(duration.effectiveTotalSeconds))
                   .append('m')
                   .append(duration.getSeconds()) // the seconds within the minute
                   .append('.')
-                  .append(String.format(MILLIS_FORMAT,
-                            NANOSECONDS.toMillis(duration.effectiveNanoseconds)))
+                  .append(formatMilliseconds(NANOSECONDS.toMillis(duration.effectiveNanoseconds)))
                   .append('s');
 
             return buffer.toString();
@@ -278,6 +273,10 @@ public enum DurationFormat
             + "(?<seconds>\\d+)"
             + "([.,](?<nanoseconds>\\d+))?"
             + "(.)*"); // legend
+
+    private static final String TWO_DIGITS_FORMAT = "%02d";
+    private static final String MILLIS_FORMAT = "%03d";
+    private static final String NANOS_FORMAT = "%09d";
 
     static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";
     static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
@@ -318,12 +317,28 @@ public enum DurationFormat
     abstract Duration doParse(final String string);
 
     /**
-     * Appends the {@code legend}, prepended with a white-space, if the {@code printLegend}
-     * flag is {@code true}
+     * Conditionally appends the "{@code -}" sign, if the duration is negative.
+     *
+     * @param buffer   the buffer to append to (not null)
+     * @param duration the duration to be checked
+     * @since 2.5.3
+     */
+    private static void appendSign(StringBuilder buffer, final Duration duration)
+    {
+        if (duration.isNegative())
+        {
+            buffer.append('-');
+        }
+    }
+
+    /**
+     * Conditionally appends the {@code legend}, prepended with a white-space, if the
+     * {@code printLegend} flag is {@code true}
      *
      * @param buffer      the buffer to append to (not null)
      * @param printLegend the flag to be evaluated
      * @param timeUnit    the time unit
+     * @since 2.5.3
      */
     private static void appendlegend(StringBuilder buffer, boolean printLegend, final MyTimeUnit timeUnit)
     {
@@ -447,6 +462,21 @@ public enum DurationFormat
         return Duration.ZERO;
     }
 
+    private static String formatTwoDigits(int value)
+    {
+        return String.format(TWO_DIGITS_FORMAT, value);
+    }
+
+    private static String formatMilliseconds(long value)
+    {
+        return String.format(MILLIS_FORMAT, value);
+    }
+
+    private static String formatNanoseconds(int value)
+    {
+        return String.format(NANOS_FORMAT, value);
+    }
+
     /**
      * Enumerates the time units and associated formatting objects.
      *
@@ -455,19 +485,17 @@ public enum DurationFormat
      */
     private enum MyTimeUnit
     {
-        HOURS("hour(s)", "%d:%02d:%02d.%09d"),
+        HOURS("hour(s)"),
 
-        MINUTES("minute(s)", "%d:%02d.%09d"),
+        MINUTES("minute(s)"),
 
-        SECONDS("second(s)", "%d.%09d");
+        SECONDS("second(s)");
 
         private final String legend;
-        private final String format;
 
-        private MyTimeUnit(String legend, String format)
+        private MyTimeUnit(String legend)
         {
             this.legend = legend;
-            this.format = format;
         }
 
         private static MyTimeUnit from(Duration duration)

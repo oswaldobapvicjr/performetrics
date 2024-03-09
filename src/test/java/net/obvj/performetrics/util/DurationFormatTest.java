@@ -61,7 +61,7 @@ class DurationFormatTest
         assertThat(FULL.format(Duration.of(2,          HOURS       ), false), is(equalTo(  "2:00:00.000000000")));
         assertThat(FULL.format(Duration.of(100,        HOURS       ), false), is(equalTo("100:00:00.000000000")));
     }
-    
+
     @Test
     void format_fullAndNegative_displaysAllUnits()
     {
@@ -114,6 +114,32 @@ class DurationFormatTest
     }
 
     @Test
+    void format_shortAndNegative_abbreviatesIfPossible()
+    {
+        assertThat(SHORT.format(Duration.of(-0,          NANOSECONDS ), false), is(equalTo(          "0.000000000")));
+        assertThat(SHORT.format(Duration.of(-1,          NANOSECONDS ), false), is(equalTo(        "-0.000000001")));
+        assertThat(SHORT.format(Duration.of(-1,          MILLISECONDS), false), is(equalTo(        "-0.001000000")));
+        assertThat(SHORT.format(Duration.of(-1,          SECONDS     ), false), is(equalTo(        "-1.000000000")));
+        assertThat(SHORT.format(Duration.of(-1,          MINUTES     ), false), is(equalTo(     "-1:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-1,          HOURS       ), false), is(equalTo(  "-1:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-1,          DAYS        ), false), is(equalTo( "-24:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-789,        NANOSECONDS ), false), is(equalTo(        "-0.000000789")));
+        assertThat(SHORT.format(Duration.of(-123456789,  NANOSECONDS ), false), is(equalTo(        "-0.123456789")));
+        assertThat(SHORT.format(Duration.of(-1000000000, NANOSECONDS ), false), is(equalTo(        "-1.000000000")));
+        assertThat(SHORT.format(Duration.of(-1001,       MILLISECONDS), false), is(equalTo(        "-1.001000000")));
+        assertThat(SHORT.format(Duration.of(-1601,       MILLISECONDS), false), is(equalTo(        "-1.601000000")));
+        assertThat(SHORT.format(Duration.of(-3601,       MILLISECONDS), false), is(equalTo(        "-3.601000000")));
+        assertThat(SHORT.format(Duration.of(-70,         SECONDS     ), false), is(equalTo(     "-1:10.000000000")));
+        assertThat(SHORT.format(Duration.of(-601,        SECONDS     ), false), is(equalTo(    "-10:01.000000000")));
+        assertThat(SHORT.format(Duration.of(-959,        SECONDS     ), false), is(equalTo(    "-15:59.000000000")));
+        assertThat(SHORT.format(Duration.of(-960,        SECONDS     ), false), is(equalTo(    "-16:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-970,        SECONDS     ), false), is(equalTo(    "-16:10.000000000")));
+        assertThat(SHORT.format(Duration.of(-3601,       MINUTES     ), false), is(equalTo( "-60:01:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-2,          HOURS       ), false), is(equalTo(  "-2:00:00.000000000")));
+        assertThat(SHORT.format(Duration.of(-100,        HOURS       ), false), is(equalTo("-100:00:00.000000000")));
+    }
+
+    @Test
     void format_shorterWithLegend_supressesTrailingZeros()
     {
         assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), true), is(equalTo(          "0 second(s)")));
@@ -142,7 +168,7 @@ class DurationFormatTest
     @Test
     void format_shorterWithoutLegend_supressesTrailingZeros()
     {
-        assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo("0")));
+        assertThat(SHORTER.format(Duration.of(0,          NANOSECONDS ), false), is(equalTo(          "0")));
         assertThat(SHORTER.format(Duration.of(1,          NANOSECONDS ), false), is(equalTo("0.000000001")));
         assertThat(SHORTER.format(Duration.of(1,          MILLISECONDS), false), is(equalTo(      "0.001")));
         assertThat(SHORTER.format(Duration.of(1,          SECONDS     ), false), is(equalTo(          "1")));
@@ -163,6 +189,32 @@ class DurationFormatTest
         assertThat(SHORTER.format(Duration.of(3601,       MINUTES     ), false), is(equalTo(   "60:01:00")));
         assertThat(SHORTER.format(Duration.of(2,          HOURS       ), false), is(equalTo(    "2:00:00")));
         assertThat(SHORTER.format(Duration.of(100,        HOURS       ), false), is(equalTo(  "100:00:00")));
+    }
+
+    @Test
+    void format_shorterWithoutLegendAndNegative_supressesTrailingZeros()
+    {
+        assertThat(SHORTER.format(Duration.of(-0,          NANOSECONDS ), false), is(equalTo(           "0")));
+        assertThat(SHORTER.format(Duration.of(-1,          NANOSECONDS ), false), is(equalTo("-0.000000001")));
+        assertThat(SHORTER.format(Duration.of(-1,          MILLISECONDS), false), is(equalTo(      "-0.001")));
+        assertThat(SHORTER.format(Duration.of(-1,          SECONDS     ), false), is(equalTo(          "-1")));
+        assertThat(SHORTER.format(Duration.of(-1,          MINUTES     ), false), is(equalTo(       "-1:00")));
+        assertThat(SHORTER.format(Duration.of(-1,          HOURS       ), false), is(equalTo(    "-1:00:00")));
+        assertThat(SHORTER.format(Duration.of(-1,          DAYS        ), false), is(equalTo(   "-24:00:00")));
+        assertThat(SHORTER.format(Duration.of(-789,        NANOSECONDS ), false), is(equalTo("-0.000000789")));
+        assertThat(SHORTER.format(Duration.of(-123456789,  NANOSECONDS ), false), is(equalTo("-0.123456789")));
+        assertThat(SHORTER.format(Duration.of(-1000000000, NANOSECONDS ), false), is(equalTo(          "-1")));
+        assertThat(SHORTER.format(Duration.of(-1001,       MILLISECONDS), false), is(equalTo(      "-1.001")));
+        assertThat(SHORTER.format(Duration.of(-1601,       MILLISECONDS), false), is(equalTo(      "-1.601")));
+        assertThat(SHORTER.format(Duration.of(-3601,       MILLISECONDS), false), is(equalTo(      "-3.601")));
+        assertThat(SHORTER.format(Duration.of(-70,         SECONDS     ), false), is(equalTo(       "-1:10")));
+        assertThat(SHORTER.format(Duration.of(-601,        SECONDS     ), false), is(equalTo(      "-10:01")));
+        assertThat(SHORTER.format(Duration.of(-959,        SECONDS     ), false), is(equalTo(      "-15:59")));
+        assertThat(SHORTER.format(Duration.of(-960,        SECONDS     ), false), is(equalTo(      "-16:00")));
+        assertThat(SHORTER.format(Duration.of(-970,        SECONDS     ), false), is(equalTo(      "-16:10")));
+        assertThat(SHORTER.format(Duration.of(-3601,       MINUTES     ), false), is(equalTo(   "-60:01:00")));
+        assertThat(SHORTER.format(Duration.of(-2,          HOURS       ), false), is(equalTo(    "-2:00:00")));
+        assertThat(SHORTER.format(Duration.of(-100,        HOURS       ), false), is(equalTo(  "-100:00:00")));
     }
 
     @Test
@@ -216,7 +268,7 @@ class DurationFormatTest
         assertThat(LINUX.format(Duration.of(2,          HOURS       ), false), is(equalTo("120m0.000s")));
         assertThat(LINUX.format(Duration.of(100,        HOURS       ), false), is(equalTo("6000m0.000s")));
     }
-    
+
     @Test
     void format_linuxNegative()
     {
@@ -250,6 +302,12 @@ class DurationFormatTest
     }
 
     @Test
+    void toString_noArgumentsAndNegative_appliesShorterStyleWithLegend()
+    {
+        assertThat(Duration.of(-3602, MILLISECONDS).toString(), is(equalTo("-3.602 second(s)")));
+    }
+
+    @Test
     void toString_full_appliesFullStyleWithLegend()
     {
         assertThat(Duration.of(3601, MILLISECONDS).toString(FULL),
@@ -257,11 +315,19 @@ class DurationFormatTest
     }
 
     @Test
+    void toString_fullAndNegative_appliesFullStyleWithLegend()
+    {
+        assertThat(Duration.of(-3601, MILLISECONDS).toString(FULL),
+                is(equalTo("-0:00:03.601000000 hour(s)")));
+    }
+
+    @Test
     void removeTrailingZeros_validStrings_success()
     {
-        assertThat(removeTrailingZeros("9.009000000"), is(equalTo("9.009")));
-        assertThat(removeTrailingZeros("9.000000009"), is(equalTo("9.000000009")));
-        assertThat(removeTrailingZeros("9.000000000"), is(equalTo("9")));
+        assertThat(removeTrailingZeros( "9.009000000"), is(equalTo("9.009")));
+        assertThat(removeTrailingZeros( "9.000000009"), is(equalTo("9.000000009")));
+        assertThat(removeTrailingZeros( "9.000000000"), is(equalTo("9")));
+        assertThat(removeTrailingZeros("-9.000000000"), is(equalTo("-9")));
     }
 
     @Test
@@ -281,6 +347,22 @@ class DurationFormatTest
     }
 
     @Test
+    void parse_fullAndValidStringButNegative_success()
+    {
+        assertThat(FULL.parse("-00:00:00.000000000"), equalTo(Duration.ZERO));
+        assertThat(FULL.parse("-00:00:00.100000000"), equalTo(Duration.of(    -100, MILLISECONDS)));
+        assertThat(FULL.parse("-00:00:01.000000000"), equalTo(Duration.of(      -1, SECONDS)));
+        assertThat(FULL.parse("-00:01:01.000000000"), equalTo(Duration.of(     -61, SECONDS)));
+        assertThat(FULL.parse("-01:01:00.000000000"), equalTo(Duration.of(     -61, MINUTES)));
+        assertThat(FULL.parse("-01:01:01.000000000"), equalTo(Duration.of(   -3661, SECONDS)));
+        assertThat(FULL.parse("-01:01:01.100000000"), equalTo(Duration.of(-3661100, MILLISECONDS)));
+
+        // Field overflow is OK
+        assertThat(FULL.parse("-00:01:70.000000000"), equalTo(Duration.of(-130, SECONDS)));
+        assertThat(FULL.parse("-01:60:00.000000000"), equalTo(Duration.of(  -2, HOURS)));
+    }
+
+    @Test
     void parse_shortAndValidString_success()
     {
         assertThat(SHORT.parse(       "0.000000000 second(s)"), equalTo(Duration.ZERO));
@@ -294,6 +376,22 @@ class DurationFormatTest
         assertThat(SHORT.parse(   "1:30.000000000"), equalTo(Duration.of(  90, SECONDS)));
         assertThat(SHORT.parse("1:30:00.000000000"), equalTo(Duration.of(  90, MINUTES)));    }
 
+    @Test
+    void parse_shortAndValidStringNegative_success()
+    {
+        assertThat(SHORT.parse(       "-0.000000000 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORT.parse(       "-0.100000000 second(s)"), equalTo(Duration.of( -100, MILLISECONDS)));
+        assertThat(SHORT.parse(       "-1.000000000 second(s)"), equalTo(Duration.of(   -1, SECONDS)));
+        assertThat(SHORT.parse(   "-01:01.000000000 minute(s)"), equalTo(Duration.of(  -61, SECONDS)));
+        assertThat(SHORT.parse("-01:01:00.000000000 hour(s)"  ), equalTo(Duration.of(  -61, MINUTES)));
+        assertThat(SHORT.parse("-01:01:01.000000000 hour(s)"  ), equalTo(Duration.of(-3661, SECONDS)));
+
+        // Without legend
+        assertThat(SHORT.parse(      "-1.100000000"), equalTo(Duration.of(-1100, MILLISECONDS)));
+        assertThat(SHORT.parse(   "-1:30.000000000"), equalTo(Duration.of(  -90, SECONDS)));
+        assertThat(SHORT.parse("-1:30:00.000000000"), equalTo(Duration.of(  -90, MINUTES)));
+    }
+    
     @Test
     void parse_shorterAndValidString_success()
     {
@@ -309,6 +407,23 @@ class DurationFormatTest
         assertThat(SHORTER.parse(    "2.2"), equalTo(Duration.of(2200, MILLISECONDS)));
         assertThat(SHORTER.parse(   "1:45"), equalTo(Duration.of( 105, SECONDS)));
         assertThat(SHORTER.parse("1:45:00"), equalTo(Duration.of( 105, MINUTES)));
+    }
+    
+    @Test
+    void parse_shorterAndValidStringNegative_success()
+    {
+        assertThat(SHORTER.parse(       "-0 second(s)"), equalTo(Duration.ZERO));
+        assertThat(SHORTER.parse(     "-0.2 second(s)"), equalTo(Duration.of( -200, MILLISECONDS)));
+        assertThat(SHORTER.parse(       "-2 second(s)"), equalTo(Duration.of(   -2, SECONDS)));
+        assertThat(SHORTER.parse(   "-01:02 minute(s)"), equalTo(Duration.of(  -62, SECONDS)));
+        assertThat(SHORTER.parse("-01:02:00 hour(s)"  ), equalTo(Duration.of(  -62, MINUTES)));
+        assertThat(SHORTER.parse("-01:01:02 hour(s)"  ), equalTo(Duration.of(-3662, SECONDS)));
+
+        // Without legend
+        assertThat(SHORTER.parse(      "-2"), equalTo(Duration.of(   -2, SECONDS)));
+        assertThat(SHORTER.parse(    "-2.2"), equalTo(Duration.of(-2200, MILLISECONDS)));
+        assertThat(SHORTER.parse(   "-1:45"), equalTo(Duration.of( -105, SECONDS)));
+        assertThat(SHORTER.parse("-1:45:00"), equalTo(Duration.of( -105, MINUTES)));
     }
 
     @Test
@@ -337,7 +452,7 @@ class DurationFormatTest
         assertThat(LINUX.parse("-1m70.000s"), equalTo(Duration.of(-130, SECONDS)));
     }
 
-    
+
     @Test
     void parse_fullAndNull_nullPointerException()
     {

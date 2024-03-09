@@ -38,34 +38,60 @@ class DurationTest
 {
 
     @Test
-    void of_validAmountAndTimeUnitAndNanosecondsPrecision_populatesAccordingly()
+    void of_positiveAmountAndTimeUnitAndNanosecondsPrecision_populatesAccordingly()
     {
         Duration td1 = Duration.of(1999888777, NANOSECONDS);
         assertThat(td1.getHours(),       is(equalTo(0L)));
         assertThat(td1.getMinutes(),     is(equalTo(0)));
         assertThat(td1.getSeconds(),     is(equalTo(1)));
         assertThat(td1.getNanoseconds(), is(equalTo(999888777)));
+        assertThat(td1.isNegative(),     is(equalTo(false)));
     }
 
     @Test
-    void of_validAmountAndTimeUnitAndSecondsPrecision_populatesAccordingly()
+    void of_positiveAmountAndTimeUnitAndSecondsPrecision_populatesAccordingly()
     {
         Duration td1 = Duration.of(5410, SECONDS);
         assertThat(td1.getHours(),       is(equalTo(1L)));
         assertThat(td1.getMinutes(),     is(equalTo(30)));
         assertThat(td1.getSeconds(),     is(equalTo(10)));
         assertThat(td1.getNanoseconds(), is(equalTo(0)));
+        assertThat(td1.isNegative(),     is(equalTo(false)));
     }
 
     @Test
-    void of_negativeAmount_illegalArgumentException()
+    void of_negativeAmountAndSeconds_populatesAccordingly()
     {
         Duration d1 = Duration.of(-1, SECONDS);
         assertThat(d1.getHours(),       is(equalTo(0L)));
         assertThat(d1.getMinutes(),     is(equalTo(0)));
-        assertThat(d1.getSeconds(),     is(equalTo(-1)));
+        assertThat(d1.getSeconds(),     is(equalTo(1)));
         assertThat(d1.getNanoseconds(), is(equalTo(0)));
+        assertThat(d1.isNegative(),     is(equalTo(true)));
     }
+
+    @Test
+    void of_negativeAmountAndNansoseconds_populatesAccordingly()
+    {
+        Duration d1 = Duration.of(-987654321, NANOSECONDS);
+        assertThat(d1.getHours(),       is(equalTo(0L)));
+        assertThat(d1.getMinutes(),     is(equalTo(0)));
+        assertThat(d1.getSeconds(),     is(equalTo(0)));
+        assertThat(d1.getNanoseconds(), is(equalTo(987654321)));
+        assertThat(d1.isNegative(),     is(equalTo(true)));
+    }
+
+    @Test
+    void of_negativeAmountAndSecondsNansoseconds_populatesAccordingly()
+    {
+        Duration d1 = Duration.of(-2987654321L, NANOSECONDS);
+        assertThat(d1.getHours(),       is(equalTo(0L)));
+        assertThat(d1.getMinutes(),     is(equalTo(0)));
+        assertThat(d1.getSeconds(),     is(equalTo(2)));
+        assertThat(d1.getNanoseconds(), is(equalTo(987654321)));
+        assertThat(d1.isNegative(),     is(equalTo(true)));
+    }
+
 
     @Test
     void toSeconds_validValues()
@@ -203,6 +229,12 @@ class DurationTest
     }
 
     @Test
+    void equals_differentSign_false()
+    {
+        assertThat(Duration.of( 1001, MILLISECONDS).equals(Duration.of(-1001, MILLISECONDS)), is(false));
+    }
+
+    @Test
     void equals_incompatibleTypes_false()
     {
         assertThat(Duration.of(60, SECONDS).equals(new Object()), is(false));
@@ -299,7 +331,16 @@ class DurationTest
         assertParseFromToString(Duration.of(123, MINUTES));
     }
 
-    private void assertParseFromToString(Duration duration)
+    @Test
+    void parse_stringsGeneratedByToStringUsingNegativeDurations_success()
+    {
+        assertParseFromToString(Duration.of(-123, NANOSECONDS));
+        assertParseFromToString(Duration.of(-123, MILLISECONDS));
+        assertParseFromToString(Duration.of(-123, SECONDS));
+        assertParseFromToString(Duration.of(-123, MINUTES));
+    }
+
+    private static void assertParseFromToString(Duration duration)
     {
         assertThat(Duration.parse(duration.toString()), equalTo(duration));
     }

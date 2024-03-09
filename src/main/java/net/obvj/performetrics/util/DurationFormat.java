@@ -52,9 +52,19 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            return String.format(MyTimeUnit.HOURS.format, duration.getHours(),
-                    duration.getMinutes(), duration.getSeconds(), duration.getNanoseconds())
-                    + legend(printLegend, MyTimeUnit.HOURS.legend);
+            StringBuilder buffer = new StringBuilder(32);
+            appendSign(buffer, duration);
+
+            buffer.append(duration.getHours())
+                  .append(':')
+                  .append(formatTwoDigits(duration.getMinutes()))
+                  .append(':')
+                  .append(formatTwoDigits(duration.getSeconds()))
+                  .append('.')
+                  .append(formatNanoseconds(duration.getNanoseconds()));
+
+            appendlegend(buffer, printLegend, MyTimeUnit.HOURS);
+            return buffer.toString();
         }
 
         @Override
@@ -81,18 +91,31 @@ public enum DurationFormat
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            if (duration.getHours() != 0)
+            final MyTimeUnit timeUnit = MyTimeUnit.from(duration);
+            if (timeUnit == MyTimeUnit.HOURS)
             {
                 return DurationFormat.FULL.doFormat(duration, printLegend);
             }
-            if (duration.getMinutes() != 0)
+
+            StringBuilder buffer = new StringBuilder(32);
+            appendSign(buffer, duration);
+
+            if (timeUnit == MyTimeUnit.MINUTES)
             {
-                return String.format(MyTimeUnit.MINUTES.format, duration.getMinutes(),
-                        duration.getSeconds(), duration.getNanoseconds())
-                        + legend(printLegend, MyTimeUnit.MINUTES.legend);
+                buffer.append(duration.getMinutes())
+                      .append(':')
+                      .append(formatTwoDigits(duration.getSeconds()));
             }
-            return String.format(MyTimeUnit.SECONDS.format, duration.getSeconds(),
-                    duration.getNanoseconds()) + legend(printLegend, MyTimeUnit.SECONDS.legend);
+            else
+            {
+                buffer.append(duration.getSeconds());
+            }
+
+            buffer.append('.')
+                  .append(formatNanoseconds(duration.getNanoseconds()));
+
+            appendlegend(buffer, printLegend, timeUnit);
+            return buffer.toString();
         }
 
         @Override
@@ -121,20 +144,7 @@ public enum DurationFormat
         public String doFormat(final Duration duration, boolean printLegend)
         {
             String format = removeTrailingZeros(SHORT.doFormat(duration, false));
-
-            if (!printLegend)
-            {
-                return format;
-            }
-            if (duration.getHours() != 0)
-            {
-                return format + legend(true, MyTimeUnit.HOURS.legend);
-            }
-            if (duration.getMinutes() != 0)
-            {
-                return format + legend(true, MyTimeUnit.MINUTES.legend);
-            }
-            return format + legend(true, MyTimeUnit.SECONDS.legend);
+            return printLegend ? format + ' ' + MyTimeUnit.from(duration).legend : format;
         }
 
         @Override
@@ -210,20 +220,26 @@ public enum DurationFormat
      */
     LINUX
     {
-        private static final String LINUX_FORMAT = "%dm%d.%03ds";
-
         private final Pattern linuxPattern = Pattern.compile(
-                "^(?<minutes>\\d+)m"
+                "^(?<sign>-?)"
+                + "(?<minutes>\\d+)m"
                 + "(?<seconds>\\d+)."
                 + "(?<milliseconds>\\d+)s");
 
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            return String.format(LINUX_FORMAT,
-                    SECONDS.toMinutes(duration.internal().getSeconds()),
-                    duration.getSeconds(), // the seconds within the minute
-                    NANOSECONDS.toMillis(duration.getNanoseconds()));
+            StringBuilder buffer = new StringBuilder(16);
+            appendSign(buffer, duration);
+
+            buffer.append(SECONDS.toMinutes(duration.effectiveTotalSeconds))
+                  .append('m')
+                  .append(duration.getSeconds()) // the seconds within the minute
+                  .append('.')
+                  .append(formatMilliseconds(NANOSECONDS.toMillis(duration.effectiveNanoseconds)))
+                  .append('s');
+
+            return buffer.toString();
         }
 
         @Override
@@ -232,9 +248,15 @@ public enum DurationFormat
             Matcher matcher = linuxPattern.matcher(string);
             if (matcher.matches())
             {
-                return parseDuration(matcher.group("minutes"), MINUTES)
+                Duration duration = parseDuration(matcher.group("minutes"), MINUTES)
                         .plus(parseDuration(matcher.group("seconds"), SECONDS))
                         .plus(parseDuration(matcher.group("milliseconds"), MILLISECONDS));
+
+                if (matcher.group("sign").equals("-"))
+                {
+                    duration = duration.negated();
+                }
+                return duration;
             }
             throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
         }
@@ -245,11 +267,16 @@ public enum DurationFormat
      * The pattern for parsing durations in the format {@code [H:][M:]S[.ns]}.
      */
     private static final Pattern HMS_PATTERN = Pattern.compile(
-            "^(((?<hours>-?\\d*):)?"
-            + "((?<minutes>-?\\d*):))?"
-            + "(?<seconds>-?\\d+)"
-            + "([.,](?<nanoseconds>-?\\d+))?"
+            "^(?<sign>-?)"
+            + "(((?<hours>\\d*):)?"
+            + "((?<minutes>\\d*):))?"
+            + "(?<seconds>\\d+)"
+            + "([.,](?<nanoseconds>\\d+))?"
             + "(.)*"); // legend
+
+    private static final String TWO_DIGITS_FORMAT = "%02d";
+    private static final String MILLIS_FORMAT = "%03d";
+    private static final String NANOS_FORMAT = "%09d";
 
     static final String MSG_DURATION_MUST_NOT_BE_NULL = "The duration must not be null";
     static final String MSG_UNPARSEABLE_DURATION = "Unrecognized duration: %s";
@@ -290,16 +317,35 @@ public enum DurationFormat
     abstract Duration doParse(final String string);
 
     /**
-     * Returns the {@code legend}, prepended with a white-space, if the
-     * {@code printLegendFlag} argument is {@code true}; or an empty string, otherwise.
+     * Conditionally appends the "{@code -}" sign, if the duration is negative.
      *
-     * @param printLegend the flag to be evaluated
-     * @param legend      the string to be used as legend
-     * @return the legend string
+     * @param buffer   the buffer to append to (not null)
+     * @param duration the duration to be checked
+     * @since 2.5.3
      */
-    private static String legend(boolean printLegend, final String legend)
+    private static void appendSign(StringBuilder buffer, final Duration duration)
     {
-        return printLegend ? " " + legend : "";
+        if (duration.isNegative())
+        {
+            buffer.append('-');
+        }
+    }
+
+    /**
+     * Conditionally appends the {@code legend}, prepended with a white-space, if the
+     * {@code printLegend} flag is {@code true}
+     *
+     * @param buffer      the buffer to append to (not null)
+     * @param printLegend the flag to be evaluated
+     * @param timeUnit    the time unit
+     * @since 2.5.3
+     */
+    private static void appendlegend(StringBuilder buffer, boolean printLegend, final MyTimeUnit timeUnit)
+    {
+        if (printLegend)
+        {
+            buffer.append(' ').append(timeUnit.legend);
+        }
     }
 
     /**
@@ -363,10 +409,16 @@ public enum DurationFormat
         Matcher matcher = HMS_PATTERN.matcher(string);
         if (matcher.matches())
         {
-            return parseDuration(matcher.group("hours"), HOURS)
+            Duration duration = parseDuration(matcher.group("hours"), HOURS)
                     .plus(parseDuration(matcher.group("minutes"), MINUTES))
                     .plus(parseDuration(matcher.group("seconds"), SECONDS))
                     .plus(parseNanoseconds(matcher.group("nanoseconds")));
+
+            if (matcher.group("sign").equals("-"))
+            {
+                duration = duration.negated();
+            }
+            return duration;
         }
         throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
     }
@@ -410,6 +462,21 @@ public enum DurationFormat
         return Duration.ZERO;
     }
 
+    private static String formatTwoDigits(int value)
+    {
+        return String.format(TWO_DIGITS_FORMAT, value);
+    }
+
+    private static String formatMilliseconds(long value)
+    {
+        return String.format(MILLIS_FORMAT, value);
+    }
+
+    private static String formatNanoseconds(int value)
+    {
+        return String.format(NANOS_FORMAT, value);
+    }
+
     /**
      * Enumerates the time units and associated formatting objects.
      *
@@ -418,19 +485,30 @@ public enum DurationFormat
      */
     private enum MyTimeUnit
     {
-        HOURS("hour(s)", "%d:%02d:%02d.%09d"),
+        HOURS("hour(s)"),
 
-        MINUTES("minute(s)", "%d:%02d.%09d"),
+        MINUTES("minute(s)"),
 
-        SECONDS("second(s)", "%d.%09d");
+        SECONDS("second(s)");
 
         private final String legend;
-        private final String format;
 
-        private MyTimeUnit(String legend, String format)
+        private MyTimeUnit(String legend)
         {
             this.legend = legend;
-            this.format = format;
+        }
+
+        private static MyTimeUnit from(Duration duration)
+        {
+            if (duration.getHours() != 0)
+            {
+                return MyTimeUnit.HOURS;
+            }
+            if (duration.getMinutes() != 0)
+            {
+                return MyTimeUnit.MINUTES;
+            }
+            return MyTimeUnit.SECONDS;
         }
 
     }

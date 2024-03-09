@@ -312,7 +312,7 @@ class DurationFormatTest
     }
 
     @Test
-    void parse_linux_success()
+    void parse_linuxPositive_success()
     {
         assertThat(LINUX.parse( "0m0.000s"), equalTo(Duration.ZERO));
         assertThat(LINUX.parse( "0m0.100s"), equalTo(Duration.of(100, MILLISECONDS)));
@@ -324,6 +324,20 @@ class DurationFormatTest
         assertThat(LINUX.parse("1m70.000s"), equalTo(Duration.of(130, SECONDS)));
     }
 
+    @Test
+    void parse_linuxNegative_success()
+    {
+        assertThat(LINUX.parse( "-0m0.000s"), equalTo(Duration.ZERO));
+        assertThat(LINUX.parse( "-0m0.100s"), equalTo(Duration.of(-100, MILLISECONDS)));
+        assertThat(LINUX.parse( "-0m1.000s"), equalTo(Duration.of(  -1, SECONDS)));
+        assertThat(LINUX.parse( "-1m1.000s"), equalTo(Duration.of( -61, SECONDS)));
+
+        // Field overflow is OK
+        assertThat(LINUX.parse("-0m1.1000s"), equalTo(Duration.of(  -2, SECONDS)));
+        assertThat(LINUX.parse("-1m70.000s"), equalTo(Duration.of(-130, SECONDS)));
+    }
+
+    
     @Test
     void parse_fullAndNull_nullPointerException()
     {

@@ -218,20 +218,33 @@ public enum DurationFormat
      */
     LINUX
     {
-        private static final String LINUX_FORMAT = "%dm%d.%03ds";
+        private static final String MILLIS_FORMAT = "%03d";
 
         private final Pattern linuxPattern = Pattern.compile(
-                "^(?<minutes>\\d+)m"
+                "^(?<sign>-?)"
+                + "(?<minutes>\\d+)m"
                 + "(?<seconds>\\d+)."
                 + "(?<milliseconds>\\d+)s");
 
         @Override
         public String doFormat(final Duration duration, boolean printLegend)
         {
-            return String.format(LINUX_FORMAT,
-                    SECONDS.toMinutes(duration.internal().getSeconds()),
-                    duration.getSeconds(), // the seconds within the minute
-                    NANOSECONDS.toMillis(duration.getNanoseconds()));
+            StringBuilder buffer = new StringBuilder(16);
+
+            if (duration.isNegative())
+            {
+                buffer.append('-');
+            }
+
+            buffer.append(SECONDS.toMinutes(duration.effectiveTotalSeconds))
+                  .append('m')
+                  .append(duration.getSeconds()) // the seconds within the minute
+                  .append('.')
+                  .append(String.format(MILLIS_FORMAT,
+                            NANOSECONDS.toMillis(duration.effectiveNanoseconds)))
+                  .append('s');
+
+            return buffer.toString();
         }
 
         @Override
@@ -240,9 +253,15 @@ public enum DurationFormat
             Matcher matcher = linuxPattern.matcher(string);
             if (matcher.matches())
             {
-                return parseDuration(matcher.group("minutes"), MINUTES)
+                Duration duration = parseDuration(matcher.group("minutes"), MINUTES)
                         .plus(parseDuration(matcher.group("seconds"), SECONDS))
                         .plus(parseDuration(matcher.group("milliseconds"), MILLISECONDS));
+
+                if (matcher.group("sign").equals("-"))
+                {
+                    duration = duration.negated();
+                }
+                return duration;
             }
             throw new IllegalArgumentException(String.format(MSG_UNPARSEABLE_DURATION, string));
         }
@@ -379,6 +398,7 @@ public enum DurationFormat
                     .plus(parseDuration(matcher.group("minutes"), MINUTES))
                     .plus(parseDuration(matcher.group("seconds"), SECONDS))
                     .plus(parseNanoseconds(matcher.group("nanoseconds")));
+
             if (matcher.group("sign").equals("-"))
             {
                 duration = duration.negated();

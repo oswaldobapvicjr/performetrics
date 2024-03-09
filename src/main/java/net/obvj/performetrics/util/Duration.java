@@ -64,9 +64,9 @@ public final class Duration implements Comparable<Duration>
     private static final int SECONDS_PER_HOUR = 60 * 60;
     private static final long NANOS_PER_SECOND = 1000_000_000L;
 
-    private final java.time.Duration internalDuration;
-    private final long effectiveTotalSeconds;
-    private final int effectiveNanoseconds;
+    final java.time.Duration internalDuration;
+    final long effectiveTotalSeconds;
+    final int effectiveNanoseconds;
 
     /**
      * Constructs an instance of {@code Duration} from the given {@link java.time.Duration}.

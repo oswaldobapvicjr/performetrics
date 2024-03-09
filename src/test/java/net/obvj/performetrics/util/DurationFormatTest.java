@@ -216,6 +216,32 @@ class DurationFormatTest
         assertThat(LINUX.format(Duration.of(2,          HOURS       ), false), is(equalTo("120m0.000s")));
         assertThat(LINUX.format(Duration.of(100,        HOURS       ), false), is(equalTo("6000m0.000s")));
     }
+    
+    @Test
+    void format_linuxNegative()
+    {
+        assertThat(LINUX.format(Duration.of(-0,          NANOSECONDS ), false), is(equalTo("0m0.000s")));
+        assertThat(LINUX.format(Duration.of(-1,          NANOSECONDS ), false), is(equalTo("-0m0.000s")));
+        assertThat(LINUX.format(Duration.of(-1,          MILLISECONDS), false), is(equalTo("-0m0.001s")));
+        assertThat(LINUX.format(Duration.of(-1,          SECONDS     ), false), is(equalTo("-0m1.000s")));
+        assertThat(LINUX.format(Duration.of(-1,          MINUTES     ), false), is(equalTo("-1m0.000s")));
+        assertThat(LINUX.format(Duration.of(-1,          HOURS       ), false), is(equalTo("-60m0.000s")));
+        assertThat(LINUX.format(Duration.of(-1,          DAYS        ), false), is(equalTo("-1440m0.000s")));
+        assertThat(LINUX.format(Duration.of(-789,        NANOSECONDS ), false), is(equalTo("-0m0.000s")));
+        assertThat(LINUX.format(Duration.of(-123456789,  NANOSECONDS ), false), is(equalTo("-0m0.123s")));
+        assertThat(LINUX.format(Duration.of(-1000000000, NANOSECONDS ), false), is(equalTo("-0m1.000s")));
+        assertThat(LINUX.format(Duration.of(-1001,       MILLISECONDS), false), is(equalTo("-0m1.001s")));
+        assertThat(LINUX.format(Duration.of(-1601,       MILLISECONDS), false), is(equalTo("-0m1.601s")));
+        assertThat(LINUX.format(Duration.of(-3601,       MILLISECONDS), false), is(equalTo("-0m3.601s")));
+        assertThat(LINUX.format(Duration.of(-70,         SECONDS     ), false), is(equalTo("-1m10.000s")));
+        assertThat(LINUX.format(Duration.of(-601,        SECONDS     ), false), is(equalTo("-10m1.000s")));
+        assertThat(LINUX.format(Duration.of(-959,        SECONDS     ), false), is(equalTo("-15m59.000s")));
+        assertThat(LINUX.format(Duration.of(-960,        SECONDS     ), false), is(equalTo("-16m0.000s")));
+        assertThat(LINUX.format(Duration.of(-970,        SECONDS     ), false), is(equalTo("-16m10.000s")));
+        assertThat(LINUX.format(Duration.of(-3601,       MINUTES     ), false), is(equalTo("-3601m0.000s")));
+        assertThat(LINUX.format(Duration.of(-2,          HOURS       ), false), is(equalTo("-120m0.000s")));
+        assertThat(LINUX.format(Duration.of(-100,        HOURS       ), false), is(equalTo("-6000m0.000s")));
+    }
 
     @Test
     void toString_noArguments_appliesShorterStyleWithLegend()

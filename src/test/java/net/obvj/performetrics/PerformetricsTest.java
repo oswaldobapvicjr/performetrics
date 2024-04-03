@@ -21,8 +21,7 @@ import static net.obvj.performetrics.ConversionMode.DOUBLE_PRECISION;
 import static net.obvj.performetrics.ConversionMode.FAST;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -262,6 +261,14 @@ class PerformetricsTest
         {
             checkAllDefaultValues();
         }
+    }
+
+    @Test
+    void monitorOperationDoesNotReturnNullValue()
+    {
+        MonitoredRunnable monitored = Performetrics.monitorOperation(
+                () -> {throw new RuntimeException();}, WALL_CLOCK_TIME, CPU_TIME);
+        assertThat(monitored, notNullValue());
     }
 
 }

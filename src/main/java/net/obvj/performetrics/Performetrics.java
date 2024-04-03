@@ -186,7 +186,13 @@ public class Performetrics
     public static MonitoredRunnable monitorOperation(Runnable runnable, Type... types)
     {
         MonitoredRunnable monitoredRunnable = new MonitoredRunnable(runnable, types);
-        monitoredRunnable.run();
-        return monitoredRunnable;
+        try
+        {
+            monitoredRunnable.run();
+        }
+        finally
+        {
+            return monitoredRunnable;
+        }
     }
 }

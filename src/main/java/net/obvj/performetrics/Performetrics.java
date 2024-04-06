@@ -180,7 +180,7 @@ public class Performetrics
      * <p>
      * <b>Note:</b> If the provided {@link Runnable} throws an exception during execution,
      * the method will not be able to generate the monitored {@link MonitoredRunnable}.
-     * In this case, it's recommended to use the monitored {@link MonitoredRunnable} directly.
+     * In this case, using the {@link MonitoredRunnable} class is recommended.
      * Then, the exception can be handled as necessary.
      *
      * @param runnable the {@link Runnable} to be run and monitored

@@ -177,6 +177,12 @@ public class Performetrics
      * <b>Note:</b> If no type is specified, then all of the available types will be
      * maintained.
      *
+     * <p>
+     * <b>Note:</b> If the provided {@link Runnable} throws an exception during execution,
+     * the method will not be able to generate the monitored {@link MonitoredRunnable}.
+     * In this case, it's recommended to use the monitored {@link MonitoredRunnable} directly
+     * the same way the method is doing.
+     *
      * @param runnable the {@link Runnable} to be run and monitored
      * @param types    the counter types to be measured in the operation
      * @return the resulting {@link MonitoredRunnable}, which can be used to retrieve the
@@ -186,13 +192,7 @@ public class Performetrics
     public static MonitoredRunnable monitorOperation(Runnable runnable, Type... types)
     {
         MonitoredRunnable monitoredRunnable = new MonitoredRunnable(runnable, types);
-        try
-        {
-            monitoredRunnable.run();
-        }
-        finally
-        {
-            return monitoredRunnable;
-        }
+        monitoredRunnable.run();
+        return monitoredRunnable;
     }
 }

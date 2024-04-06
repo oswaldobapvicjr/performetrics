@@ -262,13 +262,4 @@ class PerformetricsTest
             checkAllDefaultValues();
         }
     }
-
-    @Test
-    void monitorOperationDoesNotReturnNullValue()
-    {
-        MonitoredRunnable monitored = Performetrics.monitorOperation(
-                () -> {throw new RuntimeException();}, WALL_CLOCK_TIME, CPU_TIME);
-        assertThat(monitored, notNullValue());
-    }
-
 }

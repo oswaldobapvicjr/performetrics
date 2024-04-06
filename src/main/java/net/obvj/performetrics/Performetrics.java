@@ -214,6 +214,12 @@ public class Performetrics
      * <b>Note:</b> If no type is specified, then all of the available types will be
      * maintained.
      *
+     * <p>
+     * <b>Note:</b> If the provided {@link Runnable} throws an exception during execution,
+     * the method will not be able to generate the monitored {@link MonitoredRunnable}.
+     * In this case, using the {@link MonitoredRunnable} class is recommended.
+     * Then, the exception can be handled as necessary.
+     *
      * @param runnable the {@link Runnable} to be run and monitored
      * @param types    the counter types to be measured in the operation
      * @return the resulting {@link MonitoredRunnable}, which can be used to retrieve the

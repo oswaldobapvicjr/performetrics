@@ -46,13 +46,13 @@ public class PerformetricsTestDrive
         testStopwatch1();
         System.out.println("\n\n****************************************************\n");
         System.out.println("Now in fast mode...\n");
-        Performetrics.setDefaultConversionMode(ConversionMode.FAST);
+        Performetrics.configuration().setConversionMode(ConversionMode.FAST);
         testStopwatch1();
 
         System.out.println("\n\n****************************************************\n");
         System.out.println("Now with a custom scale...\n");
-        Performetrics.setDefaultConversionMode(ConversionMode.DOUBLE_PRECISION);
-        Performetrics.setScale(2);
+        Performetrics.configuration().setConversionMode(ConversionMode.DOUBLE_PRECISION);
+        Performetrics.configuration().setScale(2);
 
         System.out.println("\n\n****************************************************\n");
         testCallableWithLambda();

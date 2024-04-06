@@ -63,7 +63,7 @@ class PrintUtilsTest
     {
         ALL_COUNTERS.put(WALL_CLOCK_TIME, singletonList(C1));
         ALL_COUNTERS.put(CPU_TIME, singletonList(C2));
-        Performetrics.setDefaultPrintStyle(DEFAULT_PRINT_STYLE);
+        Performetrics.configuration().setPrintStyle(DEFAULT_PRINT_STYLE);
     }
 
     Stopwatch stopwatch = mock(Stopwatch.class);

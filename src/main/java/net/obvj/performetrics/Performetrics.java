@@ -55,7 +55,7 @@ public class Performetrics
      * @return the current configuration
      * @since 2.5.3
      */
-    public Configuration configuration()
+    public static Configuration configuration()
     {
         return ConfigurationHolder.getConfiguration();
     }

@@ -208,11 +208,11 @@ Performetrics provides two different conversion modes that can be applied depend
 
 * **Fast conversion**: uses Java-standard classes to convert durations to different time units. Although conversions in this mode are extremely fast, those from finer to coarser granularities truncate, so lose precision. For example, converting 999 milliseconds to seconds results in 0 (worst case).
 
-  To set this mode, call `Performetrics.setDefaultConversionMode(ConversionMode.FAST)`.  
+  To set this mode, call `Performetrics.configuration().setDefaultConversionMode(ConversionMode.FAST)`.  
 
 * **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularity. For example, converting 999 milliseconds to seconds results in 0.999
 
-  A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.setScale(int)`.
+  A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.configuration().setScale(int)`.
 
 > **Note:** Check the  **[Javadoc](https://javadoc.io/doc/net.obvj/performetrics)** to find out how to specify a different conversion mode for a single operation.
 

@@ -19,6 +19,7 @@ package net.obvj.performetrics;
 import java.util.List;
 
 import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.config.Configuration;
 import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.print.PrintStyle;
@@ -49,11 +50,26 @@ public class Performetrics
     }
 
     /**
+     * Returns the current {@link Configuration}.
+     *
+     * @return the current configuration
+     * @since 2.5.3
+     */
+    public static Configuration configuration()
+    {
+        return ConfigurationHolder.getConfiguration();
+    }
+
+    /**
      * Sets a conversion mode to be applied by supported operations if no specific mode is
      * set.
      *
      * @param conversionMode the {@link ConversionMode} to set
+     *
+     * @deprecated Use {@code Performetrics.configuration().setConversionMode(ConversionMode)}
+     *             instead.
      */
+    @Deprecated(since = "2.5.3", forRemoval = true)
     public static void setDefaultConversionMode(ConversionMode conversionMode)
     {
         ConfigurationHolder.getConfiguration().setConversionMode(conversionMode);
@@ -65,7 +81,10 @@ public class Performetrics
      *
      * @param scale a number between 0 and 16 to be set
      * @throws IllegalArgumentException if a number outside the allowed range is received
+     *
+     * @deprecated Use {@code Performetrics.configuration().setScale(int)} instead.
      */
+    @Deprecated(since = "2.5.3", forRemoval = true)
     public static void setScale(int scale)
     {
         ConfigurationHolder.getConfiguration().setScale(scale);
@@ -85,7 +104,11 @@ public class Performetrics
      * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
      * @since 2.4.0
+     *
+     * @deprecated Use {@code Performetrics.configuration().setPrintStyle(PrintStyle)}
+     *             instead.
      */
+    @Deprecated(since = "2.5.3", forRemoval = true)
     public static void setDefaultPrintStyle(PrintStyle printStyle)
     {
         ConfigurationHolder.getConfiguration().setPrintStyle(printStyle);
@@ -105,7 +128,12 @@ public class Performetrics
      * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
      * @since 2.2.1
+     *
+     * @deprecated Use
+     *             {@code Performetrics.configuration().setPrintStyleForSummary(PrintStyle)}
+     *             instead.
      */
+    @Deprecated(since = "2.5.3", forRemoval = true)
     public static void setDefaultPrintStyleForSummary(PrintStyle printStyle)
     {
         ConfigurationHolder.getConfiguration().setPrintStyleForSummary(printStyle);
@@ -125,7 +153,12 @@ public class Performetrics
      * @throws NullPointerException if the specified {@code PrintStyle} is null
      *
      * @since 2.2.1
+     *
+     * @deprecated Use
+     *             {@code Performetrics.configuration().setPrintStyleForDetails(PrintStyle)}
+     *             instead.
      */
+    @Deprecated(since = "2.5.3", forRemoval = true)
     public static void setDefaultPrintStyleForDetails(PrintStyle printStyle)
     {
         ConfigurationHolder.getConfiguration().setPrintStyleForDetails(printStyle);
@@ -141,8 +174,12 @@ public class Performetrics
      *
      * <pre>
      * {@code MonitoredRunnable runnable =}
-     * {@code         Performetrics.monitorOperation(() -> myObj.exec());}
-     * {@code Duration elapsedTime = runnable.elapsedTime(Type.WALL_CLOCK_TIME);}
+     * {@code
+     * Performetrics.monitorOperation(() -> myObj.exec());
+     * }
+     * {@code
+     * Duration elapsedTime = runnable.elapsedTime(Type.WALL_CLOCK_TIME);
+     * }
      * </pre>
      *
      * </blockquote>

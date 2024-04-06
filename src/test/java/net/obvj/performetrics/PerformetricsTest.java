@@ -264,4 +264,10 @@ class PerformetricsTest
         }
     }
 
+    @Test
+    void configuration_getCurrentConfiguration()
+    {
+        assertThat(Performetrics.configuration(), equalTo(ConfigurationHolder.getConfiguration()));
+    }
+
 }

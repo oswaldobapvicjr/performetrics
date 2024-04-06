@@ -30,6 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -62,11 +63,16 @@ class PerformetricsTest
         runFlag = true;
     };
 
+    @BeforeEach
+    void setup()
+    {
+        ConfigurationHolder.reset();
+    }
+
     @AfterEach
     void resetFlag()
     {
         runFlag = false;
-        ConfigurationHolder.reset();
     }
 
     private void checkAllDefaultValues()

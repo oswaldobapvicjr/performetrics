@@ -16,12 +16,13 @@
 
 package net.obvj.performetrics;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Unit tests for the {@link ConversionMode}.
@@ -32,16 +33,30 @@ import org.junit.jupiter.api.Test;
 class ConversionModeTest
 {
 
-    @Test
-    void convert_fast999millisecondsToSeconds()
+    @ParameterizedTest
+    @CsvSource({
+        "1,    MILLISECONDS, SECONDS,   0.0",
+        "999,  MILLISECONDS, SECONDS,   0.0",
+        "1000, MILLISECONDS, SECONDS,   1.0",
+        "1500, MILLISECONDS, SECONDS,   1.0",
+        "2,    HOURS,        MINUTES, 120.0"
+    })
+    void convert_fast(long amount, TimeUnit source, TimeUnit target, double result)
     {
-        assertThat(ConversionMode.FAST.convert(999, MILLISECONDS, SECONDS), is(0.0));
+        assertThat(ConversionMode.FAST.convert(amount, source, target), is(result));
     }
 
-    @Test
-    void convert_doublePrecision999millisecondsToSeconds()
+    @ParameterizedTest
+    @CsvSource({
+        "1,    MILLISECONDS, SECONDS, 0.001",
+        "999,  MILLISECONDS, SECONDS, 0.999",
+        "1000, MILLISECONDS, SECONDS,   1.0",
+        "1500, MILLISECONDS, SECONDS,   1.5",
+        "2,    HOURS,        MINUTES, 120.0"
+    })
+    void convert_doublePrecision(long amount, TimeUnit source, TimeUnit target, double result)
     {
-        assertThat(ConversionMode.DOUBLE_PRECISION.convert(999, MILLISECONDS, SECONDS), is(0.999));
+        assertThat(ConversionMode.DOUBLE_PRECISION.convert(amount, source, target), is(result));
     }
 
 }

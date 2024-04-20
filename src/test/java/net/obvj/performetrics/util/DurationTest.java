@@ -25,8 +25,11 @@ import static net.obvj.performetrics.util.DurationFormat.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Unit tests for the {@link Duration}.
@@ -322,27 +325,22 @@ class DurationTest
         assertThat(Duration.of(-4, MINUTES     ).compareTo(Duration.of(     -3, MINUTES    )), isNegative());
     }
 
-    @Test
-    void parse_stringsGeneratedByToString_success()
+    @ParameterizedTest
+    @CsvSource({
+        " 123, NANOSECONDS",
+        " 123, MILLISECONDS",
+        " 123, SECONDS",
+        " 123, MINUTES",
+        "-123, NANOSECONDS",
+        "-123, MILLISECONDS",
+        "-123, SECONDS",
+        "-123, MINUTES"
+    })
+    void parse_stringsGeneratedByToString_success(long amount, TimeUnit timeUnit)
     {
-        assertParseFromToString(Duration.of(123, NANOSECONDS));
-        assertParseFromToString(Duration.of(123, MILLISECONDS));
-        assertParseFromToString(Duration.of(123, SECONDS));
-        assertParseFromToString(Duration.of(123, MINUTES));
-    }
-
-    @Test
-    void parse_stringsGeneratedByToStringUsingNegativeDurations_success()
-    {
-        assertParseFromToString(Duration.of(-123, NANOSECONDS));
-        assertParseFromToString(Duration.of(-123, MILLISECONDS));
-        assertParseFromToString(Duration.of(-123, SECONDS));
-        assertParseFromToString(Duration.of(-123, MINUTES));
-    }
-
-    private static void assertParseFromToString(Duration duration)
-    {
-        assertThat(Duration.parse(duration.toString()), equalTo(duration));
+        Duration duration = Duration.of(amount, timeUnit);
+        String durationAsString = duration.toString();
+        assertThat(Duration.parse(durationAsString), equalTo(duration));
     }
 
     @Test

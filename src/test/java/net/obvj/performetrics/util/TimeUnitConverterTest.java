@@ -24,6 +24,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Unit tests for the {@link TimeUnitConverter}.
@@ -39,64 +41,48 @@ class TimeUnitConverterTest
         assertThat(TimeUnitConverter.class, instantiationNotAllowed().throwing(IllegalStateException.class));
     }
 
-    @Test
-    void convertAndRound_2MinutesToMilliseconds()
+    @ParameterizedTest
+    @CsvSource({
+        "  2, MINUTES,      MILLISECONDS, 120_000",
+        " 30, SECONDS,      MINUTES,      0.5",
+        "999, MILLISECONDS, SECONDS,      0.999"
+    })
+    void convertAndRound_threeParameters(long amount, TimeUnit source, TimeUnit target, double expected)
     {
-        assertThat(TimeUnitConverter.convertAndRound(2, TimeUnit.MINUTES, TimeUnit.MILLISECONDS), is(equalTo(2.0 * 60 * 1000)));
+        assertThat(TimeUnitConverter.convertAndRound(amount, source, target),
+                is(equalTo(expected)));
     }
 
-    @Test
-    void convertAndRound_90SecondsToMinutes()
+    @ParameterizedTest
+    @CsvSource({
+        "988, MILLISECONDS, SECONDS, 2, 0.99",
+        "988, MILLISECONDS, SECONDS, 0, 1.0"
+    })
+    void convertAndRound_allParameters(long amount, TimeUnit source, TimeUnit target, int decimalPlaces, double expected)
     {
-        assertThat(TimeUnitConverter.convertAndRound(30, TimeUnit.SECONDS, TimeUnit.MINUTES), is(equalTo(0.5)));
+        assertThat(TimeUnitConverter.convertAndRound(amount, source, target, decimalPlaces),
+                is(equalTo(expected)));
     }
 
-    @Test
-    void convertAndRound_999MillisecondsToSeconds()
+    @ParameterizedTest
+    @CsvSource({
+        "22.859,  2, 22.86",
+        "22.859,  0, 23.0",
+        "22.859, -1, 20.0"
+    })
+    void round_twoParameters(double amount, int decimalPlaces, double expected)
     {
-        assertThat(TimeUnitConverter.convertAndRound(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(equalTo(0.999)));
+        assertThat(TimeUnitConverter.round(amount, decimalPlaces), is(equalTo(expected)));
     }
 
-    @Test
-    void convertAndRound_988MillisecondsToSecondsAnd2DecimalPlaces()
+    @ParameterizedTest
+    @CsvSource({
+        "999, MILLISECONDS, SECONDS,     0.999",
+        "999, NANOSECONDS,  NANOSECONDS, 999.0",
+    })
+    void convert_threeParameters(long amount, TimeUnit source, TimeUnit target, double expected)
     {
-        assertThat(TimeUnitConverter.convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 2), is(equalTo(0.99)));
-    }
-
-    @Test
-    void convertAndRound_988MillisecondsToSecondsAnd0DecimalPlaces()
-    {
-        assertThat(TimeUnitConverter.convertAndRound(988, TimeUnit.MILLISECONDS, TimeUnit.SECONDS, 0), is(equalTo(1.0)));
-    }
-
-    @Test
-    void round_positiveDecimalPlaces()
-    {
-        assertThat(TimeUnitConverter.round(22.859, 2), is(equalTo(22.86)));
-    }
-
-    @Test
-    void round_zeroDecimalPlaces()
-    {
-        assertThat(TimeUnitConverter.round(22.859, 0), is(equalTo(23.0)));
-    }
-
-    @Test
-    void round_negativeDecimalPlaces()
-    {
-        assertThat(TimeUnitConverter.round(22.859, -1), is(equalTo(20.0)));
-    }
-
-    @Test
-    void convert_999MillisecondsToSeconds()
-    {
-        assertThat(TimeUnitConverter.convert(999, TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(equalTo(0.999)));
-    }
-
-    @Test
-    void convert_sameTimeUnit_success()
-    {
-        assertThat(TimeUnitConverter.convert(999, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS), equalTo(999.0));
+        assertThat(TimeUnitConverter.convert(amount, source, target), is(equalTo(expected)));
     }
 
 }

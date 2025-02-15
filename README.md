@@ -20,9 +20,40 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 - **CPU time:** the total time spent using a CPU for the current thread
 
-- **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running current thread's  code)
+- **User time:** the total CPU time that the current thread has executed in user mode (i.e., the time spent running the current thread's  code)
 
 - **System time:** the time spent by the OS kernel to execute all the basic/system-level operations on behalf of your application (such as context switching, resource allocation, etc.)
+
+```mermaid
+---
+displayMode: compact
+---
+gantt
+    title Metric types
+    dateFormat X
+    axisFormat %s
+    section Real time
+    rt1   : crit, 0, 18
+    section CPU time
+    ct1   : 0, 1
+    ct2   : 2, 3
+    ct3   : 4, 6
+    ct4   : 7, 8
+    ct5   : 9, 10
+    ct6   : 11, 13
+    ct7   : 14, 15
+    ct8   : 16, 17
+    section User time
+    ut1   : active, 0, 1
+    ut2   : active, 2, 3
+    ut3   : active, 4, 5
+    ut4   : active, 12, 13
+    section System time
+    st1   : done, 5, 6
+    st2   : done, 7, 8
+    st3   : done, 9, 10
+    st4   : done, 11, 12
+```
 
 **Performetrics** provides convenient objects for time evaluation with support to all of the abovementioned counters.
 

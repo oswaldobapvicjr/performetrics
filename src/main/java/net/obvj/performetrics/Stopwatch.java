@@ -100,8 +100,8 @@ import net.obvj.performetrics.Counter.Type;
  * </blockquote>
  *
  * <p>
- * Use the output methods {@code print(System.out)} and
- * {@code print(System.out, PrinstStyle)} to print stopwatch statistics to the system console.
+ * Use the output methods {@code printSummary(System.out)} and
+ * {@code printDetails(System.out)} to print stopwatch statistics to the system console.
  * </p>
  *
  * <p>

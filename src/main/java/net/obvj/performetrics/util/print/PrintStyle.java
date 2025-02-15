@@ -518,7 +518,7 @@ public class PrintStyle
      * {@code   - '0:00:01.371288100'}
      * {@code   - '0:00:01.103620000'}
      * {@code   total: '0:00:02.474908100'}
-     * {@code - type="CPU time">}
+     * {@code - type="CPU time"}
      * {@code   sessions:}
      * {@code   - '0:00:00.031250000'}
      * {@code   - '0:00:00.015625000'}
@@ -551,7 +551,7 @@ public class PrintStyle
      * {@code   - '0:00:01.371288100'}
      * {@code   - '0:00:01.103620000'}
      * {@code   total: '0:00:02.474908100'}
-     * {@code - type="CPU time">}
+     * {@code - type="CPU time"}
      * {@code   sessions:}
      * {@code   - '0:00:00.031250000'}
      * {@code   - '0:00:00.015625000'}

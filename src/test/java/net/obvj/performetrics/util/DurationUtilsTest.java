@@ -28,6 +28,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -140,6 +142,16 @@ class DurationUtilsTest
     {
         assertThat(max(Arrays.asList(D_750_MILLIS, D_1_SECOND)), is(equalTo(D_1_SECOND)));
         assertThat(max(Arrays.asList(D_750_MILLIS, D_2_SECONDS, D_500_MILLIS)), is(equalTo(D_2_SECONDS)));
+    }
+
+    @Test
+    void analyzeDurations_multipleValuesAndAllFlags_validMetrics()
+    {
+        List<Duration> durations = Arrays.asList(D_1_SECOND, D_2_SECONDS, D_500_MILLIS, D_1250_MILLIS);
+        DurationStats stats = DurationUtils.analyzeDurations(durations, StatFlags.ALL);
+        assertThat(stats.average(), equalTo(Duration.of(1_187_500_000, TimeUnit.NANOSECONDS)));
+        assertThat(stats.min(), equalTo(D_500_MILLIS));
+        assertThat(stats.max(), equalTo(D_2_SECONDS));
     }
 
 }

@@ -55,7 +55,7 @@ gantt
     st4   : done, 11, 12
 ```
 
-**Performetrics** provides convenient objects for time evaluation with support to all of the abovementioned counters.
+**Performetrics** provides convenient objects for time evaluation with support to the abovementioned counters.
 
 ---
 
@@ -67,7 +67,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.5.3</version>
+    <version>2.6.0</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
     double cpuTimeNanos = stopwatch.elapsedTime(Counter.Type.CPU_TIME, TimeUnit.NANOSECONDS);
     ```
 
-    > **Note:** Check the different `elapsedTime` options available to find the most suitable for you.
+    > **Note:** Check the different `elapsedTime` options available to find the most suitable.
 
 4. Print the summary to the system console:
 
@@ -164,7 +164,7 @@ If you use other dependency managers (such as Gradle, Grape, Ivy, etc.) click [h
 
 ### Example 2: Using the `MonitoredRunnable`
 
-In this example, we are using `Performetrics.monitorOperation(...)` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
+In this example, we use `Performetrics.monitorOperation(...)` to run a procedure represented by a lambda expression and print the elapsed **wall-clock** and **CPU time** at the system console.
 
 1. Create a monitored runnable, with the the procedure to be executed attached:
 

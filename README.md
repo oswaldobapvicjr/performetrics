@@ -231,7 +231,7 @@ The objects from the package `net.obvj.performetrics.util` contain useful featur
     
 ## Configuration
 
-**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
+**Performetrics** does not only collect valuable metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
 
 ### Conversion Modes
 
@@ -243,7 +243,7 @@ Performetrics provides two different conversion modes that can be applied depend
 
 * **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularity. For example, converting 999 milliseconds to seconds results in 0.999
 
-  A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.configuration().setScale(int)`.
+  An initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.configuration().setScale(int)`.
 
 > **Note:** Check the  **[Javadoc](https://javadoc.io/doc/net.obvj/performetrics)** to find out how to specify a different conversion mode for a single operation.
 
@@ -255,7 +255,6 @@ The following picture represents the main classes and their relationships. Click
 
 ```mermaid
 flowchart LR
-
   S(fa:fa-stopwatch Stopwatch)
   T(fa:fa-bars-progress TimingSession)
   CT(fa:fa-flag CounterType)
@@ -265,13 +264,11 @@ flowchart LR
   DF(fa:fa-italic DurationFormat)
   SU(fa:fa-gears SystemUtils)
 
-  S --contain--> CT
-  S --produce--> T
-  T --contain--> CT
-  T --produce--> C
-  C --defined by--> CT
-  C --produce--> D
-  C --apply--> CM
-  D --apply--> DF
-  CT --gather from--> SU
+  S -->|create/start| T
+  T -->|contain| C
+  C -->|defined by| CT
+  C -->|produce| D
+  C -->|apply| CM
+  D -->|formatted by| DF
+  CT -->|gather from| SU
 ```

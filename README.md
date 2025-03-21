@@ -255,14 +255,14 @@ The following picture represents the main classes and their relationships. Click
 
 ```mermaid
 flowchart LR
-  S(fa:fa-stopwatch Stopwatch)
-  T(fa:fa-bars-progress TimingSession)
-  CT(fa:fa-flag CounterType)
-  C(fa:fa-spinner Counter)
+  S(fa:fa-stopwatch Stopwatch):::yellow
+  T(fa:fa-bars-progress TimingSession):::yellow
+  CT(fa:fa-flag CounterType):::blue
+  C(fa:fa-spinner Counter):::yellow
   D(fa:fa-hourglass-half Duration)
-  CM(fa:fa-arrow-up-right-from-square ConversionMode)
-  DF(fa:fa-italic DurationFormat)
-  SU(fa:fa-gears SystemUtils)
+  CM(fa:fa-arrow-up-right-from-square ConversionMode):::blue
+  DF(fa:fa-italic DurationFormat):::blue
+  SU(fa:fa-gears SystemUtils):::green
 
   S -->|create/start| T
   T -->|contain| C
@@ -271,4 +271,8 @@ flowchart LR
   C -->|apply| CM
   D -->|formatted by| DF
   CT -->|gather from| SU
+
+  classDef yellow stroke:#fa0
+  classDef blue stroke:#0af
+  classDef green stroke:#0fa
 ```

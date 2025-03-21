@@ -42,7 +42,7 @@
 
         <!-- Test dependencies versions -->
         <junit.version>5.10.2</junit.version>
-        <junit-utils.version>1.7.0</junit-utils.version>
+        <junit-utils.version>1.9.0</junit-utils.version>
         <mockito.version>5.11.0</mockito.version>
         <snakeyaml.version>2.2</snakeyaml.version>
     </properties>

@@ -251,6 +251,27 @@ Performetrics provides two different conversion modes that can be applied depend
 
 ## Architecture
 
-The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
+The following picture represents the main classes and their relationships. Click [here](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg) for a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.4-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)
+```mermaid
+flowchart LR
+
+  S(fa:fa-stopwatch Stopwatch)
+  T(fa:fa-bars-progress TimingSession)
+  CT(fa:fa-flag CounterType)
+  C(fa:fa-spinner Counter)
+  D(fa:fa-hourglass-half Duration)
+  CM(fa:fa-arrow-up-right-from-square ConversionMode)
+  DF(fa:fa-italic DurationFormat)
+  SU(fa:fa-gears SystemUtils)
+
+  S --contain--> CT
+  S --produce--> T
+  T --contain--> CT
+  T --produce--> C
+  C --defined by--> CT
+  C --produce--> D
+  C --apply--> CM
+  D --apply--> DF
+  CT --gather from--> SU
+```

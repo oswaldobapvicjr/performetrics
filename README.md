@@ -231,7 +231,7 @@ The objects from the package `net.obvj.performetrics.util` contain useful featur
     
 ## Configuration
 
-**Performetrics** does not only collect useful metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
+**Performetrics** does not only collect valuable metrics. A comprehensive set of features was carefully designed to optimize data collection and present the results in different styles requiring a minimum of code.
 
 ### Conversion Modes
 
@@ -243,7 +243,7 @@ Performetrics provides two different conversion modes that can be applied depend
 
 * **Double-precision (default)**: implements a more robust conversion logic that avoids truncation from finer to coarser granularity. For example, converting 999 milliseconds to seconds results in 0.999
 
-  A initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.configuration().setScale(int)`.
+  An initial precision of 9 decimal places is set by default. This property can be changed calling `Performetrics.configuration().setScale(int)`.
 
 > **Note:** Check the  **[Javadoc](https://javadoc.io/doc/net.obvj/performetrics)** to find out how to specify a different conversion mode for a single operation.
 
@@ -251,6 +251,28 @@ Performetrics provides two different conversion modes that can be applied depend
 
 ## Architecture
 
-The following picture represents the main classes and their relationships. Click on the image to see a detailed diagram.
+The following picture represents the main classes and their relationships. Click [here](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg) for a detailed diagram.
 
-[![High-level classes overview](resources/High-level%20overview%20-%20v2.4-A.svg)](resources/Detailed%20class%20diagram%20-%20v2.2-B.svg)
+```mermaid
+flowchart LR
+  S[fa:fa-stopwatch Stopwatch]:::yellow
+  T[fa:fa-bars-progress TimingSession]:::yellow
+  CT["fa:fa-flag CounterType"]:::blue
+  C[fa:fa-spinner Counter]:::yellow
+  D[fa:fa-hourglass-half Duration]
+  CM[fa:fa-arrow-up-right-from-square ConversionMode]:::blue
+  DF[fa:fa-italic DurationFormat]:::blue
+  SU[fa:fa-gears SystemUtils]:::green
+
+  S -->|create/start| T
+  T -->|contain| C
+  C -->|defined by| CT
+  C -->|produce| D
+  C -->|apply| CM
+  D -->|formatted by| DF
+  CT -->|gather from| SU
+
+  classDef yellow stroke:#fa0
+  classDef blue stroke:#0af
+  classDef green stroke:#0fa
+```

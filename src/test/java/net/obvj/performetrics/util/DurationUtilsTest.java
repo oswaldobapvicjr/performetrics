@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import net.obvj.performetrics.util.DurationStats.Flag;
+
 /**
  * Unit tests for the {@link DurationUtils} class.
  *
@@ -148,7 +150,7 @@ class DurationUtilsTest
     void analyzeDurations_multipleValuesAndAllFlags_validMetrics()
     {
         List<Duration> durations = Arrays.asList(D_1_SECOND, D_2_SECONDS, D_500_MILLIS, D_1250_MILLIS);
-        DurationStats stats = DurationUtils.analyzeDurations(durations, StatFlags.ALL);
+        DurationStats stats = DurationUtils.analyzeDurations(durations, Flag.ALL);
         assertThat(stats.average(), equalTo(Duration.of(1_187_500_000, TimeUnit.NANOSECONDS)));
         assertThat(stats.min(), equalTo(D_500_MILLIS));
         assertThat(stats.max(), equalTo(D_2_SECONDS));

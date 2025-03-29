@@ -18,6 +18,8 @@ package net.obvj.performetrics.util;
 
 import java.util.Collection;
 
+import net.obvj.performetrics.util.DurationStats.Flag;
+
 /**
  * Common methods for working with durations.
  *
@@ -33,7 +35,7 @@ public class DurationUtils
     }
 
     /**
-     * Calculates statistical metrics (average, minimum, and/or maximum) for a collection of
+     * Calculates statistical metrics (sum, average, minimum, and/or maximum) for a collection of
      * durations based on the specified flags.
      * <p>
      * The flags are represented as bitwise values, and their combination determines the
@@ -43,13 +45,16 @@ public class DurationUtils
      *
      * <pre>
      * // Example 1: Calculate the average duration
-     * DurationStats stats = calculateStats(durations, StatFlags.AVERAGE);
+     * DurationStats stats = calculateStats(durations, Flag.BASIC);
+     * Duration average = stats.average();
      *
      * // Example 2: Calculate the minimum and maximum durations
-     * DurationStats stats = calculateStats(durations, StatFlags.MIN | Flag.MAX);
+     * DurationStats stats = calculateStats(durations, Flag.MIN | Flag.MAX);
+     * Duration min = stats.min();
+     * Duration max = stats.max();
      *
      * // Example 3: Calculate all statistics
-     * DurationStats stats = calculateStats(durations, StatFlags.ALL);
+     * DurationStats stats = calculateStats(durations, Flag.ALL);
      * </pre>
      *
      * <p>
@@ -60,50 +65,17 @@ public class DurationUtils
      * @param flags     an integer representing the enabled flags using bitwise values.
      *                  Supported flags are:
      *                  <ul>
-     *                  <li>{@link StatFlags#AVERAGE} - Calculate the average duration.</li>
-     *                  <li>{@link StatFlags#MIN} - Calculate the minimum duration.</li>
-     *                  <li>{@link StatFlags#MAX} - Calculate the maximum duration.</li>
-     *                  <li>{@link StatFlags#ALL} - Calculates all statistics.</li>
+     *                  <li>{@link Flag#BASIC} - Calculate sum, count and average duration.</li>
+     *                  <li>{@link Flag#MIN} - Calculate the minimum duration.</li>
+     *                  <li>{@link Flag#MAX} - Calculate the maximum duration.</li>
+     *                  <li>{@link Flag#ALL} - Calculates all statistics.</li>
      *                  </ul>
      * @return a {@link DurationStats} object containing the calculated metrics.
      * @since 2.6.0
      */
     public static DurationStats analyzeDurations(Collection<Duration> durations, int flags)
     {
-        if (isEmpty(durations))
-        {
-            return DurationStats.EMPTY;
-        }
-
-        boolean calculateAverage = StatFlags.isEnabled(StatFlags.AVERAGE, flags);
-        boolean calculateMin = StatFlags.isEnabled(StatFlags.MIN, flags);
-        boolean calculateMax = StatFlags.isEnabled(StatFlags.MAX, flags);
-
-        Duration sum = Duration.ZERO;
-        Duration min = null;
-        Duration max = null;
-        int count = 0;
-
-        for (Duration duration : durations)
-        {
-            if (duration == null) continue; // Skip null values
-            if (calculateAverage)
-            {
-                sum = sum.plus(duration);
-                count++;
-            }
-            if (calculateMin)
-            {
-                min = min == null || duration.compareTo(min) < 0 ? duration : min;
-            }
-            if (calculateMax)
-            {
-                max = max == null || duration.compareTo(max) > 0 ? duration : max;
-            }
-        }
-
-        Duration average = calculateAverage && count > 0 ? sum.dividedBy(count) : Duration.ZERO;
-        return new DurationStats(average, min, max);
+        return new DurationStats(flags).accept(durations);
     }
 
     /**
@@ -115,7 +87,7 @@ public class DurationUtils
      */
     public static Duration average(Collection<Duration> durations)
     {
-        return analyzeDurations(durations, StatFlags.AVERAGE).average();
+        return analyzeDurations(durations, Flag.BASIC).average();
     }
 
     /**
@@ -127,7 +99,7 @@ public class DurationUtils
      */
     public static Duration min(Collection<Duration> durations)
     {
-        return analyzeDurations(durations, StatFlags.MIN).min();
+        return analyzeDurations(durations, Flag.MIN).min();
     }
 
     /**
@@ -139,12 +111,7 @@ public class DurationUtils
      */
     public static Duration max(Collection<Duration> durations)
     {
-        return analyzeDurations(durations, StatFlags.MAX).max();
-    }
-
-    private static boolean isEmpty(Collection<?> collection)
-    {
-        return collection == null || collection.isEmpty();
+        return analyzeDurations(durations, Flag.MAX).max();
     }
 
 }

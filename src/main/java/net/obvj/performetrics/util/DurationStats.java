@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
+import net.obvj.performetrics.util.DurationStats.Flag;
+
 /**
  * <p>
  * A class that calculates and represents statistical metrics for durations, such as sum,
@@ -159,6 +161,8 @@ public final class DurationStats
 
     /**
      * Constructs a new {@code DurationStats} with all flags enabled.
+     *
+     * @since 2.7.0
      */
     public DurationStats()
     {
@@ -182,6 +186,11 @@ public final class DurationStats
      *
      * // Example 3: Calculate all statistics
      * new DurationStats(Flag.ALL);
+     * </pre>
+     *
+     * @param flags an integer representing the enabled flags using bitwise values
+     * @see Flag
+     * @since 2.7.0
      */
     public DurationStats(int flags)
     {

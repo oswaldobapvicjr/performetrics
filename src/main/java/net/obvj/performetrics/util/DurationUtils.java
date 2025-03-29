@@ -57,9 +57,6 @@ public class DurationUtils
      * DurationStats stats = calculateStats(durations, Flag.ALL);
      * </pre>
      *
-     * <p>
-     * <b>Note:</b> If the input collection is empty or null, {@link DurationStats#EMPTY} is returned.
-     *
      * @param durations the collection of {@link Duration} objects to analyze (null is
      *                  allowed).
      * @param flags     an integer representing the enabled flags using bitwise values.

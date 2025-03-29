@@ -22,34 +22,41 @@ import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.jupiter.api.Test;
 
+import net.obvj.performetrics.util.DurationStats.Flag;
+
 /**
- * Unit tests for the {@link StatFlags} class.
+ * Unit tests for the {@link Flag} class.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.6.0
  */
-class StatFlagsTest
+class FlagTest
 {
 
     @Test
     void constructor_instantiationNotAllowed()
     {
-        assertThat(StatFlags.class, instantiationNotAllowed().throwing(IllegalStateException.class)
+        assertThat(Flag.class, instantiationNotAllowed().throwing(IllegalStateException.class)
                 .withMessage("Instantiation not allowed"));
     }
 
     @Test
     void isFlagEnabled_severalCombinations()
     {
-        int myFlags = StatFlags.MIN | StatFlags.MAX;
-        assertThat(StatFlags.isEnabled(StatFlags.AVERAGE, myFlags), equalTo(false));
-        assertThat(StatFlags.isEnabled(StatFlags.MIN, myFlags), equalTo(true));
-        assertThat(StatFlags.isEnabled(StatFlags.MAX, myFlags), equalTo(true));
+        int myFlags = Flag.BASIC | Flag.MAX;
+        assertThat(Flag.isEnabled(Flag.BASIC, myFlags), equalTo(true));
+        assertThat(Flag.isEnabled(Flag.MIN, myFlags), equalTo(false));
+        assertThat(Flag.isEnabled(Flag.MAX, myFlags), equalTo(true));
 
-        int allFlags = StatFlags.ALL;
-        assertThat(StatFlags.isEnabled(StatFlags.AVERAGE, allFlags), equalTo(true));
-        assertThat(StatFlags.isEnabled(StatFlags.MIN, allFlags), equalTo(true));
-        assertThat(StatFlags.isEnabled(StatFlags.MAX, allFlags), equalTo(true));
+        int minMaxFlag = Flag.MIN_MAX;
+        assertThat(Flag.isEnabled(Flag.BASIC, minMaxFlag), equalTo(false));
+        assertThat(Flag.isEnabled(Flag.MIN, minMaxFlag), equalTo(true));
+        assertThat(Flag.isEnabled(Flag.MAX, minMaxFlag), equalTo(true));
+
+        int allFlags = Flag.ALL;
+        assertThat(Flag.isEnabled(Flag.BASIC, allFlags), equalTo(true));
+        assertThat(Flag.isEnabled(Flag.MIN, allFlags), equalTo(true));
+        assertThat(Flag.isEnabled(Flag.MAX, allFlags), equalTo(true));
     }
 
 }

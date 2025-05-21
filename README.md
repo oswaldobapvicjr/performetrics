@@ -276,3 +276,16 @@ flowchart LR
   classDef blue stroke:#0af
   classDef green stroke:#0fa
 ```
+
+## Contributing
+
+If you want to contribute to the project, check the [issues](http://obvj.net/performetrics/issues) page, or write an e-mail to [oswaldo@obvj.net](mailto:oswaldo@obvj.net).
+
+Thanks to all the people who have already contributed!
+
+<a href="https://github.com/oswaldobapvicjr/performetrics/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=oswaldobapvicjr/performetrics" />
+</a>
+
+<sup>Made with [contrib.rocks](https://contrib.rocks)</sup>
+

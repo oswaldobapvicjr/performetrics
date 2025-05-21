@@ -277,6 +277,8 @@ flowchart LR
   classDef green stroke:#0fa
 ```
 
+---
+
 ## Contributing
 
 If you want to contribute to the project, check the [issues](http://obvj.net/performetrics/issues) page, or write an e-mail to [oswaldo@obvj.net](mailto:oswaldo@obvj.net).

@@ -272,8 +272,8 @@ public abstract class TimingSessionContainer
     /**
      * Prints elapsed times in the specified print stream.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via
+     * {@link Performetrics#configuration()}) will be applied.
      * <p>
      * For a custom {@code PrintStyle}, use {@link #print(PrintStream, PrintStyle)}.
      *
@@ -294,9 +294,8 @@ public abstract class TimingSessionContainer
      *
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
-     *                    {@code PrintStyle} (defined by
-     *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
-     *                    applied
+     *                    {@code PrintStyle} (defined via
+     *                    {@link Performetrics#configuration()}) will be applied
      *
      * @throws NullPointerException if the {@code PrintStream} is null
      * @since 2.4.0
@@ -429,8 +428,8 @@ public abstract class TimingSessionContainer
      * Returns a string containing a formatted output for this timing-session container in
      * default style.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via {@link Performetrics#configuration()})
+     * will be applied.
      * <p>
      * For a custom {@code PrintStyle}, use {@link #toString(PrintStyle)}.
      *
@@ -452,9 +451,8 @@ public abstract class TimingSessionContainer
      * determined by the specified {@link PrintStyle}.
      *
      * @param printStyle the {@link PrintStyle}; if {@code null}, the default
-     *                   {@code PrintStyle} (defined by
-     *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
-     *                   applied
+     *                   {@code PrintStyle} (defined via
+     *                   {@link Performetrics#configuration()}) will be applied
      * @return a string containing a formatted output for this timing-session container in the
      *         specified {@link PrintStyle}
      * @since 2.4.0

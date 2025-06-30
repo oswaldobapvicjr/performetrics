@@ -42,8 +42,8 @@ public class PrintUtils
      * Prints summarized elapsed times from the given {@link TimingSessionContainer} into the
      * specified print stream.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyleForSummary(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via
+     * {@link Performetrics#configuration()}) will be applied.
      *
      * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
@@ -65,9 +65,8 @@ public class PrintUtils
      * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
-     *                    {@code PrintStyle} (defined by
-     *                    {@link Performetrics#setDefaultPrintStyleForSummary(PrintStyle)})
-     *                    will be applied
+     *                    {@code PrintStyle} (defined via
+     *                    {@link Performetrics#configuration()}) will be applied
      *
      * @throws NullPointerException     if a null {@link TimingSessionContainer} or print
      *                                  stream is received
@@ -87,8 +86,8 @@ public class PrintUtils
      * Prints detailed information about timing sessions from the given
      * {@link TimingSessionContainer} into the specified print stream.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyleForDetails(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via
+     * {@link Performetrics#configuration()}) will be applied.
      *
      * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which information will be sent
@@ -111,9 +110,8 @@ public class PrintUtils
      * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which information will be sent
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
-     *                    {@code PrintStyle} (defined by
-     *                    {@link Performetrics#setDefaultPrintStyleForDetails(PrintStyle)})
-     *                    will be applied
+     *                    {@code PrintStyle} (defined via
+     *                    {@link Performetrics#configuration()}) will be applied
      *
      * @throws NullPointerException     if a null {@link TimingSessionContainer} or print
      *                                  stream is received
@@ -133,8 +131,8 @@ public class PrintUtils
      * Prints elapsed times from the given {@link TimingSessionContainer} into the specified
      * print stream.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via {@link Performetrics#configuration()})
+     * will be applied.
      *
      * @param container   the {@link TimingSessionContainer} to be printed
      * @param printStream the print stream to which data will be sent
@@ -158,9 +156,8 @@ public class PrintUtils
      * @param container   the {@link TimingSessionContainer} to be printed; not null
      * @param printStream the print stream to which data will be sent; not null
      * @param printStyle  the {@link PrintStyle}; if {@code null}, the default
-     *                    {@code PrintStyle} (defined by
-     *                    {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
-     *                    applied
+     *                    {@code PrintStyle} (defined via
+     *                    {@link Performetrics#configuration()})will be applied
      *
      * @throws NullPointerException if a null {@link TimingSessionContainer} or print stream
      *                              is received
@@ -175,8 +172,8 @@ public class PrintUtils
      * Returns a string containing a formatted summary from the given
      * {@link TimingSessionContainer} in default style.
      * <p>
-     * The default {@link PrintStyle} (defined by
-     * {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be applied.
+     * The default {@link PrintStyle} (defined via
+     * {@link Performetrics#configuration()}) will be applied.
      *
      * @param container to {@link TimingSessionContainer} to be used; not null
      * @return string containing a formatted output from the given
@@ -198,9 +195,8 @@ public class PrintUtils
      *
      * @param container  to {@link TimingSessionContainer} to be used
      * @param printStyle the {@link PrintStyle}; if {@code null}, the default
-     *                   {@code PrintStyle} (defined by
-     *                   {@link Performetrics#setDefaultPrintStyle(PrintStyle)}) will be
-     *                   applied
+     *                   {@code PrintStyle} (defined via
+     *                   {@link Performetrics#configuration()}) will be applied
      * @return string containing a formatted output from the given
      *         {@link TimingSessionContainer}
      *

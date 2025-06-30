@@ -22,7 +22,6 @@ import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.Configuration;
 import net.obvj.performetrics.config.ConfigurationHolder;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
-import net.obvj.performetrics.util.print.PrintStyle;
 
 /**
  * A Facade class meant to provide a simple interface for common parameters setup and
@@ -58,110 +57,6 @@ public class Performetrics
     public static Configuration configuration()
     {
         return ConfigurationHolder.getConfiguration();
-    }
-
-    /**
-     * Sets a conversion mode to be applied by supported operations if no specific mode is
-     * set.
-     *
-     * @param conversionMode the {@link ConversionMode} to set
-     *
-     * @deprecated Use {@code Performetrics.configuration().setConversionMode(ConversionMode)}
-     *             instead.
-     */
-    @Deprecated(since = "2.5.3", forRemoval = true)
-    public static void setDefaultConversionMode(ConversionMode conversionMode)
-    {
-        ConfigurationHolder.getConfiguration().setConversionMode(conversionMode);
-    }
-
-    /**
-     * Sets a maximum number of decimal places to be applied if double-precision conversion
-     * mode is set.
-     *
-     * @param scale a number between 0 and 16 to be set
-     * @throws IllegalArgumentException if a number outside the allowed range is received
-     *
-     * @deprecated Use {@code Performetrics.configuration().setScale(int)} instead.
-     */
-    @Deprecated(since = "2.5.3", forRemoval = true)
-    public static void setScale(int scale)
-    {
-        ConfigurationHolder.getConfiguration().setScale(scale);
-    }
-
-    /**
-     * Defines the default {@link PrintStyle} to be applied when no style is specified.
-     * <p>
-     * The object will be used by the following operations:
-     * </p>
-     * <ul>
-     * <li>{@link Stopwatch#print(java.io.PrintStream)}</li>
-     * <li>{@link Stopwatch#toString()}</li>
-     * </ul>
-     *
-     * @param printStyle the {@link PrintStyle} to be set; not null
-     * @throws NullPointerException if the specified {@code PrintStyle} is null
-     *
-     * @since 2.4.0
-     *
-     * @deprecated Use {@code Performetrics.configuration().setPrintStyle(PrintStyle)}
-     *             instead.
-     */
-    @Deprecated(since = "2.5.3", forRemoval = true)
-    public static void setDefaultPrintStyle(PrintStyle printStyle)
-    {
-        ConfigurationHolder.getConfiguration().setPrintStyle(printStyle);
-    }
-
-    /**
-     * Defines the default {@link PrintStyle} to be applied by the summarized stopwatch
-     * formatter.
-     * <p>
-     * The object will be used by the following operation:
-     * </p>
-     * <ul>
-     * <li>{@link Stopwatch#printSummary(java.io.PrintStream)}</li>
-     * </ul>
-     *
-     * @param printStyle the {@link PrintStyle} to be set; not null
-     * @throws NullPointerException if the specified {@code PrintStyle} is null
-     *
-     * @since 2.2.1
-     *
-     * @deprecated Use
-     *             {@code Performetrics.configuration().setPrintStyleForSummary(PrintStyle)}
-     *             instead.
-     */
-    @Deprecated(since = "2.5.3", forRemoval = true)
-    public static void setDefaultPrintStyleForSummary(PrintStyle printStyle)
-    {
-        ConfigurationHolder.getConfiguration().setPrintStyleForSummary(printStyle);
-    }
-
-    /**
-     * Defines the default {@link PrintStyle} to be applied by the detailed stopwatch
-     * formatter.
-     * <p>
-     * The object will be used by the following operations:
-     * </p>
-     * <ul>
-     * <li>{@link Stopwatch#printDetails(java.io.PrintStream)}</li>
-     * </ul>
-     *
-     * @param printStyle the {@link PrintStyle} to be set; not null
-     * @throws NullPointerException if the specified {@code PrintStyle} is null
-     *
-     * @since 2.2.1
-     *
-     * @deprecated Use
-     *             {@code Performetrics.configuration().setPrintStyleForDetails(PrintStyle)}
-     *             instead.
-     */
-    @Deprecated(since = "2.5.3", forRemoval = true)
-    public static void setDefaultPrintStyleForDetails(PrintStyle printStyle)
-    {
-        ConfigurationHolder.getConfiguration().setPrintStyleForDetails(printStyle);
     }
 
     /**

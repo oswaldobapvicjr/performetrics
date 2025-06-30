@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import net.obvj.performetrics.util.DurationStats.Flag;
-
 /**
  * <p>
  * A class that calculates and represents statistical metrics for durations, such as sum,

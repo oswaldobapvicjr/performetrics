@@ -26,36 +26,42 @@ As from Java 1.5, it is possible to get additional metrics that may help you ben
 
 ```mermaid
 ---
-displayMode: compact
+config:
+  gantt:
+    useWidth: 680
+    rightPadding: 60
+    topAxis: false
+    numberSectionStyles: 0
+    displayMode: compact
 ---
 gantt
     title Metric types
     dateFormat X
     axisFormat %s
     section Real time
-    rt1   : crit, 0, 18
+    rt1   : 0, 18
     section CPU time
-    ct1   : 0, 1
-    ct2   : 2, 3
-    ct3   : 4, 6
-    ct4   : 7, 8
-    ct5   : 9, 10
-    ct6   : 11, 13
-    ct7   : 14, 15
-    ct8   : 16, 17
+    c1   : 0, 1
+    c2   : 2, 3
+    c3   : 4, 6
+    c4   : 7, 8
+    c5   : 9, 10
+    c6   : 11, 13
+    c7   : 14, 15
+    c8   : 16, 17
     section User time
-    ut1   : active, 0, 1
-    ut2   : active, 2, 3
-    ut3   : active, 4, 5
-    ut4   : active, 12, 13
+    u1   : 0, 1
+    u2   : 2, 3
+    u3   : 4, 5
+    u4   : 12, 13
     section System time
-    st1   : done, 5, 6
-    st2   : done, 7, 8
-    st3   : done, 9, 10
-    st4   : done, 11, 12
+    s1   : 5, 6
+    s2   : 7, 8
+    s3   : 9, 10
+    s4   : 11, 12
 ```
 
-**Performetrics** provides convenient objects for time evaluation with support to the abovementioned counters.
+**Performetrics** provides convenient objects for easy time evaluation supporting the abovementioned counters.
 
 ---
 

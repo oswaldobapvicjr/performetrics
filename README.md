@@ -31,34 +31,36 @@ config:
     useWidth: 680
     rightPadding: 60
     topAxis: false
-    numberSectionStyles: 0
+    numberSectionStyles: 2
     displayMode: compact
 ---
 gantt
     title Metric types
-    dateFormat X
-    axisFormat %s
+    dateFormat YY
+    axisFormat %y ms
     section Real time
-    rt1   : 0, 18
+    17  : crit, 00, 17
     section CPU time
-    c1   : 0, 1
-    c2   : 2, 3
-    c3   : 4, 6
-    c4   : 7, 8
-    c5   : 9, 10
-    c6   : 11, 13
-    c7   : 14, 15
-    c8   : 16, 17
+    1   : 00, 01
+    1   : 02, 03
+    2   : 04, 06
+    1   : 07, 08
+    1   : 09, 10
+    2   : 11, 13
+    1   : 14, 15
+    1   : 16, 17
     section User time
-    u1   : 0, 1
-    u2   : 2, 3
-    u3   : 4, 5
-    u4   : 12, 13
+    1   : 00, 01
+    1   : 02, 03
+    1   : 04, 05
+    1   : 12, 13
+    1   : 14, 15
+    1   : 16, 17
     section System time
-    s1   : 5, 6
-    s2   : 7, 8
-    s3   : 9, 10
-    s4   : 11, 12
+    1   : 05, 06
+    1   : 07, 08
+    1   : 09, 10
+    1   : 11, 12
 ```
 
 **Performetrics** provides convenient objects for easy time evaluation supporting the abovementioned counters.

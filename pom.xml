@@ -41,10 +41,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Test dependencies versions -->
-        <junit.version>5.12.2</junit.version>
-        <junit-utils.version>1.9.0</junit-utils.version>
-        <mockito.version>5.21.0</mockito.version>
-        <snakeyaml.version>2.5</snakeyaml.version>
+        <junit.version>6.1.1</junit.version>
+        <junit-utils.version>1.10.0</junit-utils.version>
+        <mockito.version>5.23.0</mockito.version>
+        <snakeyaml.version>2.6</snakeyaml.version>
     </properties>
 
     <dependencies>

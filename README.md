@@ -75,7 +75,7 @@ If you are using Maven, add **Performetrics** as a dependency on your pom.xml fi
 <dependency>
     <groupId>net.obvj</groupId>
     <artifactId>performetrics</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
 </dependency>
 ```
 

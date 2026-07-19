@@ -2,13 +2,39 @@
 
 ## Supported Versions
 
+We provide security updates only for the latest stable release. Please ensure you are using a supported version.
+
 | Version   | JDK version(s) | Supported          |
 | --------- | -------------- | ------------------ |
-| **2.6.0** | 11, 17, 21     | :white_check_mark: |
-| 2.5.x     | 11, 17, 21     | :x:                |
-| **2.4.0** | 8, 11, 17      | :white_check_mark: |
-| < 2.4.0   | n/a            | :x:                |
+| **2.7.0** | 11, 17, 21, 25 | ✅                 |
+| < 2.7.0   | N/A            | ❌                 |
 
 ## Reporting a Vulnerability
 
-If you find a vulnerability, please let me know by opening an issue [here](https://github.com/oswaldobapvicjr/performetrics/issues/new?assignees=&labels=&template=bug_report.md&title=).
+We take security seriously and appreciate your efforts to disclose any issues responsibly.
+
+- Please **do not** open a public GitHub issue for security vulnerabilities.
+- Instead, report vulnerabilities privately using GitHub’s [private vulnerability reporting](https://github.com/oswaldobapvicjr/performetrics/security/advisories/new).
+
+When reporting, please include:
+- A clear description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested mitigation (if known)
+
+We will acknowledge receipt as soon as possible, investigate, and provide updates on the resolution timeline.
+
+## Security Updates
+
+- Critical fixes will be released as patch versions (e.g., `2.7.x`).
+- Non-critical issues may be scheduled for the next minor or major release.
+- Security advisories will be published via GitHub’s [Security Advisories](https://github.com/oswaldobapvicjr/performetrics/security/advisories).
+
+## Responsible Disclosure
+
+We kindly ask that you:
+- Give us reasonable time to address the issue before public disclosure.
+- Avoid exploiting vulnerabilities in production systems.
+- Coordinate with us to ensure users are protected.
+
+Thank you for helping keep **performetrics** secure!

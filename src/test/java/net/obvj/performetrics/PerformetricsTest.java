@@ -32,6 +32,7 @@ import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.SystemUtils;
 
@@ -87,6 +88,42 @@ class PerformetricsTest
             MonitoredRunnable monitored = Performetrics.monitorOperation(this.runnable, WALL_CLOCK_TIME, CPU_TIME);
 
             assertThat(runFlag, is(equalTo(true)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(2)));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, never());
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, never());
+        }
+    }
+
+    @Test
+    void monitorOperation_callableNoSpecificCounter() throws Exception
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            String expectedResult = "test-result";
+            MonitoredCallable<String> monitored = Performetrics.monitorOperation(() -> expectedResult);
+            
+            assertThat(monitored.getResult(), is(equalTo(expectedResult)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, times(2));
+        }
+    }
+
+    @Test
+    void monitorOperation_callableTwoSpecificCounters() throws Exception
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            Integer expectedResult = 42;
+            MonitoredCallable<Integer> monitored = Performetrics.monitorOperation(() -> expectedResult, WALL_CLOCK_TIME, CPU_TIME);
+
+            assertThat(monitored.getResult(), is(equalTo(expectedResult)));
             assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
             systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));

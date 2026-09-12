@@ -17,10 +17,12 @@
 package net.obvj.performetrics;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.Configuration;
 import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 
 /**
@@ -126,5 +128,78 @@ public class Performetrics
         MonitoredRunnable monitoredRunnable = new MonitoredRunnable(runnable, types);
         monitoredRunnable.run();
         return monitoredRunnable;
+    }
+
+    /**
+     * Calls the specified {@link Callable}, which can also be a lambda expression, and
+     * collects metrics for all available counter types.
+     * <p>
+     * For example:
+     *
+     * <blockquote>
+     *
+     * <pre>
+     * {@code MonitoredCallable<String> callable =}
+     * {@code
+     * Performetrics.monitorOperation(() -> database.query());
+     * }
+     * {@code
+     * String result = callable.getResult();
+     * Duration elapsedTime = callable.elapsedTime(Type.WALL_CLOCK_TIME);
+     * }
+     * </pre>
+     *
+     * </blockquote>
+     *
+     * @param <V>    the result type of the callable
+     * @param callable the {@link Callable} to be called and monitored
+     * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
+     *         collected results and the return value.
+     * @throws Exception if the callable throws an exception during execution
+     * @since 2.7.1
+     */
+    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable) throws Exception
+    {
+        return monitorOperation(callable, new Type[0]);
+    }
+
+    /**
+     * Calls the specified {@link Callable}, which can also be a lambda expression, and
+     * collects metrics for the specified counter type(s) only.
+     * <p>
+     * For example:
+     *
+     * <blockquote>
+     *
+     * <pre>
+     * {@code MonitoredCallable<Integer> callable = Performetrics}
+     * {@code         .monitorOperation(() -> database.count(), Type.CPU_TIME);}
+     * {@code Integer count = callable.getResult();}
+     * {@code Duration elapsedTime = callable.elapsedTime(Type.CPU_TIME);}
+     * </pre>
+     *
+     * </blockquote>
+     *
+     * <p>
+     * <b>Note:</b> If no type is specified, then all of the available types will be
+     * maintained.
+     *
+     * <p>
+     * <b>Note:</b> If the provided {@link Callable} throws an exception during execution,
+     * the exception will be propagated to the caller.
+     *
+     * @param <V>      the result type of the callable
+     * @param callable the {@link Callable} to be called and monitored
+     * @param types    the counter types to be measured in the operation
+     * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
+     *         collected results and the return value.
+     * @throws Exception if the callable throws an exception during execution
+     * @since 2.7.1
+     */
+    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable, Type... types) throws Exception
+    {
+        MonitoredCallable<V> monitoredCallable = new MonitoredCallable<>(callable, types);
+        monitoredCallable.call();
+        return monitoredCallable;
     }
 }

@@ -156,7 +156,7 @@ public class Performetrics
      * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
      *         collected results and the return value.
      * @throws Exception if the callable throws an exception during execution
-     * @since 2.7.1
+     * @since 2.8.0
      */
     public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable) throws Exception
     {

@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import net.obvj.performetrics.monitors.MonitoredCallable;
-import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.Duration;
 import net.obvj.performetrics.util.DurationFormat;
 import net.obvj.performetrics.util.DurationUtils;
@@ -187,7 +186,7 @@ public class PerformetricsTestDrive
         t1.join();
     }
 
-    private static void loadTest()
+    private static void loadTest() throws Exception
     {
         System.out.println("[main] Starting load test...");
 
@@ -197,14 +196,14 @@ public class PerformetricsTestDrive
 
         for (int i = 0; i < repeatTimes; i++)
         {
-            MonitoredRunnable runnable = Performetrics.monitorOperation(() -> factorial(100L),
+            MonitoredCallable<BigInteger> callable = Performetrics.monitorOperation(() -> factorial(100L),
                     WALL_CLOCK_TIME, USER_TIME, SYSTEM_TIME);
-            runnable.elapsedTime(WALL_CLOCK_TIME);
-            runnable.elapsedTime(USER_TIME);
-            Duration st = runnable.elapsedTime(SYSTEM_TIME);
+            callable.elapsedTime(WALL_CLOCK_TIME);
+            callable.elapsedTime(USER_TIME);
+            Duration duration = callable.elapsedTime(SYSTEM_TIME);
 
-            durations.add(st);
-            amounts.computeIfAbsent(st.toSeconds(), k -> new AtomicInteger(0)).incrementAndGet();
+            durations.add(duration);
+            amounts.computeIfAbsent(duration.toSeconds(), k -> new AtomicInteger(0)).incrementAndGet();
         }
 
         System.out.println("[main] Load test finished");

@@ -42,7 +42,7 @@ import net.obvj.performetrics.TimingSessionContainer;
  * </ul>
  *
  * <p>After execution, retrieve or output timing results using methods such as
- * {@link #printSummary()}, {@link #printDetails()}, or {@link #elapsedTime(Counter.Type)}:</p>
+ * {@link #print(java.io.PrintStream)}, or {@link #elapsedTime(Type)}:</p>
  *
  * <pre>{@code
  * MonitoredCallable<String> monitoredCallable = new MonitoredCallable<>(callable);

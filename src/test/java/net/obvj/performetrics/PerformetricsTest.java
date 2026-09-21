@@ -16,7 +16,7 @@
 
 package net.obvj.performetrics;
 
-import static net.obvj.junit.utils.matchers.AdvancedMatchers.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.AdvancedMatchers.*;
 import static net.obvj.performetrics.Counter.Type.CPU_TIME;
 import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -26,12 +26,15 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.config.ConfigurationHolder;
+import net.obvj.performetrics.monitors.MonitoredCallable;
 import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.performetrics.util.SystemUtils;
 
@@ -96,6 +99,81 @@ class PerformetricsTest
         }
     }
 
+    @Test
+    void monitorOperation_callableNoSpecificCounter()
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            String expectedResult = "test-result";
+            MonitoredCallable<String> monitored = Performetrics.monitorOperation(() -> expectedResult);
+            
+            assertThat(monitored.get(), is(equalTo(expectedResult)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, times(2));
+        }
+    }
+
+    @Test
+    void monitorOperation_callableTwoSpecificCounters()
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            Integer expectedResult = 42;
+            MonitoredCallable<Integer> monitored = Performetrics.monitorOperation(() -> expectedResult, WALL_CLOCK_TIME, CPU_TIME);
+
+            assertThat(monitored.get(), is(equalTo(expectedResult)));
+            assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(2)));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getUserTimeNanos, never());
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, never());
+        }
+    }
+
+    @Test
+    void monitorOperation_callableWithException()
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            assertThat(() -> 
+                Performetrics.monitorOperation(() -> {
+                    throw new IOException("checked");
+                }, WALL_CLOCK_TIME),
+                    throwsException(RuntimeException.class)
+                        .withCause(exception(IOException.class)));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, never());
+            systemUtils.verify(SystemUtils::getUserTimeNanos, never());
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, never());
+        }
+    }
+
+    @Test
+    void monitorOperation_callableWithRuntimeException()
+    {
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            Exception ex = new IllegalStateException();
+            assertThat(() -> 
+                Performetrics.monitorOperation(() -> {
+                    throw ex;
+                }, WALL_CLOCK_TIME),
+                    throwsException(ex));
+
+            systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
+            systemUtils.verify(SystemUtils::getCpuTimeNanos, never());
+            systemUtils.verify(SystemUtils::getUserTimeNanos, never());
+            systemUtils.verify(SystemUtils::getSystemTimeNanos, never());
+        }
+    }
+
+    
     @Test
     void configuration_getCurrentConfiguration()
     {

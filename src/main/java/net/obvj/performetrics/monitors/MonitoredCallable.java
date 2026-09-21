@@ -21,76 +21,58 @@ import static net.obvj.performetrics.Performetrics.ALL_TYPES;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Counter.Type;
 import net.obvj.performetrics.TimingSessionContainer;
 
 /**
- * <p>
- * A {@link Callable} wrapper that maintains one or more counters for monitoring the time
- * spent by the Callable's {@code call()} method.
- * </p>
+ * A {@link Callable} and {@link Supplier} wrapper that maintains one or more counters for
+ * monitoring the execution time of a target operation.
  *
- * <p>
- * Specify a target {@code Callable} via constructor, then execute the {@code call()}
- * method available in this wrapper. The target {@code Callable}'s {@code call()} method
- * will be executed and monitored.
- * </p>
+ * <p>Specify a target {@code Callable} via constructor, then execute the operation using
+ * {@link #call()} or {@link #get()}.</p>
  *
- * <p>
- * After the operation, call {@code printSummary()} or {@code printDetails()} to print the
- * elapsed times or {@code elapsedTime(Counter.Type)}, to retrieve the elapsed time
- * duration for a particular counter. E.g.:
- * </p>
+ * <ul>
+ *   <li>{@link #call()} always executes the underlying target operation, records timing metrics,
+ *       and updates the stored result.</li>
+ *   <li>{@link #get()} returns the cached result if already executed, or invokes {@link #callUnchecked()}
+ *       on the first call.</li>
+ * </ul>
  *
- * <blockquote>
+ * <p>After execution, retrieve or output timing results using methods such as
+ * {@link #printSummary()}, {@link #printDetails()}, or {@link #elapsedTime(Counter.Type)}:</p>
  *
- * <pre>
- * Duration cpuTime = monitoredRunnable.elapsedTime(Counter.Type.CPU_TIME);
- * </pre>
+ * <pre>{@code
+ * MonitoredCallable<String> monitoredCallable = new MonitoredCallable<>(callable);
+ * String result = monitoredCallable.get(); // Executes once
+ * String cached = monitoredCallable.get(); // Returns cached value
+ * monitoredCallable.call();                // Re-executes and updates cached value
+ * }</pre>
  *
- * </blockquote>
+ * <p><b>Note:</b> This class is not thread-safe. In a multi-threaded context, separate
+ * instances must be created for each thread.</p>
  *
- * <p>
- * By default, all available counter types will be measured, if no specific counter types
- * are passed to the constructor. If required, an additional constructor may be used to
- * set up one or more specific counters to be maintained. E.g.:
- * </p>
- *
- * <blockquote>
- *
- * <pre>
- * new MonitoredCallable(callable); // maintains all available counter types
- * new MonitoredCallable(callable, Counter.Type.WALL_CLOCK_TIME); // wall-clock time only
- * </pre>
- *
- * </blockquote>
- *
- * <p>
- * For a list of available counters, refer to {@link Counter.Type}.
- * </p>
- *
- * <p>
- * <b>Note:</b> This class is not thread-safe. In a multi-thread context, different
- * instances must be created for each thread.
- * </p>
- *
- * @param <V> the result type of method call
+ * @param <V> the result type returned by the operation
  *
  * @author oswaldo.bapvic.jr
  * @see Counter
  * @see Counter.Type
+ * @see Supplier
+ * @see Callable
  */
-public class MonitoredCallable<V> extends TimingSessionContainer implements Callable<V>
+public class MonitoredCallable<V> extends TimingSessionContainer implements Callable<V>, Supplier<V>
 {
     private final Callable<V> callable;
+    private V result;
+    private boolean executed;
 
     /**
-     * Builds this monitored operation with a given {@link Callable}. All available counter
-     * types will be maintained.
+     * Builds a monitored operation for the given {@link Callable} with all available counter
+     * types enabled.
      *
-     * @param callable the Callable to be executed
+     * @param callable the {@link Callable} operation to be monitored; must not be {@code null}
      */
     public MonitoredCallable(Callable<V> callable)
     {
@@ -98,13 +80,11 @@ public class MonitoredCallable<V> extends TimingSessionContainer implements Call
     }
 
     /**
-     * Builds this monitored operation with a given {@link Callable} and one or more specific
-     * counter types to be maintained.
-     * <p>
-     * If no type is specified, then all of the available types will be maintained.
+     * Builds a monitored operation for the given {@link Callable} with specific counter types.
+     * <p>If no types are specified, all available counter types are maintained.</p>
      *
-     * @param callable the Callable to be executed
-     * @param types    the counter types to be maintained with the operation
+     * @param callable the {@link Callable} operation to be monitored; must not be {@code null}
+     * @param types    the counter types to maintain during execution
      */
     public MonitoredCallable(Callable<V> callable, Type... types)
     {
@@ -117,6 +97,14 @@ public class MonitoredCallable<V> extends TimingSessionContainer implements Call
         this.callable = callable;
     }
 
+    /**
+     * Executes the target {@link Callable}, records execution timing metrics, and caches the result.
+     * <p>Every call to this method forces a new execution and updates the cached value.</p>
+     *
+     * @return the result produced by the target operation
+     * @throws NullPointerException if the target {@code Callable} is {@code null}
+     * @throws Exception if unable to compute a result
+     */
     @Override
     public V call() throws Exception
     {
@@ -124,7 +112,9 @@ public class MonitoredCallable<V> extends TimingSessionContainer implements Call
         super.startNewSession();
         try
         {
-            return callable.call();
+            result = callable.call();
+            executed = true; // Mark as executed even if result is null
+            return result;
         }
         finally
         {
@@ -132,4 +122,43 @@ public class MonitoredCallable<V> extends TimingSessionContainer implements Call
         }
     }
 
+    /**
+     * Returns the cached result if this operation has already been executed, or executes the
+     * target operation once via {@link #callUnchecked()} if it has not been run yet.
+     *
+     * @return the cached or newly executed result produced by the target operation
+     * @throws RuntimeException wrapping any checked exception thrown during execution
+     * @see #callUnchecked()
+     * @since 2.8.0
+     */
+    @Override
+    public V get()
+    {
+        return executed ? result : callUnchecked();
+    }
+
+    /**
+     * Executes the target operation, wrapping any checked {@link Exception} in a
+     * {@link RuntimeException}.
+     * <p>Forces execution and updates the cached result.</p>
+     *
+     * @return the result produced by the target operation
+     * @throws RuntimeException if the target operation fails or throws an exception
+     * @since 2.8.0
+     */
+    public V callUnchecked()
+    {
+        try
+        {
+            return call();
+        }
+        catch (RuntimeException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 }

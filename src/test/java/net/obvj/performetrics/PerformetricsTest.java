@@ -105,7 +105,7 @@ class PerformetricsTest
             String expectedResult = "test-result";
             MonitoredCallable<String> monitored = Performetrics.monitorOperation(() -> expectedResult);
             
-            assertThat(monitored.call(), is(equalTo(expectedResult)));
+            assertThat(monitored.get(), is(equalTo(expectedResult)));
             assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(Type.values().length)));
 
             systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));
@@ -123,7 +123,7 @@ class PerformetricsTest
             Integer expectedResult = 42;
             MonitoredCallable<Integer> monitored = Performetrics.monitorOperation(() -> expectedResult, WALL_CLOCK_TIME, CPU_TIME);
 
-            assertThat(monitored.call(), is(equalTo(expectedResult)));
+            assertThat(monitored.get(), is(equalTo(expectedResult)));
             assertThat(monitored.getAllCountersByType().keySet().size(), is(equalTo(2)));
 
             systemUtils.verify(SystemUtils::getWallClockTimeNanos, times(2));

@@ -154,7 +154,7 @@ public class Performetrics
      * @param <V>    the result type of the callable
      * @param callable the {@link Callable} to be called and monitored
      * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
-     *         collected results and the return value.
+     *         collected results.
      * @throws Exception if the callable throws an exception during execution
      * @since 2.8.0
      */
@@ -192,7 +192,7 @@ public class Performetrics
      * @param callable the {@link Callable} to be called and monitored
      * @param types    the counter types to be measured in the operation
      * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
-     *         collected results and the return value.
+     *         collected results.
      * @throws Exception if the callable throws an exception during execution
      * @since 2.8.0
      */

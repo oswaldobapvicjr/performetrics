@@ -17,13 +17,10 @@
 package net.obvj.performetrics.monitors;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static net.obvj.performetrics.Counter.Type.CPU_TIME;
-import static net.obvj.performetrics.Counter.Type.SYSTEM_TIME;
-import static net.obvj.performetrics.Counter.Type.USER_TIME;
-import static net.obvj.performetrics.Counter.Type.WALL_CLOCK_TIME;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static net.obvj.performetrics.Counter.Type.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -186,6 +183,143 @@ class MonitoredCallableTest
             operation.printDetails(System.out);
             printUtils.verify(() -> PrintUtils.printDetails(operation, System.out, null), times(1));
         }
+    }
+
+    @Test
+    void get_firstTime_executesCallableAndReturnsValue() throws Exception
+    {
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(callable);
+        try (MockedStatic<SystemUtils> systemUtils = mockStatic(SystemUtils.class))
+        {
+            setupExpectsBeforeAndAfter(systemUtils);
+
+            assertThat(monitored.get(), is(equalTo(STRING_CALLABLE_RETURN)));
+
+            assertThat(monitored.elapsedTime(WALL_CLOCK_TIME),
+                    is(equalTo(Duration.of(WALL_CLOCK_TIME_AFTER - WALL_CLOCK_TIME_BEFORE, NANOSECONDS))));
+        }
+    }
+
+    @Test
+    void get_multipleTimes_executesCallableOnlyOnceAndReturnsCachedValue()
+    {
+        int[] executionCounter = {0};
+        Callable<String> counterCallable = () ->
+        {
+            executionCounter[0]++;
+            return STRING_CALLABLE_RETURN;
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(counterCallable);
+
+        assertThat(monitored.get(), is(equalTo(STRING_CALLABLE_RETURN)));
+        assertThat(monitored.get(), is(equalTo(STRING_CALLABLE_RETURN)));
+        assertThat(monitored.get(), is(equalTo(STRING_CALLABLE_RETURN)));
+
+        assertThat(executionCounter[0], is(equalTo(1)));
+    }
+
+    @Test
+    void get_afterCall_returnsCachedValueFromCall() throws Exception
+    {
+        int[] executionCounter = {0};
+        Callable<String> counterCallable = () ->
+        {
+            executionCounter[0]++;
+            return STRING_CALLABLE_RETURN;
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(counterCallable);
+
+        // Force explicit call first
+        assertThat(monitored.call(), is(equalTo(STRING_CALLABLE_RETURN)));
+        assertThat(executionCounter[0], is(equalTo(1)));
+
+        // get() should return cached result without triggering callable again
+        assertThat(monitored.get(), is(equalTo(STRING_CALLABLE_RETURN)));
+        assertThat(executionCounter[0], is(equalTo(1)));
+    }
+
+    @Test
+    void call_afterGet_reExecutesCallableAndUpdatesCachedValue() throws Exception
+    {
+        int[] executionCounter = {0};
+        Callable<String> counterCallable = () ->
+        {
+            executionCounter[0]++;
+            return "run" + executionCounter[0];
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(counterCallable);
+
+        // Lazy load on first get()
+        assertThat(monitored.get(), is(equalTo("run1")));
+        assertThat(monitored.get(), is(equalTo("run1"))); // Cached
+
+        // Force call re-execution
+        assertThat(monitored.call(), is(equalTo("run2")));
+
+        // Subsequent get() should now return updated cached value
+        assertThat(monitored.get(), is(equalTo("run2")));
+        assertThat(executionCounter[0], is(equalTo(2)));
+    }
+
+    @Test
+    void get_whenCallableReturnsNull_cachesNullAndDoesNotReExecute()
+    {
+        int[] executionCounter = {0};
+        Callable<String> nullCallable = () ->
+        {
+            executionCounter[0]++;
+            return null;
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(nullCallable);
+
+        assertThat(monitored.get(), is(nullValue()));
+        assertThat(monitored.get(), is(nullValue()));
+
+        assertThat(executionCounter[0], is(equalTo(1)));
+    }
+
+    @Test
+    void callUnchecked_checkedException_wrapsInRuntimeException()
+    {
+        Exception checkedException = new Exception("Checked error");
+        Callable<String> failingCallable = () ->
+        {
+            throw checkedException;
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(failingCallable);
+
+        assertThrows(RuntimeException.class, monitored::callUnchecked);
+
+        try
+        {
+            monitored.callUnchecked();
+        }
+        catch (RuntimeException e)
+        {
+            assertThat(e.getCause(), is(equalTo(checkedException)));
+        }
+    }
+
+    @Test
+    void callUnchecked_runtimeException_rethrowsDirectlyWithoutWrapping()
+    {
+        IllegalArgumentException runtimeException = new IllegalArgumentException("Invalid argument");
+        Callable<String> failingCallable = () ->
+        {
+            throw runtimeException;
+        };
+
+        MonitoredCallable<String> monitored = new MonitoredCallable<>(failingCallable);
+
+        IllegalArgumentException thrown = assertThrows(
+                IllegalArgumentException.class, monitored::callUnchecked);
+
+        assertThat(thrown, is(equalTo(runtimeException)));
     }
 
 }

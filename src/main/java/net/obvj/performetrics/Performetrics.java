@@ -144,7 +144,7 @@ public class Performetrics
      * Performetrics.monitorOperation(() -> database.query());
      * }
      * {@code
-     * String result = callable.getResult();
+     * String result = callable.get();
      * Duration elapsedTime = callable.elapsedTime(Type.WALL_CLOCK_TIME);
      * }
      * </pre>
@@ -155,10 +155,10 @@ public class Performetrics
      * @param callable the {@link Callable} to be called and monitored
      * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
      *         collected results.
-     * @throws Exception if the callable throws an exception during execution
+     * @throws RuntimeException if the callable throws an exception during execution
      * @since 2.8.0
      */
-    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable) throws Exception
+    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable)
     {
         return monitorOperation(callable, new Type[0]);
     }
@@ -174,7 +174,7 @@ public class Performetrics
      * <pre>
      * {@code MonitoredCallable<Integer> callable = Performetrics}
      * {@code         .monitorOperation(() -> database.count(), Type.CPU_TIME);}
-     * {@code Integer count = callable.getResult();}
+     * {@code Integer count = callable.get();}
      * {@code Duration elapsedTime = callable.elapsedTime(Type.CPU_TIME);}
      * </pre>
      *
@@ -186,20 +186,20 @@ public class Performetrics
      *
      * <p>
      * <b>Note:</b> If the provided {@link Callable} throws an exception during execution,
-     * the exception will be propagated to the caller.
+     * the exception will be propagated to the caller as a {@link RuntimeException}.
      *
      * @param <V>      the result type of the callable
      * @param callable the {@link Callable} to be called and monitored
      * @param types    the counter types to be measured in the operation
      * @return the resulting {@link MonitoredCallable}, which can be used to retrieve the
      *         collected results.
-     * @throws Exception if the callable throws an exception during execution
+     * @throws RuntimeException if the callable throws an exception during execution
      * @since 2.8.0
      */
-    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable, Type... types) throws Exception
+    public static <V> MonitoredCallable<V> monitorOperation(Callable<V> callable, Type... types)
     {
         MonitoredCallable<V> monitoredCallable = new MonitoredCallable<>(callable, types);
-        monitoredCallable.call();
+        monitoredCallable.callUnchecked();
         return monitoredCallable;
     }
 }
